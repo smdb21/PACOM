@@ -1,0 +1,242 @@
+<?xml version="1.0"?>
+<!--
+		edited with Eclipse 20090920-1017 by Salvador MartÃ­nez-BartolomÃ©
+		(ProteoRed - National Center for Biotechnology - CSIC - Spain)
+	-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:include schemaLocation="MIAPE_XML_v1.0.7.xsd"/>
+	<xs:include schemaLocation="MIAPE_PROJECT_XML_v1.0.xsd"/>
+	<xs:include schemaLocation="FuGElightv1.0.0.xsd"/>
+	<xs:element name="GE_Direct_Detection">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Protocol" type="xs:string" minOccurs="0"/>
+				<xs:element name="GE_Detection_Agent" type="MIAPE_Substance_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GE_Detection_Additional_Agent" type="MIAPE_Substance_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GE_Detection_Buffer" type="MIAPE_Buffer_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GE_Detection_Equipment" type="MIAPE_GE_Equipment_Type" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="MIAPE_GE_Equipment_Type">
+		<xs:complexContent>
+			<xs:extension base="MIAPE_Equipment_Type">
+				<xs:attribute name="id" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="GE_Electrophoresis_Protocol">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Electrophoresis_Conditions" type="xs:string" minOccurs="0"/>
+				<xs:element name="GE_Running_Buffer" type="MIAPE_Buffer_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GE_EProtocol_Additional_Buffer" type="MIAPE_Buffer_Type" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="GE_Dimension_Type">
+		<xs:sequence>
+			<xs:element name="Name" type="xs:string"/>
+			<xs:element name="Dimension" type="xs:string" minOccurs="0"/>
+			<xs:element name="Separation_Method" type="xs:string" minOccurs="0"/>
+			<xs:element name="GE_Loading_Buffer" type="MIAPE_Buffer_Type" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="GE_Gel_Matrix" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="GE_Electrophoresis_Protocol" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="GE_Gel_Matrix">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="ParamType"/>
+				<xs:element name="Type" type="xs:string" minOccurs="0"/>
+				<xs:element name="Composed" type="xs:string" minOccurs="0"/>
+				<xs:element name="Gel_Manufacture" type="xs:string" minOccurs="0"/>
+				<xs:element name="Dimensions_x" type="MIAPE_ParamUnit_Type" minOccurs="0"/>
+				<xs:element name="Dimensions_y" type="MIAPE_ParamUnit_Type" minOccurs="0"/>
+				<xs:element name="Dimensions_z" type="MIAPE_ParamUnit_Type" minOccurs="0"/>
+				<xs:element name="PH_Range_L" type="xs:string" minOccurs="0"/>
+				<xs:element name="PH_Range_H" type="xs:string" minOccurs="0"/>
+				<xs:element name="PH_Range_Type" type="ParamType" minOccurs="0"/>
+				<xs:element name="MW_Range_L" type="MIAPE_ParamUnit_Type" minOccurs="0"/>
+				<xs:element name="MW_Range_H" type="MIAPE_ParamUnit_Type" minOccurs="0"/>
+				<xs:element name="MW_Range_Type" type="ParamType" minOccurs="0"/>
+				<xs:element name="Acrylamide_Concentration" type="xs:string" minOccurs="0"/>
+				<xs:element name="Acrylamide_Manufacturer" type="xs:string" minOccurs="0"/>
+				<xs:element name="Acrylamide" type="xs:string" minOccurs="0"/>
+				<xs:element name="Crosslinker" type="xs:string" minOccurs="0"/>
+				<xs:element name="GE_Polymerization_Matrix_Buffer" type="MIAPE_Buffer_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GE_Additional_Matrix_Buffer" type="MIAPE_Buffer_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GE_Additional_Matrix_Substance" type="MIAPE_Substance_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="GE_Sample_Application" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GE_Image">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Format" type="ParamType" minOccurs="0"/>
+				<xs:element name="Dimension_x" type="MIAPE_ParamUnit_Type" minOccurs="0"/>
+				<xs:element name="Dimension_y" type="MIAPE_ParamUnit_Type" minOccurs="0"/>
+				<xs:element name="Resolution" type="MIAPE_ParamUnit_Type" minOccurs="0"/>
+				<xs:element name="Bit_depth" type="xs:string" minOccurs="0"/>
+				<xs:element name="Location" type="xs:anyURI" minOccurs="0"/>
+				<xs:element name="Orientation" type="xs:string" minOccurs="0"/>
+				<xs:element name="Gel_Matrix_Ref" type="xs:string" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GE_Image_Acquisition">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Gel_Matrix_Ref" type="xs:string" minOccurs="0"/>
+				<xs:element name="Protocol" type="xs:string" minOccurs="0"/>
+				<xs:element name="GE_Image_Acquisition_Equipment" type="GE_Image_Acquisition_Equipment_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GE_Image_Acquisition_Software" type="MIAPE_GE_Software_Type" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="MIAPE_GE_Software_Type">
+		<xs:complexContent>
+			<xs:extension base="MIAPE_Software_Type">
+				<xs:attribute name="id" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="GE_Image_Acquisition_Equipment_Type">
+		<xs:complexContent>
+			<xs:extension base="MIAPE_GE_Equipment_Type">
+				<xs:sequence>
+					<xs:element name="Type" type="ParamType" minOccurs="0"/>
+					<xs:element name="Calibration" type="xs:int" minOccurs="0"/>
+					<xs:element name="Parameters_URL" type="xs:anyURI" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="GE_Indirect_Detection">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Transfer_Medium" type="xs:string" minOccurs="0"/>
+				<xs:element name="Detection_Medium" type="xs:string" minOccurs="0"/>
+				<xs:element name="Protocol" type="xs:string" minOccurs="0"/>
+				<xs:element name="GE_Detection_Agent" type="MIAPE_Substance_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GE_Detection_Additional_Agent" type="MIAPE_Substance_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GE_Detection_Buffer" type="MIAPE_Buffer_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GE_Detection_Equipment" type="MIAPE_GE_Equipment_Type" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GE_InterDimension_Process">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Protocol" type="xs:string" minOccurs="0"/>
+				<xs:element name="GE_InterDimension_Buffer" type="MIAPE_Buffer_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GE_InterDimension_Reagent" type="MIAPE_Substance_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GE_InterDimension_Equipment" type="MIAPE_GE_Equipment_Type" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GE_Lane">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Sample_Ref" type="xs:string" minOccurs="0"/>
+				<xs:element name="Lane_Number" type="xs:string" minOccurs="0"/>
+				<xs:element name="Description" type="xs:string" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GE_MIAPE_GE">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="MIAPEProject" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Version" type="xs:string" minOccurs="0"/>
+				<xs:element name="Date" type="xs:string" minOccurs="0"/>
+				<xs:element name="Modification_Date" type="xs:dateTime" minOccurs="0"/>
+				<xs:element name="Electrophoresis_type" type="ParamType" minOccurs="0"/>
+				<xs:element name="AttachedFileLocation" type="xs:anyURI" minOccurs="0"/>
+				<xs:element name="Template" type="xs:boolean" minOccurs="0"/>
+				<xs:element name="GE_Contact" type="MIAPE_Contact_Type" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="GE_Sample" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="GE_Protocol" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="GE_Direct_Detection" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="GE_Indirect_Detection" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="GE_Image_Acquisition" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="GE_Image" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GE_Additional_Information" type="ParamType" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:int" use="required"/>
+		</xs:complexType>
+		<xs:key name="PK_GELMATRIX">
+			<xs:selector xpath="./GE_Protocol/GE_First_Dimension/GE_Gel_Matrix|./GE_Protocol/GE_Second_Dimension/GE_Gel_Matrix"/>
+			<xs:field xpath="@id"/>
+		</xs:key>
+		<xs:key name="PK_SAMPLE">
+			<xs:selector xpath="./GE_Sample"/>
+			<xs:field xpath="@id"/>
+		</xs:key>
+		<xs:keyref name="FK_IMAGE_GELMATRIX" refer="PK_GELMATRIX">
+			<xs:selector xpath="./GE_Image"/>
+			<xs:field xpath="Gel_Matrix_Ref"/>
+		</xs:keyref>
+		<xs:keyref name="FK_IMAGEACQUISITION_GELMATRIX" refer="PK_GELMATRIX">
+			<xs:selector xpath="./GE_Image_Acquisition"/>
+			<xs:field xpath="Gel_Matrix_Ref"/>
+		</xs:keyref>
+		<xs:keyref name="FK_LANE_SAMPLE" refer="PK_SAMPLE">
+			<xs:selector xpath="./GE_Protocol/GE_First_Dimension/GE_Gel_Matrix/GE_Sample_Application/GE_Lane"/>
+			<xs:field xpath="Sample_Ref"/>
+		</xs:keyref>
+	</xs:element>
+	<xs:element name="GE_Protocol">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Description" type="xs:string" minOccurs="0"/>
+				<xs:element name="GE_First_Dimension" type="GE_Dimension_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GE_Second_Dimension" type="GE_Dimension_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="GE_InterDimension_Process" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GE_Sample">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Description" type="xs:string" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GE_Sample_Application">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Description" type="xs:string" minOccurs="0"/>
+				<xs:element ref="GE_Lane" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="MIAPE_Buffer_Type">
+		<xs:sequence>
+			<xs:element name="Name" type="xs:string"/>
+			<xs:element name="Description" type="xs:string" minOccurs="0"/>
+			<xs:element name="Type" type="ParamType" minOccurs="0"/>
+			<xs:element name="MIAPE_Buffer_Component" type="MIAPE_Substance_Type" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:string" use="required"/>
+	</xs:complexType>
+</xs:schema>

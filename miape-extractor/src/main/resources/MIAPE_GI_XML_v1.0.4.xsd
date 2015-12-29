@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+		edited with Eclipse 20090920-1017 by Salvador Martínez-Bartolomé
+		(ProteoRed - National Center for Biotechnology - CSIC - Spain)
+	-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:include schemaLocation="MIAPE_XML_v1.0.7.xsd"/>
+	<xs:include schemaLocation="MIAPE_PROJECT_XML_v1.0.xsd"/>
+	<xs:include schemaLocation="FuGElightv1.0.0.xsd"/>
+	<xs:element name="GI_Analysis_Design">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Type" type="xs:string" minOccurs="0"/>
+				<xs:element name="Replicates" type="xs:string" minOccurs="0"/>
+				<xs:element name="Groups" type="xs:string" minOccurs="0"/>
+				<xs:element name="Standards" type="xs:string" minOccurs="0"/>
+				<xs:element name="External_Standard" type="xs:string" minOccurs="0"/>
+				<xs:element name="Within_Sample_Standard" type="xs:string" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GI_Image_Processing">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element ref="GI_Processing_Input_Image" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GI_Image_Processing_Software" type="MIAPE_Software_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GI_Image_Processing_Step" type="GI_Image_Processing_Algorithm_Type" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GI_Processing_Input_Image">
+		<xs:complexType>
+			<xs:attribute name="Image_Ref" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GI_Extraction_Input_Image">
+		<xs:complexType>
+			<xs:attribute name="Image_Ref" type="xs:string" use="optional"/>
+			<xs:attribute name="Image_URI" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GI_Data_Analysis">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Type" type="xs:string" minOccurs="0"/>
+				<xs:element name="Intent" type="xs:string" minOccurs="0"/>
+				<xs:element name="Parameters" type="xs:string" minOccurs="0"/>
+				<xs:element name="Input_data" type="xs:string" minOccurs="0"/>
+				<xs:element name="GI_Data_Analysis_Transformation" type="MIAPE_Algorithm_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GI_Data_Analysis_Software" type="MIAPE_Software_Type" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GI_Data_Extraction">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element ref="GI_Extraction_Input_Image" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GI_Feature_Detection" type="GI_Feature_Detection_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GI_Matching" type="GI_Matching_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="GI_Feature_Quantitation" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GI_Data_Reporting">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Feature_List" type="xs:string" minOccurs="0"/>
+				<xs:element name="Feature_URI" type="xs:anyURI" minOccurs="0"/>
+				<xs:element name="Matches_List" type="xs:string" minOccurs="0"/>
+				<xs:element name="Matches_URI" type="xs:anyURI" minOccurs="0"/>
+				<xs:element name="Results_Description" type="xs:string" minOccurs="0"/>
+				<xs:element name="Results_URI" type="xs:anyURI" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="GI_Feature_Detection_Type">
+		<xs:complexContent>
+			<xs:extension base="MIAPE_Algorithm_Type">
+				<xs:sequence>
+					<xs:element name="Editing" type="xs:string" minOccurs="0"/>
+					<xs:element name="Step_Order" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="GI_Feature_Quantitation">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Type" type="xs:string" minOccurs="0"/>
+				<xs:element name="Step_Order" type="xs:string" minOccurs="0"/>
+				<xs:element name="GI_Feature_Quantitation_Algorithm" type="MIAPE_Algorithm_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GI_Feature_Quantitation_Background" type="MIAPE_Algorithm_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GI_Feature_Quantitation_Normalization" type="MIAPE_Algorithm_Type" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GI_Image">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Type" type="xs:string" minOccurs="0"/>
+				<xs:element name="Format" type="ParamType" minOccurs="0"/>
+				<xs:element name="Dimension_x" type="MIAPE_ParamUnit_Type" minOccurs="0"/>
+				<xs:element name="Dimension_y" type="MIAPE_ParamUnit_Type" minOccurs="0"/>
+				<xs:element name="Resolution" type="MIAPE_ParamUnit_Type" minOccurs="0"/>
+				<xs:element name="Bit_depth" type="xs:string" minOccurs="0"/>
+				<xs:element name="Location" type="xs:anyURI" minOccurs="0"/>
+				<xs:element name="Orientation" type="xs:string" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="GI_Image_Processing_Algorithm_Type">
+		<xs:complexContent>
+			<xs:extension base="MIAPE_Algorithm_Type">
+				<xs:sequence>
+					<xs:element name="Step_Order" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="GI_Matching_Type">
+		<xs:complexContent>
+			<xs:extension base="MIAPE_Algorithm_Type">
+				<xs:sequence>
+					<xs:element name="Reference_Image" type="xs:string" minOccurs="0"/>
+					<xs:element name="Landmarks" type="xs:string" minOccurs="0"/>
+					<xs:element name="Editing" type="xs:string" minOccurs="0"/>
+					<xs:element name="Step_Order" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="GI_MIAPE_GI">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="MIAPEProject" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Version" type="xs:string" minOccurs="0"/>
+				<xs:element name="Date" type="xs:string" minOccurs="0"/>
+				<xs:element name="Modification_Date" type="xs:dateTime" minOccurs="0"/>
+				<xs:element name="Electrophoresis_type" type="ParamType" minOccurs="0"/>
+				<xs:element name="Reference" type="xs:string" minOccurs="0"/>
+				<xs:element name="AttachedFileLocation" type="xs:anyURI" minOccurs="0"/>
+				<xs:element name="MIAPE_GE_Ref" type="xs:int" minOccurs="0"/>
+				<xs:element name="Template" type="xs:boolean" minOccurs="0"/>
+				<xs:element name="GI_Contact" type="MIAPE_Contact_Type" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="GI_Image" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GI_Image_Analysis_Software" type="MIAPE_Software_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="GI_Analysis_Design" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GI_Image_Preparation_Software" type="MIAPE_Software_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="GI_Image_Preparation_Step" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="GI_Image_Processing" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="GI_Data_Extraction" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="GI_Data_Analysis" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="GI_Data_Reporting" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="GI_Additional_Information" type="ParamType" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:int" use="required"/>
+		</xs:complexType>
+		<xs:key name="PK_IMAGE">
+			<xs:selector xpath="./GI_Image"></xs:selector>
+			<xs:field xpath="@id"></xs:field>
+		</xs:key>
+		<xs:keyref refer="PK_IMAGE" name="FK_Processing_Input_Image">
+			<xs:selector xpath="./GI_Image_Processing/GI_Processing_Input_Image"></xs:selector>
+			<xs:field xpath="@Image_Ref"></xs:field>
+		</xs:keyref>
+		<xs:keyref refer="PK_IMAGE" name="FK_Extraction_Input_Image">
+			<xs:selector xpath="./GI_Data_Extraction/GI_Extraction_Input_Image"></xs:selector>
+			<xs:field xpath="@Image_Ref"></xs:field>
+		</xs:keyref>
+	</xs:element>
+	<xs:element name="GI_Image_Preparation_Step">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Type" type="xs:string" minOccurs="0"/>
+				<xs:element name="Step_Order" type="xs:string" minOccurs="0"/>
+				<xs:element name="Parameters" type="xs:string" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

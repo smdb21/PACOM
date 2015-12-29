@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+		edited with Eclipse 20090920-1017 by Salvador Martínez-Bartolomé
+		(ProteoRed - National Center for Biotechnology - CSIC - Spain)
+	-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:include schemaLocation="MIAPE_XML_v1.0.7.xsd"/>
+	<xs:include schemaLocation="MIAPE_PROJECT_XML_v1.0.xsd"/>
+	<xs:include schemaLocation="FuGElightv1.0.0.xsd"/>
+	<xs:element name="MSI_Database">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="ParamType"/>
+				<xs:element name="Version" type="xs:string" minOccurs="0"/>
+				<xs:element name="Description" type="xs:string" minOccurs="0"/>
+				<xs:element name="Date" type="xs:string" minOccurs="0"/>
+				<xs:element name="Sequence_Number" type="xs:string" minOccurs="0"/>
+				<xs:element name="URI" type="xs:anyURI" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="MSI_Identified_Peptide">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Sequence" type="xs:string" minOccurs="1"/>
+				<xs:element name="PeptideScore" type="ParamType" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="Spectrum_Ref" type="xs:string" minOccurs="0"/>
+				<xs:element name="Charge" type="xs:string" minOccurs="0"/>
+				<xs:element name="Mass_Deviation" type="xs:string" minOccurs="0"/>
+				<xs:element name="Protein_Ref" type="xs:string" minOccurs="0"/>
+				<xs:element name="Input_Data_Ref" type="xs:string" minOccurs="0"/>
+				<xs:element name="Rank" type="xs:int" minOccurs="0"/>
+				<xs:element ref="MSI_PeptideModification" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="MSI_PeptideModification">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="ParamType" minOccurs="1"/>
+				<xs:element name="Position" type="xs:int" minOccurs="0"/>
+				<xs:element name="Residues" type="xs:string" minOccurs="0"/>
+				<xs:element name="MonoDelta" type="xs:double" minOccurs="0"/>
+				<xs:element name="AvgDelta" type="xs:double" minOccurs="0"/>
+				<xs:element name="ReplacementResidue" type="xs:string" minOccurs="0"/>
+				<xs:element name="NeutralLoss" type="xs:double" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="MSI_Identified_Peptide_Set">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="MSI_Identified_Peptide" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="MSI_Identified_Protein">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="AC" type="xs:string" minOccurs="0"/>
+				<xs:element name="ProteinScore" type="ParamType" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="Description" type="xs:string" minOccurs="0"/>
+				<xs:element name="Validation_Status" type="xs:boolean" minOccurs="0"/>
+				<xs:element name="Validation_Type" type="ParamType" minOccurs="0"/>
+				<xs:element name="Validation_Value" type="xs:string" minOccurs="0"/>
+				<xs:element name="Peptide_Number" type="xs:string" minOccurs="0"/>
+				<xs:element name="Coverage" type="xs:string" minOccurs="0"/>
+				<xs:element name="Matched" type="xs:string" minOccurs="0"/>
+				<xs:element name="Unmatched" type="xs:string" minOccurs="0"/>
+				<xs:element name="AInformation" type="xs:string" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="MSI_Identified_Protein_Set">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="File_URL" type="xs:anyURI" minOccurs="0"/>
+				<xs:element name="Parameters_Ref" type="xs:string" minOccurs="0"/>
+				<xs:element ref="Input_Data_Set_References" minOccurs="0"/>
+				<xs:element ref="MSI_Identified_Protein" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Input_Data_Set_References">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Input_Data_Set_Ref" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="MSI_Input_Data_Set">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element ref="MSI_Input_Data" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="MSI_Input_Data">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Description" type="xs:string" minOccurs="0"/>
+				<xs:element name="MS_File_Type" type="ParamType" minOccurs="0"/>
+				<xs:element name="Source_Data_URL" type="xs:anyURI" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="MSI_Input_Parameters">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="SearchType" type="ParamType" minOccurs="0"/>
+				<xs:element name="Taxonomy" type="xs:string" minOccurs="0"/>
+				<xs:element name="NumEntries" type="xs:string" minOccurs="0"/>
+				<xs:element name="Cleavage_Name" type="ParamType" minOccurs="0"/>
+				<xs:element name="Cleavage_Rules" type="xs:string" minOccurs="0"/>
+				<xs:element name="Misscleavages" type="xs:string" minOccurs="0"/>
+				<xs:element name="Additional_Cleavages" type="xs:string" minOccurs="0"/>
+				<xs:element name="AA_Modif" type="xs:string" minOccurs="0"/>
+				<xs:element name="Min_score" type="xs:string" minOccurs="0"/>
+				<xs:element name="Precursor_Mass_Tolerance" type="MIAPE_ParamUnit_Type" minOccurs="0"/>
+				<xs:element name="Fragment_Mass_Tolerance" type="MIAPE_ParamUnit_Type" minOccurs="0"/>
+				<xs:element name="PMF_Mass_Tolerance" type="MIAPE_ParamUnit_Type" minOccurs="0"/>
+				<xs:element name="Scoring_Algorithm" type="xs:string" minOccurs="0"/>
+				<xs:element name="AParameters" type="xs:string" minOccurs="0"/>
+				<xs:element name="Software_Ref" type="xs:string" minOccurs="0"/>
+				<xs:element name="MSI_Additional_Parameter" type="ParamType" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="MSI_Database" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="MSI_Software_Type">
+		<xs:complexContent>
+			<xs:extension base="MIAPE_Software_Type">
+				<xs:attribute name="id" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="MSI_MIAPE_MSI">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="MIAPEProject" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Version" type="xs:string" minOccurs="0"/>
+				<xs:element name="Date" type="xs:string" minOccurs="0"/>
+				<xs:element name="Modification_Date" type="xs:dateTime" minOccurs="0"/>
+				<xs:element name="Generated_Files_URL" type="xs:anyURI" minOccurs="0"/>
+				<xs:element name="Generated_Files_Description" type="xs:string" minOccurs="0"/>
+				<xs:element name="AttachedFileLocation" type="xs:anyURI" minOccurs="0"/>
+				<xs:element name="Template" type="xs:boolean" minOccurs="0"/>
+				<xs:element name="MIAPE_MS_Ref" type="xs:int" minOccurs="0"/>
+				<xs:element name="MSI_Contact" type="MIAPE_Contact_Type" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="MSI_Software" type="MSI_Software_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="MSI_Input_Data_Set" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="MSI_Input_Parameters" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="MSI_Identified_Protein_Set" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="MSI_Identified_Peptide_Set" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="MSI_Ion_Quantitation" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="MSI_Validation" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="MSI_Additional_Information" type="ParamType" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:int" use="required"/>
+		</xs:complexType>
+		<xs:key name="PK_Protein">
+			<xs:selector xpath="./MSI_Identified_Protein_Set/MSI_Identified_Protein"/>
+			<xs:field xpath="@id"/>
+		</xs:key>
+		<xs:key name="PK_Input_Parameter">
+			<xs:selector xpath="./MSI_Input_Parameters"/>
+			<xs:field xpath="@id"/>
+		</xs:key>
+		<xs:key name="PK_Input_Data">
+			<xs:selector xpath="./MSI_Input_Data_Set/MSI_Input_Data"/>
+			<xs:field xpath="@id"/>
+		</xs:key>
+		<xs:key name="PK_Input_Data_Set">
+			<xs:selector xpath="./MSI_Input_Data_Set"/>
+			<xs:field xpath="@id"/>
+		</xs:key>
+		<xs:key name="PK_Software">
+			<xs:selector xpath="./MSI_Software"/>
+			<xs:field xpath="@id"/>
+		</xs:key>
+		<xs:keyref name="FK_Peptide_Protein" refer="PK_Protein">
+			<xs:selector xpath="./MSI_Identified_Peptide_Set/MSI_Identified_Peptide"/>
+			<xs:field xpath="Protein_Ref"/>
+		</xs:keyref>
+		<xs:keyref name="FK_Protein_Set_Input_Parameter" refer="PK_Input_Parameter">
+			<xs:selector xpath="./MSI_Identified_Protein_Set"/>
+			<xs:field xpath="Parameters_Ref"/>
+		</xs:keyref>
+		<xs:keyref name="FK_Peptide_Input_Data" refer="PK_Input_Data">
+			<xs:selector xpath="./MSI_Identified_Peptide_Set/MSI_Identified_Peptide"/>
+			<xs:field xpath="Input_Data_Ref"/>
+		</xs:keyref>
+		<xs:keyref name="FK_Protein_Set_Input_Data_Set" refer="PK_Input_Data_Set">
+			<xs:selector xpath="./MSI_Identified_Protein_Set/Input_Data_Set_References"/>
+			<xs:field xpath="Input_Data_Set_Ref"/>
+		</xs:keyref>
+		<xs:keyref name="FP_Input_Parameter_Software" refer="PK_Software">
+			<xs:selector xpath="./MSI_Input_Parameters"/>
+			<xs:field xpath="Software_Ref"/>
+		</xs:keyref>
+	</xs:element>
+	<xs:element name="MSI_Ion_Quantitation">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Experimental_Protocol" type="xs:string" minOccurs="0"/>
+				<xs:element name="Measurement" type="xs:string" minOccurs="0"/>
+				<xs:element name="Replicates_Number" type="xs:string" minOccurs="0"/>
+				<xs:element name="Acceptance_Criteria" type="xs:string" minOccurs="0"/>
+				<xs:element name="Error_Analysis" type="xs:string" minOccurs="0"/>
+				<xs:element name="Control_Results" type="xs:string" minOccurs="0"/>
+				<xs:element name="MSI_Quantitation_Method" type="MIAPE_Algorithm_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="MSI_Quantitation_Software" type="MIAPE_Software_Type" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="MSI_Validation">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Results" type="xs:string" minOccurs="0"/>
+				<xs:element name="Output_URL" type="xs:anyURI" minOccurs="0"/>
+				<xs:element name="Output_Part" type="xs:string" minOccurs="0"/>
+				<xs:element name="MSI_Validation_Method" type="MIAPE_Algorithm_Type" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="MSI_Validation_Software" type="MIAPE_Software_Type" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MS_MIAPE_MS id="-1">
+	<MIAPEProject id="-1">
+		<Name>Name of the project</Name>
+		<Date>2014-07-18</Date>
+		<Comments>comments here</Comments>
+		<OwnerName>Your name</OwnerName>
+	</MIAPEProject>
+	<Name>QStart_Elite</Name>
+	<Version>v1.0</Version>
+	<Date>2014-07-18</Date>
+	<Modification_Date>2014-07-18T17:02:11.000+01:00</Modification_Date>
+	<Template>false</Template>
+	<MS_Contact>
+		<Name>contact name</Name>
+		<LastName>contact last name</LastName>
+		<Telephone>contact telephone</Telephone>
+		<Fax>contact fax</Fax>
+		<Email>contact email</Email>
+		<Address>contact address</Address>
+		<Locality>contact locality</Locality>
+		<Country>contact country</Country>
+		<CP>contact CP</CP>
+		<Department>Proteomics Facility</Department>
+		<Institution>University...research institute...</Institution>
+		<Position>
+			<cvParam accession="MS:1001270" cvRef="MS" name="lab personnel"/>
+		</Position>
+	</MS_Contact>
+	<MS_Spectrometer>
+		<Name>
+			<cvParam accession="MS:1000655" cvRef="MS" name="QSTAR Elite"/>
+		</Name>
+		<Manufacturer>
+			<cvParam accession="MS:1000121" cvRef="MS" name="AB SCIEX instrument model"/>
+		</Manufacturer>
+		<Model>
+			<cvParam accession="MS:1001742" cvRef="MS" name="LTQ Orbitrap Velos"/>
+		</Model>
+		<Version>Elite</Version>
+	</MS_Spectrometer>
+	<MS_Instrument_Configuration>
+		<Name>IC</Name>
+		<MS_ESI>
+			<Name>
+				<cvParam accession="MS:1000398" cvRef="MS" name="nanoelectrospray"/>
+			</Name>
+			<Oparameters>Relevant voltages:
+IS 2300
+DP 50
+FP 200
+DP2 15.00
+IRD 11
+Detector MCP 2400
+IRW 10</Oparameters>
+			<MS_Sprayer>
+				<Name>
+					<userParam name="Sprayer"/>
+				</Name>
+				<Description>type: nanospray</Description>
+			</MS_Sprayer>
+		</MS_ESI>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000081" cvRef="MS" name="quadrupole"/>
+			</Name>
+		</MS_Analyzer>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000084" cvRef="MS" name="time-of-flight"/>
+			</Name>
+			<Reflectron>
+				<cvParam accession="MS:1000106" cvRef="MS" name="reflectron on"/>
+			</Reflectron>
+		</MS_Analyzer>
+		<MS_ActivationDissociation>
+			<Name>LINAC collision cell</Name>
+			<Gas>
+				<userParam name="dinitrogen"/>
+			</Gas>
+			<Pressure unitName="bar" value="5.5e-05"/>
+			<ActivationType>
+				<cvParam accession="MS:1000133" cvRef="MS" name="collision-induced dissociation"/>
+			</ActivationType>
+		</MS_ActivationDissociation>
+	</MS_Instrument_Configuration>
+	<MS_Instrument_Configuration>
+		<Name>IC2</Name>
+		<MS_ESI>
+			<Name>
+				<cvParam accession="MS:1000398" cvRef="MS" name="nanoelectrospray"/>
+			</Name>
+			<Oparameters>nanospray inlet</Oparameters>
+		</MS_ESI>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000083" cvRef="MS" name="radial ejection linear ion trap"/>
+			</Name>
+		</MS_Analyzer>
+	</MS_Instrument_Configuration>
+	<MS_Acquisition>
+		<Name>
+			<cvParam accession="MS:1000551" cvRef="MS" name="Analyst"/>
+		</Name>
+		<Manufacturer>Applied Biosystems</Manufacturer>
+		<Version>2.0</Version>
+	</MS_Acquisition>
+	<MS_DataAnalysis>
+		<Name>
+			<cvParam accession="MS:1000615" cvRef="MS" name="ProteoWizard software"/>
+		</Name>
+		<Version>2.2.3112</Version>
+		<Description>
+			<userParam name="peak picking Conversion to mzML"/>
+		</Description>
+		<Parameters>Thermo/Xcalibur peak picking
+command-line parameters=msconvert --mzML -z -v -i contact_info.txt --filter 'peakPicking true 1-'msconvert --mzML -z -v -i contact_info.txt --filter 'peakPicking true 1-'</Parameters>
+	</MS_DataAnalysis>
+	<MS_DataAnalysis>
+		<Name>
+			<userParam name="Mascot Daemon"/>
+		</Name>
+		<Version>2.2.2</Version>
+	</MS_DataAnalysis>	
+	<MS_Resulting_Data>
+		<Name>TIC</Name>
+		<SRM_URL>See attached file in section 1</SRM_URL>
+		<SRM_Type>
+			<cvParam accession="MS:1000235" cvRef="MS" name="total ion current chromatogram"/>
+		</SRM_Type>
+	</MS_Resulting_Data>
+	<MS_Additional_Information>
+		<userParam value="Desccription here" name="General explanations (samples, runs, replicates, labelling)"/>
+	</MS_Additional_Information>
+	<MS_Additional_Information>
+		<userParam value="- Trap column used - Column used, lenght of column - Gradient (initial-final % ACN), time " name="Chromatography"/>
+	</MS_Additional_Information>
+	<MS_Additional_Information>
+		<userParam value="- Denaturant added and initial concentration - Reduction reagent used , concentration, temperature, time of reaction - Alkylation reagent uses, concentration, temperature, time of reaction - Buffer for digestion, denaturant and concentration - Ratio w/w trypsin used - Temperature / time digestion " name="Digestion protocol"/>
+	</MS_Additional_Information>
+</MS_MIAPE_MS>

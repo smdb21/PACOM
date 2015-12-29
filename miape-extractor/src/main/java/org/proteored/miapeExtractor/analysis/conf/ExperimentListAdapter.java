@@ -1,0 +1,114 @@
+package org.proteored.miapeExtractor.analysis.conf;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+
+import org.apache.log4j.Logger;
+import org.proteored.miapeExtractor.analysis.conf.jaxb.CPExperiment;
+import org.proteored.miapeExtractor.analysis.conf.jaxb.CPExperimentList;
+import org.proteored.miapeExtractor.gui.tasks.OntologyLoaderTask;
+import org.proteored.miapeapi.experiment.model.Experiment;
+import org.proteored.miapeapi.experiment.model.ExperimentList;
+import org.proteored.miapeapi.experiment.model.filters.Filter;
+import org.proteored.miapeapi.interfaces.Adapter;
+
+public class ExperimentListAdapter implements Adapter<ExperimentList> {
+	private final CPExperimentList cpExperimentList;
+	private static final Logger log = Logger
+			.getLogger("log4j.logger.org.proteored");
+	private JAXBContext jc;
+	private final Integer minPeptideLength;
+	private final boolean groupingAtExperimentListLevel;
+
+	private final List<Filter> filters;
+	private final boolean processInParallel;
+
+	public ExperimentListAdapter(CPExperimentList expList) {
+		this(expList, null, false, null, false);
+	}
+
+	public ExperimentListAdapter(CPExperimentList expList,
+			boolean processInParallel) {
+		this(expList, null, false, null, processInParallel);
+	}
+
+	public ExperimentListAdapter(File confFile) {
+		this(confFile, null, false, null, false);
+	}
+
+	public ExperimentListAdapter(File confFile, boolean processInParallel) {
+		this(confFile, null, false, null, processInParallel);
+	}
+
+	public ExperimentListAdapter(CPExperimentList expList,
+			Integer minPeptideLength, boolean groupingAtExperimentListLevel,
+			List<Filter> filters, boolean processInParallel) {
+		this.minPeptideLength = minPeptideLength;
+		this.cpExperimentList = expList;
+		this.filters = filters;
+		this.groupingAtExperimentListLevel = groupingAtExperimentListLevel;
+		this.processInParallel = processInParallel;
+	}
+
+	public ExperimentListAdapter(File confFile, Integer minPeptideLength,
+			boolean groupingAtExperimentListLevel, List<Filter> filters,
+			boolean processInParallel) {
+		this.minPeptideLength = minPeptideLength;
+		this.groupingAtExperimentListLevel = groupingAtExperimentListLevel;
+		this.processInParallel = processInParallel;
+
+		this.filters = filters;
+		if (confFile == null)
+			throw new IllegalArgumentException("Provide a no null file!");
+
+		// check if exists
+		if (!confFile.exists())
+			throw new IllegalArgumentException(confFile.getAbsolutePath()
+					+ " doesn't exist!");
+
+		try {
+			jc = JAXBContext
+					.newInstance("org.proteored.miapeExtractor.analysis.conf.jaxb");
+			this.cpExperimentList = (CPExperimentList) jc.createUnmarshaller()
+					.unmarshal(confFile);
+		} catch (JAXBException e) {
+			log.warn(e.getMessage());
+			// e.printStackTrace();
+			throw new IllegalArgumentException("Error loading "
+					+ confFile.getAbsolutePath() + " config file: "
+					+ e.getMessage());
+		}
+
+	}
+
+	/**
+	 * @return the cpExperimentList
+	 */
+	public CPExperimentList getCpExperimentList() {
+		return cpExperimentList;
+	}
+
+	@Override
+	public ExperimentList adapt() {
+		log.info("Adapting experiment list");
+		List<Experiment> experimentList = new ArrayList<Experiment>();
+		if (cpExperimentList != null
+				&& cpExperimentList.getCPExperiment() != null) {
+			for (CPExperiment xmlExp : cpExperimentList.getCPExperiment()) {
+				experimentList.add(new ExperimentAdapter(xmlExp,
+						minPeptideLength, this.filters, this.processInParallel)
+						.adapt());
+			}
+			ExperimentList elist = new ExperimentList(
+					cpExperimentList.getName(), experimentList,
+					this.groupingAtExperimentListLevel, this.filters,
+					this.minPeptideLength, OntologyLoaderTask.getCvManager());
+			return elist;
+		}
+		return null;
+	}
+}

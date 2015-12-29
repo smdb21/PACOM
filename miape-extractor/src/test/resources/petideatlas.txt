@@ -1,0 +1,6 @@
+
+START_MIAPE_EXTRACTION
+MZIDENTML	C:\proteomics\DATA\PeptideAtlasData\interact-prob.prot.mzid
+MIAPE_PROJECT	new miape project with Peptide Atlas data
+MSI_OUTPUT
+END_MIAPE_EXTRACTION

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MS_MIAPE_MS id="-1">
+    <MIAPEProject id="-1">
+		<Name>Name of the project</Name>
+		<Date>2014-07-18</Date>
+		<Comments>comments here</Comments>
+		<OwnerName>Your name</OwnerName>
+	</MIAPEProject>
+	<Name>Thermo Orbi-Velos</Name>
+	<Version>v1.0</Version>
+	<Date>2014-07-18</Date>
+	<Modification_Date>2014-07-18T17:02:11.000+01:00</Modification_Date>
+	<Template>false</Template>
+	<MS_Contact>
+		<Name>contact name</Name>
+		<LastName>contact last name</LastName>
+		<Telephone>contact telephone</Telephone>
+		<Fax>contact fax</Fax>
+		<Email>contact email</Email>
+		<Address>contact address</Address>
+		<Locality>contact locality</Locality>
+		<Country>contact country</Country>
+		<CP>contact CP</CP>
+		<Department>Proteomics Facility</Department>
+		<Institution>University...research institute...</Institution>
+		<Position>
+			<cvParam accession="MS:1001270" cvRef="MS" name="lab personnel"/>
+		</Position>
+	</MS_Contact>
+    <MS_Spectrometer>
+        <Name>
+            <cvParam accession="MS:1001742" cvRef="MS" name="LTQ Orbitrap Velos"/>
+        </Name>
+         <Manufacturer>
+            <cvParam accession="MS:1000483" cvRef="MS" name="Thermo Fisher Scientific instrument model"/>
+        </Manufacturer>
+        <Version>SN03134B</Version>
+    </MS_Spectrometer>
+    <MS_Instrument_Configuration>
+        <Name>IC</Name>
+        <MS_ESI>
+            <Name>
+                <cvParam accession="MS:1000398" cvRef="MS" name="nanoelectrospray"/>
+            </Name>
+            <Oparameters>nanospray inlet
+source temperature=275</Oparameters>
+        </MS_ESI>
+        <MS_Analyzer>
+            <Name>
+                <cvParam accession="MS:1000484" cvRef="MS" name="orbitrap"/>
+            </Name>
+        </MS_Analyzer>
+        <MS_ActivationDissociation>
+            <Name>Linear trap</Name>
+            <ActivationType>
+                <cvParam accession="MS:1000133" cvRef="MS" name="collision-induced dissociation"/>
+            </ActivationType>
+        </MS_ActivationDissociation>
+    </MS_Instrument_Configuration>
+    <MS_Acquisition>
+        <Name>
+            <cvParam accession="MS:1000532" cvRef="MS" name="Xcalibur"/>
+        </Name>
+        <Manufacturer>Thermo</Manufacturer>
+        <Version>2.6.0</Version>
+        <Description>
+            <userParam name="Data acquisition"/>
+        </Description>
+        <Parameters>FT full microscans=1
+Ion trap MSn microscans=1
+FT full max ion injection time=250
+Ion trap MSn max ion injection time=100
+FT full AGC target=1.00E+06
+Ion trap MSn AGC target=5.00E+03
+Acquire time=145
+scan start time=15
+Scan events=11
+Scan range for event 1=400-1600
+Data type for MS scan=profile
+Data type for MSn scan=centroid
+Lock mass IS enabled=no
+Repeat count=1
+Repeat duration=10
+Exclusion list size=500
+Exclusion duration=45
+Exclusion mass width (low)=5 ppm
+Exclusion mass width (high)=7.5 ppm
+Charge state screening enabled=yes
+Monoisotopic precursor=yes
+Non-peptide monoisotopic recognition enabled=no
+Charge state +1 rejected=yes
+Unassigned charge state rejected=yes
+Minimum MS signal threshold for MS2 trigger=3000
+dissociation method=collision-induced dissociation
+Default charge state=2
+Isolation width=2 m/z
+normalized collision energy=38
+Activation Q=0.25
+Activation time=10 ms
+</Parameters>
+    </MS_Acquisition>
+    <MS_DataAnalysis>
+        <Name>
+            <userParam name="ProteoWizard"/>
+        </Name>
+        <Version>3.0.4337</Version>
+        <Description>
+            <userParam name="Conversion to mzML peak picking"/>
+        </Description>
+    </MS_DataAnalysis>
+    <MS_Additional_Information>
+        <cvParam accession="MS:1000053" cvRef="MS" value="Sample A" name="sample batch"/>
+    </MS_Additional_Information>
+    <MS_Additional_Information>
+        <cvParam accession="MS:1000005" cvRef="MS" value="200 ng" name="sample volume"/>
+    </MS_Additional_Information>
+     <MS_Additional_Information>
+        <cvParam accession="284811" cvRef="NEWT" value="" name="Yeast"/>
+    </MS_Additional_Information>
+    <MS_Additional_Information>
+        <cvParam accession="1247190" cvRef="NEWT" value="" name="Saccharomyces cerevisiae BY4741"/>
+    </MS_Additional_Information>
+    <MS_Additional_Information>
+        <cvParam accession="MS:1000579" cvRef="MS" value="" name="MS1 spectrum"/>
+    </MS_Additional_Information>
+    <MS_Additional_Information>
+        <cvParam accession="MS:1000580" cvRef="MS" value="" name="MSn spectrum"/>
+    </MS_Additional_Information>
+    <MS_Additional_Information>
+        <userParam value="S. cerevisiae strain BY4741 (MATa, leu2Δ0, met15Δ0, ura3Δ0, his3Δ1) was grown in a 10-liter batch of rich (yeast extract peptone dextrose) medium at 30°C in a fermentor to an A600 of 0.93. After harvesting by continuous centrifugation, the cell pellet was washed three times with ice-cold water." name="cell growth"/>
+    </MS_Additional_Information>
+    <MS_Additional_Information>
+        <userParam value="The cells were lysed by incubation with 10% ice-cold trichloroacetic acid (v/v) final concentration for 1 h at 4°C. The protein precipitate was collected by centrifugation, washed twice with 90% ice-cold acetone, and pelleted again. The resulting material was aliquotted, lyophilized and stored at -80°C." name="cell lysis and sample storage"/>
+    </MS_Additional_Information>
+    <MS_Additional_Information>
+        <cvParam accession="MS:1000831" cvRef="MS" value="Lyophilized yeast lysate (1 mg) was reconstituted in 8 M urea, 10 mM DTT in 50 mM NH4HCO3, and incubated for 45 min. Then, cysteine residues were alkylated with 30 mM iodoacetamide (final concentration) for 30 min. Prior to trypsinization, an additional volume of 50 mM ammonium bicarbonate was added to the sample to reduce the urea concentration to 1 M. A total of 50 μg of trypsin was added to sample and incubated overnight (16 h) at 32°C with gentle swirling. After digestion, formic acid was added to a final concentration of 0.5%, and desalted with C18 (SepPak, Waters) according to manufacturer’s recommendations. Finally, aliquots of 50 μg of yeast-digested protein sample was prepared, lyophilized to dryness and mailed to study participants. All samples were delivered to the participant laboratories in dry-ice within 36 hours." name="sample preparation"/>
+    </MS_Additional_Information>
+    <MS_Additional_Information>
+        <cvParam accession="sep:00210" cvRef="SEP" value="LC system=nanoAcquity UPLC (Waters)
+Autosampler temperature=10 ºC
+Column dimensions=(1) BEH130 C18 1.7um, 0.075x100mm (2) BEH130 C18 1.7um, 0.075x250mm (3) BEH130 C18
+1.7um, 0.075x100mm
+Precolumn dimensions=Symmetry C18, 0.180x20mm
+Column temperature=32 ºC
+Mobile phase A=0.1% Formic Acid (FA)
+Mobile phase B=0.1% FA in Acetonitrile
+Injection mode=full-loop
+Injection volume (or loop size)=6.5 microlitter
+Flow rate for gradient=250 nL/min
+Separation gradient=2 - 30% B in 110 min." name="liquid chromatography"/>
+    </MS_Additional_Information>
+</MS_MIAPE_MS>

@@ -1,0 +1,14 @@
+
+START_MIAPE_EXTRACTION	1
+MGF	C:\proteomics\DATA\SeverineData\041212 E1 PLLPband1.mgf
+MZIDENTML	C:\proteomics\DATA\SeverineData\PLLP E1 Band1.mzid
+MIAPE_PROJECT	prueba a borrar
+METADATA	OrbiVL1A	
+END_MIAPE_EXTRACTION
+
+START_MIAPE_EXTRACTION	2
+MZIDENTML	C:\proteomics\DATA\SeverineData\PLLP E1 Band1.mzid
+MIAPE_PROJECT	prueba a borrar
+MS_REF	1
+END_MIAPE_EXTRACTION
+

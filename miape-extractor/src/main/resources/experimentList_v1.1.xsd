@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="CP_Node">
+		<xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:element name="CP_ExperimentList">
+		<xs:annotation>
+			<xs:documentation>List of experiments</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="CP_Node">
+					<xs:sequence>
+						<xs:element ref="CP_Experiment" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CP_Experiment">
+		<xs:annotation>
+			<xs:documentation>Experiment</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="CP_Node">
+					<xs:sequence>
+						<xs:element ref="CP_Replicate" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attribute name="curated" type="xs:boolean" use="required"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CP_Replicate">
+		<xs:annotation>
+			<xs:documentation>Replicate</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="CP_Node">
+					<xs:sequence>
+						<xs:element ref="CP_MSI_List"/>
+						<xs:element ref="CP_MS_List"/>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CP_MSI_List">
+		<xs:annotation>
+			<xs:documentation>List of MIAPE MSI documents associated to this replicate</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="CP_MSI" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CP_MSI">
+		<xs:annotation>
+			<xs:documentation>Location and identifier of a MIAPE MSI document</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="CP_Node">
+					<xs:attribute name="id" type="xs:int" use="required"/>
+					<xs:attribute name="manually_created" type="xs:boolean"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CP_MS_List">
+		<xs:annotation>
+			<xs:documentation>List of MIAPE MS documents associated to this replicate</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="CP_MS" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CP_MS">
+		<xs:annotation>
+			<xs:documentation>Location and identifier of a MIAPE MS document</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="CP_Node">
+					<xs:attribute name="id" type="xs:int" use="required"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

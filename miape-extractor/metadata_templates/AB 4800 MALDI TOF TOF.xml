@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MS_MIAPE_MS id="-1">
+	<MIAPEProject id="-1">
+		<Name>Name of the project</Name>
+		<Date>2014-07-18</Date>
+		<Comments>comments here</Comments>
+		<OwnerName>Your name</OwnerName>
+	</MIAPEProject>
+	<Name>AB 4800 MALDI TOF TOF</Name>
+	<Version>v1.0</Version>
+	<Date>2014-07-18</Date>
+	<Modification_Date>2014-07-18T17:02:11.000+01:00</Modification_Date>
+	<Template>false</Template>
+	<MS_Contact>
+		<Name>contact name</Name>
+		<LastName>contact last name</LastName>
+		<Telephone>contact telephone</Telephone>
+		<Fax>contact fax</Fax>
+		<Email>contact email</Email>
+		<Address>contact address</Address>
+		<Locality>contact locality</Locality>
+		<Country>contact country</Country>
+		<CP>contact CP</CP>
+		<Department>Proteomics Facility</Department>
+		<Institution>University...research institute...</Institution>
+		<Position>
+			<cvParam accession="MS:1001270" cvRef="MS" name="lab personnel"/>
+		</Position>
+	</MS_Contact>
+	<MS_Spectrometer>
+		<Name>
+			<cvParam accession="MS:1000652" cvRef="MS" name="4800 Plus MALDI TOF/TOF"/>
+		</Name>
+		<Manufacturer>
+			<cvParam accession="MS:1000121" cvRef="MS" name="AB SCIEX instrument model"/>
+		</Manufacturer>
+		<Version>4800 Plus</Version>
+	</MS_Spectrometer>
+	<MS_Instrument_Configuration>
+		<Name>IC</Name>
+		<MS_MALDI>
+			<Name>4800 MALDI-TOF-TOF ion source</Name>
+			<Plate_Type>Opti-TOF™ 384 (123x81 mm) stainless steel plate</Plate_Type>
+			<Matrix>alpha-cyano-4-hydroxycinnamic acid</Matrix>
+			<Dissociation>
+				<cvParam accession="MS:1000135" cvRef="MS" name="post-source decay"/>
+			</Dissociation>
+			<Dissociation_Summary>Enhanced Post-source decay (PSD)
+For more information, look at the acquisition parameters file.</Dissociation_Summary>
+			<Extraction>Yes, with delayed extraction</Extraction>
+			<Laser>
+				<userParam name="Nitrogen Laser Diode-pumped Nd:YAG"/>
+			</Laser>
+			<WaveLength>355</WaveLength>
+			<Oparameters>Pulse rate up to 200 Hz with &lt; 500 psec duration/pulse
+
+Also look at acquisition parameters file</Oparameters>
+		</MS_MALDI>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000084" cvRef="MS" name="time-of-flight"/>
+			</Name>
+			<Reflectron>
+				<cvParam accession="MS:1000106" cvRef="MS" name="reflectron on"/>
+			</Reflectron>
+		</MS_Analyzer>
+		<MS_ActivationDissociation>
+			<Name>MALDI Collision cell</Name>
+			<Gas>
+				<userParam name=" Air"/>
+			</Gas>
+			<Pressure value="Medium"/>
+			<ActivationType>
+				<cvParam accession="MS:1000133" cvRef="MS" name="collision-induced dissociation"/>
+			</ActivationType>
+		</MS_ActivationDissociation>
+	</MS_Instrument_Configuration>
+	<MS_Acquisition>
+		<Name>
+			<cvParam accession="MS:1000659" cvRef="MS" name="4000 Series Explorer Software"/>
+		</Name>
+		<Manufacturer>AB SCIEX</Manufacturer>
+		<Version>V3.5.28193 (build 1011)</Version>
+		<Description>
+			<userParam name="Spectra Acquisition and Processing Software"/>
+		</Description>
+		<Parameters>See link below</Parameters>
+		<URI>http://www.absciex.com/mk/get/SOFTWARE_4000_SERIES_EXPLORER?_A=11264&amp;_D=10856&amp;_V=0</URI>
+		<Parameter_File>http://estrellapolar.cnb.csic.es/proteored/MIAPE/Ficheros/470/MSMS_2KV.XML</Parameter_File>
+	</MS_Acquisition>
+	<MS_DataAnalysis>
+		<Name>
+			<userParam name="ABI 4700 Data Extractor"/>
+		</Name>
+		<Manufacturer>Bioinformatics Solutions</Manufacturer>
+		<Version>2.2.3126</Version>
+		<Description>
+			<userParam name="Used for generate peak lists from the 4800 ABI instrument that uses an Oracle database to store the MS spectra. This software extracts the data and packages it into a readable file format. The resulting data type is a .pkl file."/>
+		</Description>
+		<Parameters>command-line parameters=msconvert --mzML -z -v -i contact_info.txt --filter 'peakPicking true 1-'msconvert --mzML -z -v -i contact_info.txt --filter 'peakPicking true 1-'
+ABI/DataExplorer peak picking
+command-line parameters=msconvert --mzML -z -v -i contact_info.txt --filter 'peakPicking true 1-'msconvert --mzML -z -v -i contact_info.txt --filter 'peakPicking true 1-'</Parameters>
+		<URI>http://www.bioinformaticssolutions.com/products/peaks/support/abi4700.php</URI>
+	</MS_DataAnalysis>
+	<MS_DataAnalysis>
+		<Name>
+			<cvParam accession="MS:1000659" cvRef="MS" name="4000 Series Explorer Software"/>
+		</Name>
+		<Manufacturer>AB SCIEX</Manufacturer>
+		<Version>unknown</Version>
+		<Description>
+			<userParam name="Using the &quot;Peaks to MASCOT&quot; option, the software generates the peak list files from acquired spectra."/>
+		</Description>
+		<Parameters>See next link to peaklist_generation_parameters.rar file.
+Contents of the file:
+ - &quot;Peaks_to_MASCOT_screenshoot.png&quot;: a screenshot of the GUI of the parameters
+ - &quot;Settings_Peaks to Mascot.ini&quot;: parameters file.</Parameters>
+	</MS_DataAnalysis>
+	 <MS_Additional_Information>
+        <cvParam accession="MS:1000053" cvRef="MS" value="Sample A" name="sample batch"/>
+    </MS_Additional_Information>
+    <MS_Additional_Information>
+        <cvParam accession="MS:1000005" cvRef="MS" value="200 ng" name="sample volume"/>
+    </MS_Additional_Information>
+     <MS_Additional_Information>
+        <cvParam accession="284811" cvRef="NEWT" value="" name="Yeast"/>
+    </MS_Additional_Information>
+    <MS_Additional_Information>
+        <cvParam accession="1247190" cvRef="NEWT" value="" name="Saccharomyces cerevisiae BY4741"/>
+    </MS_Additional_Information>
+    <MS_Additional_Information>
+        <cvParam accession="MS:1000579" cvRef="MS" value="" name="MS1 spectrum"/>
+    </MS_Additional_Information>
+    <MS_Additional_Information>
+        <cvParam accession="MS:1000580" cvRef="MS" value="" name="MSn spectrum"/>
+    </MS_Additional_Information>
+    <MS_Additional_Information>
+        <userParam value="S. cerevisiae strain BY4741 (MATa, leu2Δ0, met15Δ0, ura3Δ0, his3Δ1) was grown in a 10-liter batch of rich (yeast extract peptone dextrose) medium at 30°C in a fermentor to an A600 of 0.93. After harvesting by continuous centrifugation, the cell pellet was washed three times with ice-cold water." name="cell growth"/>
+    </MS_Additional_Information>
+    <MS_Additional_Information>
+        <userParam value="The cells were lysed by incubation with 10% ice-cold trichloroacetic acid (v/v) final concentration for 1 h at 4°C. The protein precipitate was collected by centrifugation, washed twice with 90% ice-cold acetone, and pelleted again. The resulting material was aliquotted, lyophilized and stored at -80°C." name="cell lysis and sample storage"/>
+    </MS_Additional_Information>
+</MS_MIAPE_MS>

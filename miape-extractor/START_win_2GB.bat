@@ -1,0 +1,1 @@
+java -jar -Xms64m -Xmx2048m miape-extractor-3.8.1.jar

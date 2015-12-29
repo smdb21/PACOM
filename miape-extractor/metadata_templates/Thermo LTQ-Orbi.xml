@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MS_MIAPE_MS id="-1">
+	<MIAPEProject id="-1">
+		<Name>Name of the project</Name>
+		<Date>2014-07-18</Date>
+		<Comments>comments here</Comments>
+		<OwnerName>Your name</OwnerName>
+	</MIAPEProject>
+	<Name>Thermo LTQ-Orbi</Name>
+	<Version>v1.0</Version>
+	<Date>2014-07-18</Date>
+	<Modification_Date>2014-07-18T17:02:11.000+01:00</Modification_Date>
+	<Template>false</Template>
+	<MS_Contact>
+		<Name>contact name</Name>
+		<LastName>contact last name</LastName>
+		<Telephone>contact telephone</Telephone>
+		<Fax>contact fax</Fax>
+		<Email>contact email</Email>
+		<Address>contact address</Address>
+		<Locality>contact locality</Locality>
+		<Country>contact country</Country>
+		<CP>contact CP</CP>
+		<Department>Proteomics Facility</Department>
+		<Institution>University...research institute...</Institution>
+		<Position>
+			<cvParam accession="MS:1001270" cvRef="MS" name="lab personnel"/>
+		</Position>
+	</MS_Contact>
+	<MS_Spectrometer>
+		<Name>
+			<cvParam accession="MS:1000449" cvRef="MS" name="LTQ Orbitrap"/>
+		</Name>
+		<Manufacturer>
+			<cvParam accession="MS:1000483" cvRef="MS" name="Thermo Fisher Scientific instrument model"/>
+		</Manufacturer>
+		<Model>
+			<cvParam accession="MS:1000556" cvRef="MS" name="LTQ Orbitrap XL"/>
+		</Model>
+		<Version>01860</Version>
+	</MS_Spectrometer>
+	<MS_Instrument_Configuration>
+		<Name>IC</Name>
+		<MS_ESI>
+			<Name>
+				<cvParam accession="MS:1000397" cvRef="MS" name="microelectrospray"/>
+			</Name>
+			<Oparameters>nanospray inlet</Oparameters>
+			<MS_Interface>
+				<Name>
+					<userParam name="Proxeon miroESI"/>
+				</Name>
+				<Manufacturer>
+					<userParam name="Proxeon"/>
+				</Manufacturer>
+			</MS_Interface>
+		</MS_ESI>
+		<MS_MALDI>
+			<Name>maldi</Name>
+			<Plate_Type>plate composition</Plate_Type>
+			<Matrix>matrix composition</Matrix>
+			<Dissociation>
+				<cvParam accession="MS:1000393" cvRef="MS" name="laser desorption ionization"/>
+			</Dissociation>
+			<Dissociation_Summary>reduction</Dissociation_Summary>
+			<Extraction>delayed</Extraction>
+			<Laser>
+				<cvParam accession="MS:1000853" cvRef="MS" name="free electron laser"/>
+			</Laser>
+			<WaveLength>23</WaveLength>
+			<Oparameters>other paramters</Oparameters>
+		</MS_MALDI>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000484" cvRef="MS" name="orbitrap"/>
+			</Name>
+		</MS_Analyzer>
+		<MS_ActivationDissociation>
+			<Name>CID</Name>
+			<ActivationType>
+				<cvParam accession="MS:1000133" cvRef="MS" name="collision-induced dissociation"/>
+			</ActivationType>
+		</MS_ActivationDissociation>
+	</MS_Instrument_Configuration>
+	<MS_Instrument_Configuration>
+		<Name>IC2</Name>
+		<MS_ESI>
+			<Name>
+				<cvParam accession="MS:1000398" cvRef="MS" name="nanoelectrospray"/>
+			</Name>
+			<Oparameters>nanospray inlet</Oparameters>
+		</MS_ESI>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000083" cvRef="MS" name="radial ejection linear ion trap"/>
+			</Name>
+		</MS_Analyzer>
+	</MS_Instrument_Configuration>
+	<MS_Acquisition>
+		<Name>
+			<cvParam accession="MS:1000532" cvRef="MS" name="Xcalibur"/>
+		</Name>
+		<Manufacturer>Thermo Instuments</Manufacturer>
+		<Version>2.0.7</Version>
+		<Parameters>Data dependent scan: 1 full MS followed by 10 MS/MS.</Parameters>
+	</MS_Acquisition>
+	<MS_DataAnalysis>
+		<Name>
+			<cvParam accession="MS:1000533" cvRef="MS" name="Bioworks"/>
+		</Name>
+		<Manufacturer>Thermo Instuments</Manufacturer>
+		<Version>3.3.1</Version>
+		<Description>
+			<cvParam accession="MS:1000035" cvRef="MS" name="peak picking"/>
+		</Description>
+		<Parameters>peak picking</Parameters>
+	</MS_DataAnalysis>
+	<MS_DataAnalysis>
+		<Name>
+			<cvParam accession="MS:1000615" cvRef="MS" name="ProteoWizard software"/>
+		</Name>
+		<Version>2.2.3112</Version>
+		<Description>
+			<cvParam accession="MS:1000544" cvRef="MS" name="Conversion to mzML"/>
+		</Description>
+		<Parameters>Conversion to mzML</Parameters>
+	</MS_DataAnalysis>
+	<MS_Resulting_Data>
+		<Name>MArina_PME6_02ug_01.RAW</Name>
+		<DataFile_Type>
+			<cvParam accession="MS:1000563" cvRef="MS" name="Thermo RAW file"/>
+		</DataFile_Type>
+	</MS_Resulting_Data>
+	<MS_Additional_Information>
+		<cvParam accession="MS:1000579" cvRef="MS" name="MS1 spectrum"/>
+	</MS_Additional_Information>
+	<MS_Additional_Information>
+		<cvParam accession="MS:1000580" cvRef="MS" name="MSn spectrum"/>
+	</MS_Additional_Information>
+</MS_MIAPE_MS>
