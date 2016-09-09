@@ -1,5 +1,5 @@
-# MIAPE Extractor
-The MIAPE Extractor is a Java stand alone tool that isable to import, integrate, manage and compare numerous proteomics datasets at the same time, offering a rich set of graphical representation of the most common proteomics data features
+# PACOM (Protein Assay Comparator)
+PACom is a Java stand alone tool that is able to import, integrate, manage and compare numerous proteomics datasets at the same time, offering a rich set of graphical representation of the most common proteomics data features
 
 Download the latest version [here] (http://proteo.cnb.csic.es/miape-api/MIAPE_Extractor).
 
