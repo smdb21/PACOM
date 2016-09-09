@@ -293,7 +293,7 @@
               <archive>
                 <manifest>
                   <addClasspath>true</addClasspath>
-                  <mainClass>org.proteored.miapeExtractor.gui.MainFrame</mainClass>
+                  <mainClass>org.proteored.pacom.gui.MainFrame</mainClass>
                   <classpathPrefix>lib</classpathPrefix>
                 </manifest>
                 
@@ -345,7 +345,7 @@
 <!--               <jnlp> -->
 <!--                 <inputTemplate>jnlp/jnlp-template.vm</inputTemplate> -->
 <!--                 <outputFile>miape-extractor.jnlp</outputFile> -->
-<!--                 <mainClass>org.proteored.miapeExtractor.gui.MainFrame</mainClass> -->
+<!--                 <mainClass>org.proteored.pacom.gui.MainFrame</mainClass> -->
 <!--               </jnlp> -->
 <!--               <sign> -->
 <!--                 <keystore>${keystore.path}</keystore> -->

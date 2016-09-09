@@ -760,7 +760,7 @@ public class AdditionalOptionsPanelFactory {
 
 			for (String userSequence : splitted) {
 				final Collection<PeptideOccurrence> peptideSequences = frame.experimentList
-						.getPeptideOccurrenceList(distinguishModPep).values();
+						.getPeptideChargeOccurrenceList(distinguishModPep).values();
 				for (PeptideOccurrence identificationOccurrence : peptideSequences) {
 					final List<ExtendedIdentifiedPeptide> identificationItemList = identificationOccurrence
 							.getPeptides();
@@ -776,10 +776,8 @@ public class AdditionalOptionsPanelFactory {
 											if ((!"".equals(containing) && modifiedSequence.contains(containing))
 													|| "".equals(containing)) {
 												resultingSequences.add(modifiedSequence);
-												System.out
-														.println(resultingSequences.size() + " -> " + modifiedSequence);
-												if (!modifiedSequence.contains("79.97"))
-													System.out.println("HOLA");
+												log.info(resultingSequences.size() + " -> " + modifiedSequence);
+
 											}
 										}
 									}
@@ -806,7 +804,7 @@ public class AdditionalOptionsPanelFactory {
 			// modification strings
 			if (!"".equals(containing)) {
 				final Collection<PeptideOccurrence> peptideSequences = frame.experimentList
-						.getPeptideOccurrenceList(distinguishModPep).values();
+						.getPeptideChargeOccurrenceList(distinguishModPep).values();
 				for (PeptideOccurrence identificationOccurrence : peptideSequences) {
 					final List<ExtendedIdentifiedPeptide> identificationItemList = identificationOccurrence
 							.getPeptides();
@@ -830,7 +828,7 @@ public class AdditionalOptionsPanelFactory {
 			}
 		}
 		if (!resultingSequences.isEmpty()) {
-			jListPeptides.jListPeptides.setListData(resultingSequences.toArray());
+			jListPeptides.jListPeptides.setListData(resultingSequences.toArray(new String[0]));
 			jListPeptides.repaint();
 			jListPeptides.jListPeptides.setSelectionInterval(0, resultingSequences.size() - 1);
 			jlabelPeptideListHeader.setText(resultingSequences.size() + " peptides sequences");
@@ -1517,7 +1515,7 @@ public class AdditionalOptionsPanelFactory {
 		return null;
 	}
 
-	public Object[] getSelectedPeptides() {
+	public List<String> getSelectedPeptides() {
 		try {
 			// added because sometimes the jList was not ready to get the
 			// selected values in "getSelectedPeptides"
@@ -1527,8 +1525,8 @@ public class AdditionalOptionsPanelFactory {
 		}
 		if (jListPeptides != null) {
 
-			final Object[] selectedValues = jListPeptides.jListPeptides.getSelectedValues();
-			if (selectedValues.length > 0) {
+			final List<String> selectedValues = jListPeptides.jListPeptides.getSelectedValuesList();
+			if (!selectedValues.isEmpty()) {
 				return selectedValues;
 			}
 		}
@@ -1621,17 +1619,17 @@ public class AdditionalOptionsPanelFactory {
 		if (jListPeptides != null) {
 			int size = jListPeptides.jListPeptides.getModel().getSize();
 			log.info("Updating peptide list of " + size + " elements");
-			final Object[] selectedValues = jListPeptides.jListPeptides.getSelectedValues();
+			final List selectedValues = jListPeptides.jListPeptides.getSelectedValuesList();
 			jListPeptides.jListPeptides.setListData(frame.getPeptidesFromExperiments(distiguishModificatedPeptides));
 			size = jListPeptides.jListPeptides.getModel().getSize();
 			log.info("Now has " + size + " elements");
 			jlabelPeptideListHeader.setText(size + " peptide sequences:");
-			if (selectedValues != null && selectedValues.length > 0) {
+			if (selectedValues != null && !selectedValues.isEmpty()) {
 				List<Integer> selectedIndexes = new ArrayList<Integer>();
 				for (Object object : selectedValues) {
 					String sequence = (String) object;
 					for (int i = 0; i < size; i++) {
-						String listSequence = (String) jListPeptides.jListPeptides.getModel().getElementAt(i);
+						String listSequence = jListPeptides.jListPeptides.getModel().getElementAt(i);
 						if (sequence.equals(listSequence))
 							selectedIndexes.add(i);
 

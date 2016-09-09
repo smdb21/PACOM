@@ -2740,7 +2740,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		if (experimentList != null) {
 
 			final Collection<PeptideOccurrence> peptideOccurrences = experimentList
-					.getPeptideOccurrenceList(distinguishModPep).values();
+					.getPeptideChargeOccurrenceList(distinguishModPep).values();
 			if (peptideOccurrences != null && !peptideOccurrences.isEmpty()) {
 				List<PeptideOccurrence> occurrenceList = new ArrayList<PeptideOccurrence>();
 				for (PeptideOccurrence identificationOccurrence : peptideOccurrences) {
@@ -2751,10 +2751,38 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				int i = 0;
 				SorterUtil.sortPeptideOcurrencesBySequence(occurrenceList);
 				for (PeptideOccurrence identificationOccurrence : occurrenceList) {
-					if (distinguishModPep)
-						ret[i] = identificationOccurrence.getFirstOccurrence().getModificationString();
-					else
-						ret[i] = identificationOccurrence.getFirstOccurrence().getSequence();
+
+					ret[i] = identificationOccurrence.getKey();
+
+					i++;
+				}
+
+				// return DatasetFactory.toSortedArray(ret);
+				return ret;
+			}
+		}
+		return null;
+	}
+
+	public String[] getPeptidesPlusChargeFromExperiments(boolean distinguishModPep) {
+		log.info("Getting peptide sequences");
+		if (experimentList != null) {
+
+			final Collection<PeptideOccurrence> peptideOccurrences = experimentList
+					.getPeptideChargeOccurrenceList(distinguishModPep).values();
+			if (peptideOccurrences != null && !peptideOccurrences.isEmpty()) {
+				List<PeptideOccurrence> occurrenceList = new ArrayList<PeptideOccurrence>();
+				for (PeptideOccurrence identificationOccurrence : peptideOccurrences) {
+					occurrenceList.add(identificationOccurrence);
+				}
+				log.info("There is " + occurrenceList.size() + " peptide+charge sequences");
+				String[] ret = new String[occurrenceList.size()];
+				int i = 0;
+				SorterUtil.sortPeptideOcurrencesBySequence(occurrenceList);
+				for (PeptideOccurrence identificationOccurrence : occurrenceList) {
+
+					ret[i] = identificationOccurrence.getKey();
+
 					i++;
 				}
 

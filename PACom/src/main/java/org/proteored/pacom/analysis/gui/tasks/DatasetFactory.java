@@ -47,6 +47,8 @@ import org.proteored.pacom.analysis.gui.AdditionalOptionsPanelFactory;
 import com.compomics.util.protein.AASequenceImpl;
 import com.compomics.util.protein.Protein;
 
+import edu.scripps.yates.utilities.maths.Maths;
+
 public class DatasetFactory {
 	private static final Logger log = Logger.getLogger("log4j.logger.org.proteored");
 
@@ -888,13 +890,8 @@ public class DatasetFactory {
 	}
 
 	public static CategoryDataset createPeptideMonitoringCategoryDataSet(List<IdentificationSet> idSets,
-			Object[] peptides, Boolean distinguishModPep) {
-		String[] peps = new String[peptides.length];
-		int i = 0;
-		for (Object object : peptides) {
-			peps[i] = (String) object;
-			i++;
-		}
+			List<String> peps, Boolean distinguishModPep) {
+
 		// create the dataset...
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		try {
@@ -902,7 +899,7 @@ public class DatasetFactory {
 			for (IdentificationSet idSet : idSets) {
 				String experimentName = idSet.getFullName();
 				for (String originalSequence : peps) {
-					final int occurrence = idSet.getPeptideOccurrenceNumber(originalSequence, distinguishModPep);
+					final int occurrence = idSet.getPeptideChargeOccurrenceNumber(originalSequence, distinguishModPep);
 					if (occurrence > 0)
 						dataset.addValue(occurrence, experimentName, originalSequence);
 
@@ -3554,22 +3551,52 @@ public class DatasetFactory {
 	private static List<XYSeries> getXYRTSeries(IdentificationSet idSet1, IdentificationSet idSet2, boolean inMinutes) {
 		XYSeries normalSeries = new XYSeries(idSet1.getName() + " vs " + idSet2.getName());
 
-		HashMap<String, PeptideOccurrence> peptideOccurrences1 = idSet1.getPeptideOccurrenceList(true);
-		HashMap<String, PeptideOccurrence> peptideOccurrences2 = idSet2.getPeptideOccurrenceList(true);
+		HashMap<String, PeptideOccurrence> peptideOccurrences1 = idSet1.getPeptideChargeOccurrenceList(true);
+		HashMap<String, PeptideOccurrence> peptideOccurrences2 = idSet2.getPeptideChargeOccurrenceList(true);
 
 		for (PeptideOccurrence occurrence2 : peptideOccurrences2.values()) {
 
 			if (peptideOccurrences1.containsKey(occurrence2.getKey())) {
 				try {
 					final PeptideOccurrence occurrence1 = peptideOccurrences1.get(occurrence2.getKey());
-					Double x = Double.valueOf(occurrence1.getFirstOccurrence().getRetentionTimeInSeconds());
+					// get the average of the retention times
+					List<Double> rt1 = new ArrayList<Double>();
+					for (ExtendedIdentifiedPeptide pep : occurrence1.getItemList()) {
+						if (pep.getRetentionTimeInSeconds() != null) {
+							try {
+								rt1.add(Double.valueOf(pep.getRetentionTimeInSeconds()));
+							} catch (NumberFormatException e) {
 
-					Double y = Double.valueOf(occurrence2.getFirstOccurrence().getRetentionTimeInSeconds());
+							}
+						}
+					}
+					Double mean1 = 0.0;
+					if (!rt1.isEmpty()) {
+						mean1 = Maths.mean(rt1.toArray(new Double[0]));
+					}
+					List<Double> rt2 = new ArrayList<Double>();
+					for (ExtendedIdentifiedPeptide pep : occurrence2.getItemList()) {
+						if (pep.getRetentionTimeInSeconds() != null) {
+							try {
+								rt2.add(Double.valueOf(pep.getRetentionTimeInSeconds()));
+							} catch (NumberFormatException e) {
+
+							}
+						}
+					}
+					Double mean2 = 0.0;
+					if (!rt2.isEmpty()) {
+						mean2 = Maths.mean(rt2.toArray(new Double[0]));
+					}
+					Double x = mean1;
+					Double y = mean2;
 					if (x != null && y != null) {
-						if (inMinutes)
+						if (inMinutes) {
 							x = x / 60.0;
-						if (inMinutes)
+						}
+						if (inMinutes) {
 							y = y / 60.0;
+						}
 						normalSeries.add(x, y);
 					}
 				} catch (IllegalMiapeArgumentException e) {
@@ -3588,7 +3615,7 @@ public class DatasetFactory {
 	}
 
 	public static CategoryDataset createSinglePeptideRTMonitoringCategoryDataSet(List<IdentificationSet> idSets,
-			Object[] sequences, Boolean showInMinutes) {
+			List<String> sequences, Boolean showInMinutes) {
 
 		// create the dataset...
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -3596,9 +3623,8 @@ public class DatasetFactory {
 
 			for (IdentificationSet idSet : idSets) {
 				String experimentName = idSet.getFullName();
-				for (Object obj : sequences) {
-					String originalSequence = (String) obj;
-					PeptideOccurrence peptideOccurrence = idSet.getPeptideOccurrence(originalSequence, true);
+				for (String originalSequence : sequences) {
+					PeptideOccurrence peptideOccurrence = idSet.getPeptideChargeOccurrence(originalSequence, true);
 					if (peptideOccurrence != null) {
 						List<Double> rts = new ArrayList<Double>();
 						for (ExtendedIdentifiedPeptide peptide : peptideOccurrence.getItemList()) {
@@ -3612,10 +3638,12 @@ public class DatasetFactory {
 							}
 						}
 						double rtMean = mean(rts);
-						if (showInMinutes)
+						if (showInMinutes) {
 							rtMean = rtMean / 60.0;
-						if (rtMean > 0)
+						}
+						if (rtMean > 0) {
 							dataset.addValue(rtMean, experimentName, originalSequence);
+						}
 					}
 
 				}

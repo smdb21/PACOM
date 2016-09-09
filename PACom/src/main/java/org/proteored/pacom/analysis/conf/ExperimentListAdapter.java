@@ -66,7 +66,7 @@ public class ExperimentListAdapter implements Adapter<ExperimentList> {
 			throw new IllegalArgumentException(confFile.getAbsolutePath() + " doesn't exist!");
 
 		try {
-			jc = JAXBContext.newInstance("org.proteored.miapeExtractor.analysis.conf.jaxb");
+			jc = JAXBContext.newInstance("org.proteored.pacom.analysis.conf.jaxb");
 			cpExperimentList = (CPExperimentList) jc.createUnmarshaller().unmarshal(confFile);
 		} catch (JAXBException e) {
 			log.warn(e.getMessage());

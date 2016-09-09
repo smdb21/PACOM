@@ -446,7 +446,7 @@ public class FileManager {
 	public static File saveProjectFile(CPExperimentList cpExperimentList) throws JAXBException {
 		log.info("saving cfg file for experiment list: " + cpExperimentList.getName());
 		File xmlFile = new File(FileManager.getProjectXMLFilePath(cpExperimentList.getName()));
-		JAXBContext jc = JAXBContext.newInstance("org.proteored.miapeExtractor.analysis.conf.jaxb");
+		JAXBContext jc = JAXBContext.newInstance("org.proteored.pacom.analysis.conf.jaxb");
 		Marshaller marshaller = jc.createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, new Boolean(true));
 		try {
@@ -462,7 +462,7 @@ public class FileManager {
 	public static File saveCuratedExperimentFile(CPExperiment cpExperiment) throws JAXBException {
 		log.info("saving cfg file for experiment: " + cpExperiment.getName());
 		File xmlFile = new File(FileManager.getCuratedExperimentXMLFilePath(cpExperiment.getName()));
-		JAXBContext jc = JAXBContext.newInstance("org.proteored.miapeExtractor.analysis.conf.jaxb");
+		JAXBContext jc = JAXBContext.newInstance("org.proteored.pacom.analysis.conf.jaxb");
 		Marshaller marshaller = jc.createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, new Boolean(true));
 		try {
@@ -687,7 +687,7 @@ public class FileManager {
 
 	public static CPExperimentList getCPExperimentList(File confFile) {
 		try {
-			JAXBContext jc = JAXBContext.newInstance("org.proteored.miapeExtractor.analysis.conf.jaxb");
+			JAXBContext jc = JAXBContext.newInstance("org.proteored.pacom.analysis.conf.jaxb");
 			CPExperimentList cpExperimentList = (CPExperimentList) jc.createUnmarshaller().unmarshal(confFile);
 			return cpExperimentList;
 		} catch (JAXBException e) {
@@ -698,7 +698,7 @@ public class FileManager {
 
 	public static CPExperiment getCPExperiment(File confFile) {
 		try {
-			JAXBContext jc = JAXBContext.newInstance("org.proteored.miapeExtractor.analysis.conf.jaxb");
+			JAXBContext jc = JAXBContext.newInstance("org.proteored.pacom.analysis.conf.jaxb");
 			CPExperiment cpExperiment = (CPExperiment) jc.createUnmarshaller().unmarshal(confFile);
 			return cpExperiment;
 		} catch (JAXBException e) {

@@ -198,7 +198,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	private Object showSingleRetentiontimeChart() {
 		parent.setInformation1(parent.getCurrentChartType());
 		String xAxisLabel;
-		final Object[] sequences = optionsFactory.getSelectedPeptides();
+		final List<String> sequences = optionsFactory.getSelectedPeptides();
 		if (sequences == null)
 			throw new IllegalMiapeArgumentException("Select a peptide to show the chart");
 		boolean showInMinutes = optionsFactory.showInMinutes();
@@ -1508,7 +1508,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	private Object showPeptideMonitoringBarChart() {
 		parent.setInformation1(parent.getCurrentChartType());
 		String xAxisLabel;
-		final Object[] sequences = optionsFactory.getSelectedPeptides();
+		final List<String> sequences = optionsFactory.getSelectedPeptides();
 		if (sequences == null)
 			throw new IllegalMiapeArgumentException("Select a peptide to show the chart");
 		String yAxisLabel = "# peptides";
