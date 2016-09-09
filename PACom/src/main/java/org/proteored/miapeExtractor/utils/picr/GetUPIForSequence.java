@@ -1,5 +1,5 @@
 
-package org.proteored.pacom.utils.picr;
+package org.proteored.miapeExtractor.utils.picr;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +20,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="accession" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="ac_version" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="sequence" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="searchDatabases" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded"/>
  *         &lt;element name="taxonId" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="onlyActive" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
@@ -35,19 +34,16 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "accession",
-    "acVersion",
+    "sequence",
     "searchDatabases",
     "taxonId",
     "onlyActive"
 })
-@XmlRootElement(name = "getUPIForAccession")
-public class GetUPIForAccession {
+@XmlRootElement(name = "getUPIForSequence")
+public class GetUPIForSequence {
 
     @XmlElement(required = true)
-    protected String accession;
-    @XmlElement(name = "ac_version", required = true)
-    protected String acVersion;
+    protected String sequence;
     @XmlElement(required = true)
     protected List<String> searchDatabases;
     @XmlElement(required = true)
@@ -55,51 +51,27 @@ public class GetUPIForAccession {
     protected boolean onlyActive;
 
     /**
-     * Gets the value of the accession property.
+     * Gets the value of the sequence property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getAccession() {
-        return accession;
+    public String getSequence() {
+        return sequence;
     }
 
     /**
-     * Sets the value of the accession property.
+     * Sets the value of the sequence property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setAccession(String value) {
-        this.accession = value;
-    }
-
-    /**
-     * Gets the value of the acVersion property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAcVersion() {
-        return acVersion;
-    }
-
-    /**
-     * Sets the value of the acVersion property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAcVersion(String value) {
-        this.acVersion = value;
+    public void setSequence(String value) {
+        this.sequence = value;
     }
 
     /**

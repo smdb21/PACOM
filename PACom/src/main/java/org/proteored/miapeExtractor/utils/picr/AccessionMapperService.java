@@ -1,5 +1,5 @@
 
-package org.proteored.pacom.utils.picr;
+package org.proteored.miapeExtractor.utils.picr;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -30,13 +30,13 @@ public class AccessionMapperService
 {
 
     private final static URL ACCESSIONMAPPERSERVICE_WSDL_LOCATION;
-    private final static Logger logger = Logger.getLogger(org.proteored.pacom.utils.picr.AccessionMapperService.class.getName());
+    private final static Logger logger = Logger.getLogger(org.proteored.miapeExtractor.utils.picr.AccessionMapperService.class.getName());
 
     static {
         URL url = null;
         try {
             URL baseUrl;
-            baseUrl = org.proteored.pacom.utils.picr.AccessionMapperService.class.getResource(".");
+            baseUrl = org.proteored.miapeExtractor.utils.picr.AccessionMapperService.class.getResource(".");
             url = new URL(baseUrl, "http://www.ebi.ac.uk/Tools/picr/service?wsdl");
         } catch (MalformedURLException e) {
             logger.warning("Failed to create URL for the wsdl Location: 'http://www.ebi.ac.uk/Tools/picr/service?wsdl', retrying as a local file");

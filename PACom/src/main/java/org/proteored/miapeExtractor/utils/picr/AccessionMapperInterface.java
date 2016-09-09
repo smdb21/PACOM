@@ -1,5 +1,5 @@
 
-package org.proteored.pacom.utils.picr;
+package org.proteored.miapeExtractor.utils.picr;
 
 import java.util.List;
 import javax.jws.WebMethod;

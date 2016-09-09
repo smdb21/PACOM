@@ -1,5 +1,5 @@
 
-package org.proteored.pacom.utils.picr;
+package org.proteored.miapeExtractor.utils.picr;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="getUPIForAccessionReturn" type="{http://model.picr.ebi.ac.uk}UPEntry" maxOccurs="unbounded"/>
+ *         &lt;element name="mappedDatabases" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -31,41 +31,41 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "getUPIForAccessionReturn"
+    "mappedDatabases"
 })
-@XmlRootElement(name = "getUPIForAccessionResponse")
-public class GetUPIForAccessionResponse {
+@XmlRootElement(name = "getMappedDatabaseNamesResponse")
+public class GetMappedDatabaseNamesResponse {
 
     @XmlElement(required = true)
-    protected List<UPEntry> getUPIForAccessionReturn;
+    protected List<String> mappedDatabases;
 
     /**
-     * Gets the value of the getUPIForAccessionReturn property.
+     * Gets the value of the mappedDatabases property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the getUPIForAccessionReturn property.
+     * This is why there is not a <CODE>set</CODE> method for the mappedDatabases property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getGetUPIForAccessionReturn().add(newItem);
+     *    getMappedDatabases().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link UPEntry }
+     * {@link String }
      * 
      * 
      */
-    public List<UPEntry> getGetUPIForAccessionReturn() {
-        if (getUPIForAccessionReturn == null) {
-            getUPIForAccessionReturn = new ArrayList<UPEntry>();
+    public List<String> getMappedDatabases() {
+        if (mappedDatabases == null) {
+            mappedDatabases = new ArrayList<String>();
         }
-        return this.getUPIForAccessionReturn;
+        return this.mappedDatabases;
     }
 
 }
