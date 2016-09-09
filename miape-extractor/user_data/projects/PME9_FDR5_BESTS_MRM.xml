@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CP_ExperimentList name="PME9_FDR5_BESTS_MRM">
+	<CP_Experiment curated="true" name="PME9-IRBBarcelona_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="7917" name="MIAPE_MSI_7917.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="8051" name="MIAPE_MS_8051.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9_UA_FDR5">
+		<CP_Replicate name="run2">
+			<CP_MSI_List>
+				<CP_MSI id="-1" name="MIAPE_MSI_-1.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List/>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9_UAB_IIB_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="7960" name="MIAPE_MSI_7960.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="8095" name="MIAPE_MS_8095.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-IDIBELL_FDR5">
+		<CP_Replicate name="run3">
+			<CP_MSI_List>
+				<CP_MSI id="7932" name="MIAPE_MSI_7932.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="8067" name="MIAPE_MS_8067.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-IACS-MALDI_FDR5">
+		<CP_Replicate name="120min">
+			<CP_MSI_List>
+				<CP_MSI id="7635" name="MIAPE_MSI_7635.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7757" name="MIAPE_MS_7757.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-CCiT-UB_FDR5">
+		<CP_Replicate name="run 1">
+			<CP_MSI_List>
+				<CP_MSI id="-1" name="MIAPE_MSI_-1.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List/>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-CICSal_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="8007" name="MIAPE_MSI_8007.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List/>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-CIB_FDR5">
+		<CP_Replicate name="run2dmso">
+			<CP_MSI_List>
+				<CP_MSI id="7916" name="MIAPE_MSI_7916.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="8050" name="MIAPE_MS_8050.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-CMU_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="7929" name="MIAPE_MSI_7929.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="8062" name="MIAPE_MS_8062.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-PCB_FDR5">
+		<CP_Replicate name="run2">
+			<CP_MSI_List>
+				<CP_MSI id="7622" name="MIAPE_MSI_7622.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7743" name="MIAPE_MS_7743.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-UPF-CRG_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="7543" name="MIAPE_MSI_7543.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7667" name="MIAPE_MS_7667.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-CBMSO_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="-1" name="MIAPE_MSI_-1.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List/>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-CIC_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="7639" name="MIAPE_MSI_7639.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7763" name="MIAPE_MS_7763.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-LPCSICUAB_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="7645" name="MIAPE_MSI_7645.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7775" name="MIAPE_MS_7775.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-UCO_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="-1" name="MIAPE_MSI_-1.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List/>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-UPV_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="7620" name="MIAPE_MSI_7620.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7742" name="MIAPE_MS_7742.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-VHIO_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="7578" name="MIAPE_MSI_7578.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7701" name="MIAPE_MS_7701.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-CNB_FDR5">
+		<CP_Replicate name="50x50">
+			<CP_MSI_List>
+				<CP_MSI id="7642" name="MIAPE_MSI_7642.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7771" name="MIAPE_MS_7771.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-UV_FDR5">
+		<CP_Replicate name="OMSSA">
+			<CP_MSI_List>
+				<CP_MSI id="7641" name="MIAPE_MSI_7641.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7765" name="MIAPE_MS_7765.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-IACS-QTrap_FDR5">
+		<CP_Replicate name="run2_120min">
+			<CP_MSI_List>
+				<CP_MSI id="7632" name="MIAPE_MSI_7632.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7754" name="MIAPE_MS_7754.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-CIMA_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="7614" name="MIAPE_MSI_7614.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7737" name="MIAPE_MS_7737.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="PME9_MRM_CIMA">
+		<CP_Replicate name="PME9_MRM_CIMA">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="CIMA_MRM"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="PME9_MRM_LPCSICUAB">
+		<CP_Replicate name="PME9_MRM_LPCSICUAB">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="LPCSICUAB_MRM"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="PME9_MRM_PCM-UCM">
+		<CP_Replicate name="PME9_MRM_PCM-UCM">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="UCM-PCM"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="PME9_MRM_VHIO">
+		<CP_Replicate name="PME9_MRM_VHIO">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="VHIO"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+	</CP_Experiment>
+</CP_ExperimentList>

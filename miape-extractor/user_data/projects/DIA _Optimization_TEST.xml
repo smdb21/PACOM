@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CP_ExperimentList name="DIA _Optimization_TEST">
+	<CP_Experiment curated="false" name="DIA_8mz_1e5_60ms">
+		<CP_Replicate name="DIA_8mz_1e5_60ms_Rep2">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DIA_400_1200_8mz_1e5_60ms_Rep2"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+	</CP_Experiment>
+</CP_ExperimentList>

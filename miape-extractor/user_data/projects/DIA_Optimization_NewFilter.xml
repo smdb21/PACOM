@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CP_ExperimentList name="DIA_Optimization_NewFilter">
+	<CP_Experiment curated="false" name="DDA">
+		<CP_Replicate name="DDA_Rep1">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DDA_Rep1_bis"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="DDA_Rep2">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DDA_Rep2_bis"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="DDA_Rep3">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DDA_Rep3_bis"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="DIA_4mz_1e5_120ms">
+		<CP_Replicate name="DIA_4mz_1e5_120ms_Rep1">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DIA_4mz_1e5_120ms_Rep1bis"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="DIA_4mz_1e5_120ms_Rep2">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DIA_4mz_1e5_120ms_Rep2bis"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="DIA_4mz_1e5_120ms_Rep3">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DIA_4mz_1e5_120ms_Rep3bis"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="DIA_4mz_1e5_60ms">
+		<CP_Replicate name="DIA_4mz_1e5_60ms_Rep1">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DIA_4mz_1e5_60ms_Rep1bis"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="DIA_4mz_1e5_60ms_Rep2">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DIA_4mz_1e5_60ms_Rep2bis"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="DIA_4mz_1e5_60ms_Rep3">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DIA_4mz_1e5_60ms_Rep3bis"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="DIA_4mz_3e6_120ms">
+		<CP_Replicate name="DIA_4mz_3e6_120ms_Rep1">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DIA_4mz_3e6_120ms_Rep1bis"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="DIA_4mz_3e6_120ms_Rep2">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DIA_4mz_3e6_120ms_Rep2bis"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="DIA_4mz_3e6_120ms_Rep3">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DIA_4mz_3e6_120ms_Rep3bis"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="DIA_8mz_1e5_120ms">
+		<CP_Replicate name="DIA_8mz_1e5_120ms_Rep1">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DIA_8mz_1e5_120ms_Rep1bis"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="DIA_8mz_1e5_120ms_Rep2">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DIA_8mz_1e5_120ms_Rep2bis"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="DIA_8mz_1e5_120ms_Rep3">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DIA_8mz_1e5_120ms_Rep3bis"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="DIA_8mz_1e5_60ms">
+		<CP_Replicate name="DIA_8mz_1e5_60ms_Rep1">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DIA_8mz_1e5_60ms_Rep1bis"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="DIA_8mz_1e5_60ms_Rep2">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DIA_8mz_1e5_60ms_Rep2bis"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="DIA_8mz_1e5_60ms_Rep3">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DIA_8mz_1e5_60ms_Rep3bis"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="DIA_8mz_3e6_120ms">
+		<CP_Replicate name="DIA_8mz_3e6_120ms_Rep1">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DIA_8mz_3e6_120ms_Rep1bis"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="DIA_8mz_3e6_120ms_Rep2">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DIA_8mz_3e6_120ms_Rep2bis"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="DIA_8mz_3e6_120ms_Rep3">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DIA_8mz_3e6_120ms_Rep3bis"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+	</CP_Experiment>
+</CP_ExperimentList>

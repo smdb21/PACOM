@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CP_ExperimentList name="PME9-IACS-MALDI">
+	<CP_Experiment curated="false" name="PME9-IACS-MALDI">
+		<CP_Replicate name="90min">
+			<CP_MSI_List>
+				<CP_MSI id="7634" name="MIAPE_MSI_7634.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7756" name="MIAPE_MS_7756.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="120min">
+			<CP_MSI_List>
+				<CP_MSI id="7635" name="MIAPE_MSI_7635.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7757" name="MIAPE_MS_7757.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+</CP_ExperimentList>

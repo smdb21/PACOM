@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CP_ExperimentList name="AAron">
+	<CP_Experiment curated="false" name="Offgel_rep1">
+		<CP_Replicate name="fr:2">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="OFFGEL_fraction2replicate1"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="fr:3">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="OFFGEL_fraction3replicate1"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="fr:4">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="OFFGEL_fraction4replicate1"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="fr:5">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="OFFGEL_fraction5replicate1"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="fr:6">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="OFFGEL_fraction6replicate1"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="fr:7">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="OFFGEL_fraction7replicate1"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="fr:8">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="OFFGEL_fraction8replicate1"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="fr:9">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="OFFGEL_fraction9replicate1"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="fr:10">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="OFFGEL_fraction10replicate1"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="fr:11">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="OFFGEL_fraction11replicate1"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="fr:12">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="OFFGEL_fraction12replicate1"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="Offgel_rep2">
+		<CP_Replicate name="fr:1">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="OFFGEL_fraction2replicate2"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="fr:2">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="OFFGEL_fraction3replicate2"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="fr:3">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="OFFGEL_fraction4replicate2"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="fr:4">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="OFFGEL_fraction5replicate2"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="fr:5">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="OFFGEL_fraction7replicate2"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="fr:6">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="OFFGEL_fraction8replicate2"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="fr:7">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="OFFGEL_fraction9replicate2"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="fr:8">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="OFFGEL_fraction10replicate2"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="fr:9">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="OFFGEL_fraction11replicate2"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="fr:10">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="OFFGEL_fraction12replicate2"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="MudPIT">
+		<CP_Replicate name="mudpit:1">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="MudPIT_replicate1"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="mudpit:2">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="MudPIT_replicate2"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="mudpit:3">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="MudPIT_replicate3"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="mudpit:4">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="MudPIT_replicate4"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="mudpit:5">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="MudPIT_replicate5"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="mudpit:6">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="MudPIT_replicate6"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="mudpit:7">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="MudPIT_replicate7"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="mudpit:8">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="MudPIT_replicate8"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="mudpit:9">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="MudPIT_replicate9"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="mudpit:10">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="MudPIT_replicate10"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="mudpit:11">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="MudPIT_replicate11"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="mudpit:12">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="MudPIT_replicate12"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+	</CP_Experiment>
+</CP_ExperimentList>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CP_ExperimentList name="PME9-CIC">
+	<CP_Experiment curated="false" name="PME9-CIC">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="7639" name="MIAPE_MSI_7639.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7763" name="MIAPE_MS_7763.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="run2">
+			<CP_MSI_List>
+				<CP_MSI id="7920" name="MIAPE_MSI_7920.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="8054" name="MIAPE_MS_8054.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+</CP_ExperimentList>

@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<project name="pacom" basedir=".">
+	<property name="src.java" value="../src/main/java" />
+	<property name="src.resources" value="../src/main/resources" />
+
+
+
+	<property name="src.test" value="../src/test" />
+	<property name="reports.tests" value="../bin/classes" />
+	<property name="packagename" value="org.proteored.pacom.analysis.conf.jaxb" />
+	<property name="libraries_path" value="libraries" />
+	<property name="jaxb_libraries_path" value="${libraries_path}/jaxb/jaxb-ri-20100511/lib" />
+	
+	<property name="junit.library" value="${libraries_path}/JUnit/junit-4.7.jar" />
+	<property name="mockito.library" value="${libraries_path}/Mockito/mockito-all-1.8.0.jar" />
+
+	<property name="build.classes" value="../bin/classes" />
+	<property name="java.class.path" value="../bin/classes" />
+	<property name="schema.location" value="${src.resources}/experimentList_v1.2.xsd" />
+	<property name="generated.classes.location" value="${src.java}/org/proteored/pacom/analysis/conf/jaxb" />
+	
+
+	
+	
+	<path id="testlib">
+		<path location="${mockito.library}" />
+		<path location="${libraries_path}" />
+	</path>
+	<path id="jaxblib">
+		<path location="${jaxb_libraries_path}/jaxb-xjc.jar" />
+</path>
+
+	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask" classpathref="jaxblib">
+
+		</taskdef>
+	
+
+	<target name="generate java classes from ExperimentList" description="Produces java classes from the  schema" depends="clean">
+		<echo message="${jaxb_libraries_path}" />
+
+		<xjc schema="${schema.location}" destdir="${src.java}" package="${packagename}" />
+	</target>
+
+	
+	<target name="clean">
+		<delete>
+			<fileset dir="${generated.classes.location}">
+				<include name="**/**.java" />
+			</fileset>
+		</delete>
+	</target>
+</project>

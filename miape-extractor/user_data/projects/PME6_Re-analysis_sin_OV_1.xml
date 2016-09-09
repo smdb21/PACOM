@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CP_ExperimentList name="PME6_Re-analysis_sin_OV_1">
+	<CP_Experiment curated="false" name="QT_1">
+		<CP_Replicate name="rep:1">
+			<CP_MSI_List>
+				<CP_MSI id="7108" name="MIAPE_MSI_7108.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7207" name="MIAPE_MS_7207.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:2">
+			<CP_MSI_List>
+				<CP_MSI id="7109" name="MIAPE_MSI_7109.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7209" name="MIAPE_MS_7209.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:3">
+			<CP_MSI_List>
+				<CP_MSI id="7110" name="MIAPE_MSI_7110.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7210" name="MIAPE_MS_7210.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="QT_5">
+		<CP_Replicate name="rep:1">
+			<CP_MSI_List>
+				<CP_MSI id="7115" name="MIAPE_MSI_7115.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7215" name="MIAPE_MS_7215.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="M_1">
+		<CP_Replicate name="rep:1">
+			<CP_MSI_List>
+				<CP_MSI id="7122" name="MIAPE_MSI_7122.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7223" name="MIAPE_MS_7223.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:2">
+			<CP_MSI_List>
+				<CP_MSI id="7123" name="MIAPE_MSI_7123.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7224" name="MIAPE_MS_7224.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:3">
+			<CP_MSI_List>
+				<CP_MSI id="7124" name="MIAPE_MSI_7124.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7225" name="MIAPE_MS_7225.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="M_2">
+		<CP_Replicate name="rep:1">
+			<CP_MSI_List>
+				<CP_MSI id="7180" name="MIAPE_MSI_7180.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7290" name="MIAPE_MS_7290.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:2">
+			<CP_MSI_List>
+				<CP_MSI id="7181" name="MIAPE_MSI_7181.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7291" name="MIAPE_MS_7291.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:3">
+			<CP_MSI_List>
+				<CP_MSI id="7182" name="MIAPE_MSI_7182.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7292" name="MIAPE_MS_7292.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="M_3">
+		<CP_Replicate name="rep:1">
+			<CP_MSI_List>
+				<CP_MSI id="7210" name="MIAPE_MSI_7210.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7339" name="MIAPE_MS_7339.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:2">
+			<CP_MSI_List>
+				<CP_MSI id="7211" name="MIAPE_MSI_7211.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7340" name="MIAPE_MS_7340.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:3">
+			<CP_MSI_List>
+				<CP_MSI id="7212" name="MIAPE_MSI_7212.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7341" name="MIAPE_MS_7341.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="IT_1">
+		<CP_Replicate name="rep:1">
+			<CP_MSI_List>
+				<CP_MSI id="7119" name="MIAPE_MSI_7119.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7219" name="MIAPE_MS_7219.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:2">
+			<CP_MSI_List>
+				<CP_MSI id="7120" name="MIAPE_MSI_7120.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7220" name="MIAPE_MS_7220.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:3">
+			<CP_MSI_List>
+				<CP_MSI id="7121" name="MIAPE_MSI_7121.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7222" name="MIAPE_MS_7222.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="IT_2">
+		<CP_Replicate name="rep:1">
+			<CP_MSI_List>
+				<CP_MSI id="7204" name="MIAPE_MSI_7204.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7317" name="MIAPE_MS_7317.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:2">
+			<CP_MSI_List>
+				<CP_MSI id="7205" name="MIAPE_MSI_7205.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7318" name="MIAPE_MS_7318.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:3">
+			<CP_MSI_List>
+				<CP_MSI id="7206" name="MIAPE_MSI_7206.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7319" name="MIAPE_MS_7319.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="IT_3">
+		<CP_Replicate name="rep:1">
+			<CP_MSI_List>
+				<CP_MSI id="7192" name="MIAPE_MSI_7192.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7305" name="MIAPE_MS_7305.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:2">
+			<CP_MSI_List>
+				<CP_MSI id="7193" name="MIAPE_MSI_7193.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7306" name="MIAPE_MS_7306.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:3">
+			<CP_MSI_List>
+				<CP_MSI id="7194" name="MIAPE_MSI_7194.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7307" name="MIAPE_MS_7307.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="LIT_1">
+		<CP_Replicate name="rep:1">
+			<CP_MSI_List>
+				<CP_MSI id="7189" name="MIAPE_MSI_7189.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7299" name="MIAPE_MS_7299.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:2">
+			<CP_MSI_List>
+				<CP_MSI id="7190" name="MIAPE_MSI_7190.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7300" name="MIAPE_MS_7300.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:3">
+			<CP_MSI_List>
+				<CP_MSI id="7191" name="MIAPE_MSI_7191.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7301" name="MIAPE_MS_7301.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="O_1">
+		<CP_Replicate name="rep:1">
+			<CP_MSI_List>
+				<CP_MSI id="7183" name="MIAPE_MSI_7183.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7293" name="MIAPE_MS_7293.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:2">
+			<CP_MSI_List>
+				<CP_MSI id="7184" name="MIAPE_MSI_7184.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7294" name="MIAPE_MS_7294.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:3">
+			<CP_MSI_List>
+				<CP_MSI id="7185" name="MIAPE_MSI_7185.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7295" name="MIAPE_MS_7295.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="O_2">
+		<CP_Replicate name="rep:1">
+			<CP_MSI_List>
+				<CP_MSI id="7207" name="MIAPE_MSI_7207.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7320" name="MIAPE_MS_7320.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:2">
+			<CP_MSI_List>
+				<CP_MSI id="7208" name="MIAPE_MSI_7208.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7321" name="MIAPE_MS_7321.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:3">
+			<CP_MSI_List>
+				<CP_MSI id="7209" name="MIAPE_MSI_7209.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7322" name="MIAPE_MS_7322.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="OV_2">
+		<CP_Replicate name="rep:1">
+			<CP_MSI_List>
+				<CP_MSI id="7186" name="MIAPE_MSI_7186.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7296" name="MIAPE_MS_7296.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:2">
+			<CP_MSI_List>
+				<CP_MSI id="7187" name="MIAPE_MSI_7187.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7297" name="MIAPE_MS_7297.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:3">
+			<CP_MSI_List>
+				<CP_MSI id="7188" name="MIAPE_MSI_7188.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7298" name="MIAPE_MS_7298.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="OV_3">
+		<CP_Replicate name="rep:1">
+			<CP_MSI_List>
+				<CP_MSI id="7195" name="MIAPE_MSI_7195.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7308" name="MIAPE_MS_7308.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:2">
+			<CP_MSI_List>
+				<CP_MSI id="7196" name="MIAPE_MSI_7196.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7309" name="MIAPE_MS_7309.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:3">
+			<CP_MSI_List>
+				<CP_MSI id="7197" name="MIAPE_MSI_7197.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7310" name="MIAPE_MS_7310.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="OV_4">
+		<CP_Replicate name="rep:1">
+			<CP_MSI_List>
+				<CP_MSI id="7201" name="MIAPE_MSI_7201.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7314" name="MIAPE_MS_7314.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:2">
+			<CP_MSI_List>
+				<CP_MSI id="7202" name="MIAPE_MSI_7202.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7315" name="MIAPE_MS_7315.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:3">
+			<CP_MSI_List>
+				<CP_MSI id="7203" name="MIAPE_MSI_7203.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7316" name="MIAPE_MS_7316.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="OV_5">
+		<CP_Replicate name="rep:1">
+			<CP_MSI_List>
+				<CP_MSI id="7112" name="MIAPE_MSI_7112.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7211" name="MIAPE_MS_7211.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:2">
+			<CP_MSI_List>
+				<CP_MSI id="7113" name="MIAPE_MSI_7113.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7212" name="MIAPE_MS_7212.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:3">
+			<CP_MSI_List>
+				<CP_MSI id="7114" name="MIAPE_MSI_7114.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7214" name="MIAPE_MS_7214.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="OV_6">
+		<CP_Replicate name="rep:1">
+			<CP_MSI_List>
+				<CP_MSI id="7198" name="MIAPE_MSI_7198.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7311" name="MIAPE_MS_7311.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:2">
+			<CP_MSI_List>
+				<CP_MSI id="7199" name="MIAPE_MSI_7199.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7312" name="MIAPE_MS_7312.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:3">
+			<CP_MSI_List>
+				<CP_MSI id="7200" name="MIAPE_MSI_7200.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7313" name="MIAPE_MS_7313.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+</CP_ExperimentList>

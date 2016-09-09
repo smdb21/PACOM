@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CP_ExperimentList name="PME9-IACS-QTrap">
+	<CP_Experiment curated="false" name="PME9-IACS-QTrap">
+		<CP_Replicate name="run1_90min">
+			<CP_MSI_List>
+				<CP_MSI id="7629" name="MIAPE_MSI_7629.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7751" name="MIAPE_MS_7751.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="run1_120min">
+			<CP_MSI_List>
+				<CP_MSI id="7631" name="MIAPE_MSI_7631.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7753" name="MIAPE_MS_7753.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="run2_90min">
+			<CP_MSI_List>
+				<CP_MSI id="7630" name="MIAPE_MSI_7630.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7752" name="MIAPE_MS_7752.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="run2_120min">
+			<CP_MSI_List>
+				<CP_MSI id="7632" name="MIAPE_MSI_7632.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7754" name="MIAPE_MS_7754.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="run3_120min">
+			<CP_MSI_List>
+				<CP_MSI id="7633" name="MIAPE_MSI_7633.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7755" name="MIAPE_MS_7755.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+</CP_ExperimentList>

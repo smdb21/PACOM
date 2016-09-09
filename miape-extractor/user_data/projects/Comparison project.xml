@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CP_ExperimentList name="Comparison project">
+	<CP_Experiment curated="false" name="dtaselect">
+		<CP_Replicate name="replicate:3">
+			<CP_MSI_List>
+				<CP_MSI local_project_name="dtaselect" local="true" id="1" name="Dataset_MSI_1_TEC_ON_60minSinglePhase_5ug_1_RT"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="dtaselect_curated">
+		<CP_Replicate name="replicate:3">
+			<CP_MSI_List>
+				<CP_MSI local_project_name="dtaselect_curated" local="true" id="1" name="TEC_ON_60minSinglePhase_5ug_1_RT"/>
+			</CP_MSI_List>
+			<CP_MS_List/>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="dtaselect2">
+		<CP_Replicate name="replicate:1">
+			<CP_MSI_List>
+				<CP_MSI local_project_name="dtaselect2" local="true" id="2" name="Dataset_MSI_2_TEC_ON_60minSinglePhase_5ug_2_RT"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="dtaselect_curated_curated">
+		<CP_Replicate name="replicate:3">
+			<CP_MSI_List>
+				<CP_MSI local_project_name="dtaselect_curated_curated" local="true" id="1" name="TEC_ON_60minSinglePhase_5ug_1_RT"/>
+			</CP_MSI_List>
+			<CP_MS_List/>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="dtaselect_curated_curated">
+		<CP_Replicate name="replicate:3">
+			<CP_MSI_List>
+				<CP_MSI local_project_name="dtaselect_curated_curated" local="true" id="1" name="TEC_ON_60minSinglePhase_5ug_1_RT"/>
+			</CP_MSI_List>
+			<CP_MS_List/>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="dtaselect2_curated">
+		<CP_Replicate name="replicate:1">
+			<CP_MSI_List>
+				<CP_MSI local_project_name="dtaselect2_curated" local="true" id="2" name="TEC_ON_60minSinglePhase_5ug_2_RT"/>
+			</CP_MSI_List>
+			<CP_MS_List/>
+		</CP_Replicate>
+	</CP_Experiment>
+</CP_ExperimentList>

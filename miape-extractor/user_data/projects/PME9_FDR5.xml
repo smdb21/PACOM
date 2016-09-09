@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CP_ExperimentList name="PME9_FDR5">
+	<CP_Experiment curated="true" name="PME9-IRBBarcelona_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="7917" name="MIAPE_MSI_7917.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="8051" name="MIAPE_MS_8051.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="run2">
+			<CP_MSI_List>
+				<CP_MSI id="7919" name="MIAPE_MSI_7919.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="8053" name="MIAPE_MS_8053.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9_UA_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="-1" name="MIAPE_MSI_-1.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List/>
+		</CP_Replicate>
+		<CP_Replicate name="run2">
+			<CP_MSI_List>
+				<CP_MSI id="-1" name="MIAPE_MSI_-1.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List/>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9_UAB_IIB_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="7960" name="MIAPE_MSI_7960.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="8095" name="MIAPE_MS_8095.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="run2">
+			<CP_MSI_List>
+				<CP_MSI id="7959" name="MIAPE_MSI_7959.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="8094" name="MIAPE_MS_8094.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="run3">
+			<CP_MSI_List>
+				<CP_MSI id="7958" name="MIAPE_MSI_7958.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="8093" name="MIAPE_MS_8093.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-IDIBELL_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="7931" name="MIAPE_MSI_7931.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="8066" name="MIAPE_MS_8066.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="run2">
+			<CP_MSI_List>
+				<CP_MSI id="7933" name="MIAPE_MSI_7933.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="8068" name="MIAPE_MS_8068.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="run3">
+			<CP_MSI_List>
+				<CP_MSI id="7932" name="MIAPE_MSI_7932.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="8067" name="MIAPE_MS_8067.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-IACS-MALDI_FDR5">
+		<CP_Replicate name="90min">
+			<CP_MSI_List>
+				<CP_MSI id="7634" name="MIAPE_MSI_7634.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7756" name="MIAPE_MS_7756.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="120min">
+			<CP_MSI_List>
+				<CP_MSI id="7635" name="MIAPE_MSI_7635.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7757" name="MIAPE_MS_7757.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-CCiT-UB_FDR5">
+		<CP_Replicate name="run 1">
+			<CP_MSI_List>
+				<CP_MSI id="-1" name="MIAPE_MSI_-1.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List/>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-CICSal_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="8007" name="MIAPE_MSI_8007.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List/>
+		</CP_Replicate>
+		<CP_Replicate name="run2_SRM">
+			<CP_MSI_List>
+				<CP_MSI id="8008" name="MIAPE_MSI_8008.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List/>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-CIB_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="7648" name="MIAPE_MSI_7648.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7782" name="MIAPE_MS_7782.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="run2dmso">
+			<CP_MSI_List>
+				<CP_MSI id="7916" name="MIAPE_MSI_7916.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="8050" name="MIAPE_MS_8050.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-CMU_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="7929" name="MIAPE_MSI_7929.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="8062" name="MIAPE_MS_8062.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="run2_exclist">
+			<CP_MSI_List>
+				<CP_MSI id="7930" name="MIAPE_MSI_7930.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="8063" name="MIAPE_MS_8063.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-PCB_FDR5">
+		<CP_Replicate name="run2">
+			<CP_MSI_List>
+				<CP_MSI id="7622" name="MIAPE_MSI_7622.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7743" name="MIAPE_MS_7743.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-UPF-CRG_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="7543" name="MIAPE_MSI_7543.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7667" name="MIAPE_MS_7667.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-CBMSO_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="-1" name="MIAPE_MSI_-1.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List/>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-CIC_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="7639" name="MIAPE_MSI_7639.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7763" name="MIAPE_MS_7763.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="run2">
+			<CP_MSI_List>
+				<CP_MSI id="7920" name="MIAPE_MSI_7920.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="8054" name="MIAPE_MS_8054.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-LPCSICUAB_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="7645" name="MIAPE_MSI_7645.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7775" name="MIAPE_MS_7775.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="run2">
+			<CP_MSI_List>
+				<CP_MSI id="7646" name="MIAPE_MSI_7646.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7776" name="MIAPE_MS_7776.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="run3">
+			<CP_MSI_List>
+				<CP_MSI id="7647" name="MIAPE_MSI_7647.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7777" name="MIAPE_MS_7777.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-UCO_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="-1" name="MIAPE_MSI_-1.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List/>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-UPV_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="7620" name="MIAPE_MSI_7620.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7742" name="MIAPE_MS_7742.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-VHIO_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="7578" name="MIAPE_MSI_7578.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7701" name="MIAPE_MS_7701.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-CNB_FDR5">
+		<CP_Replicate name="50x50">
+			<CP_MSI_List>
+				<CP_MSI id="7642" name="MIAPE_MSI_7642.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7771" name="MIAPE_MS_7771.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="25x100">
+			<CP_MSI_List>
+				<CP_MSI id="7643" name="MIAPE_MSI_7643.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7773" name="MIAPE_MS_7773.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="15x250">
+			<CP_MSI_List>
+				<CP_MSI id="7644" name="MIAPE_MSI_7644.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7774" name="MIAPE_MS_7774.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-UV_FDR5">
+		<CP_Replicate name="Mascot">
+			<CP_MSI_List>
+				<CP_MSI id="7553" name="MIAPE_MSI_7553.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7677" name="MIAPE_MS_7677.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="OMSSA">
+			<CP_MSI_List>
+				<CP_MSI id="7641" name="MIAPE_MSI_7641.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7765" name="MIAPE_MS_7765.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-IACS-QTrap_FDR5">
+		<CP_Replicate name="run1_90min">
+			<CP_MSI_List>
+				<CP_MSI id="7629" name="MIAPE_MSI_7629.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7751" name="MIAPE_MS_7751.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="run1_120min">
+			<CP_MSI_List>
+				<CP_MSI id="7631" name="MIAPE_MSI_7631.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7753" name="MIAPE_MS_7753.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="run2_90min">
+			<CP_MSI_List>
+				<CP_MSI id="7630" name="MIAPE_MSI_7630.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7752" name="MIAPE_MS_7752.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="run2_120min">
+			<CP_MSI_List>
+				<CP_MSI id="7632" name="MIAPE_MSI_7632.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7754" name="MIAPE_MS_7754.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="run3_120min">
+			<CP_MSI_List>
+				<CP_MSI id="7633" name="MIAPE_MSI_7633.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7755" name="MIAPE_MS_7755.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="true" name="PME9-CIMA_FDR5">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="7614" name="MIAPE_MSI_7614.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7737" name="MIAPE_MS_7737.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+</CP_ExperimentList>

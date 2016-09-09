@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CP_ExperimentList name="PME9-IRBBarcelona">
+	<CP_Experiment curated="false" name="PME9-IRBBarcelona">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="7917" name="MIAPE_MSI_7917.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="8051" name="MIAPE_MS_8051.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="run2">
+			<CP_MSI_List>
+				<CP_MSI id="7919" name="MIAPE_MSI_7919.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="8053" name="MIAPE_MS_8053.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+</CP_ExperimentList>

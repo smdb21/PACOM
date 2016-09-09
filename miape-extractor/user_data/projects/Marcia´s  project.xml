@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CP_ExperimentList name="Marcia´s  project">
+	<CP_Experiment curated="false" name="Denovo">
+		<CP_Replicate name="Gi10">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="Gi10"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="Gi:23">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="Gi23"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="Gi:24">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="Gi24"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="Gi:26">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="Gi26"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="Gi:27">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="Gi27"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="Gi:28">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="Gi28"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="Gi:44">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="Gi44"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="Gi:46">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="Gi46"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="Gi:47">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="Gi47"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="Gi:58">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="Gi58"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="Gi:63">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="Gi63"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="Gi:73">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="Gi73"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+	</CP_Experiment>
+</CP_ExperimentList>

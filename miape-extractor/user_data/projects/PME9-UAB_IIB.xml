@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CP_ExperimentList name="PME9-UAB_IIB">
+	<CP_Experiment curated="false" name="UAB_IIB">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI id="7960" name="MIAPE_MSI_7960.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="8095" name="MIAPE_MS_8095.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="run2">
+			<CP_MSI_List>
+				<CP_MSI id="7959" name="MIAPE_MSI_7959.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="8094" name="MIAPE_MS_8094.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="run3">
+			<CP_MSI_List>
+				<CP_MSI id="7958" name="MIAPE_MSI_7958.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="8093" name="MIAPE_MS_8093.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+</CP_ExperimentList>

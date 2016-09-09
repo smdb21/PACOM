@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CP_ExperimentList name="PME9-CNB">
+	<CP_Experiment curated="false" name="PME9-CNB">
+		<CP_Replicate name="50x50">
+			<CP_MSI_List>
+				<CP_MSI id="7642" name="MIAPE_MSI_7642.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7771" name="MIAPE_MS_7771.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="25x100">
+			<CP_MSI_List>
+				<CP_MSI id="7643" name="MIAPE_MSI_7643.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7773" name="MIAPE_MS_7773.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="15x250">
+			<CP_MSI_List>
+				<CP_MSI id="7644" name="MIAPE_MSI_7644.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7774" name="MIAPE_MS_7774.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+</CP_ExperimentList>

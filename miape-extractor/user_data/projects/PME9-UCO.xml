@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CP_ExperimentList name="PME9-UCO">
+	<CP_Experiment curated="false" name="PME9-UCO">
+		<CP_Replicate name="run1">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="PME9_UCO"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+	</CP_Experiment>
+</CP_ExperimentList>

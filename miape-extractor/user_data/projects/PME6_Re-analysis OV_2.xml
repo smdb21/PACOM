@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CP_ExperimentList name="PME6_Re-analysis OV_2">
+	<CP_Experiment curated="false" name="OV_2">
+		<CP_Replicate name="rep:1">
+			<CP_MSI_List>
+				<CP_MSI id="7186" name="MIAPE_MSI_7186.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7296" name="MIAPE_MS_7296.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:2">
+			<CP_MSI_List>
+				<CP_MSI id="7187" name="MIAPE_MSI_7187.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7297" name="MIAPE_MS_7297.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="rep:3">
+			<CP_MSI_List>
+				<CP_MSI id="7188" name="MIAPE_MSI_7188.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7298" name="MIAPE_MS_7298.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+</CP_ExperimentList>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CP_ExperimentList name="dtaselect project">
+	<CP_Experiment curated="false" name="dtaSelectProject">
+		<CP_Replicate name="replicate:1">
+			<CP_MSI_List>
+				<CP_MSI local_project_name="dtaSelectProject" local="true" id="15" name="LOCAL_MIAPE_MSI_15.xml"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="replicate:2">
+			<CP_MSI_List>
+				<CP_MSI local_project_name="dtaSelectProject" local="true" id="16" name="LOCAL_MIAPE_MSI_16.xml"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="replicate:3">
+			<CP_MSI_List>
+				<CP_MSI local_project_name="dtaSelectProject" local="true" id="17" name="LOCAL_MIAPE_MSI_17.xml"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="replicate:4">
+			<CP_MSI_List>
+				<CP_MSI local_project_name="dtaSelectProject" local="true" id="18" name="LOCAL_MIAPE_MSI_18.xml"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="replicate:5">
+			<CP_MSI_List>
+				<CP_MSI local_project_name="dtaSelectProject" local="true" id="19" name="LOCAL_MIAPE_MSI_19.xml"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="replicate:6">
+			<CP_MSI_List>
+				<CP_MSI local_project_name="dtaSelectProject" local="true" id="20" name="LOCAL_MIAPE_MSI_20.xml"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="replicate:7">
+			<CP_MSI_List>
+				<CP_MSI local_project_name="dtaSelectProject" local="true" id="21" name="LOCAL_MIAPE_MSI_21.xml"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="replicate:8">
+			<CP_MSI_List>
+				<CP_MSI local_project_name="dtaSelectProject" local="true" id="22" name="LOCAL_MIAPE_MSI_22.xml"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="replicate:9">
+			<CP_MSI_List>
+				<CP_MSI local_project_name="dtaSelectProject" local="true" id="23" name="LOCAL_MIAPE_MSI_23.xml"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+	</CP_Experiment>
+</CP_ExperimentList>

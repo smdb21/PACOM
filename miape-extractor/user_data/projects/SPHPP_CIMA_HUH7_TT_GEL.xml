@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CP_ExperimentList name="SPHPP_CIMA_HUH7_TT_GEL">
+	<CP_Experiment curated="false" name="SPHPP_CIMA_HUH7_TT_GEL">
+		<CP_Replicate name="Band1">
+			<CP_MSI_List>
+				<CP_MSI id="7370" name="MIAPE_MSI_7370.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7500" name="MIAPE_MS_7500.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="Band2">
+			<CP_MSI_List>
+				<CP_MSI id="7371" name="MIAPE_MSI_7371.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7501" name="MIAPE_MS_7501.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="Band3">
+			<CP_MSI_List>
+				<CP_MSI id="7372" name="MIAPE_MSI_7372.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7502" name="MIAPE_MS_7502.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="Band4">
+			<CP_MSI_List>
+				<CP_MSI id="7373" name="MIAPE_MSI_7373.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7503" name="MIAPE_MS_7503.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="Band5">
+			<CP_MSI_List>
+				<CP_MSI id="7374" name="MIAPE_MSI_7374.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7504" name="MIAPE_MS_7504.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="Band6">
+			<CP_MSI_List>
+				<CP_MSI id="7375" name="MIAPE_MSI_7375.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7505" name="MIAPE_MS_7505.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="Band7">
+			<CP_MSI_List>
+				<CP_MSI id="7376" name="MIAPE_MSI_7376.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7506" name="MIAPE_MS_7506.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="Band8">
+			<CP_MSI_List>
+				<CP_MSI id="7377" name="MIAPE_MSI_7377.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7507" name="MIAPE_MS_7507.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="Band9">
+			<CP_MSI_List>
+				<CP_MSI id="7378" name="MIAPE_MSI_7378.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7508" name="MIAPE_MS_7508.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+</CP_ExperimentList>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CP_ExperimentList name="PALM">
+	<CP_Experiment curated="false" name="BrainAHA">
+		<CP_Replicate name="BrainAHA2day">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DTASelect-filter_Figure2A_BrainAHA_2day"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="BrainAHA4day">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DTASelect-filter_Figure2A_BrainAHA_4day"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="BrainAHA6day">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DTASelect-filter_Figure2A_BrainAHA_6day"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+	</CP_Experiment>
+	<CP_Experiment curated="false" name="BrainUnmod">
+		<CP_Replicate name="BrainUnmod2day">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DTASelect-filter_Figure2A_BrainUnmod_2day"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="BrainUnmod4day">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DTASelect-filter_Figure2A_BrainUnmod_4day"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+		<CP_Replicate name="BrainUnmod6day">
+			<CP_MSI_List>
+				<CP_MSI manually_created="true" id="-1" name="DTASelect-filter_Figure2A_BrainUnmod_6day"/>
+			</CP_MSI_List>
+		</CP_Replicate>
+	</CP_Experiment>
+</CP_ExperimentList>

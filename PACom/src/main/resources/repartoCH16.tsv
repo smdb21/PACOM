@@ -1,0 +1,215 @@
+Researcher	Status	ensembl_gene_id	external_gene_id	description	chr_name	strand	band	transcript_count	gene_biotype	status	Uniprot	Uniprot_protEvidence	GPMDB	GPMDB_lt(-5)	GPMDB_lt(-2)	loge	HPA	NAPPA		Grupo
+J.P. Albar	known	ENSG00000125148	MT2A	metallothionein 2A [Source:HGNC Symbol;Acc:7406]	16	1	q12.2	1	protein_coding	KNOWN	1	1	1	1	1	-5999	0	1	1	GT1
+J.P. Albar	known	ENSG00000196155	PLEKHG4	"pleckstrin homology domain containing, family G (with RhoGef domain) member 4 [Source:HGNC Symbol;Acc:24501]"	16	1	q22.1	5	protein_coding	KNOWN	1	1	1	1	1	-873.3	0	0	16	GT1
+J.P. Albar	known	ENSG00000258947	RP11-566K11.2	Melanocyte-stimulating hormone receptor [Source:UniProtKB/Swiss-Prot;Acc:Q01726]	16	1	q24.3	13	protein_coding	NOVEL	1	1	1	1	1	-726.4	1	0	23	GT1
+J.P. Albar	known	ENSG00000013364	MVP	major vault protein [Source:HGNC Symbol;Acc:7531]	16	1	p11.2	3	protein_coding	KNOWN	1	1	1	1	1	-576.3	1	1	30	GT1
+J.P. Albar	known	ENSG00000184730	APOBR	apolipoprotein B receptor [Source:HGNC Symbol;Acc:24087]	16	1	p11.2	2	protein_coding	KNOWN	1	1	1	1	1	-461.3	1	0	37	GT1
+J.P. Albar	known	ENSG00000168140	VASN	vasorin [Source:HGNC Symbol;Acc:18517]	16	1	p13.3	1	protein_coding	KNOWN	1	1	1	1	1	-415.1	1	0	44	GT1
+J.P. Albar	known	ENSG00000196296	ATP2A1	"ATPase, Ca++ transporting, cardiac muscle, fast twitch 1 [Source:HGNC Symbol;Acc:811]"	16	1	p11.2	4	protein_coding	KNOWN	1	1	1	1	1	-392.6	1	0	51	GT1
+J.P. Albar	known	ENSG00000103222	ABCC1	"ATP-binding cassette, sub-family C (CFTR/MRP), member 1 [Source:HGNC Symbol;Acc:51]"	16	1	p13.11	7	protein_coding	KNOWN	1	1	1	1	1	-377.2	1	0	58	GT1
+J.P. Albar	known	ENSG00000140740	UQCRC2	ubiquinol-cytochrome c reductase core protein II [Source:HGNC Symbol;Acc:12586]	16	1	p12.2	1	protein_coding	KNOWN	1	1	1	1	1	-361.5	1	1	65	GT1
+J.P. Albar	known	ENSG00000149923	PPP4C	"protein phosphatase 4, catalytic subunit [Source:HGNC Symbol;Acc:9319]"	16	1	p11.2	1	protein_coding	KNOWN	1	1	1	1	1	-325.3	0	1	80	GT1
+J.P. Albar	known	ENSG00000140937	CDH11	"cadherin 11, type 2, OB-cadherin (osteoblast) [Source:HGNC Symbol;Acc:1750]"	16	-1	q21	4	protein_coding	KNOWN	1	1	1	1	1	-293.8	1	0	87	GT1
+J.P. Albar	known	ENSG00000140632	GLYR1	glyoxylate reductase 1 homolog (Arabidopsis) [Source:HGNC Symbol;Acc:24434]	16	-1	p13.3	3	protein_coding	KNOWN	1	1	1	1	1	-271.3	1	0	94	GT1
+J.P. Albar	known	ENSG00000169221	TBC1D10B	"TBC1 domain family, member 10B [Source:HGNC Symbol;Acc:24510]"	16	-1	p11.2	6	protein_coding	KNOWN	1	1	1	1	1	-247.9	0	1	101	GT1
+J.P. Albar	known	ENSG00000103187	COTL1	coactosin-like 1 (Dictyostelium) [Source:HGNC Symbol;Acc:18304]	16	-1	q24.1	1	protein_coding	KNOWN	1	1	1	1	1	-236.4	0	1	108	GT1
+J.P. Albar	known	ENSG00000167977	KCTD5	potassium channel tetramerisation domain containing 5 [Source:HGNC Symbol;Acc:21423]	16	1	p13.3	1	protein_coding	KNOWN	1	1	1	1	1	-225.5	0	0	115	GT1
+J.P. Albar	known	ENSG00000132603	NIP7	nuclear import 7 homolog (S. cerevisiae) [Source:HGNC Symbol;Acc:24328]	16	1	q22.1	2	protein_coding	KNOWN	1	1	1	1	1	-214.3	0	1	122	GT1
+J.P. Albar	known	ENSG00000169347	GP2	glycoprotein 2 (zymogen granule membrane) [Source:HGNC Symbol;Acc:4441]	16	-1	p12.3	5	protein_coding	KNOWN	1	0	1	1	1	-205.6	1	0	129	GT1
+J.P. Albar	known	ENSG00000103549	RNF40	ring finger protein 40 [Source:HGNC Symbol;Acc:16867]	16	1	p11.2	6	protein_coding	KNOWN	1	1	1	1	1	-187.3	1	1	144	GT1
+J.P. Albar	known	ENSG00000174177	CTU2	cytosolic thiouridylase subunit 2 homolog (S. pombe) [Source:HGNC Symbol;Acc:28005]	16	1	q24.3	3	protein_coding	KNOWN	1	1	1	1	1	-182.8	1	0	151	GT1
+J.P. Albar	known	ENSG00000172530	BANP	BTG3 associated nuclear protein [Source:HGNC Symbol;Acc:13450]	16	1	q24.2	27	protein_coding	KNOWN	1	1	1	1	1	-174.7	0	1	158	GT1
+C. Gil	known	ENSG00000133392	MYH11	"myosin, heavy chain 11, smooth muscle [Source:HGNC Symbol;Acc:7569]"	16	-1	p13.11	5	protein_coding	KNOWN	1	1	1	1	1	-2318.3	1	0	2	GT2
+C. Gil	known	ENSG00000125107	CNOT1	"CCR4-NOT transcription complex, subunit 1 [Source:HGNC Symbol;Acc:7877]"	16	-1	q21	6	protein_coding	KNOWN	1	1	1	1	1	-1186.1	0	0	9	GT2
+C. Gil	known	ENSG00000189091	SF3B3	"splicing factor 3b, subunit 3, 130kDa [Source:HGNC Symbol;Acc:10770]"	16	1	q22.1	2	protein_coding	KNOWN	1	1	1	1	1	-702	0	0	24	GT2
+C. Gil	known	ENSG00000125166	GOT2	"glutamic-oxaloacetic transaminase 2, mitochondrial (aspartate aminotransferase 2) [Source:HGNC Symbol;Acc:4433]"	16	-1	q21	6	protein_coding	KNOWN	1	1	1	1	1	-564.2	1	1	31	GT2
+C. Gil	known	ENSG00000166851	PLK1	polo-like kinase 1 [Source:HGNC Symbol;Acc:9077]	16	1	p12.2	3	protein_coding	KNOWN	1	1	1	1	1	-445.1	0	1	38	GT2
+C. Gil	known	ENSG00000178952	TUFM	"Tu translation elongation factor, mitochondrial [Source:HGNC Symbol;Acc:12420]"	16	-1	p11.2	1	protein_coding	KNOWN	1	1	1	1	1	-411.3	1	1	45	GT2
+C. Gil	known	ENSG00000103512	NOMO1	NODAL modulator 1 [Source:HGNC Symbol;Acc:30060]	16	1	p13.11	3	protein_coding	KNOWN	1	1	1	1	1	-389.4	1	0	52	GT2
+C. Gil	known	ENSG00000103126	AXIN1	axin 1 [Source:HGNC Symbol;Acc:903]	16	-1	p13.3	5	protein_coding	KNOWN	1	1	1	1	1	-377	1	0	59	GT2
+C. Gil	known	ENSG00000140988	RPS2	ribosomal protein S2 [Source:HGNC Symbol;Acc:10404]	16	-1	p13.3	17	protein_coding	KNOWN	1	1	1	1	1	-357.3	0	0	66	GT2
+C. Gil	known	ENSG00000205609	EIF3CL	"eukaryotic translation initiation factor 3, subunit C-like [Source:HGNC Symbol;Acc:26347]"	16	-1	p11.2	5	protein_coding	KNOWN	0	0	1	1	1	-339.5	0	0	73	GT2
+C. Gil	known	ENSG00000104731	KLHDC4	kelch domain containing 4 [Source:HGNC Symbol;Acc:25272]	16	-1	q24.2	4	protein_coding	KNOWN	1	1	1	1	1	-285.4	1	0	88	GT2
+C. Gil	known	ENSG00000162078	ZG16B	zymogen granule protein 16 homolog B (rat) [Source:HGNC Symbol;Acc:30456]	16	1	p13.3	1	protein_coding	KNOWN	1	1	1	1	1	-265	1	1	95	GT2
+C. Gil	known	ENSG00000103528	SYT17	synaptotagmin XVII [Source:HGNC Symbol;Acc:24119]	16	1	p12.3	1	protein_coding	KNOWN	1	1	1	1	1	-245.7	1	0	102	GT2
+C. Gil	known	ENSG00000176387	HSD11B2	hydroxysteroid (11-beta) dehydrogenase 2 [Source:HGNC Symbol;Acc:5209]	16	1	q22.1	1	protein_coding	KNOWN	1	1	1	1	1	-235.2	1	0	109	GT2
+C. Gil	known	ENSG00000180209	MYLPF	"myosin light chain, phosphorylatable, fast skeletal muscle [Source:HGNC Symbol;Acc:29824]"	16	1	p11.2	1	protein_coding	KNOWN	1	0	1	1	1	-225.5	0	1	116	GT2
+C. Gil	known	ENSG00000130656	HBZ	"hemoglobin, zeta [Source:HGNC Symbol;Acc:4835]"	16	1	p13.3	1	protein_coding	KNOWN	1	1	1	1	1	-213.6	0	1	123	GT2
+C. Gil	known	ENSG00000087237	CETP	"cholesteryl ester transfer protein, plasma [Source:HGNC Symbol;Acc:1869]"	16	1	q13	2	protein_coding	KNOWN	1	1	1	1	1	-204.6	0	1	130	GT2
+C. Gil	known	ENSG00000005187	ACSM3	acyl-CoA synthetase medium-chain family member 3 [Source:HGNC Symbol;Acc:10522]	16	1	p12.3	3	protein_coding	KNOWN	1	1	1	1	1	-198.8	1	1	137	GT2
+C. Gil	known	ENSG00000213918	DNASE1	deoxyribonuclease I [Source:HGNC Symbol;Acc:2956]	16	1	p13.3	3	protein_coding	KNOWN	1	1	1	1	1	-180.2	1	1	152	GT2
+C. Gil	known	ENSG00000131653	TRAF7	TNF receptor-associated factor 7 [Source:HGNC Symbol;Acc:20456]	16	1	p13.3	1	protein_coding	KNOWN	1	1	1	1	1	-174.4	1	0	159	GT2
+F.J. Corrales	known	ENSG00000167978	SRRM2	serine/arginine repetitive matrix 2 [Source:HGNC Symbol;Acc:16639]	16	1	p13.3	6	protein_coding	KNOWN	1	1	1	1	1	-1962.2	1	0	3	GT3
+F.J. Corrales	known	ENSG00000140750	ARHGAP17	Rho GTPase activating protein 17 [Source:HGNC Symbol;Acc:18239]	16	-1	p12.1	4	protein_coding	KNOWN	1	1	1	1	1	-1107.8	1	0	10	GT3
+F.J. Corrales	known	ENSG00000177238	TRIM72	tripartite motif containing 72 [Source:HGNC Symbol;Acc:32671]	16	1	p11.2	1	protein_coding	KNOWN	1	1	1	1	1	-868.9	1	0	17	GT3
+F.J. Corrales	known	ENSG00000090861	AARS	alanyl-tRNA synthetase [Source:HGNC Symbol;Acc:20]	16	-1	q22.1	1	protein_coding	KNOWN	1	1	1	1	1	-543	1	1	32	GT3
+F.J. Corrales	known	ENSG00000135723	FHOD1	formin homology 2 domain containing 1 [Source:HGNC Symbol;Acc:17905]	16	-1	q22.1	1	protein_coding	KNOWN	1	1	1	1	1	-439.2	1	0	39	GT3
+F.J. Corrales	known	ENSG00000166501	PRKCB	"protein kinase C, beta [Source:HGNC Symbol;Acc:9395]"	16	1	p12.2	10	protein_coding	KNOWN	1	1	1	1	1	-409	1	1	46	GT3
+F.J. Corrales	known	ENSG00000079616	KIF22	kinesin family member 22 [Source:HGNC Symbol;Acc:6391]	16	1	p11.2	3	protein_coding	KNOWN	1	1	1	1	1	-387.7	1	1	53	GT3
+F.J. Corrales	known	ENSG00000171490	RSL1D1	ribosomal L1 domain containing 1 [Source:HGNC Symbol;Acc:24534]	16	-1	p13.13	3	protein_coding	KNOWN	1	1	1	1	1	-375.8	0	0	60	GT3
+F.J. Corrales	known	ENSG00000177200	CHD9	chromodomain helicase DNA binding protein 9 [Source:HGNC Symbol;Acc:25701]	16	1	q12.2	4	protein_coding	KNOWN	1	1	1	1	1	-355.8	0	0	67	GT3
+F.J. Corrales	known	ENSG00000166848	TERF2IP	"telomeric repeat binding factor 2, interacting protein [Source:HGNC Symbol;Acc:19246]"	16	1	q23.1	1	protein_coding	KNOWN	1	1	1	1	1	-339	1	1	74	GT3
+F.J. Corrales	known	ENSG00000070770	CSNK2A2	"casein kinase 2, alpha prime polypeptide [Source:HGNC Symbol;Acc:2459]"	16	-1	q21	1	protein_coding	KNOWN	1	1	1	1	1	-312.9	0	1	81	GT3
+F.J. Corrales	known	ENSG00000065457	ADAT1	"adenosine deaminase, tRNA-specific 1 [Source:HGNC Symbol;Acc:228]"	16	-1	q23.1	2	protein_coding	KNOWN	1	0	1	1	1	-263.2	1	1	96	GT3
+F.J. Corrales	known	ENSG00000015413	DPEP1	dipeptidase 1 (renal) [Source:HGNC Symbol;Acc:3002]	16	1	q24.3	3	protein_coding	KNOWN	1	1	1	1	1	-241.3	1	0	103	GT3
+F.J. Corrales	known	ENSG00000166747	AP1G1	"adaptor-related protein complex 1, gamma 1 subunit [Source:HGNC Symbol;Acc:555]"	16	-1	q22.2	7	protein_coding	KNOWN	1	1	1	1	1	-233.4	1	0	110	GT3
+F.J. Corrales	known	ENSG00000141012	GALNS	galactosamine (N-acetyl)-6-sulfate sulfatase [Source:HGNC Symbol;Acc:4122]	16	-1	q24.3	3	protein_coding	KNOWN	1	1	1	1	1	-223	1	0	117	GT3
+F.J. Corrales	known	ENSG00000100726	TELO2	"TEL2, telomere maintenance 2, homolog (S. cerevisiae) [Source:HGNC Symbol;Acc:29099]"	16	1	p13.3	3	protein_coding	KNOWN	1	1	1	1	1	-211.4	1	0	124	GT3
+F.J. Corrales	known	ENSG00000103381	CPPED1	calcineurin-like phosphoesterase domain containing 1 [Source:HGNC Symbol;Acc:25632]	16	-1	p13.12	4	protein_coding	KNOWN	1	1	1	1	1	-203.5	1	1	131	GT3
+F.J. Corrales	known	ENSG00000157106	SMG1	"smg-1 homolog, phosphatidylinositol 3-kinase-related kinase (C. elegans) [Source:HGNC Symbol;Acc:30045]"	16	-1	p12.3	3	protein_coding	KNOWN	1	1	1	1	1	-197.9	1	0	138	GT3
+F.J. Corrales	known	ENSG00000122299	ZC3H7A	zinc finger CCCH-type containing 7A [Source:HGNC Symbol;Acc:30959]	16	-1	p13.13	2	protein_coding	KNOWN	1	1	1	1	1	-187.2	1	0	145	GT3
+F.J. Corrales	known	ENSG00000069345	DNAJA2	"DnaJ (Hsp40) homolog, subfamily A, member 2 [Source:HGNC Symbol;Acc:14884]"	16	-1	q12.1	1	protein_coding	KNOWN	1	1	1	1	1	-173.1	0	1	160	GT3
+F. Canals	known	ENSG00000188536	HBA2	"hemoglobin, alpha 2 [Source:HGNC Symbol;Acc:4824]"	16	1	p13.3	5	protein_coding	KNOWN	1	1	1	1	1	-1694.1	1	1	4	GT4
+F. Canals	known	ENSG00000169344	UMOD	uromodulin [Source:HGNC Symbol;Acc:12559]	16	-1	p12.3	6	protein_coding	KNOWN	1	1	1	1	1	-1083.7	1	0	11	GT4
+F. Canals	known	ENSG00000198848	CES1	carboxylesterase 1 [Source:HGNC Symbol;Acc:1863]	16	-1	q12.2	4	protein_coding	KNOWN	1	1	1	1	1	-835.7	1	1	18	GT4
+F. Canals	known	ENSG00000103540	CCP110	centriolar coiled coil protein 110kDa [Source:HGNC Symbol;Acc:24342]	16	1	p12.3	3	protein_coding	KNOWN	1	1	1	1	1	-616.4	1	1	25	GT4
+F. Canals	known	ENSG00000099769	IGFALS	"insulin-like growth factor binding protein, acid labile subunit [Source:HGNC Symbol;Acc:5468]"	16	-1	p13.3	2	protein_coding	KNOWN	1	1	1	1	1	-438.2	1	0	40	GT4
+F. Canals	known	ENSG00000005339	CREBBP	CREB binding protein [Source:HGNC Symbol;Acc:2348]	16	-1	p13.3	4	protein_coding	KNOWN	1	1	1	1	1	-408.5	1	0	47	GT4
+F. Canals	known	ENSG00000181019	NQO1	"NAD(P)H dehydrogenase, quinone 1 [Source:HGNC Symbol;Acc:2874]"	16	-1	q22.1	4	protein_coding	KNOWN	1	1	1	1	1	-384.3	1	1	54	GT4
+F. Canals	known	ENSG00000103226	NOMO3	NODAL modulator 3 [Source:HGNC Symbol;Acc:25242]	16	1	p13.11	3	protein_coding	KNOWN	1	0	1	1	1	-369.4	0	0	61	GT4
+F. Canals	known	ENSG00000140682	TGFB1I1	transforming growth factor beta 1 induced transcript 1 [Source:HGNC Symbol;Acc:11767]	16	1	p11.2	3	protein_coding	KNOWN	1	1	1	1	1	-353.9	1	0	68	GT4
+F. Canals	known	ENSG00000179889	PDXDC1	pyridoxal-dependent decarboxylase domain containing 1 [Source:HGNC Symbol;Acc:28995]	16	1	p13.11	7	protein_coding	KNOWN	1	1	1	1	1	-336.6	0	0	75	GT4
+F. Canals	known	ENSG00000187555	USP7	ubiquitin specific peptidase 7 (herpes virus-associated) [Source:HGNC Symbol;Acc:12630]	16	-1	p13.2	5	protein_coding	KNOWN	1	1	1	1	1	-312.2	1	0	82	GT4
+F. Canals	known	ENSG00000103342	GSPT1	G1 to S phase transition 1 [Source:HGNC Symbol;Acc:4621]	16	-1	p13.13	3	protein_coding	KNOWN	1	1	1	1	1	-284.5	0	0	89	GT4
+F. Canals	known	ENSG00000102981	PARD6A	par-6 partitioning defective 6 homolog alpha (C. elegans) [Source:HGNC Symbol;Acc:15943]	16	1	q22.1	2	protein_coding	KNOWN	1	1	1	1	1	-239.6	1	1	104	GT4
+F. Canals	known	ENSG00000140836	ZFHX3	zinc finger homeobox 3 [Source:HGNC Symbol;Acc:777]	16	-1	q22.3	2	protein_coding	KNOWN	1	1	1	1	1	-231.5	0	0	111	GT4
+F. Canals	known	ENSG00000132604	TERF2	telomeric repeat binding factor 2 [Source:HGNC Symbol;Acc:11729]	16	-1	q22.1	1	protein_coding	KNOWN	1	1	1	1	1	-220.8	1	0	118	GT4
+F. Canals	known	ENSG00000103275	UBE2I	ubiquitin-conjugating enzyme E2I [Source:HGNC Symbol;Acc:12485]	16	1	p13.3	8	protein_coding	KNOWN	1	1	1	1	1	-210.9	1	1	125	GT4
+F. Canals	known	ENSG00000168872	DDX19A	DEAD (Asp-Glu-Ala-As) box polypeptide 19A [Source:HGNC Symbol;Acc:25628]	16	1	q22.1	4	protein_coding	KNOWN	1	1	1	1	1	-203.5	0	0	132	GT4
+F. Canals	known	ENSG00000063854	HAGH	hydroxyacylglutathione hydrolase [Source:HGNC Symbol;Acc:4805]	16	-1	p13.3	3	protein_coding	KNOWN	1	1	1	1	1	-196.9	1	1	139	GT4
+F. Canals	known	ENSG00000103043	VAC14	Vac14 homolog (S. cerevisiae) [Source:HGNC Symbol;Acc:25507]	16	-1	q22.2	2	protein_coding	KNOWN	1	1	1	1	1	-187.1	1	0	146	GT4
+F. Canals	known	ENSG00000131652	THOC6	THO complex 6 homolog (Drosophila) [Source:HGNC Symbol;Acc:28369]	16	1	p13.3	2	protein_coding	KNOWN	1	1	1	1	1	-179.2	0	0	153	GT4
+S. Barceló	known	ENSG00000206172	HBA1	"hemoglobin, alpha 1 [Source:HGNC Symbol;Acc:4823]"	16	1	p13.3	4	protein_coding	KNOWN	1	1	1	1	1	-1694.1	1	1	5	GT5
+S. Barceló	known	ENSG00000149925	ALDOA	"aldolase A, fructose-bisphosphate [Source:HGNC Symbol;Acc:414]"	16	1	p11.2	4	protein_coding	KNOWN	1	1	1	1	1	-1076.2	1	1	12	GT5
+S. Barceló	known	ENSG00000169896	ITGAM	"integrin, alpha M (complement component 3 receptor 3 subunit) [Source:HGNC Symbol;Acc:6149]"	16	1	p11.2	2	protein_coding	KNOWN	1	1	1	1	1	-803.1	1	0	19	GT5
+S. Barceló	known	ENSG00000140829	DHX38	DEAH (Asp-Glu-Ala-His) box polypeptide 38 [Source:HGNC Symbol;Acc:17211]	16	1	q22.2	2	protein_coding	KNOWN	1	1	1	1	1	-601.4	1	1	26	GT5
+S. Barceló	known	ENSG00000090863	GLG1	golgi glycoprotein 1 [Source:HGNC Symbol;Acc:4316]	16	-1	q23.1	3	protein_coding	KNOWN	1	1	1	1	1	-528.2	1	0	33	GT5
+S. Barceló	known	ENSG00000159461	AMFR	autocrine motility factor receptor [Source:HGNC Symbol;Acc:463]	16	-1	q12.2	3	protein_coding	KNOWN	1	1	1	1	1	-407	1	0	48	GT5
+S. Barceló	known	ENSG00000183751	TBL3	transducin (beta)-like 3 [Source:HGNC Symbol;Acc:11587]	16	1	p13.3	1	protein_coding	KNOWN	1	1	1	1	1	-383.6	0	0	55	GT5
+S. Barceló	known	ENSG00000185164	NOMO2	NODAL modulator 2 [Source:HGNC Symbol;Acc:22652]	16	-1	p12.3	3	protein_coding	KNOWN	1	1	1	1	1	-369.4	0	0	62	GT5
+S. Barceló	known	ENSG00000102900	NUP93	nucleoporin 93kDa [Source:HGNC Symbol;Acc:28958]	16	1	q13	2	protein_coding	KNOWN	1	1	1	1	1	-353.8	1	0	69	GT5
+S. Barceló	known	ENSG00000069329	VPS35	vacuolar protein sorting 35 homolog (S. cerevisiae) [Source:HGNC Symbol;Acc:13487]	16	-1	q11.2	2	protein_coding	KNOWN	1	1	1	1	1	-335.9	0	1	76	GT5
+S. Barceló	known	ENSG00000103168	TAF1C	"TATA box binding protein (TBP)-associated factor, RNA polymerase I, C, 110kDa [Source:HGNC Symbol;Acc:11534]"	16	-1	q24.1	5	protein_coding	KNOWN	1	1	1	1	1	-308.4	0	0	83	GT5
+S. Barceló	known	ENSG00000099365	STX1B	syntaxin 1B [Source:HGNC Symbol;Acc:18539]	16	-1	p11.2	1	protein_coding	KNOWN	1	0	1	1	1	-282.2	0	0	90	GT5
+S. Barceló	known	ENSG00000140945	CDH13	"cadherin 13, H-cadherin (heart) [Source:HGNC Symbol;Acc:1753]"	16	1	q23.3	8	protein_coding	KNOWN	1	1	1	1	1	-262.1	1	0	97	GT5
+S. Barceló	known	ENSG00000183044	ABAT	4-aminobutyrate aminotransferase [Source:HGNC Symbol;Acc:23]	16	1	p13.2	3	protein_coding	KNOWN	1	1	1	1	1	-230.7	1	1	112	GT5
+S. Barceló	known	ENSG00000157349	DDX19B	DEAD (Asp-Glu-Ala-As) box polypeptide 19B [Source:HGNC Symbol;Acc:2742]	16	1	q22.1	4	protein_coding	KNOWN	1	1	1	1	1	-219.6	1	1	119	GT5
+S. Barceló	known	ENSG00000129910	CDH15	"cadherin 15, type 1, M-cadherin (myotubule) [Source:HGNC Symbol;Acc:1754]"	16	1	q24.3	3	protein_coding	KNOWN	1	1	1	1	1	-208.4	1	1	126	GT5
+S. Barceló	known	ENSG00000005844	ITGAL	"integrin, alpha L (antigen CD11A (p180), lymphocyte function-associated antigen 1; alpha polypeptide) [Source:HGNC Symbol;Acc:6148]"	16	1	p11.2	4	protein_coding	KNOWN	1	1	1	1	1	-202.5	1	1	133	GT5
+S. Barceló	known	ENSG00000099381	SETD1A	SET domain containing 1A [Source:HGNC Symbol;Acc:29010]	16	1	p11.2	4	protein_coding	KNOWN	1	1	1	1	1	-196.2	1	0	140	GT5
+S. Barceló	known	ENSG00000134419	RPS15A	ribosomal protein S15a [Source:HGNC Symbol;Acc:10389]	16	-1	p12.3	1	protein_coding	KNOWN	1	1	1	1	1	-185.7	0	0	147	GT5
+S. Barceló	known	ENSG00000067955	CBFB	"core-binding factor, beta subunit [Source:HGNC Symbol;Acc:1539]"	16	1	q22.1	2	protein_coding	KNOWN	1	1	1	1	1	-179	1	1	154	GT5
+F.J. Blanco	known	ENSG00000140992	PDPK1	3-phosphoinositide dependent protein kinase-1 [Source:HGNC Symbol;Acc:8816]	16	1	p13.3	14	protein_coding	KNOWN	1	1	1	1	1	-1623.2	1	1	6	GT6
+F.J. Blanco	known	ENSG00000077235	GTF3C1	"general transcription factor IIIC, polypeptide 1, alpha 220kDa [Source:HGNC Symbol;Acc:4664]"	16	-1	p12.1	2	protein_coding	KNOWN	1	1	1	1	1	-1039.8	0	0	13	GT6
+F.J. Blanco	known	ENSG00000122257	RBBP6	retinoblastoma binding protein 6 [Source:HGNC Symbol;Acc:9889]	16	1	p12.1	4	protein_coding	KNOWN	1	1	1	1	1	-801.5	1	1	20	GT6
+F.J. Blanco	known	ENSG00000102879	CORO1A	"coronin, actin binding protein, 1A [Source:HGNC Symbol;Acc:2252]"	16	1	p11.2	1	protein_coding	KNOWN	1	1	1	1	1	-598.1	0	1	27	GT6
+F.J. Blanco	known	ENSG00000103550	C16orf88	chromosome 16 open reading frame 88 [Source:HGNC Symbol;Acc:34404]	16	-1	p12.3	1	protein_coding	KNOWN	1	1	1	1	1	-524.5	0	0	34	GT6
+F.J. Blanco	known	ENSG00000038358	EDC4	enhancer of mRNA decapping 4 [Source:HGNC Symbol;Acc:17157]	16	1	q22.1	2	protein_coding	KNOWN	1	1	1	1	1	-435.1	0	0	41	GT6
+F.J. Blanco	known	ENSG00000102890	ELMO3	engulfment and cell motility 3 [Source:HGNC Symbol;Acc:17289]	16	1	q22.1	3	protein_coding	KNOWN	1	1	1	1	1	-382.2	1	1	56	GT6
+F.J. Blanco	known	ENSG00000089280	FUS	fused in sarcoma [Source:HGNC Symbol;Acc:4010]	16	1	p11.2	9	protein_coding	KNOWN	1	1	1	1	1	-365	1	1	63	GT6
+F.J. Blanco	known	ENSG00000168928	CTRB2	chymotrypsinogen B2 [Source:HGNC Symbol;Acc:2522]	16	-1	q23.1	2	protein_coding	KNOWN	1	0	1	1	1	-348.5	0	0	70	GT6
+F.J. Blanco	known	ENSG00000168925	CTRB1	chymotrypsinogen B1 [Source:HGNC Symbol;Acc:2521]	16	1	q23.1	2	protein_coding	KNOWN	1	0	1	1	1	-331.9	0	0	77	GT6
+F.J. Blanco	known	ENSG00000102974	CTCF	CCCTC-binding factor (zinc finger protein) [Source:HGNC Symbol;Acc:13723]	16	1	q22.1	2	protein_coding	KNOWN	1	1	1	1	1	-303.3	0	1	84	GT6
+F.J. Blanco	known	ENSG00000159720	ATP6V0D1	"ATPase, H+ transporting, lysosomal 38kDa, V0 subunit d1 [Source:HGNC Symbol;Acc:13724]"	16	-1	q22.1	3	protein_coding	KNOWN	1	1	1	1	1	-281	1	1	91	GT6
+F.J. Blanco	known	ENSG00000140854	KATNB1	katanin p80 (WD repeat containing) subunit B 1 [Source:HGNC Symbol;Acc:6217]	16	1	q21	1	protein_coding	KNOWN	1	1	1	1	1	-256.2	1	0	98	GT6
+F.J. Blanco	known	ENSG00000185739	SRL	sarcalumenin [Source:HGNC Symbol;Acc:11295]	16	-1	p13.3	3	protein_coding	KNOWN	1	0	1	1	1	-237.5	0	0	105	GT6
+F.J. Blanco	known	ENSG00000129993	CBFA2T3	"core-binding factor, runt domain, alpha subunit 2; translocated to, 3 [Source:HGNC Symbol;Acc:1537]"	16	-1	q24.3	5	protein_coding	KNOWN	1	1	1	1	1	-216.6	0	1	120	GT6
+F.J. Blanco	known	ENSG00000167005	NUDT21	nudix (nucleoside diphosphate linked moiety X)-type motif 21 [Source:HGNC Symbol;Acc:13870]	16	-1	q12.2	2	protein_coding	KNOWN	1	1	1	1	1	-206.8	0	1	127	GT6
+F.J. Blanco	known	ENSG00000168101	NUDT16L1	nudix (nucleoside diphosphate linked moiety X)-type motif 16-like 1 [Source:HGNC Symbol;Acc:28154]	16	1	p13.3	2	protein_coding	KNOWN	1	1	1	1	1	-201.3	0	1	134	GT6
+F.J. Blanco	known	ENSG00000176715	ACSF3	acyl-CoA synthetase family member 3 [Source:HGNC Symbol;Acc:27288]	16	1	q24.3	15	protein_coding	KNOWN	1	1	1	1	1	-194.7	1	0	141	GT6
+F.J. Blanco	known	ENSG00000242612	DECR2	"2,4-dienoyl CoA reductase 2, peroxisomal [Source:HGNC Symbol;Acc:2754]"	16	1	p13.3	13	protein_coding	KNOWN	1	1	1	1	1	-185	0	1	148	GT6
+F.J. Blanco	known	ENSG00000103194	USP10	ubiquitin specific peptidase 10 [Source:HGNC Symbol;Acc:12608]	16	1	q24.1	3	protein_coding	KNOWN	1	1	1	1	1	-177.7	1	1	155	GT6
+M. Sánchez del Pino	known	ENSG00000083093	PALB2	partner and localizer of BRCA2 [Source:HGNC Symbol;Acc:26144]	16	-1	p12.2	1	protein_coding	KNOWN	1	1	1	1	1	-1418.9	1	0	7	GT7
+M. Sánchez del Pino	known	ENSG00000205918	AC141586.1	Putative 3-phosphoinositide-dependent protein kinase 2 [Source:UniProtKB/Swiss-Prot;Acc:Q6A1A2]	16	-1	p13.3	1	protein_coding	KNOWN	1	0	1	1	1	-919.8	0	0	14	GT7
+M. Sánchez del Pino	known	ENSG00000131149	KIAA0182	KIAA0182 [Source:HGNC Symbol;Acc:28979]	16	1	q24.1	11	protein_coding	KNOWN	1	1	1	1	1	-767	1	0	21	GT7
+M. Sánchez del Pino	known	ENSG00000103479	RBL2	retinoblastoma-like 2 (p130) [Source:HGNC Symbol;Acc:9894]	16	1	q12.2	4	protein_coding	KNOWN	1	1	1	1	1	-583	1	0	28	GT7
+M. Sánchez del Pino	known	ENSG00000177455	CD19	CD19 molecule [Source:HGNC Symbol;Acc:1633]	16	1	p11.2	4	protein_coding	KNOWN	1	1	1	1	1	-488.5	1	1	35	GT7
+M. Sánchez del Pino	known	ENSG00000039068	CDH1	"cadherin 1, type 1, E-cadherin (epithelial) [Source:HGNC Symbol;Acc:1748]"	16	1	q22.1	4	protein_coding	KNOWN	1	1	1	1	1	-427.2	1	0	42	GT7
+M. Sánchez del Pino	known	ENSG00000168488	ATXN2L	ataxin 2-like [Source:HGNC Symbol;Acc:31326]	16	1	p11.2	6	protein_coding	KNOWN	1	1	1	1	1	-396.1	0	0	49	GT7
+M. Sánchez del Pino	known	ENSG00000184110	EIF3C	"eukaryotic translation initiation factor 3, subunit C [Source:HGNC Symbol;Acc:3279]"	16	1	p11.2	5	protein_coding	KNOWN	1	1	1	1	1	-362.9	1	1	64	GT7
+M. Sánchez del Pino	known	ENSG00000171241	SHCBP1	SHC SH2-domain binding protein 1 [Source:HGNC Symbol;Acc:29547]	16	-1	q11.2	1	protein_coding	KNOWN	1	1	1	1	1	-346.2	0	1	71	GT7
+M. Sánchez del Pino	known	ENSG00000197943	PLCG2	"phospholipase C, gamma 2 (phosphatidylinositol-specific) [Source:HGNC Symbol;Acc:9066]"	16	1	q23.3	1	protein_coding	KNOWN	1	1	1	1	1	-327.9	1	1	78	GT7
+M. Sánchez del Pino	known	ENSG00000050820	BCAR1	breast cancer anti-estrogen resistance 1 [Source:HGNC Symbol;Acc:971]	16	-1	q23.1	9	protein_coding	KNOWN	1	1	1	1	1	-302.9	1	0	85	GT7
+M. Sánchez del Pino	known	ENSG00000065427	KARS	lysyl-tRNA synthetase [Source:HGNC Symbol;Acc:6215]	16	-1	q23.1	2	protein_coding	KNOWN	1	1	1	1	1	-279.8	1	1	92	GT7
+M. Sánchez del Pino	known	ENSG00000103544	C16orf62	chromosome 16 open reading frame 62 [Source:HGNC Symbol;Acc:24641]	16	1	p12.3	21	protein_coding	KNOWN	1	1	1	1	1	-253.7	1	0	99	GT7
+M. Sánchez del Pino	known	ENSG00000103426	CORO7	coronin 7 [Source:HGNC Symbol;Acc:26161]	16	-1	p13.3	4	protein_coding	KNOWN	1	1	1	1	1	-237.3	1	0	106	GT7
+M. Sánchez del Pino	known	ENSG00000059122	FLYWCH1	FLYWCH-type zinc finger 1 [Source:HGNC Symbol;Acc:25404]	16	1	p13.3	4	protein_coding	KNOWN	1	1	1	1	1	-230.6	1	0	113	GT7
+M. Sánchez del Pino	known	ENSG00000157353	FUK	fucokinase [Source:HGNC Symbol;Acc:29500]	16	1	q22.1	7	protein_coding	KNOWN	1	0	1	1	1	-206.5	1	1	128	GT7
+M. Sánchez del Pino	known	ENSG00000102978	POLR2C	"polymerase (RNA) II (DNA directed) polypeptide C, 33kDa [Source:HGNC Symbol;Acc:9189]"	16	1	q21	1	protein_coding	KNOWN	1	1	1	1	1	-199.9	1	1	135	GT7
+M. Sánchez del Pino	known	ENSG00000179776	CDH5	"cadherin 5, type 2 (vascular endothelium) [Source:HGNC Symbol;Acc:1764]"	16	1	q21	4	protein_coding	KNOWN	1	1	1	1	1	-194.7	1	0	142	GT7
+M. Sánchez del Pino	known	ENSG00000179958	DCTPP1	dCTP pyrophosphatase 1 [Source:HGNC Symbol;Acc:28777]	16	-1	p11.2	1	protein_coding	KNOWN	1	1	1	1	1	-184.9	1	0	149	GT7
+M. Sánchez del Pino	known	ENSG00000080603	SRCAP	Snf2-related CREBBP activator protein [Source:HGNC Symbol;Acc:16974]	16	1	p11.2	9	protein_coding	KNOWN	1	1	1	1	1	-177.3	1	0	156	GT7
+F. Vivanco	known	ENSG00000257017	HP	haptoglobin [Source:HGNC Symbol;Acc:5141]	16	1	q22.2	7	protein_coding	KNOWN	1	1	1	1	1	-1400.2	1	0	8	GT8
+F. Vivanco	known	ENSG00000198211	TUBB3	"tubulin, beta 3 class III [Source:HGNC Symbol;Acc:20772]"	16	1	q24.3	5	protein_coding	KNOWN	1	1	1	1	1	-901.2	1	0	15	GT8
+F. Vivanco	known	ENSG00000087245	MMP2	"matrix metallopeptidase 2 (gelatinase A, 72kDa gelatinase, 72kDa type IV collagenase) [Source:HGNC Symbol;Acc:7166]"	16	1	q12.2	3	protein_coding	KNOWN	1	1	1	1	1	-743.9	1	1	22	GT8
+F. Vivanco	known	ENSG00000118898	PPL	periplakin [Source:HGNC Symbol;Acc:9273]	16	-1	p13.3	1	protein_coding	KNOWN	1	1	1	1	1	-581.3	0	0	29	GT8
+F. Vivanco	known	ENSG00000167522	ANKRD11	ankyrin repeat domain 11 [Source:HGNC Symbol;Acc:21316]	16	-1	q24.3	4	protein_coding	KNOWN	1	1	1	1	1	-469.6	1	0	36	GT8
+F. Vivanco	known	ENSG00000087258	GNAO1	"guanine nucleotide binding protein (G protein), alpha activating activity polypeptide O [Source:HGNC Symbol;Acc:4389]"	16	1	q12.2	2	protein_coding	KNOWN	1	1	1	1	1	-422.3	1	0	43	GT8
+F. Vivanco	known	ENSG00000126602	TRAP1	TNF receptor-associated protein 1 [Source:HGNC Symbol;Acc:16264]	16	-1	p13.3	2	protein_coding	KNOWN	1	1	1	1	1	-392.6	1	1	50	GT8
+F. Vivanco	known	ENSG00000102882	MAPK3	mitogen-activated protein kinase 3 [Source:HGNC Symbol;Acc:6877]	16	-1	p11.2	17	protein_coding	KNOWN	1	1	1	1	1	-379.6	1	1	57	GT8
+F. Vivanco	known	ENSG00000102893	PHKB	"phosphorylase kinase, beta [Source:HGNC Symbol;Acc:8927]"	16	1	q12.1	3	protein_coding	KNOWN	1	1	1	1	1	-345.7	0	0	72	GT8
+F. Vivanco	known	ENSG00000167526	RPL13	ribosomal protein L13 [Source:HGNC Symbol;Acc:10303]	16	1	q24.3	9	protein_coding	KNOWN	1	1	1	1	1	-326.5	0	1	79	GT8
+F. Vivanco	known	ENSG00000118900	UBN1	ubinuclein 1 [Source:HGNC Symbol;Acc:12506]	16	1	p13.3	3	protein_coding	KNOWN	1	1	1	1	1	-300.6	0	0	86	GT8
+F. Vivanco	known	ENSG00000007392	LUC7L	LUC7-like (S. cerevisiae) [Source:HGNC Symbol;Acc:6723]	16	-1	p13.3	20	protein_coding	KNOWN	1	1	1	1	1	-274.8	1	1	93	GT8
+F. Vivanco	known	ENSG00000103415	HMOX2	heme oxygenase (decycling) 2 [Source:HGNC Symbol;Acc:5014]	16	1	p13.3	5	protein_coding	KNOWN	1	1	1	1	1	-248.3	1	1	100	GT8
+F. Vivanco	known	ENSG00000198931	APRT	adenine phosphoribosyltransferase [Source:HGNC Symbol;Acc:626]	16	-1	q24.3	2	protein_coding	KNOWN	1	1	1	1	1	-236.9	1	0	107	GT8
+F. Vivanco	known	ENSG00000158545	ZC3H18	zinc finger CCCH-type containing 18 [Source:HGNC Symbol;Acc:25091]	16	1	q24.2	4	protein_coding	KNOWN	1	1	1	1	1	-225.7	1	0	114	GT8
+F. Vivanco	known	ENSG00000166164	BRD7	bromodomain containing 7 [Source:HGNC Symbol;Acc:14310]	16	-1	q12.1	4	protein_coding	KNOWN	1	1	1	1	1	-216.1	0	1	121	GT8
+F. Vivanco	known	ENSG00000103197	TSC2	tuberous sclerosis 2 [Source:HGNC Symbol;Acc:12363]	16	1	p13.3	18	protein_coding	KNOWN	1	1	1	1	1	-199	1	0	136	GT8
+F. Vivanco	known	ENSG00000135686	KLHL36	kelch-like 36 (Drosophila) [Source:HGNC Symbol;Acc:17844]	16	1	q24.1	2	protein_coding	KNOWN	1	1	1	1	1	-191.8	0	1	143	GT8
+F. Vivanco	known	ENSG00000140990	NDUFB10	"NADH dehydrogenase (ubiquinone) 1 beta subcomplex, 10, 22kDa [Source:HGNC Symbol;Acc:7696]"	16	1	p13.3	2	protein_coding	KNOWN	1	1	1	1	1	-183.1	0	0	150	GT8
+F. Vivanco	known	ENSG00000102910	LONP2	"lon peptidase 2, peroxisomal [Source:HGNC Symbol;Acc:20598]"	16	1	q12.1	4	protein_coding	KNOWN	1	0	1	1	1	-175.4	1	0	157	GT8
+J.P. Albar	unknown	ENSG00000153060	TEKT5	tektin 5 [Source:HGNC Symbol;Acc:26554]	16	-1	p13.13	1	protein_coding	KNOWN	1	0	1	1	1	-14.1	1	0	1	G1
+J.P. Albar	unknown	ENSG00000166780	C16orf45	chromosome 16 open reading frame 45 [Source:HGNC Symbol;Acc:19213]	16	1	p13.11	2	protein_coding	KNOWN	1	0	1	1	1	-13	1	1	10	G1
+J.P. Albar	unknown	ENSG00000070729	CNGB1	cyclic nucleotide gated channel beta 1 [Source:HGNC Symbol;Acc:2151]	16	-1	q21	2	protein_coding	KNOWN	1	1	1	1	1	-11.2	1	0	27	G1
+J.P. Albar	unknown	ENSG00000103546	SLC6A2	"solute carrier family 6 (neurotransmitter transporter, noradrenalin), member 2 [Source:HGNC Symbol;Acc:11048]"	16	1	q12.2	5	protein_coding	KNOWN	1	1	1	1	1	-10.3	1	0	36	G1
+J.P. Albar	unknown	ENSG00000171208	NETO2	neuropilin (NRP) and tolloid (TLL)-like 2 [Source:HGNC Symbol;Acc:14644]	16	-1	q12.1	1	protein_coding	KNOWN	1	1	1	1	1	-9.3	1	0	45	G1
+J.P. Albar	unknown	ENSG00000089505	CMTM1	CKLF-like MARVEL transmembrane domain containing 1 [Source:HGNC Symbol;Acc:19172]	16	1	q21	22	protein_coding	KNOWN	1	0	1	1	1	-8.3	1	0	54	G1
+C. Gil	unknown	ENSG00000184471	C1QTNF8	C1q and tumor necrosis factor related protein 8 [Source:HGNC Symbol;Acc:31374]	16	-1	p13.3	1	protein_coding	KNOWN	1	1	1	1	1	-14.1	0	0	2	G2
+C. Gil	unknown	ENSG00000005513	SOX8	SRY (sex determining region Y)-box 8 [Source:HGNC Symbol;Acc:11203]	16	1	p13.3	1	protein_coding	KNOWN	1	0	1	1	1	-12.9	0	0	11	G2
+C. Gil	unknown	ENSG00000048462	TNFRSF17	"tumor necrosis factor receptor superfamily, member 17 [Source:HGNC Symbol;Acc:11913]"	16	1	p13.13	3	protein_coding	KNOWN	1	1	1	1	1	-11.2	1	0	26	G2
+C. Gil	unknown	ENSG00000140798	ABCC12	"ATP-binding cassette, sub-family C (CFTR/MRP), member 12 [Source:HGNC Symbol;Acc:14640]"	16	-1	q12.1	15	protein_coding	KNOWN	1	1	1	1	1	-10.4	1	0	35	G2
+C. Gil	unknown	ENSG00000166743	ACSM1	acyl-CoA synthetase medium-chain family member 1 [Source:HGNC Symbol;Acc:18049]	16	-1	p12.3	7	protein_coding	KNOWN	1	0	1	1	1	-10.3	0	0	37	G2
+C. Gil	unknown	ENSG00000140948	ZCCHC14	"zinc finger, CCHC domain containing 14 [Source:HGNC Symbol;Acc:24134]"	16	-1	q24.2	1	protein_coding	KNOWN	1	1	1	1	1	-9.2	1	0	46	G2
+I. Casal	unknown	ENSG00000011638	TMEM159	transmembrane protein 159 [Source:HGNC Symbol;Acc:30136]	16	1	p12.3	3	protein_coding	KNOWN	1	0	1	1	1	-13.9	1	1	3	G3
+I. Casal	unknown	ENSG00000064270	ATP2C2	"ATPase, Ca++ transporting, type 2C, member 2 [Source:HGNC Symbol;Acc:29103]"	16	1	q24.1	3	protein_coding	KNOWN	1	1	1	1	1	-12.9	0	0	12	G3
+I. Casal	unknown	ENSG00000118557	PMFBP1	polyamine modulated factor 1 binding protein 1 [Source:HGNC Symbol;Acc:17728]	16	-1	q22.2	11	protein_coding	KNOWN	1	0	1	1	1	-11.3	1	0	25	G3
+I. Casal	unknown	ENSG00000134398	ERN2	endoplasmic reticulum to nucleus signaling 2 [Source:HGNC Symbol;Acc:16942]	16	-1	p12.2	2	protein_coding	KNOWN	1	1	1	1	1	-10.5	1	0	34	G3
+I. Casal	unknown	ENSG00000169340	PDILT	"protein disulfide isomerase-like, testis expressed [Source:HGNC Symbol;Acc:27338]"	16	-1	p12.3	1	protein_coding	KNOWN	1	1	1	1	1	-10.3	1	0	38	G3
+I. Casal	unknown	ENSG00000204991	SPIRE2	spire homolog 2 (Drosophila) [Source:HGNC Symbol;Acc:30623]	16	1	q24.3	2	protein_coding	KNOWN	1	1	1	1	1	-9.2	0	0	47	G3
+F. Elortza	unknown	ENSG00000103248	MTHFSD	methenyltetrahydrofolate synthetase domain containing [Source:HGNC Symbol;Acc:25778]	16	-1	q24.1	5	protein_coding	KNOWN	1	1	1	1	1	-13.8	1	0	4	G4
+F. Elortza	unknown	ENSG00000103429	BFAR	bifunctional apoptosis regulator [Source:HGNC Symbol;Acc:17613]	16	1	p13.12	2	protein_coding	KNOWN	1	1	1	1	1	-12.9	0	1	13	G4
+F. Elortza	unknown	ENSG00000183971	NPW	neuropeptide W [Source:HGNC Symbol;Acc:30509]	16	1	p13.3	1	protein_coding	KNOWN	1	1	1	1	1	-11.4	0	0	24	G4
+F. Elortza	unknown	ENSG00000149926	FAM57B	"family with sequence similarity 57, member B [Source:HGNC Symbol;Acc:25295]"	16	-1	p11.2	2	protein_coding	KNOWN	1	0	1	1	1	-10.6	1	1	33	G4
+F. Elortza	unknown	ENSG00000205890	AC108134.1		16	1	p13.3	1	protein_coding	KNOWN	1	0	1	1	1	-10.3	0	0	39	G4
+F. Elortza	unknown	ENSG00000122390	NAA60	"N(alpha)-acetyltransferase 60, NatF catalytic subunit [Source:HGNC Symbol;Acc:25875]"	16	1	p13.3	5	protein_coding	KNOWN	1	0	1	1	1	-9.1	1	1	48	G4
+J.M. Arizmendi	unknown	ENSG00000213937	CLDN9	claudin 9 [Source:HGNC Symbol;Acc:2051]	16	1	p13.3	1	protein_coding	KNOWN	1	1	1	1	1	-13.7	1	0	5	G5
+J.M. Arizmendi	unknown	ENSG00000141098	GFOD2	glucose-fructose oxidoreductase domain containing 2 [Source:HGNC Symbol;Acc:28159]	16	-1	q22.1	1	protein_coding	KNOWN	1	0	1	1	1	-12.7	1	0	14	G5
+J.M. Arizmendi	unknown	ENSG00000155592	ZKSCAN2	zinc finger with KRAB and SCAN domains 2 [Source:HGNC Symbol;Acc:25677]	16	-1	p12.1	2	protein_coding	KNOWN	1	1	1	1	1	-11.4	0	0	23	G5
+J.M. Arizmendi	unknown	ENSG00000140876	NUDT7	nudix (nucleoside diphosphate linked moiety X)-type motif 7 [Source:HGNC Symbol;Acc:8054]	16	1	q23.1	2	protein_coding	KNOWN	1	0	1	1	1	-10.6	1	0	32	G5
+J.M. Arizmendi	unknown	ENSG00000154099	DNAAF1	"dynein, axonemal, assembly factor 1 [Source:HGNC Symbol;Acc:30539]"	16	1	q23.3	2	protein_coding	KNOWN	1	1	1	1	1	-10.2	1	0	40	G5
+J.M. Arizmendi	unknown	ENSG00000103269	RHBDL1	"rhomboid, veinlet-like 1 (Drosophila) [Source:HGNC Symbol;Acc:10007]"	16	1	p13.3	3	protein_coding	KNOWN	1	0	1	1	1	-9	0	0	49	G5
+J. Abián	unknown	ENSG00000067365	METTL22	methyltransferase like 22 [Source:HGNC Symbol;Acc:28368]	16	1	p13.2	2	protein_coding	KNOWN	1	0	1	1	1	-13.6	1	0	6	G6
+J. Abián	unknown	ENSG00000179583	CIITA	"class II, major histocompatibility complex, transactivator [Source:HGNC Symbol;Acc:7067]"	16	1	p13.13	4	protein_coding	KNOWN	1	1	1	1	1	-12.6	1	0	15	G6
+J. Abián	unknown	ENSG00000182601	HS3ST4	heparan sulfate (glucosamine) 3-O-sulfotransferase 4 [Source:HGNC Symbol;Acc:5200]	16	1	p12.1	2	protein_coding	KNOWN	1	0	1	1	1	-11.7	0	0	22	G6
+J. Abián	unknown	ENSG00000140943	MBTPS1	"membrane-bound transcription factor peptidase, site 1 [Source:HGNC Symbol;Acc:15456]"	16	-1	q23.3	2	protein_coding	KNOWN	1	1	1	1	1	-10.7	1	0	31	G6
+J. Abián	unknown	ENSG00000178226	PRSS36	"protease, serine, 36 [Source:HGNC Symbol;Acc:26906]"	16	-1	p11.2	2	protein_coding	KNOWN	1	1	1	1	1	-10.2	1	0	41	G6
+J. Abián	unknown	ENSG00000197774	EME2	essential meiotic endonuclease 1 homolog 2 (S. pombe) [Source:HGNC Symbol;Acc:27289]	16	1	p13.3	2	protein_coding	KNOWN	1	1	1	1	1	-9	0	0	50	G6
+F. Canals	unknown	ENSG00000166828	SCNN1G	"sodium channel, nonvoltage-gated 1, gamma [Source:HGNC Symbol;Acc:10602]"	16	1	p12.2	1	protein_coding	KNOWN	1	1	1	1	1	-13.4	0	0	7	G7
+F. Canals	unknown	ENSG00000179965	ZNF771	zinc finger protein 771 [Source:HGNC Symbol;Acc:29653]	16	1	p11.2	2	protein_coding	KNOWN	1	1	1	1	1	-12.6	0	0	16	G7
+F. Canals	unknown	ENSG00000103227	LMF1	lipase maturation factor 1 [Source:HGNC Symbol;Acc:14154]	16	-1	p13.3	7	protein_coding	KNOWN	1	1	1	1	1	-11.7	1	0	21	G7
+F. Canals	unknown	ENSG00000103044	HAS3	hyaluronan synthase 3 [Source:HGNC Symbol;Acc:4820]	16	1	q22.1	2	protein_coding	KNOWN	1	1	1	1	1	-10.7	1	0	30	G7
+F. Canals	unknown	ENSG00000156968	MPV17L	MPV17 mitochondrial membrane protein-like [Source:HGNC Symbol;Acc:26827]	16	1	p13.11	2	protein_coding	KNOWN	1	1	1	1	1	-10.1	1	0	42	G7
+F. Canals	unknown	ENSG00000103042	SLC38A7	"solute carrier family 38, member 7 [Source:HGNC Symbol;Acc:25582]"	16	-1	q21	1	protein_coding	KNOWN	1	0	1	1	1	-8.6	1	0	51	G7
+E. Oliveira	unknown	ENSG00000170537	TMC7	transmembrane channel-like 7 [Source:HGNC Symbol;Acc:23000]	16	1	p12.3	2	protein_coding	KNOWN	1	0	1	1	1	-13.3	1	0	8	G8
+E. Oliveira	unknown	ENSG00000140853	NLRC5	"NLR family, CARD domain containing 5 [Source:HGNC Symbol;Acc:29933]"	16	1	q13	31	protein_coding	KNOWN	1	1	1	1	1	-12.5	0	0	17	G8
+E. Oliveira	unknown	ENSG00000124074	C16orf48	chromosome 16 open reading frame 48 [Source:HGNC Symbol;Acc:25246]	16	-1	q22.1	1	protein_coding	KNOWN	1	0	1	1	1	-12	1	1	20	G8
+E. Oliveira	unknown	ENSG00000166669	ATF7IP2	activating transcription factor 7 interacting protein 2 [Source:HGNC Symbol;Acc:20397]	16	1	p13.2	6	protein_coding	KNOWN	1	1	1	1	1	-10.8	1	0	29	G8
+E. Oliveira	unknown	ENSG00000205423	TMEM188	transmembrane protein 188 [Source:HGNC Symbol;Acc:26759]	16	1	q12.1	3	protein_coding	KNOWN	1	0	1	1	1	-10.1	1	0	43	G8
+E. Oliveira	unknown	ENSG00000103089	FA2H	fatty acid 2-hydroxylase [Source:HGNC Symbol;Acc:21197]	16	-1	q23.1	2	protein_coding	KNOWN	1	1	1	1	1	-8.6	0	0	52	G8
+M. Sánchez del Pino	unknown	ENSG00000141096	DPEP3	dipeptidase 3 [Source:HGNC Symbol;Acc:23029]	16	-1	q22.1	1	protein_coding	KNOWN	1	0	1	1	1	-13	0	0	9	G9
+M. Sánchez del Pino	unknown	ENSG00000103404	USP31	ubiquitin specific peptidase 31 [Source:HGNC Symbol;Acc:20060]	16	-1	p12.2	2	protein_coding	KNOWN	1	1	1	1	1	-12.2	1	0	18	G9
+M. Sánchez del Pino	unknown	ENSG00000198736	SEPX1	"selenoprotein X, 1 [Source:HGNC Symbol;Acc:14133]"	16	-1	p13.3	4	protein_coding	KNOWN	1	1	1	1	1	-12.1	1	0	19	G9
+M. Sánchez del Pino	unknown	ENSG00000102897	LYRM1	LYR motif containing 1 [Source:HGNC Symbol;Acc:25074]	16	1	p12.3	4	protein_coding	KNOWN	1	0	1	1	1	-11.1	0	0	28	G9
+M. Sánchez del Pino	unknown	ENSG00000150394	CDH8	"cadherin 8, type 2 [Source:HGNC Symbol;Acc:1767]"	16	-1	q21	1	protein_coding	KNOWN	1	1	1	1	1	-9.7	1	0	44	G9
+M. Sánchez del Pino	unknown	ENSG00000140832	MARVELD3	MARVEL domain containing 3 [Source:HGNC Symbol;Acc:30525]	16	1	q22.2	2	protein_coding	KNOWN	1	0	1	1	1	-8.4	0	1	53	G9

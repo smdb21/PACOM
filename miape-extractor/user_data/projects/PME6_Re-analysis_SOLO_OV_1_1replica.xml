@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CP_ExperimentList name="PME6_Re-analysis_SOLO_OV_1_1replica">
+	<CP_Experiment curated="false" name="OV_1">
+		<CP_Replicate name="rep:1">
+			<CP_MSI_List>
+				<CP_MSI id="7116" name="MIAPE_MSI_7116.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="7216" name="MIAPE_MS_7216.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+</CP_ExperimentList>
