@@ -16,21 +16,20 @@ public class LoginTask extends SwingWorker<Void, Void> {
 	public static String LOGIN_ERROR = "login error";
 	public static String LOGIN_STARTED = "login started";
 
-	public LoginTask(String userName, String password,
-			MiapeAPIWebserviceDelegate miapeAPIWebservice2) {
+	public LoginTask(String userName, String password, MiapeAPIWebserviceDelegate miapeAPIWebservice2) {
 		this.userName = userName;
 		this.password = password;
-		this.miapeAPIWebservice = miapeAPIWebservice2;
+		miapeAPIWebservice = miapeAPIWebservice2;
 	}
 
 	private void checkLogin() {
-		if (this.miapeAPIWebservice == null)
+		if (miapeAPIWebservice == null)
 			firePropertyChange(LOGIN_ERROR, null, "Webservice not loaded");
 		String error = null;
 		try {
 			firePropertyChange(LOGIN_STARTED, null, null);
 
-			int userID = miapeAPIWebservice.getUserId(this.userName, this.password);
+			int userID = miapeAPIWebservice.getUserId(userName, password);
 			if (userID < 1) {
 				Toolkit.getDefaultToolkit().beep();
 				error = "User name and/or password are wrong\n";
@@ -52,15 +51,16 @@ public class LoginTask extends SwingWorker<Void, Void> {
 			error = error + e.getMessage() + "\n";
 
 		} catch (Exception e) {
+			if (error == null) {
+				error = "";
+			}
 			error = error + "Error connecting to webservice\n";
 			e.printStackTrace();
-			if (e.getMessage().contains("refused")
-					|| e.getMessage().contains("Service Unavailable")
+			if (e.getMessage().contains("refused") || e.getMessage().contains("Service Unavailable")
 					|| e.getMessage().contains("Read timed out")) {
-				error = error
-						+ "Webservice seems to be down.\nContact to miape_support@proteored.org.\n";
-			} else if (e.getMessage().contains("target service")
-					|| e.getMessage().contains("Not Found") || e instanceof NullPointerException) {
+				error = error + "Webservice seems to be down.\nContact to miape_support@proteored.org.\n";
+			} else if (e.getMessage().contains("target service") || e.getMessage().contains("Not Found")
+					|| e instanceof NullPointerException) {
 				error = error
 						+ "There is a problem connecting to the webservice.\nContact to miape_support@proteored.org.\n";
 			} else if (e.getMessage().contains("No route to host")) {

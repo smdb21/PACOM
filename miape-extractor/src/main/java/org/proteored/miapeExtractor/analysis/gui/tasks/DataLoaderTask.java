@@ -9,11 +9,11 @@ import org.proteored.miapeExtractor.analysis.conf.ExperimentListAdapter;
 import org.proteored.miapeExtractor.analysis.conf.jaxb.CPExperimentList;
 import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
 import org.proteored.miapeapi.experiment.model.ExperimentList;
+import org.proteored.miapeapi.experiment.model.datamanager.DataManager;
 import org.proteored.miapeapi.experiment.model.filters.Filter;
 
 public class DataLoaderTask extends SwingWorker<ExperimentList, Void> {
-	private static final Logger log = Logger
-			.getLogger("log4j.logger.org.proteored");
+	private static final Logger log = Logger.getLogger("log4j.logger.org.proteored");
 	private final CPExperimentList cpExpList;
 	private final Integer minPeptideLength;
 	private final List<Filter> filters;
@@ -23,9 +23,8 @@ public class DataLoaderTask extends SwingWorker<ExperimentList, Void> {
 	public static final String DATA_LOADED_START = "data loaded start";
 	public static final String DATA_LOADED_ERROR = "data loaded error";
 
-	public DataLoaderTask(CPExperimentList cpExpList, Integer minPeptideLength,
-			boolean groupingAtExperimentListLevel, List<Filter> filters,
-			boolean processInParallel) {
+	public DataLoaderTask(CPExperimentList cpExpList, Integer minPeptideLength, boolean groupingAtExperimentListLevel,
+			List<Filter> filters, boolean processInParallel) {
 		this.cpExpList = cpExpList;
 		this.minPeptideLength = minPeptideLength;
 		this.filters = filters;
@@ -43,10 +42,13 @@ public class DataLoaderTask extends SwingWorker<ExperimentList, Void> {
 		try {
 			firePropertyChange(DATA_LOADED_START, null, null);
 
+			log.info("Clearing DataManager static information");
+			DataManager.clearStaticInfo();
+
 			log.info("Loading data");
-			ExperimentList expList = new ExperimentListAdapter(cpExpList,
-					minPeptideLength, groupingAtExperimentListLevel,
-					this.filters, this.processInParallel).adapt();
+
+			ExperimentList expList = new ExperimentListAdapter(cpExpList, minPeptideLength,
+					groupingAtExperimentListLevel, filters, processInParallel).adapt();
 			firePropertyChange(DATA_LOADED_DONE, null, expList);
 
 			return expList;
@@ -58,7 +60,7 @@ public class DataLoaderTask extends SwingWorker<ExperimentList, Void> {
 
 	@Override
 	protected void done() {
-		if (this.isCancelled())
+		if (isCancelled())
 			log.info("Data loading cancelled");
 	}
 }

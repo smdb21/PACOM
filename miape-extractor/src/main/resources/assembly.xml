@@ -63,7 +63,7 @@
             <includes>
                 <include>*.xml</include>
             </includes>
-            <outputDirectory>${assembly.output.folder}/user_data/miape_ms_metadata</outputDirectory>
+            <outputDirectory>${assembly.output.folder}/user_data/ms_metadata_templates</outputDirectory>
         </fileSet>
         <fileSet>
         	<directory></directory>
@@ -89,7 +89,7 @@
         <fileSet>
         	<directory></directory>
             <includes>
-                <include>MIAPE_Extractor_batch_file.txt</include>
+                <include>Batch_Import_*.txt</include>
             </includes>
             <outputDirectory>${assembly.output.folder}</outputDirectory>
         </fileSet>

@@ -31,8 +31,6 @@ public interface MiapeExtractionRunParameters {
 
 	public boolean isMzIdentMLSelected();
 
-	public boolean isLocalProcessing();
-
 	public String getMzIdentMLFileName();
 
 	public String getMgfFileName();
@@ -56,4 +54,12 @@ public interface MiapeExtractionRunParameters {
 	public boolean storeMIAPEsInDB();
 
 	public boolean isXTandemPlusMGFSelected();
+
+	public String getDtaSelectFileName();
+
+	public boolean isDTASelectSelected();
+
+	public boolean isDTASelectPlusMGFSelected();
+
+	public boolean isLocalProcessing();
 }

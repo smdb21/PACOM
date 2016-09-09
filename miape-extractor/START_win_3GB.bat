@@ -1,1 +1,1 @@
-java -jar -Xms64m -Xmx3072m miape-extractor-3.8.1.jar
+java -jar -Xms64m -Xmx3072m pacom.jar

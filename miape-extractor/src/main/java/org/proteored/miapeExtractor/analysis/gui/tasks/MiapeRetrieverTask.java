@@ -28,8 +28,7 @@ public class MiapeRetrieverTask extends SwingWorker<Void, String> {
 	private final String miapeType;
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
 
-	protected MiapeRetrieverTask(int miapeID,
-			MiapeAPIWebserviceDelegate miapeAPIWebservice, String userName,
+	protected MiapeRetrieverTask(int miapeID, MiapeAPIWebserviceDelegate miapeAPIWebservice, String userName,
 			String password, String miapeType) {
 		this.miapeID = miapeID;
 		this.miapeType = miapeType;
@@ -40,37 +39,33 @@ public class MiapeRetrieverTask extends SwingWorker<Void, String> {
 	}
 
 	protected int getMiapeID() {
-		return this.miapeID;
+		return miapeID;
 	}
 
 	protected String getMiapeType() {
-		return this.miapeType;
+		return miapeType;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see javax.swing.SwingWorker#done()
 	 */
 	@Override
 	protected void done() {
-		if (!this.isCancelled()) {
+		if (!isCancelled()) {
 			// notify done
-			firePropertyChange(MIAPE_LOADER_DONE, null, miapeID
-					+ MESSAGE_SPLITTER + miapeType);
+			firePropertyChange(MIAPE_LOADER_DONE, null, miapeID + MESSAGE_SPLITTER + miapeType);
 			// log.info("MIAPE " + miapeType + " " + miapeID + " downloaded");
 		}
 	}
 
 	@Override
 	protected Void doInBackground() throws Exception {
-		if (this.miapeAPIWebservice == null || this.userName == null
-				|| this.password == null)
+		if (miapeAPIWebservice == null || userName == null || password == null)
 			return null;
 		log.info("Retrieving MIAPE " + miapeType + " " + miapeID);
 		final String miapeFilePath = retrieveMIAPE();
-		log.info("MIAPE " + miapeType + " " + miapeID + " retrieved in: "
-				+ miapeFilePath);
+		log.info("MIAPE " + miapeType + " " + miapeID + " retrieved in: " + miapeFilePath);
 		// File file = new File(miapeMSIFilePath);
 		// if (miapeMSIFilePath != null) {
 		// // add to the common hahsmap
@@ -88,55 +83,36 @@ public class MiapeRetrieverTask extends SwingWorker<Void, String> {
 		String error = "";
 		try {
 			if (miapeType.equals("MSI")) {
-				byte[] miapeBytes = miapeAPIWebservice.getMiapeMSIById(miapeID,
-						userName, password);
+				byte[] miapeBytes = miapeAPIWebservice.getMiapeMSIById(miapeID, userName, password);
 				if (miapeBytes == null)
-					throw new Exception(
-							"MIAPE MSI "
-									+ miapeID
-									+ " doesn't exist in the ProteoRed MIAPE repository");
+					throw new Exception("MIAPE MSI " + miapeID + " doesn't exist in the ProteoRed MIAPE repository");
 				MIAPEMSIXmlFile msiFile = new MIAPEMSIXmlFile(miapeBytes);
-				final String finalPath = FileManager
-						.getMiapeMSIXMLFilePath(miapeID);
+				final String finalPath = FileManager.getMiapeMSIXMLFileLocalPathFromMiapeInformation(null, miapeID,
+						null);
 				msiFile.saveAs(finalPath);
 				return finalPath;
 			} else if (miapeType.equals("MS")) {
-				byte[] miapeBytes = miapeAPIWebservice.getMiapeMSById(miapeID,
-						userName, password);
+				byte[] miapeBytes = miapeAPIWebservice.getMiapeMSById(miapeID, userName, password);
 				if (miapeBytes == null)
-					throw new Exception(
-							"MIAPE MS "
-									+ miapeID
-									+ " doesn't exist in the ProteoRed MIAPE repository");
+					throw new Exception("MIAPE MS " + miapeID + " doesn't exist in the ProteoRed MIAPE repository");
 				MIAPEMSXmlFile msiFile = new MIAPEMSXmlFile(miapeBytes);
-				final String finalPath = FileManager
-						.getMiapeMSXMLFilePath(miapeID);
+				final String finalPath = FileManager.getMiapeMSXMLFileLocalPath(miapeID, null, null);
 				msiFile.saveAs(finalPath);
 				return finalPath;
 			} else if (miapeType.equals("GE")) {
-				byte[] miapeBytes = miapeAPIWebservice.getMiapeGEById(miapeID,
-						userName, password);
+				byte[] miapeBytes = miapeAPIWebservice.getMiapeGEById(miapeID, userName, password);
 				if (miapeBytes == null)
-					throw new Exception(
-							"MIAPE GE "
-									+ miapeID
-									+ " doesn't exist in the ProteoRed MIAPE repository");
+					throw new Exception("MIAPE GE " + miapeID + " doesn't exist in the ProteoRed MIAPE repository");
 				MIAPEGEXmlFile msiFile = new MIAPEGEXmlFile(miapeBytes);
-				final String finalPath = FileManager
-						.getMiapeGEXMLFilePath(miapeID);
+				final String finalPath = FileManager.getMiapeGEXMLFilePath(miapeID);
 				msiFile.saveAs(finalPath);
 				return finalPath;
 			} else if (miapeType.equals("GI")) {
-				byte[] miapeBytes = miapeAPIWebservice.getMiapeGIById(miapeID,
-						userName, password);
+				byte[] miapeBytes = miapeAPIWebservice.getMiapeGIById(miapeID, userName, password);
 				if (miapeBytes == null)
-					throw new Exception(
-							"MIAPE GI "
-									+ miapeID
-									+ " doesn't exist in the ProteoRed MIAPE repository");
+					throw new Exception("MIAPE GI " + miapeID + " doesn't exist in the ProteoRed MIAPE repository");
 				MIAPEGIXmlFile msiFile = new MIAPEGIXmlFile(miapeBytes);
-				final String finalPath = FileManager
-						.getMiapeGIXMLFilePath(miapeID);
+				final String finalPath = FileManager.getMiapeGIXMLFilePath(miapeID);
 				msiFile.saveAs(finalPath);
 				return finalPath;
 			}
@@ -158,8 +134,7 @@ public class MiapeRetrieverTask extends SwingWorker<Void, String> {
 		}
 
 		// notify done
-		firePropertyChange(MIAPE_LOADER_ERROR, null, miapeID + MESSAGE_SPLITTER
-				+ miapeType + MESSAGE_SPLITTER + error);
+		firePropertyChange(MIAPE_LOADER_ERROR, null, miapeID + MESSAGE_SPLITTER + miapeType + MESSAGE_SPLITTER + error);
 
 		return null;
 

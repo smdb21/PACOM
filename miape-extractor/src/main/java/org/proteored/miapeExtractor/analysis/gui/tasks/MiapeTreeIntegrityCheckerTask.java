@@ -36,23 +36,23 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 	private final CPExperimentList expList;
 	private final Miape2ExperimentListDialog parent;
 
-	public MiapeTreeIntegrityCheckerTask(
-			Miape2ExperimentListDialog miape2ExperimentListDialog,
-			CPExperimentList expList) {
+	private final boolean processInParallel;
+
+	public MiapeTreeIntegrityCheckerTask(Miape2ExperimentListDialog miape2ExperimentListDialog,
+			CPExperimentList expList, boolean processInParallel) {
 		this.expList = expList;
 		parent = miape2ExperimentListDialog;
+		this.processInParallel = processInParallel;
 	}
 
 	@Override
 	protected String doInBackground() throws Exception {
 		if (expList != null) {
 			try {
-				parent.appendStatus("Checking integrity of Inspection Project: '"
-						+ expList.getName() + "'");
+				parent.appendStatus("Checking integrity of Inspection Project: '" + expList.getName() + "'");
 				parent.jProgressBar.setIndeterminate(true);
 				checkIntegrity();
-				parent.appendStatus("Project: '" + expList.getName()
-						+ "' is OK.");
+				parent.appendStatus("Project: '" + expList.getName() + "' is OK.");
 			} catch (IllegalMiapeArgumentException e) {
 				return e.getMessage();
 			}
@@ -90,54 +90,49 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 				for (CPExperiment cpExperiment : cpExperiments) {
 					setProgress(n * 100 / total);
 					n++;
-
+					boolean curated = cpExperiment.isCurated();
 					if (cpExperiment.getCPReplicate() != null) {
-						for (CPReplicate cpReplicate : cpExperiment
-								.getCPReplicate()) {
+						for (CPReplicate cpReplicate : cpExperiment.getCPReplicate()) {
 							List<String> repScoreNames = new ArrayList<String>();
 							// key=MIAPEMSI_ID - value=List<scoreNames>:
 							HashMap<Integer, List<String>> replicateScoreNames = new HashMap<Integer, List<String>>();
 							// just check if more than one MIAPE MSI is in a
 							// replicate
-							if (!cpReplicate.getCPMSIList().getCPMSI()
-									.isEmpty())
-								for (CPMSI cpMSI : cpReplicate.getCPMSIList()
-										.getCPMSI()) {
+							if (!cpReplicate.getCPMSIList().getCPMSI().isEmpty())
+								for (CPMSI cpMSI : cpReplicate.getCPMSIList().getCPMSI()) {
 									List<MiapeMSIDocument> miapeMSIs = new ArrayList<MiapeMSIDocument>();
-									final MiapeMSIDocument miapeMSI = getMIAPEMSIFromFile(cpMSI);
+									final MiapeMSIDocument miapeMSI = getMIAPEMSIFromFile(cpMSI, curated);
 									if (miapeMSI != null) {
 										miapeMSIs.add(miapeMSI);
 										// create a replicate with one miape msi
-										Replicate replicate = new Replicate(
-												cpReplicate.getName(),
-												cpExperiment.getName(), null,
-												miapeMSIs, null,
-												Integer.MAX_VALUE,// para que no
-																	// coja
-																	// péptidos
-																	// y vaya
-																	// más
-																	// rápido,
-																	// ya que
-																	// aquí no
-																	// se
-																	// necesitan
-												OntologyLoaderTask
-														.getCvManager());
+										Replicate replicate = new Replicate(cpReplicate.getName(),
+												cpExperiment.getName(), null, miapeMSIs, null, Integer.MAX_VALUE, // para
+																													// que
+																													// no
+																													// coja
+																													// péptidos
+																													// y
+																													// vaya
+																													// más
+																													// rápido,
+																													// ya
+																													// que
+																													// aquí
+																													// no
+																													// se
+																													// necesitan
+												OntologyLoaderTask.getCvManager(), processInParallel);
 
 										// check databaseNames
-										Set<String> databases = replicate
-												.getDifferentSearchedDatabases();
+										Set<String> databases = replicate.getDifferentSearchedDatabases();
 										if (databases != null) {
 											for (String database : databases) {
-												if (!databaseNames
-														.contains(database))
+												if (!databaseNames.contains(database))
 													databaseNames.add(database);
 											}
 										}
 
-										final List<String> peptideScoreNames = replicate
-												.getPeptideScoreNames();
+										final List<String> peptideScoreNames = replicate.getPeptideScoreNames();
 										if (repScoreNames.isEmpty()) {
 											for (String scoreName : peptideScoreNames) {
 												repScoreNames.add(scoreName);
@@ -145,56 +140,36 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 											Collections.sort(repScoreNames);
 										} else {
 											String message = "<html>Some MIAPEs seems to have been searched by different search engines in level 2 node "
-													+ "'"
-													+ cpExperiment.getName()
+													+ "'" + cpExperiment.getName()
 													+ "'<br>If you continue, you will not be able to apply a valid FDR threshold at level 2."
 													+ "<br>Do you want to continue?</html>";
 
-											if (repScoreNames.size() != peptideScoreNames
-													.size()) {
-												throw new IllegalMiapeArgumentException(
-														message);
+											if (repScoreNames.size() != peptideScoreNames.size()) {
+												throw new IllegalMiapeArgumentException(message);
 											}
 											Collections.sort(peptideScoreNames);
-											for (int i = 0; i < peptideScoreNames
-													.size(); i++) {
-												if (!peptideScoreNames.get(i)
-														.equals(repScoreNames
-																.get(i)))
-													throw new IllegalMiapeArgumentException(
-															message);
+											for (int i = 0; i < peptideScoreNames.size(); i++) {
+												if (!peptideScoreNames.get(i).equals(repScoreNames.get(i)))
+													throw new IllegalMiapeArgumentException(message);
 											}
 
 										}
 										if (!replicateScoreNames.isEmpty()) {
-											for (Integer miape_msi_id : replicateScoreNames
-													.keySet()) {
-												final List<String> scores = replicateScoreNames
-														.get(miape_msi_id);
-												if (scores != null
-														&& !scores.isEmpty())
-													if (!hasOneElementInCommon(
-															scores,
-															peptideScoreNames))
-														throw new IllegalMiapeArgumentException(
-																"<html>Level 2 node '"
-																		+ cpReplicate
-																				.getName()
-																		+ "' and '"
-																		+ miape_msi_id
-																		+ "' from level 1 node '"
-																		+ expList
-																				.getName()
-																		+ "' seems to have been searched by different search engines.<br>"
-																		+ "If you continue, you will not be able to apply a valid FDR threshold."
-																		+ "<br>Do you want to continue?</html>");
+											for (Integer miape_msi_id : replicateScoreNames.keySet()) {
+												final List<String> scores = replicateScoreNames.get(miape_msi_id);
+												if (scores != null && !scores.isEmpty())
+													if (!hasOneElementInCommon(scores, peptideScoreNames))
+														throw new IllegalMiapeArgumentException("<html>Level 2 node '"
+																+ cpReplicate.getName() + "' and '" + miape_msi_id
+																+ "' from level 1 node '" + expList.getName()
+																+ "' seems to have been searched by different search engines.<br>"
+																+ "If you continue, you will not be able to apply a valid FDR threshold."
+																+ "<br>Do you want to continue?</html>");
 											}
 										}
-										replicateScoreNames.put(cpMSI.getId(),
-												peptideScoreNames);
+										replicateScoreNames.put(cpMSI.getId(), peptideScoreNames);
 									} else {
-										listofNonExistingFiles.add(cpMSI
-												.getId());
+										listofNonExistingFiles.add(cpMSI.getId());
 									}
 								}
 						}
@@ -205,11 +180,8 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 		// if there is more than one database name, throw a warning
 		if (databaseNames.size() > 1) {
 			throw new IllegalMiapeArgumentException(
-					"<html><b>Warning:</b><br>"
-							+ "Not all data have been searched with the same protein database:<br>"
-							+ "'"
-							+ getCSVStringFromStringList(databaseNames)
-							+ "'<br>"
+					"<html><b>Warning:</b><br>" + "Not all data have been searched with the same protein database:<br>"
+							+ "'" + getCSVStringFromStringList(databaseNames) + "'<br>"
 							+ "If you continue it is possible that identifiers from different databases<br>"
 							+ "will not have the same format and the comparisons will not be performed correctly.<br>"
 							+ "Do you want to continue?</html>");
@@ -226,51 +198,38 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 						.getDownloadingState("MSI", Integer.valueOf(miapeId));
 				if (downloadingState == null) {
 					miapesNotBeingDownloaded.add(miapeId);
-				} else if (javax.swing.SwingWorker.StateValue.PENDING
-						.equals(downloadingState)) {
+				} else if (javax.swing.SwingWorker.StateValue.PENDING.equals(downloadingState)) {
 					miapesWaitingToBeDownloaded.add(miapeId);
-				} else if (javax.swing.SwingWorker.StateValue.STARTED
-						.equals(downloadingState)) {
+				} else if (javax.swing.SwingWorker.StateValue.STARTED.equals(downloadingState)) {
 					miapesBeingDownloaded.add(miapeId);
 				} else {
 					log.info("MIRAR ESTO: " + miapeId);
 				}
 			}
-			String message = "<html><b>Warning:</b><br>"
-					+ "Some MIAPE MSIs are not stored locally in "
-					+ FileManager.getMiapeDataPath() + ".<br>"
-					+ "Some MIAPEs requested in the comparison project";
+			String message = "<html><b>Warning:</b><br>" + "Some MIAPE MSIs are not stored locally in "
+					+ FileManager.getMiapeDataPath() + ".<br>" + "Some MIAPEs requested in the comparison project";
 			if (!miapesNotBeingDownloaded.isEmpty()) {
-				message = message
-						+ " ('"
-						+ getCSVStringFromIntegerList(miapesNotBeingDownloaded)
+				message = message + " ('" + getCSVStringFromIntegerList(miapesNotBeingDownloaded)
 						+ "') are not being downloaded from server."
 						+ "<br>Please, go back and login in the ProteoRed MIAPE repository.<br>";
 				for (Integer integer : miapesNotBeingDownloaded) {
-					MiapeRetrieverManager.getInstance(MainFrame.userName,
-							MainFrame.password).addRetrieving(integer, "MSI",
-							parent);
+					MiapeRetrieverManager.getInstance(MainFrame.userName, MainFrame.password).addRetrieving(integer,
+							"MSI", parent);
 				}
 			} else {
 				if (!miapesBeingDownloaded.isEmpty()) {
-					message = message
-							+ " ('"
-							+ getCSVStringFromIntegerList(miapesBeingDownloaded)
+					message = message + " ('" + getCSVStringFromIntegerList(miapesBeingDownloaded)
 							+ "') are still being downloaded from server."
 							+ "<br>Please, wait some minutes and then try again.<br>";
 				} else if (!miapesWaitingToBeDownloaded.isEmpty()) {
-					message = message
-							+ " ('"
-							+ getCSVStringFromIntegerList(miapesWaitingToBeDownloaded)
+					message = message + " ('" + getCSVStringFromIntegerList(miapesWaitingToBeDownloaded)
 							+ "') are waiting in the queue for being downloaded from server."
 							+ "<br>Please, wait some minutes and then try again.<br>";
 				}
 
 			}
 
-			message = message
-					+ "If you continue some data will be missing.<br>"
-					+ "Do you want to continue?</html>";
+			message = message + "If you continue some data will be missing.<br>" + "Do you want to continue?</html>";
 			throw new IllegalMiapeArgumentException(message);
 		}
 		// check names
@@ -302,8 +261,7 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 		return ret;
 	}
 
-	private void checkExperimentListNames(CPExperimentList cpExpList)
-			throws IllegalMiapeArgumentException {
+	private void checkExperimentListNames(CPExperimentList cpExpList) throws IllegalMiapeArgumentException {
 		Set<String> experimentNames = new HashSet<String>();
 		if (cpExpList != null) {
 			final List<CPExperiment> experiments = cpExpList.getCPExperiment();
@@ -313,13 +271,11 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 					String expName = cpExperiment.getName();
 					if (experimentNames.contains(expName))
 						throw new IllegalMiapeArgumentException(
-								"<html>Error in project tree.<br>Experiment name duplicated: '"
-										+ expName
+								"<html>Error in project tree.<br>Experiment name duplicated: '" + expName
 										+ "'.<br>If two experiments have the same name, some charts can show not valid data!.<br>Do you want to continue?</html>");
 					else
 						experimentNames.add(expName);
-					final List<CPReplicate> replicates = cpExperiment
-							.getCPReplicate();
+					final List<CPReplicate> replicates = cpExperiment.getCPReplicate();
 					Set<String> replicateNames = new HashSet<String>();
 					if (replicates != null) {
 						for (CPReplicate cpReplicate : replicates) {
@@ -327,10 +283,8 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 							String repName = cpReplicate.getName();
 							if (replicateNames.contains(repName))
 								throw new IllegalMiapeArgumentException(
-										"<html>Error in project tree: Replicate name duplicated: '"
-												+ repName
-												+ "' in experiment: '"
-												+ expName
+										"<html>Error in project tree: Replicate name duplicated: '" + repName
+												+ "' in experiment: '" + expName
 												+ "'.<br>Do you want to continue?</html>");
 							else
 								replicateNames.add(repName);
@@ -359,16 +313,19 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 		return false;
 	}
 
-	private MiapeMSIDocument getMIAPEMSIFromFile(CPMSI cpMSI) {
+	private MiapeMSIDocument getMIAPEMSIFromFile(CPMSI cpMSI, boolean curated) {
 
 		File file = null;
 		if (cpMSI.isLocal() == null || !cpMSI.isLocal()) {
 			file = new File(FileManager.getMiapeDataPath() + cpMSI);
 		} else if (cpMSI.isLocal() != null && cpMSI.isLocal()) {
-			file = new File(FileManager.getMiapeMSIXMLFileLocalPath(
-					cpMSI.getId(), cpMSI.getLocalProjectName()));
-		} else if (cpMSI.isManuallyCreated() != null
-				&& cpMSI.isManuallyCreated()) {
+			if (!curated) {
+				file = new File(FileManager.getMiapeMSIXMLFileLocalPathFromMiapeInformation(cpMSI));
+			} else {
+				file = new File(FileManager.getMiapeMSICuratedXMLFilePathFromMiapeInformation(
+						cpMSI.getLocalProjectName(), cpMSI.getId(), cpMSI.getName()));
+			}
+		} else if (cpMSI.isManuallyCreated() != null && cpMSI.isManuallyCreated()) {
 			file = FileManager.getManualIdSetFile(cpMSI.getName());
 		}
 		if (file == null || !file.exists())

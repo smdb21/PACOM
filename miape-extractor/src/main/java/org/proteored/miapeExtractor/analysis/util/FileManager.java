@@ -16,6 +16,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.proteored.miapeExtractor.analysis.conf.jaxb.CPExperiment;
 import org.proteored.miapeExtractor.analysis.conf.jaxb.CPExperimentList;
+import org.proteored.miapeExtractor.analysis.conf.jaxb.CPMSI;
 import org.proteored.miapeapi.cv.ControlVocabularyManager;
 import org.proteored.miapeapi.exceptions.MiapeDatabaseException;
 import org.proteored.miapeapi.exceptions.MiapeSecurityException;
@@ -33,14 +34,14 @@ public class FileManager {
 	private static final String USER_DATA_FOLDER_NAME = "user_data";
 	private static final String PROJECTS_DATA_FOLDER_NAME = "projects";
 	private static final String MIAPE_DATA_FOLDER_NAME = "miape_data";
-	private static final String MIAPE_LOCA_DATA_FOLDER_NAME = "miape_local_data";
-	private static final String METADATA_FOLDER_NAME = "miape_ms_metadata";
+	private static final String MIAPE_LOCA_DATA_FOLDER_NAME = "local_datasets";
+	private static final String METADATA_FOLDER_NAME = "ms_metadata_templates";
 	private static final String CURATED_EXPERIMENTS_FOLDER_NAME = "curated_exps";
 	private static final String MANUAL_ID_SETS_FOLDER_NAME = "manual_id_sets";
 	public static final String PATH_SEPARATOR = System.getProperty("file.separator");
 
 	private static final String MIAPE_PREFIX = "MIAPE_";
-	private static final String MIAPE_LOCAL_PREFIX = "LOCAL_MIAPE_";
+	private static final String MIAPE_LOCAL_PREFIX = "Dataset_";
 
 	private static final String MIAPE_MSI_PREFIX = MIAPE_PREFIX + "MSI_";
 	public static final String MIAPE_MSI_LOCAL_PREFIX = MIAPE_LOCAL_PREFIX + "MSI_";
@@ -285,52 +286,87 @@ public class FileManager {
 		return null;
 	}
 
-	/**
-	 * Gets the full file path APP_FOLDER/user_data/miape_data/MIAPE_MSI_??.XML
-	 *
-	 * @return
-	 */
-	public static String getMiapeMSIXMLFilePath(int miapeID) {
-
-		String projectsDataPath = FileManager.getMiapeDataPath();
-		if (projectsDataPath != null)
-			return projectsDataPath + getMiapeMSIFileName(miapeID);
-
-		return null;
-	}
-
+	// /**
+	// * Gets the full file path
+	// APP_FOLDER/user_data/miape_data/MIAPE_MSI_??.XML
+	// *
+	// * @return
+	// */
+	// public static String getMiapeMSIXMLFilePath(int miapeID) {
+	//
+	// String projectsDataPath = FileManager.getMiapeDataPath();
+	// if (projectsDataPath != null)
+	// return projectsDataPath + getMiapeMSIFileName(miapeID);
+	//
+	// return null;
+	// }
 	/**
 	 * Gets the full file path
 	 * APP_FOLDER/user_data/curated_exps/curated_exp_name/MIAPE_MSI_??.XML
 	 *
-	 * @return
-	 */
-	public static String getMiapeMSICuratedXMLFilePath(int miapeID, String curatedExperimentName) {
-
-		String curatedExperimentDataPath = FileManager.getCuratedExperimentXMLFilePath(curatedExperimentName);
-		if (curatedExperimentDataPath != null)
-			return FilenameUtils.getFullPath(curatedExperimentDataPath) + MIAPE_MSI_PREFIX + miapeID + ".xml";
-
-		return null;
-	}
-
-	/**
-	 * Gets the full file path APP_FOLDER/user_data/miape_data/MIAPE_MS_??.XML
+	 * @param fullFileName
 	 *
 	 * @return
 	 */
-	public static String getMiapeMSXMLFilePath(int miapeID) {
+	public static String getMiapeMSICuratedXMLFilePathFromFullName(String projectName, String fullFileName) {
 
-		String projectsDataPath = FileManager.getMiapeDataPath();
-		if (projectsDataPath != null)
-			return projectsDataPath + MIAPE_MS_PREFIX + miapeID + ".xml";
-		else {
-			projectsDataPath = FileManager.getMiapeDataPath();
-			if (projectsDataPath != null)
-				return projectsDataPath + getMiapeMSFileName(miapeID);
-		}
-		return null;
+		String path = FileManager.getCuratedExperimentFolderPath(projectName);
+		// String name = getMiapeMSILocalFileName(miapeLocalID, fileName);
+		// final String finalFileName = path + name;
+		final String finalFileName = path + FilenameUtils.getBaseName(fullFileName) + ".xml";
+		return finalFileName;
 	}
+
+	/**
+	 * Gets the full file path
+	 * APP_FOLDER/user_data/curated_exps/curated_exp_name/MIAPE_MSI_??_fileName.XML
+	 *
+	 * @param miapeName
+	 *
+	 * @return
+	 */
+	public static String getMiapeMSICuratedXMLFilePathFromMiapeInformation(String projectName, int miapeID,
+			String miapeName) {
+
+		String path = FileManager.getCuratedExperimentFolderPath(projectName);
+		// String name = getMiapeMSILocalFileName(miapeLocalID, fileName);
+		// final String finalFileName = path + name;
+		final String finalFileName = path + MIAPE_MSI_LOCAL_PREFIX + miapeID + "_"
+				+ FilenameUtils.getBaseName(miapeName) + ".xml";
+		return finalFileName;
+
+		// String curatedExperimentDataPath =
+		// FileManager.getCuratedExperimentXMLFilePath(projectName);
+		// if (curatedExperimentDataPath != null) {
+		// if (fileName == null) {
+		// return FilenameUtils.getFullPath(curatedExperimentDataPath) +
+		// MIAPE_MSI_PREFIX + miapeID + ".xml";
+		// } else {
+		// return FilenameUtils.getFullPath(curatedExperimentDataPath) +
+		// MIAPE_MSI_PREFIX + miapeID + "_"
+		// + fileName + ".xml";
+		// }
+		// }
+		// return null;
+	}
+
+	// /**
+	// * Gets the full file path APP_FOLDER/user_data/miape_data/MIAPE_MS_??.XML
+	// *
+	// * @return
+	// */
+	// public static String getMiapeMSXMLFilePath(int miapeID) {
+	//
+	// String projectsDataPath = FileManager.getMiapeDataPath();
+	// if (projectsDataPath != null)
+	// return projectsDataPath + MIAPE_MS_PREFIX + miapeID + ".xml";
+	// else {
+	// projectsDataPath = FileManager.getMiapeDataPath();
+	// if (projectsDataPath != null)
+	// return projectsDataPath + getMiapeMSFileName(miapeID);
+	// }
+	// return null;
+	// }
 
 	/**
 	 * Gets the full file path APP_FOLDER/user_data/miape_data/MIAPE_GE_??.XML
@@ -368,20 +404,28 @@ public class FileManager {
 		return null;
 	}
 
-	public static String getMiapeMSIFileName(int miapeID) {
-		return MIAPE_MSI_PREFIX + miapeID + ".xml";
+	// public static String getMiapeMSIFileName(int miapeID) {
+	// return MIAPE_MSI_PREFIX + miapeID + ".xml";
+	// }
+	//
+	// public static String getMiapeMSFileName(int miapeID) {
+	// return MIAPE_MS_PREFIX + miapeID + ".xml";
+	// }
+
+	public static String getMiapeMSILocalFileName(int miapeID, String fileName) {
+		if (fileName == null) {
+			return MIAPE_MSI_LOCAL_PREFIX + miapeID + ".xml";
+		} else {
+			return MIAPE_MSI_LOCAL_PREFIX + miapeID + "_" + fileName + ".xml";
+		}
 	}
 
-	public static String getMiapeMSFileName(int miapeID) {
-		return MIAPE_MS_PREFIX + miapeID + ".xml";
-	}
-
-	public static String getMiapeMSILocalFileName(int miapeID) {
-		return MIAPE_MSI_LOCAL_PREFIX + miapeID + ".xml";
-	}
-
-	public static String getMiapeMSLocalFileName(int miapeID) {
-		return MIAPE_MS_LOCAL_PREFIX + miapeID + ".xml";
+	public static String getMiapeMSLocalFileName(int miapeID, String fileName) {
+		if (fileName == null) {
+			return MIAPE_MS_LOCAL_PREFIX + miapeID + ".xml";
+		} else {
+			return MIAPE_MS_LOCAL_PREFIX + miapeID + "_" + fileName + ".xml";
+		}
 	}
 
 	public static String getMiapeGEFileName(int miapeID) {
@@ -628,9 +672,11 @@ public class FileManager {
 		return true;
 	}
 
-	public static String saveCuratedMiapeMSI(String expName, MiapeMSIFiltered miapeMSIFiltered) throws IOException {
+	public static String saveCuratedMiapeMSI(String expName, MiapeMSIFiltered miapeMSIFiltered, String miapeName)
+			throws IOException {
 		log.info("saving curated MIAPE MSI:" + miapeMSIFiltered.getName());
-		final String msiFilePath = FileManager.getMiapeMSICuratedXMLFilePath(miapeMSIFiltered.getId(), expName);
+		final String msiFilePath = FileManager.getMiapeMSICuratedXMLFilePathFromMiapeInformation(expName,
+				miapeMSIFiltered.getId(), miapeName);
 		final File file = new File(msiFilePath);
 		if (!file.exists())
 			file.mkdirs();
@@ -688,12 +734,44 @@ public class FileManager {
 	 * @param projectName
 	 * @return
 	 */
-	public static String getMiapeMSIXMLFileLocalPath(int miapeLocalID, String projectName) {
+	public static String getMiapeMSIXMLFileLocalPathFromMiapeInformation(CPMSI cpMSI) {
+
+		return getMiapeMSIXMLFileLocalPathFromFullName(cpMSI.getLocalProjectName(), cpMSI.getName());
+	}
+
+	/**
+	 * gets
+	 * APP_FOLDER/user_data/miape_local_data/project_Name/LOCAL_MIAPE_MSI_id.xml
+	 *
+	 * @param miapeLocalID
+	 * @param projectName
+	 * @return
+	 */
+	public static String getMiapeMSIXMLFileLocalPathFromMiapeInformation(String projectName, int miapeLocalID,
+			String fileName) {
 
 		String path = FileManager.getMiapeLocalDataPath(projectName);
-		String name = getMiapeMSILocalFileName(miapeLocalID);
-		final String finalFileName = path + name;
+		// String name = getMiapeMSILocalFileName(miapeLocalID, fileName);
+		// final String finalFileName = path + name;
+		final String finalFileName = path + MIAPE_MSI_LOCAL_PREFIX + miapeLocalID + "_"
+				+ FilenameUtils.getBaseName(fileName) + ".xml";
+		return finalFileName;
+	}
 
+	/**
+	 * gets
+	 * APP_FOLDER/user_data/miape_local_data/project_Name/LOCAL_MIAPE_MSI_id.xml
+	 *
+	 * @param miapeLocalID
+	 * @param projectName
+	 * @return
+	 */
+	public static String getMiapeMSIXMLFileLocalPathFromFullName(String projectName, String fileName) {
+
+		String path = FileManager.getMiapeLocalDataPath(projectName);
+		// String name = getMiapeMSILocalFileName(miapeLocalID, fileName);
+		// final String finalFileName = path + name;
+		final String finalFileName = path + FilenameUtils.getBaseName(fileName) + ".xml";
 		return finalFileName;
 	}
 
@@ -706,9 +784,9 @@ public class FileManager {
 	 * @param projectName
 	 * @return
 	 */
-	public static String getMiapeMSXMLFileLocalPath(int miapeLocalID, String projectName) {
+	public static String getMiapeMSXMLFileLocalPath(int miapeLocalID, String projectName, String fileName) {
 		String path = FileManager.getMiapeLocalDataPath(projectName);
-		String name = getMiapeMSLocalFileName(miapeLocalID);
+		String name = getMiapeMSLocalFileName(miapeLocalID, fileName);
 		final String finalFileName = path + name;
 
 		return finalFileName;
@@ -723,10 +801,11 @@ public class FileManager {
 	 * @param projectName
 	 * @throws IOException
 	 */
-	public static void saveLocalMiapeMSI(int miapeID, MIAPEMSIXmlFile miapeXML, String projectName) throws IOException {
+	public static void saveLocalMiapeMSI(int miapeID, MIAPEMSIXmlFile miapeXML, String projectName, String fileName)
+			throws IOException {
 		log.info("saving local  MIAPE MSI:");
 
-		String name = getMiapeMSILocalFileName(miapeID);
+		String name = getMiapeMSILocalFileName(miapeID, fileName);
 		String path = FileManager.getMiapeLocalDataPath(projectName);
 		final String finalFileName = path + name;
 		miapeXML.saveAs(finalFileName);
@@ -742,10 +821,11 @@ public class FileManager {
 	 * @param projectName
 	 * @throws IOException
 	 */
-	public static void saveLocalMiapeMS(int miapeID, MIAPEMSXmlFile miapeXML, String projectName) throws IOException {
+	public static void saveLocalMiapeMS(int miapeID, MIAPEMSXmlFile miapeXML, String projectName, String fileName)
+			throws IOException {
 		log.info("saving local MIAPE MS");
 
-		String name = getMiapeMSLocalFileName(miapeID);
+		String name = getMiapeMSLocalFileName(miapeID, fileName);
 		String path = FileManager.getMiapeLocalDataPath(projectName);
 		final String finalFileName = path + name;
 		miapeXML.saveAs(finalFileName);

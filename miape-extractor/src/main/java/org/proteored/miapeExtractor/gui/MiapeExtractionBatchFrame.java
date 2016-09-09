@@ -34,7 +34,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.jfree.ui.RefineryUtilities;
 import org.proteored.miapeExtractor.gui.tasks.MiapeExtractionTask;
 import org.proteored.miapeExtractor.gui.tasks.OntologyLoaderWaiter;
-import org.proteored.miapeExtractor.gui.tasks.WebservicesLoaderTask;
 import org.proteored.miapeExtractor.utils.HttpUtilities;
 import org.proteored.miapeExtractor.utils.MiapeExtractionBatchManager;
 import org.proteored.miapeExtractor.utils.MiapeExtractionResult;
@@ -49,15 +48,13 @@ import org.proteored.miapeapi.webservice.clients.miapeextractor.MiapeExtractorDe
 import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 
 /**
- * 
+ *
  * @author __USER__
  */
-public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
-		PropertyChangeListener {
-	private static org.apache.log4j.Logger log = org.apache.log4j.Logger
-			.getLogger("log4j.logger.org.proteored");
-	private final MiapeExtractorDelegate miapeExtractorWebservice;
-	private final MiapeAPIWebserviceDelegate miapeAPIWebservice;
+public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements PropertyChangeListener {
+	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("log4j.logger.org.proteored");
+	private final MiapeExtractorDelegate miapeExtractorWebservice = null;
+	private final MiapeAPIWebserviceDelegate miapeAPIWebservice = null;
 	private ControlVocabularyManager cvManager;
 	private final HashMap<Integer, List<JComponent>> miapeExtractionTaskJComponents = new HashMap<Integer, List<JComponent>>();
 	private MiapeExtractionBatchManager miapeExtractorBatchManager;
@@ -75,7 +72,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 
 	/**
 	 * Creates new form MiapeExtractionBatchFrame
-	 * 
+	 *
 	 * @param mainFrame
 	 */
 	private MiapeExtractionBatchFrame(MainFrame mainFrame) {
@@ -85,10 +82,11 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 		}
 		initComponents();
 		parentFrame = mainFrame;
-		WebservicesLoaderTask loader = WebservicesLoaderTask.getInstace();
-		miapeExtractorWebservice = loader.getMiapeExtractorWebservice(true);
-		miapeAPIWebservice = loader.getMiapeAPIWebservice(true);
+		// WebservicesLoaderTask loader = WebservicesLoaderTask.getInstace();
+		// miapeExtractorWebservice = loader.getMiapeExtractorWebservice(true);
+		// miapeAPIWebservice = loader.getMiapeAPIWebservice(true);
 
+		appendStatus("Loading ontologies...");
 		OntologyLoaderWaiter waiter = new OntologyLoaderWaiter();
 		waiter.addPropertyChangeListener(this);
 		waiter.execute();
@@ -115,7 +113,8 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 	// <editor-fold defaultstate="collapsed" desc="Generated Code">
 	private void initComponents() {
 
-		jFileChooser1 = new javax.swing.JFileChooser();
+		// jFileChooser1 = new javax.swing.JFileChooser();
+		jFileChooser1 = MainFrame.fileChooser;
 		jPanel1 = new javax.swing.JPanel();
 		jTextFieldBatchFile = new javax.swing.JTextField();
 		jButtonSelectBatchFile = new javax.swing.JButton();
@@ -129,67 +128,40 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 		jPanelJobQueue = new javax.swing.JPanel();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		setTitle("MIAPE Batch Extraction");
+		setTitle("Batch data import");
 
-		jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(
-				javax.swing.BorderFactory.createEtchedBorder(), "Batch file"));
+		jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(),
+				"Batch file"));
 
-		jTextFieldBatchFile.setToolTipText("Input MIAPE Extracto batch file");
+		jTextFieldBatchFile.setToolTipText("Input batch import file");
 
 		jButtonSelectBatchFile.setText("Select");
-		jButtonSelectBatchFile
-				.addActionListener(new java.awt.event.ActionListener() {
-					@Override
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						jButtonSelectBatchFileActionPerformed(evt);
-					}
-				});
+		jButtonSelectBatchFile.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jButtonSelectBatchFileActionPerformed(evt);
+			}
+		});
 
-		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(
-				jPanel1);
+		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 		jPanel1.setLayout(jPanel1Layout);
-		jPanel1Layout
-				.setHorizontalGroup(jPanel1Layout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								javax.swing.GroupLayout.Alignment.TRAILING,
-								jPanel1Layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addComponent(
-												jTextFieldBatchFile,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												985, Short.MAX_VALUE)
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jButtonSelectBatchFile)
-										.addContainerGap()));
-		jPanel1Layout
-				.setVerticalGroup(jPanel1Layout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanel1Layout
-										.createSequentialGroup()
-										.addGroup(
-												jPanel1Layout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(
-																jButtonSelectBatchFile)
-														.addComponent(
-																jTextFieldBatchFile,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.PREFERRED_SIZE))
-										.addContainerGap(
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)));
+		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+						.addContainerGap()
+						.addComponent(jTextFieldBatchFile, javax.swing.GroupLayout.DEFAULT_SIZE, 985, Short.MAX_VALUE)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jButtonSelectBatchFile).addContainerGap()));
+		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel1Layout.createSequentialGroup()
+						.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jButtonSelectBatchFile).addComponent(jTextFieldBatchFile,
+										javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-		jButtonStart.setText("Start MIAPE Extractions");
+		jButtonStart.setText("Start batch import");
 		jButtonStart.setEnabled(false);
 		jButtonStart.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -207,8 +179,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 			}
 		});
 
-		jScrollPane1
-				.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
 		jTextAreaStatus.setColumns(20);
 		jTextAreaStatus.setLineWrap(true);
@@ -218,155 +189,83 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 
 		jButtonRestartFailedTasks.setText("Restart failed tasks");
 		jButtonRestartFailedTasks.setEnabled(false);
-		jButtonRestartFailedTasks
-				.addActionListener(new java.awt.event.ActionListener() {
-					@Override
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						jButtonRestartFailedTasksActionPerformed(evt);
-					}
-				});
+		jButtonRestartFailedTasks.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jButtonRestartFailedTasksActionPerformed(evt);
+			}
+		});
 
-		javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(
-				jPanel3);
+		javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
 		jPanel3.setLayout(jPanel3Layout);
-		jPanel3Layout
-				.setHorizontalGroup(jPanel3Layout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanel3Layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												jPanel3Layout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.LEADING,
-																false)
-														.addComponent(
-																jButtonRestartFailedTasks,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																Short.MAX_VALUE)
-														.addComponent(
-																jButtonCancel,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																Short.MAX_VALUE)
-														.addComponent(
-																jButtonStart,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																Short.MAX_VALUE))
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(
-												jScrollPane1,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												913, Short.MAX_VALUE)));
-		jPanel3Layout
-				.setVerticalGroup(jPanel3Layout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanel3Layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addComponent(jButtonStart)
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jButtonCancel)
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jButtonRestartFailedTasks)
-										.addContainerGap(18, Short.MAX_VALUE))
-						.addComponent(jScrollPane1,
-								javax.swing.GroupLayout.DEFAULT_SIZE, 120,
-								Short.MAX_VALUE));
+		jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel3Layout.createSequentialGroup().addContainerGap()
+						.addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+								.addComponent(jButtonRestartFailedTasks, javax.swing.GroupLayout.DEFAULT_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(jButtonCancel, javax.swing.GroupLayout.DEFAULT_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(jButtonStart, javax.swing.GroupLayout.DEFAULT_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 913, Short.MAX_VALUE)));
+		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel3Layout.createSequentialGroup().addContainerGap().addComponent(jButtonStart)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jButtonCancel)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jButtonRestartFailedTasks).addContainerGap(18, Short.MAX_VALUE))
+				.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE));
 
 		jScrollPaneJobQueue.setBorder(javax.swing.BorderFactory
-				.createTitledBorder(
-						javax.swing.BorderFactory.createEtchedBorder(),
-						"Job queue"));
+				.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Job queue"));
 		jScrollPaneJobQueue.setAutoscrolls(true);
 
-		javax.swing.GroupLayout jPanelJobQueueLayout = new javax.swing.GroupLayout(
-				jPanelJobQueue);
+		javax.swing.GroupLayout jPanelJobQueueLayout = new javax.swing.GroupLayout(jPanelJobQueue);
 		jPanelJobQueue.setLayout(jPanelJobQueueLayout);
 		jPanelJobQueueLayout.setHorizontalGroup(jPanelJobQueueLayout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGap(0, 1079, Short.MAX_VALUE));
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGap(0, 1079, Short.MAX_VALUE));
 		jPanelJobQueueLayout.setVerticalGroup(jPanelJobQueueLayout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGap(0, 338, Short.MAX_VALUE));
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGap(0, 338, Short.MAX_VALUE));
 
 		jScrollPaneJobQueue.setViewportView(jPanelJobQueue);
 
-		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
-				getContentPane());
+		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(
-						javax.swing.GroupLayout.Alignment.TRAILING,
-						layout.createSequentialGroup()
-								.addContainerGap()
-								.addGroup(
-										layout.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.TRAILING)
-												.addComponent(
-														jPanel3,
-														javax.swing.GroupLayout.Alignment.LEADING,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														Short.MAX_VALUE)
-												.addComponent(
-														jScrollPaneJobQueue,
-														javax.swing.GroupLayout.Alignment.LEADING,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														1091, Short.MAX_VALUE)
-												.addComponent(
-														jPanel1,
-														javax.swing.GroupLayout.Alignment.LEADING,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														Short.MAX_VALUE))
-								.addContainerGap()));
-		layout.setVerticalGroup(layout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(
-						layout.createSequentialGroup()
-								.addContainerGap()
-								.addComponent(jPanel1,
-										javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(
-										javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jScrollPaneJobQueue,
-										javax.swing.GroupLayout.DEFAULT_SIZE,
-										362, Short.MAX_VALUE)
-								.addPreferredGap(
-										javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jPanel3,
-										javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addContainerGap()));
+		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup().addContainerGap()
+						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+								.addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
+								.addComponent(jScrollPaneJobQueue, javax.swing.GroupLayout.Alignment.LEADING,
+										javax.swing.GroupLayout.DEFAULT_SIZE, 1091, Short.MAX_VALUE)
+								.addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE))
+						.addContainerGap()));
+		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup().addContainerGap()
+						.addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE,
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jScrollPaneJobQueue, javax.swing.GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE,
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addContainerGap()));
 
 		pack();
 	}// </editor-fold>
 		// GEN-END:initComponents
 
-	private void jButtonRestartFailedTasksActionPerformed(
-			java.awt.event.ActionEvent evt) {
+	private void jButtonRestartFailedTasksActionPerformed(java.awt.event.ActionEvent evt) {
 		if (!miapeExtractorBatchManager.getRunningJobs().isEmpty())
 			appendStatus("Failed jobs will be restarted after current job was finished.");
 		restartFailedJobs();
 	}
 
 	private void restartFailedJobs() {
-		boolean anyJobRestarted = miapeExtractorBatchManager
-				.startMiapeExtractions(true);
+		boolean anyJobRestarted = miapeExtractorBatchManager.startMiapeExtractions(true);
 		if (!anyJobRestarted) {
 			appendStatus("No jobs have been restarted. Failed jobs can only be restarted twice.");
 		}
@@ -384,7 +283,12 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 			jButtonStart.setEnabled(false);
 			return;
 		}
-		appendStatus("Starting MIAPE Extraction queue...");
+		if (miapeExtractorBatchManager == null) {
+			appendStatus("Load a batch file first");
+			return;
+		}
+		appendStatus("Starting batch import file process...");
+
 		miapeExtractorBatchManager.startMiapeExtractions(false);
 
 		jTextAreaStatus.setText("");
@@ -401,8 +305,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 	private void cancelAllJobs() {
 
 		if (miapeExtractorBatchManager != null) {
-			final List<MiapeExtractionTask> miapeExtractionQueue = miapeExtractorBatchManager
-					.getMiapeExtractionQueue();
+			final List<MiapeExtractionTask> miapeExtractionQueue = miapeExtractorBatchManager.getMiapeExtractionQueue();
 			boolean pendingJobs = false;
 			for (MiapeExtractionTask miapeExtractionTask : miapeExtractionQueue) {
 				if (miapeExtractionTask.getState() != StateValue.DONE) {
@@ -413,14 +316,13 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 			if (pendingJobs) {
 				// show warning
 				final int option = JOptionPane.showConfirmDialog(this,
-						"Are you sure you want to discard all pending jobs?",
-						"Cancelling jobs", JOptionPane.YES_NO_CANCEL_OPTION);
+						"Are you sure you want to discard all pending jobs?", "Cancelling jobs",
+						JOptionPane.YES_NO_CANCEL_OPTION);
 				if (option == JOptionPane.YES_OPTION) {
 					appendStatus("Cancelling all jobs");
 					miapeExtractorBatchManager.cancelMiapeExtractions();
 				}
-				for (List<JComponent> components : miapeExtractionTaskJComponents
-						.values()) {
+				for (List<JComponent> components : miapeExtractionTaskJComponents.values()) {
 					components.get(jButtonStartIndex).setEnabled(true);
 					components.get(jButtonStopIndex).setEnabled(false);
 				}
@@ -428,8 +330,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 		}
 	}
 
-	private void jButtonSelectBatchFileActionPerformed(
-			java.awt.event.ActionEvent evt) {
+	private void jButtonSelectBatchFileActionPerformed(java.awt.event.ActionEvent evt) {
 		jPanelJobQueue.removeAll();
 		jPanelJobQueue.repaint();
 		selectInputBatchFile();
@@ -441,9 +342,8 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 		if (jFileChooser1 != null)
 			currentDirectory = jFileChooser1.getCurrentDirectory();
 		jFileChooser1 = new JFileChooser(currentDirectory);
-		jFileChooser1.setDialogTitle("Select a MIAPE Extractor batch file");
-		jFileChooser1.setFileFilter(new TFileExtension("txt files",
-				new String[] { "txt" }));
+		jFileChooser1.setDialogTitle("Select a import batch file");
+		jFileChooser1.setFileFilter(new TFileExtension("txt files", new String[] { "txt" }));
 		jFileChooser1.showOpenDialog(this);
 		File file;
 		if (jFileChooser1.getSelectedFile() != null) {
@@ -462,11 +362,9 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 
 	private void startMiapeExtractionBatchManager(File file) {
 		try {
-			miapeExtractorBatchManager = new MiapeExtractionBatchManager(file,
-					this, miapeExtractorWebservice, miapeAPIWebservice,
-					cvManager);
-			List<MiapeExtractionTask> miapeExtractionQueue = miapeExtractorBatchManager
-					.getMiapeExtractionQueue();
+			miapeExtractorBatchManager = new MiapeExtractionBatchManager(file, this, miapeExtractorWebservice,
+					miapeAPIWebservice, cvManager);
+			List<MiapeExtractionTask> miapeExtractionQueue = miapeExtractorBatchManager.getMiapeExtractionQueue();
 			loadJobQueuePanel(miapeExtractionQueue);
 			updateButtonsState();
 		} catch (IllegalMiapeArgumentException e) {
@@ -474,8 +372,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 		}
 	}
 
-	private void loadJobQueuePanel(
-			List<MiapeExtractionTask> miapeExtractionQueue) {
+	private void loadJobQueuePanel(List<MiapeExtractionTask> miapeExtractionQueue) {
 		jPanelJobQueue.removeAll();
 		jPanelJobQueue.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -495,40 +392,33 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 		jPanelJobQueue.repaint();
 		jScrollPaneJobQueue.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-		appendStatus(miapeExtractorBatchManager.getMiapeExtractionQueue()
-				.size() + " jobs loaded from batch file.");
+		appendStatus(miapeExtractorBatchManager.getMiapeExtractionQueue().size() + " jobs loaded from batch file.");
 		pack();
 
 		jButtonStart.setEnabled(true);
 	}
 
-	private List<JComponent> getComponents(
-			final MiapeExtractionTask miapeExtractionTask) {
+	private List<JComponent> getComponents(final MiapeExtractionTask miapeExtractionTask) {
 		List<JComponent> componentList = new ArrayList<JComponent>();
-		log.info("Getting components from task: "
-				+ miapeExtractionTask.getRunIdentifier());
+		log.info("Getting components from task: " + miapeExtractionTask.getRunIdentifier());
 
 		String labelText = "";
 		if (miapeExtractionTask.getParameters().isLocalProcessing()) {
-			labelText = "Job '" + miapeExtractionTask.getRunIdentifier()
-					+ "' (local)";
+			labelText = "Job '" + miapeExtractionTask.getRunIdentifier() + "'";
 		} else {
-			labelText = "Job '" + miapeExtractionTask.getRunIdentifier()
-					+ "' (remote)";
+			labelText = "Job '" + miapeExtractionTask.getRunIdentifier() + "' (upload to server)";
 		}
 		// job id label
 		JLabel label = new JLabel(labelText);
 		componentList.add(label);
 
 		// description label
-		JLabel label2 = new JLabel("<html>"
-				+ miapeExtractionTask.getDescription() + "</html>");
+		JLabel label2 = new JLabel("<html>" + miapeExtractionTask.getDescription() + "</html>");
 		componentList.add(label2);
 
 		// Progress bar
 		JProgressBar bar = new JProgressBar();
-		bar.setToolTipText("progress from task "
-				+ miapeExtractionTask.getRunIdentifier());
+		bar.setToolTipText("progress from task " + miapeExtractionTask.getRunIdentifier());
 		bar.setStringPainted(true);
 		bar.setString("");
 		componentList.add(bar);
@@ -536,9 +426,9 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 		// BUttons
 		final JButton startButton = new JButton("start");
 		final JButton stopButton = new JButton("cancel");
-		final JButton msReportButton = new JButton("MS report");
+		final JButton msReportButton = new JButton("MS dataset");
 		msReportButton.setIcon(ImageManager.getImageIcon(ImageManager.DOC));
-		final JButton msiReportButton = new JButton("MSI report");
+		final JButton msiReportButton = new JButton("Id dataset");
 		msiReportButton.setIcon(ImageManager.getImageIcon(ImageManager.DOC));
 
 		// Start button
@@ -552,11 +442,9 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 				}
 				int runIdentifier = miapeExtractionTask.getRunIdentifier();
 
-				boolean started = miapeExtractorBatchManager
-						.startMiapeExtraction(runIdentifier);
+				boolean started = miapeExtractorBatchManager.startMiapeExtraction(runIdentifier);
 				if (!started)
-					MiapeExtractionBatchFrame.this
-							.appendStatus("This job cannot be started.");
+					MiapeExtractionBatchFrame.this.appendStatus("This job cannot be started.");
 			}
 		});
 		componentList.add(startButton);
@@ -577,46 +465,45 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 			public void actionPerformed(ActionEvent e) {
 				int runIdentifier = miapeExtractionTask.getRunIdentifier();
 				if (obtainedResults.containsKey(runIdentifier)) {
-					MiapeExtractionResult miapeExtractionResult = obtainedResults
-							.get(runIdentifier);
-					Integer miapeID = miapeExtractionResult
-							.getMiapeMS_Identifier();
+					MiapeExtractionResult miapeExtractionResult = obtainedResults.get(runIdentifier);
+					Integer miapeID = miapeExtractionResult.getMiapeMS_Identifier();
 					if (miapeID != null) {
-						String miapeType = "MS";
-						URL directLink = null;
 						if (!miapeExtractionTask.isLocalMIAPEExtraction()) {
+							String miapeType = "MS";
 							int userId = getUserID();
-							directLink = MiapeReportsLinkGenerator
-									.getMiapePublicLink(userId, miapeID,
-											miapeType);
+							URL directLink = MiapeReportsLinkGenerator.getMiapePublicLink(userId, miapeID, miapeType);
+							if (directLink != null) {
+								Object[] dialog_options = { "Yes, open browser", "No, close this dialog" };
+								int selected_option = JOptionPane.showOptionDialog(MiapeExtractionBatchFrame.this,
+										"Click on yes to open a browser to go directly to the MIAPE " + miapeType
+												+ " document report." + "\n",
+										"Show MIAPE " + miapeType + " report", JOptionPane.YES_NO_CANCEL_OPTION,
+										JOptionPane.QUESTION_MESSAGE, null, dialog_options, dialog_options[1]);
+								if (selected_option == 0) { // Yes
+									HttpUtilities.openURL(directLink.toString());
+								}
+							}
 						} else {
-							directLink = obtainedResults.get(runIdentifier)
-									.getDirectLinkToMIAPEMS();
-						}
-						if (directLink != null) {
+							URL directLink = obtainedResults.get(runIdentifier).getDirectLinkToMIAPEMS();
+							if (directLink != null) {
 
-							Object[] dialog_options = { "Yes, open browser",
-									"No, close this dialog" };
-							int selected_option = JOptionPane.showOptionDialog(
-									MiapeExtractionBatchFrame.this,
-									"Click on yes to open a browser to go directly to the MIAPE "
-											+ miapeType + " document report."
-											+ "\n", "Show MIAPE " + miapeType
-											+ " report",
-									JOptionPane.YES_NO_CANCEL_OPTION,
-									JOptionPane.QUESTION_MESSAGE, null,
-									dialog_options, dialog_options[1]);
-							if (selected_option == 0) { // Yes
-								HttpUtilities.openURL(directLink.toString());
+								Object[] dialog_options = { "Yes, open data file", "No, close this dialog" };
+								int selected_option = JOptionPane.showOptionDialog(MiapeExtractionBatchFrame.this,
+										"Click on yes to open the data file." + "\n", "Show data file",
+										JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+										dialog_options, dialog_options[1]);
+								if (selected_option == 0) { // Yes
+									HttpUtilities.openURL(directLink.toString());
+								}
 							}
 						}
+
 					}
 				}
 			}
 		});
 		msReportButton.setEnabled(false);
-		msReportButton
-				.setToolTipText("Show MIAPE MS report on the online MIAPE Generator tool");
+		msReportButton.setToolTipText("Show MIAPE MS report on the online MIAPE Generator tool");
 		componentList.add(msReportButton);
 
 		// report button
@@ -625,37 +512,36 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 			public void actionPerformed(ActionEvent e) {
 				int runIdentifier = miapeExtractionTask.getRunIdentifier();
 				if (obtainedResults.containsKey(runIdentifier)) {
-					MiapeExtractionResult miapeExtractionResult = obtainedResults
-							.get(runIdentifier);
-					Integer miapeID = miapeExtractionResult
-							.getMiapeMSI_Identifier();
+					MiapeExtractionResult miapeExtractionResult = obtainedResults.get(runIdentifier);
+					Integer miapeID = miapeExtractionResult.getMiapeMSI_Identifier();
 					if (miapeID != null) {
-						String miapeType = "MSI";
 
-						URL directLink = null;
 						if (!miapeExtractionTask.isLocalMIAPEExtraction()) {
+							String miapeType = "MSI";
 							int userId = getUserID();
-							directLink = MiapeReportsLinkGenerator
-									.getMiapePublicLink(userId, miapeID,
-											miapeType);
+							URL directLink = MiapeReportsLinkGenerator.getMiapePublicLink(userId, miapeID, miapeType);
+							if (directLink != null) {
+								Object[] dialog_options = { "Yes, open browser", "No, close this dialog" };
+								int selected_option = JOptionPane.showOptionDialog(MiapeExtractionBatchFrame.this,
+										"Click on yes to open a browser to go directly to the dataset " + miapeType
+												+ " document report." + "\n",
+										"Show MIAPE " + miapeType + " report", JOptionPane.YES_NO_CANCEL_OPTION,
+										JOptionPane.QUESTION_MESSAGE, null, dialog_options, dialog_options[1]);
+								if (selected_option == 0) { // Yes
+									HttpUtilities.openURL(directLink.toString());
+								}
+							}
 						} else {
-							directLink = obtainedResults.get(runIdentifier)
-									.getDirectLinkToMIAPEMSI();
-						}
-						if (directLink != null) {
-							Object[] dialog_options = { "Yes, open browser",
-									"No, close this dialog" };
-							int selected_option = JOptionPane.showOptionDialog(
-									MiapeExtractionBatchFrame.this,
-									"Click on yes to open a browser to go directly to the MIAPE "
-											+ miapeType + " document report."
-											+ "\n", "Show MIAPE " + miapeType
-											+ " report",
-									JOptionPane.YES_NO_CANCEL_OPTION,
-									JOptionPane.QUESTION_MESSAGE, null,
-									dialog_options, dialog_options[1]);
-							if (selected_option == 0) { // Yes
-								HttpUtilities.openURL(directLink.toString());
+							URL directLink = obtainedResults.get(runIdentifier).getDirectLinkToMIAPEMSI();
+							if (directLink != null) {
+								Object[] dialog_options = { "Yes, open data file", "No, close this dialog" };
+								int selected_option = JOptionPane.showOptionDialog(MiapeExtractionBatchFrame.this,
+										"Click on yes to open the data file." + "\n", "Show data file",
+										JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+										dialog_options, dialog_options[1]);
+								if (selected_option == 0) { // Yes
+									HttpUtilities.openURL(directLink.toString());
+								}
 							}
 						}
 
@@ -665,30 +551,25 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 		});
 		msiReportButton.setEnabled(false);
 		if (miapeExtractionTask.isLocalMIAPEExtraction())
-			msiReportButton
-					.setToolTipText("Show MIAPE MSI report in your local folder in case of local processing");
+			msiReportButton.setToolTipText("Show imported dataset file in your local folder");
 		else
-			msiReportButton
-					.setToolTipText("Show MIAPE MSI report in the online MIAPE Generator tool");
+			msiReportButton.setToolTipText("Show MIAPE MSI report in the online MIAPE Generator tool");
 		componentList.add(msiReportButton);
 
-		miapeExtractionTaskJComponents.put(
-				miapeExtractionTask.getRunIdentifier(), componentList);
+		miapeExtractionTaskJComponents.put(miapeExtractionTask.getRunIdentifier(), componentList);
 
 		return componentList;
 	}
 
 	private void appendStatus(String text) {
 		jTextAreaStatus.append(text + "\n");
-		jTextAreaStatus
-				.setCaretPosition(jTextAreaStatus.getText().length() - 1);
+		jTextAreaStatus.setCaretPosition(jTextAreaStatus.getText().length() - 1);
 	}
 
 	private int getUserID() {
 		try {
 			if (MainFrame.userName != null && MainFrame.password != null)
-				return miapeAPIWebservice.getUserId(MainFrame.userName,
-						MainFrame.password);
+				return miapeAPIWebservice.getUserId(MainFrame.userName, MainFrame.password);
 		} catch (MiapeDatabaseException_Exception e) {
 			e.printStackTrace();
 		} catch (MiapeSecurityException_Exception e) {
@@ -729,8 +610,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (MiapeExtractionTask.MIAPE_CREATION_STARTS.equals(evt
-				.getPropertyName())) {
+		if (MiapeExtractionTask.MIAPE_CREATION_STARTS.equals(evt.getPropertyName())) {
 			// disable start button
 			jButtonStart.setEnabled(false);
 			// enable cancel button
@@ -743,7 +623,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 			if (miapeExtractorBatchManager.isProcessing(jobID)) {
 				JProgressBar progressBar = getProgressBar(jobID);
 				if (progressBar != null) {
-					progressBar.setString("Extracting MIAPE...");
+					progressBar.setString("Extracting input data...");
 					progressBar.setIndeterminate(true);
 				}
 				JButton startButton = getStartButton(jobID);
@@ -751,14 +631,11 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 				JButton stopButton = getStopButton(jobID);
 				stopButton.setEnabled(true);
 
-				appendStatus("\nStartig Job '" + jobID + "' at: "
-						+ getFormatedDate());
+				appendStatus("\nStartig Job '" + jobID + "' at: " + getFormatedDate());
 			}
 
-		} else if (MiapeExtractionTask.MIAPE_CREATION_ERROR.equals(evt
-				.getPropertyName())) {
-			MiapeExtractionResult result = (MiapeExtractionResult) evt
-					.getNewValue();
+		} else if (MiapeExtractionTask.MIAPE_CREATION_ERROR.equals(evt.getPropertyName())) {
+			MiapeExtractionResult result = (MiapeExtractionResult) evt.getNewValue();
 			int jobID = result.getMiapeExtractionTaskIdentifier();
 
 			JProgressBar progressBar = getProgressBar(jobID);
@@ -769,8 +646,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 				progressBar.setValue(100);
 				// write a tooltip to the progress bar of the job containing the
 				// error message
-				progressBar
-						.setToolTipText("Error: " + result.getErrorMessage());
+				progressBar.setToolTipText("Error: " + result.getErrorMessage());
 			}
 			JButton startButton = getStartButton(jobID);
 			if (startButton != null)
@@ -778,43 +654,36 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 			JButton stopButton = getStopButton(jobID);
 			if (stopButton != null)
 				stopButton.setEnabled(false);
-			appendStatus("Error in job '" + jobID + "' : "
-					+ result.getErrorMessage() + " at: " + getFormatedDate());
+			appendStatus("Error in job '" + jobID + "' : " + result.getErrorMessage() + " at: " + getFormatedDate());
 
 			updateButtonsState();
-		} else if (MiapeExtractionTask.MIAPE_CREATION_TOTAL_DONE.equals(evt
-				.getPropertyName())) {
-			MiapeExtractionResult result = (MiapeExtractionResult) evt
-					.getNewValue();
+		} else if (MiapeExtractionTask.MIAPE_CREATION_TOTAL_DONE.equals(evt.getPropertyName())) {
+			MiapeExtractionResult result = (MiapeExtractionResult) evt.getNewValue();
 
 			int jobID = result.getMiapeExtractionTaskIdentifier();
 			obtainedResults.put(jobID, result);
 			long sg = result.getMilliseconds() / 1000;
-			appendStatus("\nJob '" + jobID + "' finished at "
-					+ getFormatedDate() + ". It took " + sg + " sg.");
-			String message = "Created MIAPEs are: ";
+			appendStatus("\nJob '" + jobID + "' finished at " + getFormatedDate() + ". It took " + sg + " sg.");
+			String message = "Created datasets are: ";
 			String extendedMessage = "";
 			if (result.getMiapeMS_Identifier() != null) {
-				message = "MIAPE MS ID: " + result.getMiapeMS_Identifier();
+				message = "MS Dataset ID: " + result.getMiapeMS_Identifier();
 				extendedMessage += message;
 				if (result.getDirectLinkToMIAPEMS() != null)
-					extendedMessage += " Direct link: "
-							+ result.getDirectLinkToMIAPEMS();
+					extendedMessage += " Direct link: " + result.getDirectLinkToMIAPEMS();
 				// enable MS report button if available
 				if (result.getDirectLinkToMIAPEMS() != null)
 					enableMiapeMSreport(jobID, true);
 			}
 			if (result.getMiapeMSI_Identifier() != null) {
-				if (!"Created MIAPEs are: ".equals(message)) {
+				if (!"Created datasets are: ".equals(message)) {
 					message += ", ";
 					extendedMessage += "<br>";
 				}
-				message += "MIAPE MSI ID: " + result.getMiapeMSI_Identifier();
-				extendedMessage += "MIAPE MSI ID: "
-						+ result.getMiapeMSI_Identifier();
+				message += "Identification dataset ID: " + result.getMiapeMSI_Identifier();
+				extendedMessage += "Identification dataset ID: " + result.getMiapeMSI_Identifier();
 				if (result.getDirectLinkToMIAPEMSI() != null)
-					extendedMessage += " Direct link: "
-							+ result.getDirectLinkToMIAPEMSI();
+					extendedMessage += " Direct link: " + result.getDirectLinkToMIAPEMSI();
 				// enable MSI report button if available
 				if (result.getDirectLinkToMIAPEMSI() != null)
 					enableMiapeMSIreport(jobID, true);
@@ -826,8 +695,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 				progressBar.setValue(100);
 				progressBar.setForeground(Color.GREEN);
 				progressBar.setIndeterminate(false);
-				progressBar.setToolTipText("<html>" + extendedMessage
-						+ "</html>");
+				progressBar.setToolTipText("<html>" + extendedMessage + "</html>");
 			}
 			JButton startButton = getStartButton(jobID);
 			startButton.setEnabled(false);
@@ -836,71 +704,61 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 
 			updateButtonsState();
 
-		} else if (MiapeExtractionTask.MIAPE_MS_CREATED_DONE.equals(evt
-				.getPropertyName())) {
+		} else if (MiapeExtractionTask.MIAPE_MS_CREATED_DONE.equals(evt.getPropertyName())) {
 			String ms_id = (String) evt.getNewValue();
-			log.info("MIAPE MS created with ID:" + ms_id);
-		} else if (MiapeExtractionTask.MIAPE_MSI_CREATED_DONE.equals(evt
-				.getPropertyName())) {
+			log.info("MS dataset created with ID:" + ms_id);
+		} else if (MiapeExtractionTask.MIAPE_MSI_CREATED_DONE.equals(evt.getPropertyName())) {
 			String msi_id = (String) evt.getNewValue();
-			log.info("MIAPE MSI created with ID:" + msi_id);
-		} else if (MiapeExtractionTask.MIAPE_CREATION_UPLOADING_FILE.equals(evt
-				.getPropertyName())) {
+			log.info("Identification dataset created with ID:" + msi_id);
+		} else if (MiapeExtractionTask.MIAPE_CREATION_UPLOADING_FILE.equals(evt.getPropertyName())) {
 			int jobID = (Integer) evt.getNewValue();
 			if (miapeExtractorBatchManager.isProcessing(jobID)) {
 				JProgressBar bar = getProgressBar(jobID);
 				if (bar != null)
 					bar.setString("Uploading file...");
 			}
-		} else if (MiapeExtractionTask.MIAPE_CREATION_UPLOADING_FILE_DONE
-				.equals(evt.getPropertyName())) {
+		} else if (MiapeExtractionTask.MIAPE_CREATION_UPLOADING_FILE_DONE.equals(evt.getPropertyName())) {
 			int jobID = (Integer) evt.getNewValue();
 			if (miapeExtractorBatchManager.isProcessing(jobID)) {
 				JProgressBar bar = getProgressBar(jobID);
 				if (bar != null)
 					bar.setString("Uploading file done.");
 			}
-		} else if (MiapeExtractionTask.MIAPE_CREATION_COMPRESSING_FILE
-				.equals(evt.getPropertyName())) {
+		} else if (MiapeExtractionTask.MIAPE_CREATION_COMPRESSING_FILE.equals(evt.getPropertyName())) {
 			int jobID = (Integer) evt.getNewValue();
 			if (miapeExtractorBatchManager.isProcessing(jobID)) {
 				JProgressBar bar = getProgressBar(jobID);
 				if (bar != null)
 					bar.setString("Compressing file...");
 			}
-		} else if (MiapeExtractionTask.MIAPE_CREATION_COMPRESSING_FILE_DONE
-				.equals(evt.getPropertyName())) {
+		} else if (MiapeExtractionTask.MIAPE_CREATION_COMPRESSING_FILE_DONE.equals(evt.getPropertyName())) {
 			int jobID = (Integer) evt.getNewValue();
 			if (miapeExtractorBatchManager.isProcessing(jobID)) {
 				JProgressBar bar = getProgressBar(jobID);
 				if (bar != null)
 					bar.setString("Compressing file done.");
 			}
-		} else if (MiapeExtractionTask.MIAPE_CREATION_WAITING_FOR_SERVER
-				.equals(evt.getPropertyName())) {
+		} else if (MiapeExtractionTask.MIAPE_CREATION_WAITING_FOR_SERVER.equals(evt.getPropertyName())) {
 			int jobID = (Integer) evt.getNewValue();
 			if (miapeExtractorBatchManager.isProcessing(jobID)) {
 				JProgressBar bar = getProgressBar(jobID);
 				if (bar != null)
 					bar.setString("Waiting for server...");
 			}
-		} else if (MiapeExtractionTask.MIAPE_CREATION_SENDING_MIAPE_TO_SERVER
-				.equals(evt.getPropertyName())) {
+		} else if (MiapeExtractionTask.MIAPE_CREATION_SENDING_MIAPE_TO_SERVER.equals(evt.getPropertyName())) {
 			int jobID = (Integer) evt.getNewValue();
 			if (miapeExtractorBatchManager.isProcessing(jobID)) {
 				JProgressBar bar = getProgressBar(jobID);
 				if (bar != null)
-					bar.setString("Sending MIAPE info to server...");
+					bar.setString("Sending dataset info to server...");
 			}
-		} else if (OntologyLoaderWaiter.ONTOLOGY_LOADED.equals(evt
-				.getPropertyName())) {
+		} else if (OntologyLoaderWaiter.ONTOLOGY_LOADED.equals(evt.getPropertyName())) {
 			cvManager = (ControlVocabularyManager) evt.getNewValue();
 			appendStatus("Ontologies loaded");
 			ontologiesLoaded = true;
 			if (startAllJobsRequested)
 				startAllJobs();
-		} else if (MiapeExtractionTask.MIAPE_CREATION_CANCELED.equals(evt
-				.getPropertyName())) {
+		} else if (MiapeExtractionTask.MIAPE_CREATION_CANCELED.equals(evt.getPropertyName())) {
 			int jobID = (Integer) evt.getNewValue();
 			JProgressBar bar = getProgressBar(jobID);
 			if (bar != null) {
@@ -913,14 +771,11 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 			startButton.setEnabled(true);
 			JButton stopButton = getStopButton(jobID);
 			stopButton.setEnabled(false);
-			appendStatus("Job '" + jobID + "' canceled at: "
-					+ getFormatedDate());
+			appendStatus("Job '" + jobID + "' canceled at: " + getFormatedDate());
 			updateButtonsState();
 
-		} else if (MiapeExtractionTask.MIAPE_CREATION_WAITING_FOR_OTHER_JOB_COMPLETION
-				.equals(evt.getPropertyName())) {
-			MiapeExtractionResult result = (MiapeExtractionResult) evt
-					.getNewValue();
+		} else if (MiapeExtractionTask.MIAPE_CREATION_WAITING_FOR_OTHER_JOB_COMPLETION.equals(evt.getPropertyName())) {
+			MiapeExtractionResult result = (MiapeExtractionResult) evt.getNewValue();
 			int jobID = result.getMiapeExtractionTaskIdentifier();
 
 			JProgressBar bar = getProgressBar(jobID);
@@ -936,8 +791,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 	private void updateButtonsState() {
 		// check if there is any failed job, and if yes, enable start failed
 		// button
-		jButtonRestartFailedTasks.setEnabled(!miapeExtractorBatchManager
-				.getFailedJobs().isEmpty());
+		jButtonRestartFailedTasks.setEnabled(!miapeExtractorBatchManager.getFailedJobs().isEmpty());
 
 		// check if there is any running job, if not, disable cancel running
 		// jobs
@@ -965,8 +819,8 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 	}
 
 	private String getFormatedDate() {
-		String formatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT,
-				DateFormat.LONG).format(new Date(System.currentTimeMillis()));
+		String formatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG)
+				.format(new Date(System.currentTimeMillis()));
 		return formatedDate;
 	}
 
@@ -987,8 +841,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements
 	private JProgressBar getProgressBar(int jobID) {
 		if (miapeExtractionTaskJComponents.containsKey(jobID)) {
 			List<JComponent> list = miapeExtractionTaskJComponents.get(jobID);
-			JProgressBar progressBar = (JProgressBar) list
-					.get(jProgressBarIndex);
+			JProgressBar progressBar = (JProgressBar) list.get(jProgressBarIndex);
 			return progressBar;
 		}
 		return null;

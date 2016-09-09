@@ -10,8 +10,7 @@ import org.proteored.miapeExtractor.analysis.gui.components.ExtendedJTree;
 import org.proteored.miapeExtractor.analysis.util.FileManager;
 
 public class LocalDataTreeLoaderTask extends SwingWorker<Void, String> {
-	private static org.apache.log4j.Logger log = org.apache.log4j.Logger
-			.getLogger("log4j.logger.org.proteored");
+	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("log4j.logger.org.proteored");
 	private final ExtendedJTree tree;
 	public static final String LOCAL_TREE_LOADER_STARTS = "local tree loader starts";
 	public static final String LOCAL_TREE_LOADER_FINISHED = "local tree loader finished";
@@ -25,14 +24,12 @@ public class LocalDataTreeLoaderTask extends SwingWorker<Void, String> {
 	protected Void doInBackground() throws Exception {
 		try {
 			firePropertyChange(LOCAL_TREE_LOADER_STARTS, null, null);
-			DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(
-					"Local MIAPE data");
+			DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Imported datasets");
 			DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
 			tree.setModel(treeModel);
 
 			int numLocalIdSets = 0;
-			final List<String> localMIAPEProjects = FileManager
-					.getlocalMIAPEProjects();
+			final List<String> localMIAPEProjects = FileManager.getlocalMIAPEProjects();
 
 			for (String projectName : localMIAPEProjects) {
 
@@ -42,22 +39,17 @@ public class LocalDataTreeLoaderTask extends SwingWorker<Void, String> {
 				String project_label = "'" + projectName + "'";
 
 				// Project project = getProject(idProject, userName, password);
-				log.info("Getting miape documents for local project: "
-						+ projectName);
-				List<String> miapeList = FileManager
-						.getLocalMiapesByProjectName(projectName);
+				log.info("Getting miape documents for local project: " + projectName);
+				List<String> miapeList = FileManager.getLocalMiapesByProjectName(projectName);
 
 				if (!miapeList.isEmpty()) {
-					DefaultMutableTreeNode projectNode = new DefaultMutableTreeNode(
-							project_label);
+					DefaultMutableTreeNode projectNode = new DefaultMutableTreeNode(project_label);
 
 					for (String miapeName : miapeList) {
 						// just add the MIAPE MSIs
-						if (miapeName
-								.startsWith(FileManager.MIAPE_MSI_LOCAL_PREFIX)) {
+						if (miapeName.startsWith(FileManager.MIAPE_MSI_LOCAL_PREFIX)) {
 							numLocalIdSets++;
-							DefaultMutableTreeNode miapeNode = new DefaultMutableTreeNode(
-									miapeName);
+							DefaultMutableTreeNode miapeNode = new DefaultMutableTreeNode(miapeName);
 							projectNode.add(miapeNode);
 						}
 					}

@@ -17,33 +17,29 @@ public class ExternalDataTreeLoaderTask extends SwingWorker<Void, String> {
 	public static final String EXTERNAL_TREE_LOADER_ERROR = "external tree loader error";
 
 	public ExternalDataTreeLoaderTask(ExtendedJTree jTreeManualMIAPEMSIs) {
-		this.tree = jTreeManualMIAPEMSIs;
+		tree = jTreeManualMIAPEMSIs;
 	}
 
 	@Override
 	protected Void doInBackground() throws Exception {
 		try {
 			firePropertyChange(EXTERNAL_TREE_LOADER_STARTS, null, null);
-			DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(
-					"External identification lists");
+			DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("External protein lists");
 			DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
-			this.tree.setModel(treeModel);
+			tree.setModel(treeModel);
 
 			int numLocalIdSets = 0;
-			final List<String> manualIdSetList = FileManager
-					.getManualIdSetList();
+			final List<String> manualIdSetList = FileManager.getManualIdSetList();
 			Collections.sort(manualIdSetList);
 			for (String manualIdsetName : manualIdSetList) {
 				numLocalIdSets++;
-				DefaultMutableTreeNode idSetNode = new DefaultMutableTreeNode(
-						manualIdsetName);
+				DefaultMutableTreeNode idSetNode = new DefaultMutableTreeNode(manualIdsetName);
 				rootNode.add(idSetNode);
 				treeModel.nodeStructureChanged(rootNode);
 				treeModel.reload();
 			}
 
-			firePropertyChange(EXTERNAL_TREE_LOADER_FINISHED, null,
-					numLocalIdSets);
+			firePropertyChange(EXTERNAL_TREE_LOADER_FINISHED, null, numLocalIdSets);
 		} catch (Exception e) {
 			firePropertyChange(EXTERNAL_TREE_LOADER_ERROR, null, e.getMessage());
 		}

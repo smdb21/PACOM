@@ -7,7 +7,7 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
-    <Property name="title" type="java.lang.String" value="MIAPE Batch Extraction"/>
+    <Property name="title" type="java.lang.String" value="Batch data import"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -92,7 +92,7 @@
       <SubComponents>
         <Component class="javax.swing.JTextField" name="jTextFieldBatchFile">
           <Properties>
-            <Property name="toolTipText" type="java.lang.String" value="Input MIAPE Extracto batch file"/>
+            <Property name="toolTipText" type="java.lang.String" value="Input batch import file"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonSelectBatchFile">
@@ -147,7 +147,7 @@
       <SubComponents>
         <Component class="javax.swing.JButton" name="jButtonStart">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Start MIAPE Extractions"/>
+            <Property name="text" type="java.lang.String" value="Start batch import"/>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>

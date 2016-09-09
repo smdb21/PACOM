@@ -15,8 +15,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBException;
 
-import junit.framework.Assert;
-
 import org.apache.log4j.Logger;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset;
@@ -53,6 +51,8 @@ import org.proteored.miapeapi.xml.msi.MIAPEMSIXmlFile;
 import org.proteored.miapeapi.xml.msi.MiapeMSIXmlFactory;
 import org.proteored.miapeapi.xml.util.ProteinGroupComparisonType;
 
+import junit.framework.Assert;
+
 public class LocalTests {
 
 	String ftpPath;
@@ -66,21 +66,20 @@ public class LocalTests {
 	private final List<Filter> filters = new ArrayList<Filter>();
 	private static final int minPeptideLength = 7;
 	private static ExperimentList experiments;
-	private static final Logger log = Logger
-			.getLogger("log4j.logger.org.proteored");
+	private static final Logger log = Logger.getLogger("log4j.logger.org.proteored");
 	private static final int MAX_FILES = 100;
 
 	@Before
 	public void initialize() {
-		this.cvManager = SpringHandler.getInstance().getCVManager();
-		this.sprot = new SortingParameters("Mascot:score", Order.DESCENDANT);
-		this.spep = new SortingParameters("Mascot:score", Order.DESCENDANT);
-		FDRFilter proteinFDRFilter = new FDRFilter(1.0f, "rev_", true, sprot,
-				IdentificationItemEnum.PROTEIN, null, null, null);
-		FDRFilter peptideFDRFilter = new FDRFilter(1.0f, "rev_", true, spep,
-				IdentificationItemEnum.PEPTIDE, null, null, null);
-		this.filters.add(proteinFDRFilter);
-		this.filters.add(peptideFDRFilter);
+		cvManager = SpringHandler.getInstance().getCVManager();
+		sprot = new SortingParameters("Mascot:score", Order.DESCENDANT);
+		spep = new SortingParameters("Mascot:score", Order.DESCENDANT);
+		FDRFilter proteinFDRFilter = new FDRFilter(1.0f, "rev_", true, sprot, IdentificationItemEnum.PROTEIN, null,
+				null, null);
+		FDRFilter peptideFDRFilter = new FDRFilter(1.0f, "rev_", true, spep, IdentificationItemEnum.PEPTIDE, null, null,
+				null);
+		filters.add(proteinFDRFilter);
+		filters.add(peptideFDRFilter);
 	}
 
 	@Test
@@ -106,12 +105,11 @@ public class LocalTests {
 	}
 
 	private void start(String path) throws IOException, JAXBException {
-		experiments = this.createExperimentFromMiapeFolder(path);
-		this.showCharts();
+		experiments = createExperimentFromMiapeFolder(path);
+		showCharts();
 	}
 
-	private ExperimentList createExperimentFromMiapeFolder(String folder)
-			throws IOException, JAXBException {
+	private ExperimentList createExperimentFromMiapeFolder(String folder) throws IOException, JAXBException {
 
 		File miapeFolder = new File(folder);
 		Assert.assertTrue(miapeFolder.isDirectory());
@@ -125,9 +123,8 @@ public class LocalTests {
 
 		int i = 0;
 		for (File file : listFiles) {
-			if (file.getName()
-					.substring(file.getName().length() - 3,
-							file.getName().length()).equalsIgnoreCase("xml")) {
+			if (file.getName().substring(file.getName().length() - 3, file.getName().length())
+					.equalsIgnoreCase("xml")) {
 				if (i < MAX_FILES) {
 
 					log.info("processing " + file.getName());
@@ -138,12 +135,10 @@ public class LocalTests {
 					MiapeMSIDocument miapeMSI = getMIAPEMSI(file);
 					List<MiapeMSIDocument> listMIAPE = new ArrayList<MiapeMSIDocument>();
 					listMIAPE.add(miapeMSI);
-					Replicate replicate = new Replicate(repName, expName, null,
-							listMIAPE, filters, null, cvManager);
-					log.info("Exp " + expName + " Replicate " + repName
-							+ " proteins:"
-							+ replicate.getTotalNumProteinGroups(false)
-							+ " peptides:"
+					Replicate replicate = new Replicate(repName, expName, null, listMIAPE, filters, null, cvManager,
+							false);
+					log.info("Exp " + expName + " Replicate " + repName + " proteins:"
+							+ replicate.getTotalNumProteinGroups(false) + " peptides:"
 							+ replicate.getNumDifferentPeptides(true));
 
 					if (experimentHashMap.containsKey(expName))
@@ -162,12 +157,11 @@ public class LocalTests {
 		}
 		for (String expName : experimentHashMap.keySet()) {
 			final List<Replicate> list = experimentHashMap.get(expName);
-			Experiment experiment = new Experiment(expName, list, filters,
-					minPeptideLength, cvManager);
+			Experiment experiment = new Experiment(expName, list, filters, minPeptideLength, cvManager, false);
 			experimentList.add(experiment);
 		}
-		ExperimentList expList = new ExperimentList("PME6", experimentList,
-				false, filters, minPeptideLength, cvManager);
+		ExperimentList expList = new ExperimentList("PME6", experimentList, false, filters, minPeptideLength, cvManager,
+				false);
 		return expList;
 
 	}
@@ -177,8 +171,7 @@ public class LocalTests {
 
 		MiapeMSIDocument miapeMSI = null;
 		try {
-			miapeMSI = MiapeMSIXmlFactory.getFactory().toDocument(miapeMSIFile,
-					cvManager, null, this.userName, this.password);
+			miapeMSI = MiapeMSIXmlFactory.getFactory().toDocument(miapeMSIFile, cvManager, null, userName, password);
 		} catch (MiapeDatabaseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -218,84 +211,61 @@ public class LocalTests {
 		// this.showIdentificationNumberBarCharts();
 		// this.showScoreDistributionCharts();
 		// this.showIdentificationOccurrenceHistogramCharts();
-		this.showCoverageHistogramCharts();
+		showCoverageHistogramCharts();
 	}
 
 	private void showCoverageHistogramCharts() {
-		List<IdentificationSet> listOfIdSets = Util
-				.getListOfIdSets(LocalTests.experiments.getExperiments());
-		HistogramDataset dataset = DatasetFactory
-				.createProteinCoverageHistogramDataSet(listOfIdSets, 20,
-						HistogramType.FREQUENCY, false, false);
-		final HistogramChart histogramChart = new HistogramChart(
-				"Protein coverage distribution",
-				"Each line belongs to a different experiment", dataset,
-				"protein coverage");
-		JFrame jframe = showFrame(histogramChart.getChartPanel(),
-				"MIAPE Extractor tool Charts - Line Histogram");
+		List<IdentificationSet> listOfIdSets = Util.getListOfIdSets(LocalTests.experiments.getExperiments());
+		HistogramDataset dataset = DatasetFactory.createProteinCoverageHistogramDataSet(listOfIdSets, 20,
+				HistogramType.FREQUENCY, false, false);
+		final HistogramChart histogramChart = new HistogramChart("Protein coverage distribution",
+				"Each line belongs to a different experiment", dataset, "protein coverage");
+		JFrame jframe = showFrame(histogramChart.getChartPanel(), "MIAPE Extractor tool Charts - Line Histogram");
 		showConfirmDialog(jframe);
 
 	}
 
 	private void showScoreDistributionCharts() {
-		List<IdentificationSet> listOfIdSets = Util
-				.getListOfIdSets(LocalTests.experiments.getExperiments());
-		HistogramDataset dataset = DatasetFactory.createScoreHistogramDataSet(
-				listOfIdSets, this.sprot.getScoreName(),
-				IdentificationItemEnum.PROTEIN, 30, true,
-				HistogramType.SCALE_AREA_TO_1, false, false, false);
+		List<IdentificationSet> listOfIdSets = Util.getListOfIdSets(LocalTests.experiments.getExperiments());
+		HistogramDataset dataset = DatasetFactory.createScoreHistogramDataSet(listOfIdSets, sprot.getScoreName(),
+				IdentificationItemEnum.PROTEIN, 30, true, HistogramType.SCALE_AREA_TO_1, false, false, false);
 
-		final HistogramChart histogramChart = new HistogramChart(
-				"Protein score distribution",
-				"Each line belongs to a different experiment", dataset,
-				this.sprot.getScoreName());
-		JFrame jframe = showFrame(histogramChart.getChartPanel(),
-				"MIAPE Extractor tool Charts - Line Histogram");
+		final HistogramChart histogramChart = new HistogramChart("Protein score distribution",
+				"Each line belongs to a different experiment", dataset, sprot.getScoreName());
+		JFrame jframe = showFrame(histogramChart.getChartPanel(), "MIAPE Extractor tool Charts - Line Histogram");
 		showConfirmDialog(jframe);
 
-		dataset = DatasetFactory.createScoreHistogramDataSet(listOfIdSets,
-				this.spep.getScoreName(), IdentificationItemEnum.PEPTIDE, 20,
-				true, HistogramType.SCALE_AREA_TO_1, false, false, false);
+		dataset = DatasetFactory.createScoreHistogramDataSet(listOfIdSets, spep.getScoreName(),
+				IdentificationItemEnum.PEPTIDE, 20, true, HistogramType.SCALE_AREA_TO_1, false, false, false);
 
-		final HistogramChart histogramChart2 = new HistogramChart(
-				"Peptide score distribution",
-				"Each line belongs to a different experiment", dataset,
-				this.spep.getScoreName());
-		JFrame jframe2 = showFrame(histogramChart2.getChartPanel(),
-				"MIAPE Extractor tool Charts - Line Histogram");
+		final HistogramChart histogramChart2 = new HistogramChart("Peptide score distribution",
+				"Each line belongs to a different experiment", dataset, spep.getScoreName());
+		JFrame jframe2 = showFrame(histogramChart2.getChartPanel(), "MIAPE Extractor tool Charts - Line Histogram");
 		showConfirmDialog(jframe2);
 
 	}
 
 	private void showIdentificationNumberBarCharts() {
-		List<IdentificationSet> listOfIdSets = Util
-				.getListOfIdSets(LocalTests.experiments.getExperiments());
-		CategoryDataset dataset = DatasetFactory
-				.createNumberIdentificationCategoryDataSet(listOfIdSets,
-						IdentificationItemEnum.PROTEIN, true, null, false,
-						false);
-		BarChart proteinBarChart = new BarChart(
-				"Number of proteins identified",
-				"Number of proteins identified from each replicate of each lab",
-				"Experiment", "# proteins", dataset, PlotOrientation.VERTICAL);
-		JFrame frame = showFrame(proteinBarChart.getChartPanel(),
-				"MIAPE Extractor tool Charts - Bar Chart");
+		List<IdentificationSet> listOfIdSets = Util.getListOfIdSets(LocalTests.experiments.getExperiments());
+		CategoryDataset dataset = DatasetFactory.createNumberIdentificationCategoryDataSet(listOfIdSets,
+				IdentificationItemEnum.PROTEIN, true, null, false, false);
+		BarChart proteinBarChart = new BarChart("Number of proteins identified",
+				"Number of proteins identified from each replicate of each lab", "Experiment", "# proteins", dataset,
+				PlotOrientation.VERTICAL);
+		JFrame frame = showFrame(proteinBarChart.getChartPanel(), "MIAPE Extractor tool Charts - Bar Chart");
 		showConfirmDialog(frame);
 
-		dataset = DatasetFactory.createNumberIdentificationCategoryDataSet(
-				listOfIdSets, IdentificationItemEnum.PEPTIDE, false, null,
-				false, false);
-		BarChart peptideBarChart = new BarChart(
-				"Number of peptides identified",
-				"Number of peptides identified from each replicate of each lab",
-				"Experiment", "# peptides", dataset, PlotOrientation.VERTICAL);
-		JFrame frame2 = showFrame(peptideBarChart.getChartPanel(),
-				"MIAPE Extractor tool Charts - Bar Chart");
+		dataset = DatasetFactory.createNumberIdentificationCategoryDataSet(listOfIdSets, IdentificationItemEnum.PEPTIDE,
+				false, null, false, false);
+		BarChart peptideBarChart = new BarChart("Number of peptides identified",
+				"Number of peptides identified from each replicate of each lab", "Experiment", "# peptides", dataset,
+				PlotOrientation.VERTICAL);
+		JFrame frame2 = showFrame(peptideBarChart.getChartPanel(), "MIAPE Extractor tool Charts - Bar Chart");
 		showConfirmDialog(frame2);
 	}
 
 	private void showScoreComparisonCharts() {
-		for (IdentificationSet exp : this.experiments.getExperiments()) {
+		for (IdentificationSet exp : experiments.getExperiments()) {
 			Experiment experiment = (Experiment) exp;
 
 			if (experiment.getReplicates().size() == 3) {
@@ -313,15 +283,11 @@ public class LocalTests {
 				idsets.add(idset1);
 				idsets.add(idset2);
 				idsets.add(idset3);
-				XYDataset dataset = DatasetFactory.createScoreXYDataSet(idsets,
-						this.sprot.getScoreName(),
-						IdentificationItemEnum.PROTEIN, true, false, false,
-						false);
-				XYPointChart chartPanel = new XYPointChart(title, subtitle,
-						dataset, this.sprot.getScoreName(),
-						this.sprot.getScoreName());
-				JFrame frame = showFrame(chartPanel.getChartPanel(),
-						"MIAPE Extractor tool Charts - Scatter Chart");
+				XYDataset dataset = DatasetFactory.createScoreXYDataSet(idsets, sprot.getScoreName(),
+						IdentificationItemEnum.PROTEIN, true, false, false, false);
+				XYPointChart chartPanel = new XYPointChart(title, subtitle, dataset, sprot.getScoreName(),
+						sprot.getScoreName());
+				JFrame frame = showFrame(chartPanel.getChartPanel(), "MIAPE Extractor tool Charts - Scatter Chart");
 				// showConfirmDialog(frame);
 
 				// String title = exp.getName();
@@ -339,8 +305,7 @@ public class LocalTests {
 	}
 
 	private void showVenCharts() {
-		final List<Experiment> experimentList = this.experiments
-				.getExperiments();
+		final List<Experiment> experimentList = experiments.getExperiments();
 		for (IdentificationSet exp : experimentList) {
 
 			System.out.println(exp.getName());
@@ -364,14 +329,10 @@ public class LocalTests {
 				// "MIAPE Extractor tool Charts - Ven Chart");
 				// showConfirmDialog(frame1);
 
-				String title = "Peptide overlapping over "
-						+ experiment.getName() + " replicates";
-				VennChart chartPanelPep = new VennChart(title, idset1, label1,
-						idset2, label2, idset3, label3,
-						IdentificationItemEnum.PEPTIDE, false, false,
-						ProteinGroupComparisonType.ALL_PROTEINS);
-				JFrame frame2 = showFrame(chartPanelPep.getChartPanel(),
-						"MIAPE Extractor tool Charts - Ven Chart");
+				String title = "Peptide overlapping over " + experiment.getName() + " replicates";
+				VennChart chartPanelPep = new VennChart(title, idset1, label1, idset2, label2, idset3, label3,
+						IdentificationItemEnum.PEPTIDE, false, false, ProteinGroupComparisonType.ALL_PROTEINS);
+				JFrame frame2 = showFrame(chartPanelPep.getChartPanel(), "MIAPE Extractor tool Charts - Ven Chart");
 				// showConfirmDialog(frame2);
 			}
 		}
@@ -384,14 +345,11 @@ public class LocalTests {
 		Double min = null;
 		Double max = null;
 		// dataset
-		List<IdentificationSet> listOfIdSets = Util
-				.getListOfIdSets(LocalTests.experiments.getExperiments());
-		double[][] dataset = DatasetFactory.createHeapMapDataSet(experiments,
-				listOfIdSets, rowList, columnList,
+		List<IdentificationSet> listOfIdSets = Util.getListOfIdSets(LocalTests.experiments.getExperiments());
+		double[][] dataset = DatasetFactory.createHeapMapDataSet(experiments, listOfIdSets, rowList, columnList,
 				IdentificationItemEnum.PROTEIN, null, 8, min, max, false);
 
-		final HeatMapChart heatMapChart = new HeatMapChart(
-				"Protein occurrence", dataset, rowList, columnList,
+		final HeatMapChart heatMapChart = new HeatMapChart("Protein occurrence", dataset, rowList, columnList,
 				HeatChart.SCALE_LINEAR);
 		String imagePath = "O:\\Dropbox\\SEprot2012\\ProteinHeatMap.png";
 		// Save picture to a file
@@ -402,16 +360,14 @@ public class LocalTests {
 			log.warn("The image cannot be saved at  :" + imagePath);
 			e.printStackTrace();
 		}
-		JFrame frame = showFrame(heatMapChart.getjPanel(),
-				"MIAPE Extractor tool Charts - HeatMap");
+		JFrame frame = showFrame(heatMapChart.getjPanel(), "MIAPE Extractor tool Charts - HeatMap");
 
 		showConfirmDialog(frame);
 
 	}
 
 	private void showConfirmDialog(JFrame frame) {
-		JOptionPane.showConfirmDialog(frame, "A new chart has been created",
-				"notification", JOptionPane.OK_OPTION);
+		JOptionPane.showConfirmDialog(frame, "A new chart has been created", "notification", JOptionPane.OK_OPTION);
 	}
 
 	private JFrame showFrame(JComponent chart, String appTitle) {

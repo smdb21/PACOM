@@ -19,7 +19,7 @@ public class ExtendedJTree extends JTree {
 	 * This method takes the node string and traverses the tree till it finds
 	 * the node matching the string. If the match is found the node is returned
 	 * else null is returned
-	 * 
+	 *
 	 * @param nodeStr
 	 *            node string to search for
 	 * @return tree node
@@ -28,8 +28,7 @@ public class ExtendedJTree extends JTree {
 		DefaultMutableTreeNode node = null;
 
 		// Get the enumeration
-		Enumeration enumer = ((DefaultMutableTreeNode) getModel().getRoot())
-				.breadthFirstEnumeration();
+		Enumeration enumer = ((DefaultMutableTreeNode) getModel().getRoot()).breadthFirstEnumeration();
 
 		// iterate through the enumeration
 		while (enumer.hasMoreElements()) {
@@ -51,8 +50,7 @@ public class ExtendedJTree extends JTree {
 		DefaultMutableTreeNode node = null;
 
 		// Get the enumeration
-		Enumeration enumer = ((DefaultMutableTreeNode) getModel().getRoot())
-				.breadthFirstEnumeration();
+		Enumeration enumer = ((DefaultMutableTreeNode) getModel().getRoot()).breadthFirstEnumeration();
 
 		// iterate through the enumeration
 		while (enumer.hasMoreElements()) {
@@ -72,7 +70,7 @@ public class ExtendedJTree extends JTree {
 	 * the node matching the string. If the match is found the node is removed
 	 * and true is returned. If not is found, false is returned else null is
 	 * returned
-	 * 
+	 *
 	 * @param nodeStr
 	 *            node string to search for
 	 * @return true or false
@@ -94,7 +92,7 @@ public class ExtendedJTree extends JTree {
 	/**
 	 * This method removes the passed tree node from the tree and selects
 	 * appropiate node
-	 * 
+	 *
 	 * @param selNode
 	 *            node to be removed
 	 */
@@ -103,8 +101,7 @@ public class ExtendedJTree extends JTree {
 
 			// get the parent of the selected node
 			// MutableTreeNode parent = (MutableTreeNode) (selNode.getParent());
-			DefaultMutableTreeNode parent = (DefaultMutableTreeNode) (selNode
-					.getParent());
+			DefaultMutableTreeNode parent = (DefaultMutableTreeNode) (selNode.getParent());
 
 			// if the parent is not null
 			if (parent != null) {
@@ -152,7 +149,7 @@ public class ExtendedJTree extends JTree {
 	 * This method returns the previous sibling node if there is no previous
 	 * sibling it returns the next sibling if there are no siblings it returns
 	 * null
-	 * 
+	 *
 	 * @param selNode
 	 *            selected node
 	 * @return previous or next sibling, or parent if no sibling
@@ -172,8 +169,8 @@ public class ExtendedJTree extends JTree {
 	public String getStringFromSelection(String regex) {
 		if (getSelectionCount() > 0) {
 			String code = getLastSelectedComponent();
-
-			return getString(regex, code);
+			final String string = getString(regex, code);
+			return string;
 		}
 		return "";
 	}
@@ -227,8 +224,7 @@ public class ExtendedJTree extends JTree {
 	private String getLastSelectedComponent() {
 		final TreePath selectionPath = getSelectionPath();
 		if (selectionPath != null) {
-			final Object lastSelectedComponent = selectionPath
-					.getLastPathComponent();
+			final Object lastSelectedComponent = selectionPath.getLastPathComponent();
 			if (lastSelectedComponent != null)
 				return lastSelectedComponent.toString();
 		}
@@ -249,7 +245,7 @@ public class ExtendedJTree extends JTree {
 	/**
 	 * Returns true if one or more elements of the tree are selected and they
 	 * are at a certain level
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isSomeNodeSelected(int level) {
@@ -267,7 +263,7 @@ public class ExtendedJTree extends JTree {
 	/**
 	 * Returns true if one and only one element of the tree is selected and it
 	 * is in a vertain level
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isOnlyOneNodeSelected(int level) {
@@ -331,8 +327,7 @@ public class ExtendedJTree extends JTree {
 
 	}
 
-	public DefaultMutableTreeNode addNewNode(Object nodeObject,
-			DefaultMutableTreeNode parentNode) {
+	public DefaultMutableTreeNode addNewNode(Object nodeObject, DefaultMutableTreeNode parentNode) {
 		final DefaultTreeModel model = (DefaultTreeModel) getModel();
 
 		DefaultMutableTreeNode newnode = new DefaultMutableTreeNode(nodeObject);
@@ -380,7 +375,7 @@ public class ExtendedJTree extends JTree {
 
 	/**
 	 * Remove the selected node of the tree
-	 * 
+	 *
 	 */
 	public void removeSelectedNode() {
 		final DefaultMutableTreeNode node = getSelectedNode();

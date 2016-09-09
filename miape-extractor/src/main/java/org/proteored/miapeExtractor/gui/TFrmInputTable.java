@@ -14,13 +14,13 @@ import javax.swing.table.AbstractTableModel;
 import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 
 /**
- * 
+ *
  * @author __USER__
  */
 public class TFrmInputTable extends javax.swing.JDialog {
 	// variables.....
-	public static final String[] instrument_head = new String[] { "Name",
-			"Manufacturer", "IonSource(s)", "Analyzer(s)", "Activation" };
+	public static final String[] instrument_head = new String[] { "Name", "Manufacturer", "IonSource(s)", "Analyzer(s)",
+			"Activation" };
 	private String[] project_head;
 	// public static final int INTRUMENT_MODE = 1;
 	public static final int PROJECT_MODE = 0;
@@ -41,8 +41,8 @@ public class TFrmInputTable extends javax.swing.JDialog {
 	private final boolean localProjects;
 
 	/** Creates new form TFrmInputTable */
-	public TFrmInputTable(MiapeExtractionFrame parentForm, boolean modal,
-			int _mode, InstrumentSummary[] instrumentData) {
+	public TFrmInputTable(MiapeExtractionFrame parentForm, boolean modal, int _mode,
+			InstrumentSummary[] instrumentData) {
 		super(parentForm, modal);
 		try {
 			UIManager.setLookAndFeel(new WindowsLookAndFeel());
@@ -58,8 +58,8 @@ public class TFrmInputTable extends javax.swing.JDialog {
 		myInit(_mode, instrumentData);
 	}
 
-	public TFrmInputTable(MiapeExtractionFrame parentForm, boolean modal,
-			int _mode, Map<Integer, String> miapeProjects) {
+	public TFrmInputTable(MiapeExtractionFrame parentForm, boolean modal, int _mode,
+			Map<Integer, String> miapeProjects) {
 		super(parentForm, modal);
 		try {
 			UIManager.setLookAndFeel(new WindowsLookAndFeel());
@@ -93,11 +93,11 @@ public class TFrmInputTable extends javax.swing.JDialog {
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("");
 
-		jTable_contents.setModel(new javax.swing.table.DefaultTableModel(
-				new Object[][] { { null, null, null, null },
-						{ null, null, null, null }, { null, null, null, null },
-						{ null, null, null, null } }, new String[] { "Title 1",
-						"Title 2", "Title 3", "Title 4" }));
+		jTable_contents
+				.setModel(new javax.swing.table.DefaultTableModel(
+						new Object[][] { { null, null, null, null }, { null, null, null, null },
+								{ null, null, null, null }, { null, null, null, null } },
+						new String[] { "Title 1", "Title 2", "Title 3", "Title 4" }));
 		jTable_contents.addMouseListener(new java.awt.event.MouseAdapter() {
 			@Override
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -122,61 +122,36 @@ public class TFrmInputTable extends javax.swing.JDialog {
 			}
 		});
 
-		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
-				getContentPane());
+		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(
-						layout.createSequentialGroup()
-								.addContainerGap()
-								.addGroup(
-										layout.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.LEADING)
+		layout.setHorizontalGroup(
+				layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(
+								layout.createSequentialGroup().addContainerGap()
+										.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 												.addComponent(jLabel_head)
-												.addComponent(
-														jScrollPane1,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														1204, Short.MAX_VALUE)
-												.addGroup(
-														javax.swing.GroupLayout.Alignment.TRAILING,
-														layout.createSequentialGroup()
-																.addComponent(
-																		jButtonOK)
+												.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1204,
+														Short.MAX_VALUE)
+												.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+														layout.createSequentialGroup().addComponent(jButtonOK)
 																.addPreferredGap(
 																		javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																.addComponent(
-																		jButtonCancel)))
-								.addContainerGap()));
-		layout.setVerticalGroup(layout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(
-						layout.createSequentialGroup()
-								.addContainerGap()
-								.addComponent(jLabel_head)
-								.addPreferredGap(
-										javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jScrollPane1,
-										javax.swing.GroupLayout.PREFERRED_SIZE,
-										247,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(
-										javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addGroup(
-										layout.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.BASELINE)
-												.addComponent(jButtonCancel)
-												.addComponent(jButtonOK))
-								.addContainerGap(
-										javax.swing.GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)));
+																.addComponent(jButtonCancel)))
+										.addContainerGap()));
+		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jLabel_head)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 247,
+								javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jButtonCancel).addComponent(jButtonOK))
+						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		pack();
-		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit()
-				.getScreenSize();
+		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 		java.awt.Dimension dialogSize = getSize();
-		setLocation((screenSize.width - dialogSize.width) / 2,
-				(screenSize.height - dialogSize.height) / 2);
+		setLocation((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2);
 	}// </editor-fold>
 		// GEN-END:initComponents
 
@@ -191,8 +166,7 @@ public class TFrmInputTable extends javax.swing.JDialog {
 			// parentForm.fillInstrumentUserSelection(userSelection,
 			// jTable_contents.getSelectedRow());
 			// } else {
-			userSelection = (String) jTable_contents.getValueAt(
-					jTable_contents.getSelectedRow(), 1);
+			userSelection = (String) jTable_contents.getValueAt(jTable_contents.getSelectedRow(), 1);
 			parentForm.fillProjectUserSelection(userSelection);
 			// }
 		}
@@ -205,8 +179,8 @@ public class TFrmInputTable extends javax.swing.JDialog {
 			// this is the second click
 			if (currentTimeMillis - firstClickTime < 300) {
 				if (jTable_contents.getSelectedRow() >= 0) {
-					String currentUserSelection = jTable_contents.getValueAt(
-							jTable_contents.getSelectedRow(), 0).toString();
+					String currentUserSelection = jTable_contents.getValueAt(jTable_contents.getSelectedRow(), 0)
+							.toString();
 					if (currentUserSelection.equals(previousUserSelection)) {
 						jButtonOKActionPerformed(null);
 						return;
@@ -217,8 +191,7 @@ public class TFrmInputTable extends javax.swing.JDialog {
 		firstClick = true;
 		firstClickTime = currentTimeMillis;
 		if (jTable_contents.getSelectedRow() >= 0) {
-			previousUserSelection = jTable_contents.getValueAt(
-					jTable_contents.getSelectedRow(), 0).toString();
+			previousUserSelection = jTable_contents.getValueAt(jTable_contents.getSelectedRow(), 0).toString();
 		}
 
 	}
@@ -229,8 +202,7 @@ public class TFrmInputTable extends javax.swing.JDialog {
 		// userSelection = "Not entered";
 		// parentForm.fillInstrumentUserSelection(userSelection, -1);
 		// } else {
-		if (userSelection != null && !"".equals(userSelection)
-				&& !"NO SELECTION".equals(userSelection))
+		if (userSelection != null && !"".equals(userSelection) && !"NO SELECTION".equals(userSelection))
 			parentForm.fillProjectUserSelection(userSelection);
 		// }
 		setVisible(false);
@@ -252,10 +224,9 @@ public class TFrmInputTable extends javax.swing.JDialog {
 		// jTable_contents.setModel(TableModel);
 		// initTableWidth(jTable_contents, instrument_propor);
 		// } else {
-		jLabel_head.setText("Select a MIAPE project from the repository");
-		setTitle("MIAPE Projects");
-		TableModel = new TMIAPEProjectModelTable(this, project_head, Data,
-				localProjects);
+		jLabel_head.setText("Select a project from the list");
+		setTitle("Projects");
+		TableModel = new TMIAPEProjectModelTable(this, project_head, Data, localProjects);
 		jTable_contents.setModel(TableModel);
 		initTableWidth(jTable_contents, project_propor);
 		// }

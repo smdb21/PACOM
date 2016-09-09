@@ -22,8 +22,7 @@ import org.proteored.miapeapi.webservice.clients.miapeextractor.MiapeExtractorDe
 import org.proteored.miapeapi.xml.msi.MIAPEMSIXmlFile;
 import org.proteored.miapeapi.xml.msi.MiapeMSIXmlFactory;
 
-public class UnattendedMiapeMiapeXMLRetriever extends SwingWorker<Void, Void> implements
-		PropertyChangeListener {
+public class UnattendedMiapeMiapeXMLRetriever extends SwingWorker<Void, Void> implements PropertyChangeListener {
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
 	private static UnattendedMiapeMiapeXMLRetriever instance;
 	private final MiapeAPIWebserviceDelegate miapeAPIWebservice;
@@ -45,8 +44,7 @@ public class UnattendedMiapeMiapeXMLRetriever extends SwingWorker<Void, Void> im
 		try {
 			log.info("MIAPE RETRIVING UNATTENDED HAS BEEN STARTED");
 			if (miapeAPIWebservice != null) {
-				List<IntegerString> allMiapeMSIs = miapeAPIWebservice.getAllMiapes(userName,
-						password, "MSI");
+				List<IntegerString> allMiapeMSIs = miapeAPIWebservice.getAllMiapes(userName, password, "MSI");
 				List<Integer> msisToRetrieve = new ArrayList<Integer>();
 				List<Integer> mssToRetrieve = new ArrayList<Integer>();
 				// get a list of identifiers
@@ -66,29 +64,26 @@ public class UnattendedMiapeMiapeXMLRetriever extends SwingWorker<Void, Void> im
 					if (miapeMSIID == 3220)
 						log.info("HOLA");
 					// check if it is already locally
-					String miapeMSIXMLFilePath = FileManager.getMiapeMSIXMLFilePath(miapeMSIID);
+					String miapeMSIXMLFilePath = FileManager.getMiapeMSIXMLFileLocalPathFromMiapeInformation(null,
+							miapeMSIID, null);
 					boolean fullPermissions = false;
 					File miapeMSIXMLFile = new File(miapeMSIXMLFilePath);
-					if (!miapeMSIXMLFile.exists()
-							|| miapeMSIXMLFile.lastModified() < Long.valueOf("1349251004048")) {
+					if (!miapeMSIXMLFile.exists() || miapeMSIXMLFile.lastModified() < Long.valueOf("1349251004048")) {
 						// a String with the following structure: "read=value,
 						// write=value, delete=value, share=value where value
 						// can be
 						// 'true' or 'false'
 						log.info("Checking permissions of MIAPE MSI: " + miapeMSIID);
-						String miapePermissionsString = miapeAPIWebservice.getMiapePermissions(
-								miapeMSIID, "MSI", userName, password);
+						String miapePermissionsString = miapeAPIWebservice.getMiapePermissions(miapeMSIID, "MSI",
+								userName, password);
 						if (miapePermissionsString != null) {
 							if (miapePermissionsString.contains(",")) {
 								String[] permissionsSplitted = miapePermissionsString.split(",");
 								if (permissionsSplitted.length == 4) {
 									if (permissionsSplitted[0].equalsIgnoreCase("read=true")
-											&& permissionsSplitted[1]
-													.equalsIgnoreCase("write=true")
-											&& permissionsSplitted[2]
-													.equalsIgnoreCase("delete=true")
-											&& permissionsSplitted[3]
-													.equalsIgnoreCase("share=true")) {
+											&& permissionsSplitted[1].equalsIgnoreCase("write=true")
+											&& permissionsSplitted[2].equalsIgnoreCase("delete=true")
+											&& permissionsSplitted[3].equalsIgnoreCase("share=true")) {
 										fullPermissions = true;
 										miapesMSIWithFullPermissions.add(miapeMSIID);
 									}
@@ -99,15 +94,12 @@ public class UnattendedMiapeMiapeXMLRetriever extends SwingWorker<Void, Void> im
 							msisToRetrieve.add(miapeMSIID);
 					} else {
 
-						int miapeMSReference = MiapeMSAndMSIAssociator.getInstance()
-								.getAssociatedMIAPEMS(miapeMSIID);
+						int miapeMSReference = MiapeMSAndMSIAssociator.getInstance().getAssociatedMIAPEMS(miapeMSIID);
 						if (miapeMSReference > 0) {
-							String miapeMSXMLFilePath = FileManager
-									.getMiapeMSFileName(miapeMSReference);
+							String miapeMSXMLFilePath = FileManager.getMiapeMSLocalFileName(miapeMSReference, null);
 							File miapeMSXMLFile = new File(miapeMSXMLFilePath);
 							if (!miapeMSXMLFile.exists()
-									|| miapeMSXMLFile.lastModified() < Long
-											.valueOf("1349251004048")) {
+									|| miapeMSXMLFile.lastModified() < Long.valueOf("1349251004048")) {
 								mssToRetrieve.add(miapeMSReference);
 							}
 						}
@@ -131,23 +123,20 @@ public class UnattendedMiapeMiapeXMLRetriever extends SwingWorker<Void, Void> im
 				log.info(tmp);
 				// with full permissions will be downloaded first
 				for (Integer miapeID : miapesMSIWithFullPermissions) {
-					MiapeRetrieverManager.getInstance(userName, password).addRetrieving(miapeID,
-							"MSI", this);
+					MiapeRetrieverManager.getInstance(userName, password).addRetrieving(miapeID, "MSI", this);
 				}
 				for (Integer miapeID : msisToRetrieve) {
 					if (!miapesMSIWithFullPermissions.contains(miapeID))
-						MiapeRetrieverManager.getInstance(userName, password).addRetrieving(
-								miapeID, "MSI", this);
+						MiapeRetrieverManager.getInstance(userName, password).addRetrieving(miapeID, "MSI", this);
 				}
 				for (Integer miapeID : mssToRetrieve) {
-					MiapeRetrieverManager.getInstance(userName, password).addRetrieving(miapeID,
-							"MS", this);
+					MiapeRetrieverManager.getInstance(userName, password).addRetrieving(miapeID, "MS", this);
 				}
 			}
 
 		} catch (Exception e) {
 			log.info(e.getMessage());
-			this.error = e.getMessage();
+			error = e.getMessage();
 			e.printStackTrace();
 		}
 		return null;
@@ -162,23 +151,21 @@ public class UnattendedMiapeMiapeXMLRetriever extends SwingWorker<Void, Void> im
 
 				Integer miapeID = Integer.valueOf(splitted[0]);
 				String miapeType = splitted[1];
-				log.info("MIAPE " + miapeType + " " + miapeID
-						+ " retrieved by unattended retriever");
+				log.info("MIAPE " + miapeType + " " + miapeID + " retrieved by unattended retriever");
 				if (miapeType.equals("MSI")) {
 					// if it is a MSI, check if there is a MIAPE MS associated
 					// Get Miape MSI Header
 					try {
-						MiapeMSIDocument document = MiapeMSIXmlFactory.getFactory().toDocument(
-								new MIAPEMSIXmlFile(FileManager.getMiapeMSIXMLFilePath(miapeID)),
+						MiapeMSIDocument document = MiapeMSIXmlFactory.getFactory().toDocument(new MIAPEMSIXmlFile(
+								FileManager.getMiapeMSIXMLFileLocalPathFromMiapeInformation(null, miapeID, null)),
 								OntologyLoaderTask.getCvManager(), null, null, null);
 						int miapeMSReference = document.getMSDocumentReference();
 						if (miapeMSReference > 0) {
-							String miapeMSXMLFilePath = FileManager
-									.getMiapeMSFileName(miapeMSReference);
+							String miapeMSXMLFilePath = FileManager.getMiapeMSLocalFileName(miapeMSReference, null);
 							File miapeMSXMLFile = new File(miapeMSXMLFilePath);
 							if (!miapeMSXMLFile.exists()) {
-								MiapeRetrieverManager.getInstance(userName, password)
-										.addRetrieving(miapeMSReference, "MS", this);
+								MiapeRetrieverManager.getInstance(userName, password).addRetrieving(miapeMSReference,
+										"MS", this);
 							}
 						}
 					} catch (MiapeDatabaseException e) {
@@ -199,8 +186,7 @@ public class UnattendedMiapeMiapeXMLRetriever extends SwingWorker<Void, Void> im
 				int miapeID = Integer.valueOf((String) splitted[0]);
 				String miapeType = (String) splitted[1];
 				String errorMessage = (String) splitted[2];
-				log.info("Error downloading MIAPE " + miapeType + " " + miapeID + ": "
-						+ errorMessage);
+				log.info("Error downloading MIAPE " + miapeType + " " + miapeID + ": " + errorMessage);
 			}
 
 		}
@@ -209,10 +195,10 @@ public class UnattendedMiapeMiapeXMLRetriever extends SwingWorker<Void, Void> im
 
 	@Override
 	protected void done() {
-		if (this.isCancelled()) {
+		if (isCancelled()) {
 			log.info("MIAPE MSI unattended retriever CANCELLED");
 		} else {
-			if (!"".equals(this.error))
+			if (!"".equals(error))
 				log.info("MIAPE MSI unattended retriever has launched all MIAPE MSI retrieving: "
 						+ MiapeRetrieverManager.getInstance(userName, password).enumerate());
 			else

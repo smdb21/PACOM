@@ -21,15 +21,14 @@ public class LoadProjectsTask extends SwingWorker<Void, Void> {
 	private final int userID;
 	private HashMap<Integer, String> loadedProjects;
 	private boolean loading;
-	private static org.apache.log4j.Logger log = org.apache.log4j.Logger
-			.getLogger("log4j.logger.org.proteored");
+	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("log4j.logger.org.proteored");
 	private final MiapeExtractionFrame parentDialog;
 	private final boolean localProjects;
 	private final static HashMap<Integer, String> cachedLocalProjects = new HashMap<Integer, String>();
 	private final static HashMap<Integer, Map<Integer, String>> cachedRemoteProjects = new HashMap<Integer, Map<Integer, String>>();
 
-	public LoadProjectsTask(MiapeExtractionFrame standard2miapeDialog,
-			boolean localProjects, int userID, String userName, String password) {
+	public LoadProjectsTask(MiapeExtractionFrame standard2miapeDialog, boolean localProjects, int userID,
+			String userName, String password) {
 
 		this.userName = userName;
 		this.password = password;
@@ -70,8 +69,7 @@ public class LoadProjectsTask extends SwingWorker<Void, Void> {
 				log.info("Loading projects from local folder");
 				firePropertyChange(MiapeExtractionTask.NOTIFICATION, null,
 						"Pre-loading projects from local file system...");
-				final List<String> localMIAPEProjects = FileManager
-						.getlocalMIAPEProjects();
+				final List<String> localMIAPEProjects = FileManager.getlocalMIAPEProjects();
 				HashMap<Integer, String> projectsHashMap = new HashMap<Integer, String>();
 				int counter = 1;
 				for (String projectName : localMIAPEProjects) {
@@ -80,7 +78,9 @@ public class LoadProjectsTask extends SwingWorker<Void, Void> {
 				log.info(localMIAPEProjects.size() + " projects loaded");
 				firePropertyChange(MiapeExtractionTask.NOTIFICATION, null,
 						localMIAPEProjects.size() + " projects loaded");
-				addToLocalCache(projectsHashMap);
+				// disabled cache in order to show the projects that have been
+				// just created
+				// addToLocalCache(projectsHashMap);
 				return projectsHashMap;
 			} catch (Exception e) {
 				firePropertyChange(MiapeExtractionTask.NOTIFICATION, null,
@@ -94,22 +94,18 @@ public class LoadProjectsTask extends SwingWorker<Void, Void> {
 				return getRemoteCachedProjects(userID);
 			try {
 				log.info("Loading projects from user");
-				firePropertyChange(MiapeExtractionTask.NOTIFICATION, null,
-						"Pre-loading projects from repository...");
-				final List<IntegerString> allProjects = MainFrame
-						.getMiapeAPIWebservice().getAllProjects(userName,
-								password);
-				HashMap<Integer, String> miapeProjects = Wrapper
-						.getHashMap(allProjects);
+				firePropertyChange(MiapeExtractionTask.NOTIFICATION, null, "Pre-loading projects from repository...");
+				final List<IntegerString> allProjects = MainFrame.getMiapeAPIWebservice().getAllProjects(userName,
+						password);
+				HashMap<Integer, String> miapeProjects = Wrapper.getHashMap(allProjects);
 				int numProjects = miapeProjects.size();
 				HashMap<Integer, String> ret = new HashMap<Integer, String>();
 
 				// filter the onw that the user has not write permissions
 				int counter = 1;
 				for (Integer projectId : miapeProjects.keySet()) {
-					Permission perm = new Permission(MainFrame
-							.getMiapeAPIWebservice().getProjectPermissions(
-									projectId, userName, password));
+					Permission perm = new Permission(
+							MainFrame.getMiapeAPIWebservice().getProjectPermissions(projectId, userName, password));
 					setProgress(counter * 100 / numProjects);
 					counter++;
 					if (perm.canWrite())
@@ -117,8 +113,7 @@ public class LoadProjectsTask extends SwingWorker<Void, Void> {
 				}
 				log.info(ret.size() + " projects loaded");
 				addToRemoteCache(userID, ret);
-				firePropertyChange(MiapeExtractionTask.NOTIFICATION, null,
-						ret.size() + " projects loaded");
+				firePropertyChange(MiapeExtractionTask.NOTIFICATION, null, ret.size() + " projects loaded");
 				return ret;
 			} catch (MiapeDatabaseException_Exception e) {
 				firePropertyChange(MiapeExtractionTask.NOTIFICATION, null,
@@ -138,8 +133,7 @@ public class LoadProjectsTask extends SwingWorker<Void, Void> {
 		}
 	}
 
-	private static synchronized void addToLocalCache(
-			HashMap<Integer, String> projectsHashMap) {
+	private static synchronized void addToLocalCache(HashMap<Integer, String> projectsHashMap) {
 		cachedLocalProjects.putAll(projectsHashMap);
 	}
 
@@ -147,8 +141,7 @@ public class LoadProjectsTask extends SwingWorker<Void, Void> {
 		return cachedLocalProjects;
 	}
 
-	private static synchronized void addToRemoteCache(int userID,
-			HashMap<Integer, String> projectsHashMap) {
+	private static synchronized void addToRemoteCache(int userID, HashMap<Integer, String> projectsHashMap) {
 		if (cachedRemoteProjects.containsKey(userID)) {
 			final Map<Integer, String> map = cachedRemoteProjects.get(userID);
 			log.info("This may not happen");
@@ -161,13 +154,11 @@ public class LoadProjectsTask extends SwingWorker<Void, Void> {
 		}
 	}
 
-	private static synchronized Map<Integer, String> getRemoteCachedProjects(
-			int userID) {
+	private static synchronized Map<Integer, String> getRemoteCachedProjects(int userID) {
 		log.info("Getting cached projects from user: " + userID);
 		if (cachedRemoteProjects.containsKey(userID)) {
 			final Map<Integer, String> map = cachedRemoteProjects.get(userID);
-			log.info("Returning " + map.size() + " cached projects from user: "
-					+ userID);
+			log.info("Returning " + map.size() + " cached projects from user: " + userID);
 			return map;
 		}
 		log.info("No cached projects from user: " + userID);

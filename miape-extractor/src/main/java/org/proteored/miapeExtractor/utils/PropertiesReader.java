@@ -21,6 +21,7 @@ public class PropertiesReader {
 	public static final String EMAIL_NOTIFICATIONS = "email_notifications";
 	public static final String MIAPE_TOOL_ACCESS_SCRIPT = "miapetool_access_script";
 	public static final String MIAPE_EXTRACTOR_UNATENDEDRETRIEVER = "miapeextractor.unatendedretriever";
+	public static final String LOCAL_WORKFLOW = "local.workflow";
 
 	public static Properties getProperties() {
 		ClassLoader cl = PropertiesReader.class.getClassLoader();
@@ -28,8 +29,7 @@ public class PropertiesReader {
 
 		is = cl.getResourceAsStream(MIAPE_EXTRACTOR_PROPERTIES_FILE);
 		if (is == null)
-			throw new IllegalArgumentException(MIAPE_EXTRACTOR_PROPERTIES_FILE
-					+ " file not found");
+			throw new IllegalArgumentException(MIAPE_EXTRACTOR_PROPERTIES_FILE + " file not found");
 
 		Properties prop = new Properties();
 		try {

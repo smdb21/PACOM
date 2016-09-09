@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.swing.SwingWorker;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.proteored.miapeExtractor.analysis.conf.jaxb.CPExperiment;
 import org.proteored.miapeExtractor.analysis.conf.jaxb.CPMS;
@@ -33,9 +34,8 @@ public class CuratedExperimentSaver extends SwingWorker<Void, Void> {
 	private final ControlVocabularyManager cvManager;
 	private final Frame parentFrame;
 
-	public CuratedExperimentSaver(Frame parentFrame, ExperimentList idSet,
-			ControlVocabularyManager cvManager) {
-		this.experimentList = idSet;
+	public CuratedExperimentSaver(Frame parentFrame, ExperimentList idSet, ControlVocabularyManager cvManager) {
+		experimentList = idSet;
 		this.cvManager = cvManager;
 		this.parentFrame = parentFrame;
 	}
@@ -47,11 +47,9 @@ public class CuratedExperimentSaver extends SwingWorker<Void, Void> {
 			firePropertyChange(CURATED_EXP_SAVER_START, null, null);
 
 			final CuratedExperimentNameCreatorDialog showCurateExperimentNameDialog = CuratedExperimentNamePane
-					.showCurateExperimentNameDialog(this.parentFrame,
-							experimentList);
+					.showCurateExperimentNameDialog(parentFrame, experimentList);
 
-			final List<Experiment> experimentList2 = experimentList
-					.getExperiments();
+			final List<Experiment> experimentList2 = experimentList.getExperiments();
 
 			if (experimentList2 != null) {
 				for (Experiment experiment : experimentList2) {
@@ -61,25 +59,17 @@ public class CuratedExperimentSaver extends SwingWorker<Void, Void> {
 							.getExperimentName(experiment.getName());
 					cpExp.setName(experimentName);
 					cpExp.setCurated(true);
-					if (FileManager.existsCuratedExperimentXMLFile(cpExp
-							.getName()))
-						log.info("The curated experiment " + cpExp.getName()
-								+ " is going to be overwrited");
-					final List<Replicate> replicates = experiment
-							.getReplicates();
+					if (FileManager.existsCuratedExperimentXMLFile(cpExp.getName()))
+						log.info("The curated experiment " + cpExp.getName() + " is going to be overwrited");
+					final List<Replicate> replicates = experiment.getReplicates();
 					int i = 1;
 					int total = replicates.size();
 					for (Replicate replicate : replicates) {
 
 						setProgress(i++ * 100 / total);
-						firePropertyChange(
-								CURATED_EXP_SAVER_PROGRESS,
-								null,
-								"Saving: '" + replicate.getName()
-										+ "' from experiment '"
-										+ cpExp.getName() + "'");
-						final List<MiapeMSIDocument> miapeMSIs = replicate
-								.getMiapeMSIs();
+						firePropertyChange(CURATED_EXP_SAVER_PROGRESS, null,
+								"Saving: '" + replicate.getName() + "' from experiment '" + cpExp.getName() + "'");
+						final List<MiapeMSIDocument> miapeMSIs = replicate.getMiapeMSIs();
 						if (miapeMSIs != null) {
 
 							CPReplicate cpRep = new CPReplicate();
@@ -92,30 +82,26 @@ public class CuratedExperimentSaver extends SwingWorker<Void, Void> {
 							for (MiapeMSIDocument miapeMSIDocument : miapeMSIs) {
 								CPMSI cpMSI = new CPMSI();
 								cpMSI.setId(miapeMSIDocument.getId());
+								cpMSI.setLocal(true);
 
 								// TODO fireproperty(saving idset.getname
-								MiapeMSIFiltered miapeMSIFiltered = new MiapeMSIFiltered(
-										miapeMSIDocument, replicate, cvManager);
-								final int msDocumentReference = miapeMSIDocument
-										.getMSDocumentReference();
+								MiapeMSIFiltered miapeMSIFiltered = new MiapeMSIFiltered(miapeMSIDocument, replicate,
+										cvManager);
+								final int msDocumentReference = miapeMSIDocument.getMSDocumentReference();
 								if (msDocumentReference > 0) {
 									CPMS cpMS = new CPMS();
 									cpMS.setId(msDocumentReference);
-									cpMS.setName(FileManager
-											.getMiapeMSFileName(msDocumentReference));
+									cpMS.setName(FilenameUtils.getBaseName(
+											FileManager.getMiapeMSLocalFileName(msDocumentReference, null)));
 									cpMsList.getCPMS().add(cpMS);
 								}
 
 								try {
-									String savedPath = FileManager
-											.saveCuratedMiapeMSI(
-													cpExp.getName(),
-													miapeMSIFiltered);
-									log.info("MIAPE MSI filtered saved at: "
-											+ savedPath);
-									cpMSI.setName(FileManager
-											.getMiapeMSIFileName(miapeMSIDocument
-													.getId()));
+									String savedPath = FileManager.saveCuratedMiapeMSI(cpExp.getName(),
+											miapeMSIFiltered, miapeMSIDocument.getName());
+									log.info("MIAPE MSI filtered saved at: " + savedPath);
+									cpMSI.setName(miapeMSIDocument.getName());
+									cpMSI.setLocalProjectName(cpExp.getName());
 									cpMsiList.getCPMSI().add(cpMSI);
 								} catch (IOException ex) {
 									ex.printStackTrace();

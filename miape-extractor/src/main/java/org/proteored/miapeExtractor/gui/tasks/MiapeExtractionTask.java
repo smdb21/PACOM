@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
+import javax.mail.MethodNotSupportedException;
 import javax.swing.SwingWorker;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -43,8 +44,7 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 	private static final int CHECKING_INPUTS = 1;
 	private static final int UPLOADING = 2;
 	private static final int CONVERTING = 3;
-	private static org.apache.log4j.Logger log = org.apache.log4j.Logger
-			.getLogger("log4j.logger.org.proteored");
+	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("log4j.logger.org.proteored");
 	private final MiapeExtractorDelegate miapeExtractorWebservice;
 	private MiapeLocalExtractor miapeLocalExtractor;
 	public static final String NOTIFICATION = "notification";
@@ -84,20 +84,16 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 	private boolean localProcessingInParallel = false;
 	private boolean storeInRepository;
 
-	public MiapeExtractionTask(MiapeExtractionRunParameters params,
-			MiapeExtractorDelegate miapeExtractorWebservice,
-			MiapeAPIWebserviceDelegate miapeAPIWebservice, String userName,
-			String password, boolean localProcessingInParallel) {
-		this(params, miapeExtractorWebservice, miapeAPIWebservice, userName,
-				password);
+	public MiapeExtractionTask(MiapeExtractionRunParameters params, MiapeExtractorDelegate miapeExtractorWebservice,
+			MiapeAPIWebserviceDelegate miapeAPIWebservice, String userName, String password,
+			boolean localProcessingInParallel) {
+		this(params, miapeExtractorWebservice, miapeAPIWebservice, userName, password);
 		this.localProcessingInParallel = localProcessingInParallel;
 
 	}
 
-	public MiapeExtractionTask(MiapeExtractionRunParameters params,
-			MiapeExtractorDelegate miapeExtractorWebservice,
-			MiapeAPIWebserviceDelegate miapeAPIWebservice, String userName,
-			String password) {
+	public MiapeExtractionTask(MiapeExtractionRunParameters params, MiapeExtractorDelegate miapeExtractorWebservice,
+			MiapeAPIWebserviceDelegate miapeAPIWebservice, String userName, String password) {
 		miapeExtractorInputParameters = params;
 		this.miapeExtractorWebservice = miapeExtractorWebservice;
 		this.miapeAPIWebservice = miapeAPIWebservice;
@@ -111,14 +107,11 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 
 	}
 
-	public MiapeExtractionTask(Integer runIdentifier,
-			MiapeExtractionRunParameters parameters,
-			MiapeExtractorDelegate miapeExtractorWebservice2,
-			MiapeAPIWebserviceDelegate miapeAPIWebservice, String userName2,
-			String password2, boolean processInParallel) {
+	public MiapeExtractionTask(Integer runIdentifier, MiapeExtractionRunParameters parameters,
+			MiapeExtractorDelegate miapeExtractorWebservice2, MiapeAPIWebserviceDelegate miapeAPIWebservice,
+			String userName2, String password2, boolean processInParallel) {
 
-		this(parameters, miapeExtractorWebservice2, miapeAPIWebservice,
-				userName2, password2, processInParallel);
+		this(parameters, miapeExtractorWebservice2, miapeAPIWebservice, userName2, password2, processInParallel);
 		if (runIdentifier != null)
 			identifier = runIdentifier;
 
@@ -127,14 +120,11 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 
 	}
 
-	public MiapeExtractionTask(Integer runIdentifier,
-			MiapeExtractionRunParameters parameters,
-			MiapeExtractorDelegate miapeExtractorWebservice2,
-			MiapeAPIWebserviceDelegate miapeAPIWebservice, String userName2,
-			String password2) {
+	public MiapeExtractionTask(Integer runIdentifier, MiapeExtractionRunParameters parameters,
+			MiapeExtractorDelegate miapeExtractorWebservice2, MiapeAPIWebserviceDelegate miapeAPIWebservice,
+			String userName2, String password2) {
 
-		this(parameters, miapeExtractorWebservice2, miapeAPIWebservice,
-				userName2, password2);
+		this(parameters, miapeExtractorWebservice2, miapeAPIWebservice, userName2, password2);
 		if (runIdentifier != null)
 			identifier = runIdentifier;
 
@@ -149,26 +139,20 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 
 	private boolean checkInputs() {
 		taskStatus = CHECKING_INPUTS;
-		if (miapeExtractorInputParameters.isMzMLSelected()
-				&& "".equals(getFirstInputFileName())) {
+		if (miapeExtractorInputParameters.isMzMLSelected() && "".equals(getFirstInputFileName())) {
 			firePropertyChange(MIAPE_CREATION_ERROR, null,
-					new MiapeExtractionResult(identifier,
-							"Error. Select one file to upload."));
+					new MiapeExtractionResult(identifier, "Error. Select one file to upload."));
 			return false;
 		}
 		if (miapeExtractorInputParameters.isMzIdentMLPlusMGFSelected()) {
 			if ("".equals(miapeExtractorInputParameters.getMgfFileName())) {
 				firePropertyChange(MIAPE_CREATION_ERROR, null,
-						new MiapeExtractionResult(identifier,
-								"Error. Select the MGF peak list file"));
+						new MiapeExtractionResult(identifier, "Error. Select the MGF peak list file"));
 				return false;
 			}
 			if (miapeExtractorInputParameters.getMiapeMSMetadata() == null) {
-				firePropertyChange(
-						MIAPE_CREATION_ERROR,
-						null,
-						new MiapeExtractionResult(identifier,
-								"Error. Some metadata is required in order to complete the MIAPE MS"));
+				firePropertyChange(MIAPE_CREATION_ERROR, null, new MiapeExtractionResult(identifier,
+						"Error. Some metadata is required in order to complete the MS dataset information"));
 				return false;
 			}
 
@@ -176,54 +160,61 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 		if (miapeExtractorInputParameters.isMGFSelected()) {
 			if ("".equals(miapeExtractorInputParameters.getMgfFileName())) {
 				firePropertyChange(MIAPE_CREATION_ERROR, null,
-						new MiapeExtractionResult(identifier,
-								"Error. Select the MGF peak list file"));
+						new MiapeExtractionResult(identifier, "Error. Select the MGF peak list file"));
 				return false;
 			}
 			if (miapeExtractorInputParameters.getMiapeMSMetadata() == null) {
-				firePropertyChange(
-						MIAPE_CREATION_ERROR,
-						null,
-						new MiapeExtractionResult(identifier,
-								"Error. Some metadata is required in order to complete the MIAPE MS"));
+				firePropertyChange(MIAPE_CREATION_ERROR, null, new MiapeExtractionResult(identifier,
+						"Error. Some metadata is required in order to complete the MS dataset information"));
 				return false;
 			}
 
 		}
-		if (miapeExtractorInputParameters.isMzMLPlusMzIdentMLSelected()) {
+		if (miapeExtractorInputParameters.isMzMLPlusMzIdentMLSelected()
+				|| miapeExtractorInputParameters.isMzIdentMLSelected()
+				|| miapeExtractorInputParameters.isMzIdentMLPlusMGFSelected()) {
 			if ("".equals(miapeExtractorInputParameters.getMzIdentMLFileName())) {
 				firePropertyChange(MIAPE_CREATION_ERROR, null,
-						new MiapeExtractionResult(identifier,
-								"Error. Select the mzIdentML file"));
+						new MiapeExtractionResult(identifier, "Error. Select the mzIdentML file"));
 				return false;
 			}
 		}
-		if (!miapeExtractorInputParameters.isMIAPEMSChecked()
-				&& !miapeExtractorInputParameters.isMIAPEMSIChecked()) {
+		if (miapeExtractorInputParameters.isXTandemPlusMGFSelected()
+				|| miapeExtractorInputParameters.isXTandemSelected()) {
+			if ("".equals(miapeExtractorInputParameters.getXTandemFileName())) {
+				firePropertyChange(MIAPE_CREATION_ERROR, null,
+						new MiapeExtractionResult(identifier, "Error. Select the XTandem XML file"));
+				return false;
+			}
+		}
+		if (miapeExtractorInputParameters.isDTASelectPlusMGFSelected()
+				|| miapeExtractorInputParameters.isDTASelectSelected()) {
+			if ("".equals(miapeExtractorInputParameters.getDtaSelectFileName())) {
+				firePropertyChange(MIAPE_CREATION_ERROR, null,
+						new MiapeExtractionResult(identifier, "Error. Select the DTASelect-filter txt file"));
+				return false;
+			}
+		}
+		if (!miapeExtractorInputParameters.isMIAPEMSChecked() && !miapeExtractorInputParameters.isMIAPEMSIChecked()) {
 			firePropertyChange(MIAPE_CREATION_ERROR, null,
-					new MiapeExtractionResult(identifier,
-							"Error. Select one output MIAPE type."));
+					new MiapeExtractionResult(identifier, "Error. Select one output MIAPE type."));
 			return false;
 		}
 
 		if (miapeExtractorInputParameters.getProjectName().equals("")) {
-			firePropertyChange(
-					MIAPE_CREATION_ERROR,
-					null,
-					new MiapeExtractionResult(
-							identifier,
-							"Error. You need to state a project name.\nIf the project doesn't exist, it will be created.\nIf the project already exists, the MIAPE(s) will be created in that project."));
+			firePropertyChange(MIAPE_CREATION_ERROR, null,
+					new MiapeExtractionResult(identifier, "Error. You need to state a project name.\n"
+							+ "If the project doesn't exist, it will be created.\n"
+							+ "If the project already exists, the dataset(s) will be created in that project."));
 			return false;
 		}
 		if (getParameters().getAssociatedMiapeMSGeneratorJob() != null
 				&& getParameters().getAssociatedMiapeMS() == null) {
-			firePropertyChange(MIAPE_CREATION_WAITING_FOR_OTHER_JOB_COMPLETION,
-					null, new MiapeExtractionResult(identifier, "The job '"
-							+ identifier
-							+ "' is waiting for the completion of job '"
-							+ getParameters()
-									.getAssociatedMiapeMSGeneratorJob()
-							+ "' because it will use its MIAPE MS generated"));
+			firePropertyChange(MIAPE_CREATION_WAITING_FOR_OTHER_JOB_COMPLETION, null,
+					new MiapeExtractionResult(identifier,
+							"The job '" + identifier + "' is waiting for the completion of job '"
+									+ getParameters().getAssociatedMiapeMSGeneratorJob()
+									+ "' because it will use its MS dataset generated"));
 			return false;
 		}
 		return true;
@@ -239,21 +230,20 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 
 	/**
 	 * Main method which convert the standard files to MIAPEs
-	 * 
+	 *
 	 * @throws WrongXMLFormatException
 	 * @throws IOException
+	 * @throws MethodNotSupportedException
 	 */
-	private void convertFile2MIAPE() throws IOException {
+	private void convertFile2MIAPE() throws IOException, MethodNotSupportedException {
 
 		if (miapeExtractorInputParameters.isLocalProcessing())
-			miapeLocalExtractor = new MiapeLocalExtractor(miapeAPIWebservice,
-					this, identifier, storeInRepository,
+			miapeLocalExtractor = new MiapeLocalExtractor(miapeAPIWebservice, this, identifier, storeInRepository,
 					localProcessingInParallel);
 
 		id_msi = null;
 		id_ms = null;
-		MiapeMSDocument miapeMSMetadata = miapeExtractorInputParameters
-				.getMiapeMSMetadata();
+		MiapeMSDocument miapeMSMetadata = miapeExtractorInputParameters.getMiapeMSMetadata();
 		MiapeXmlFile<MiapeMSDocument> tinnyMiapeMS = null;
 		if (miapeMSMetadata != null)
 			tinnyMiapeMS = miapeMSMetadata.toXml();
@@ -261,8 +251,7 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 		// .inputFileFormatGroup.getSelection().getActionCommand();
 		// if (fileFormat.equals(XmlFormat.MZ_IDENT.id)) {
 		if (miapeExtractorInputParameters.isMzMLSelected()) {
-			extractMIAPEfromMzMLFile(
-					miapeExtractorInputParameters.isFastParsing(), tinnyMiapeMS);
+			extractMIAPEfromMzMLFile(miapeExtractorInputParameters.isFastParsing(), tinnyMiapeMS);
 		} else if (miapeExtractorInputParameters.isMzIdentMLSelected()
 				|| miapeExtractorInputParameters.isMzIdentMLPlusMGFSelected()) {
 			extractMIAPEfromMzIdentMLFile(tinnyMiapeMS);
@@ -271,14 +260,15 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 			extractMIAPEfromMGFFile(tinnyMiapeMS);
 			// }else if(fileFormat.equals(XmlFormat.PRIDE.id)) {
 		} else if (miapeExtractorInputParameters.isMzMLPlusMzIdentMLSelected()) {
-			extractMIAPEfromMzMLAndMzIdentMLFile(
-					miapeExtractorInputParameters.isFastParsing(), tinnyMiapeMS);
+			extractMIAPEfromMzMLAndMzIdentMLFile(miapeExtractorInputParameters.isFastParsing(), tinnyMiapeMS);
 		} else if (miapeExtractorInputParameters.isXTandemSelected()
 				|| miapeExtractorInputParameters.isXTandemPlusMGFSelected()) {
 			extractMIAPEfromXTandemXMLFile(tinnyMiapeMS);
+		} else if (miapeExtractorInputParameters.isDTASelectSelected()
+				|| miapeExtractorInputParameters.isDTASelectPlusMGFSelected()) {
+			extractMIAPEfromDTASelectFile(tinnyMiapeMS);
 		} else if (miapeExtractorInputParameters.isPRIDESelected()) {
-			if (miapeExtractorInputParameters.isMIAPEMSChecked()
-					&& miapeExtractorInputParameters.isMIAPEMSIChecked()) {
+			if (miapeExtractorInputParameters.isMIAPEMSChecked() && miapeExtractorInputParameters.isMIAPEMSIChecked()) {
 				extractMIAPEfromPrideFile("MS_MSI");
 			} else if (miapeExtractorInputParameters.isMIAPEMSChecked()) {
 				extractMIAPEfromPrideFile("MS");
@@ -291,8 +281,7 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 
 	}
 
-	private void extractMIAPEfromMzMLAndMzIdentMLFile(boolean fastParser,
-			MiapeXmlFile<MiapeMSDocument> tinnyMiapeMS) {
+	private void extractMIAPEfromMzMLAndMzIdentMLFile(boolean fastParser, MiapeXmlFile<MiapeMSDocument> tinnyMiapeMS) {
 
 		taskStatus = UPLOADING;
 		String mzMLfile = miapeExtractorInputParameters.getMzMLFileName();
@@ -300,14 +289,12 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 			mzMLfile = uploadFile(mzMLfile);
 			uploadedMzMLFile = mzMLfile;
 		}
-		String mzIdentMLFile = miapeExtractorInputParameters
-				.getMzIdentMLFileName();
+		String mzIdentMLFile = miapeExtractorInputParameters.getMzIdentMLFileName();
 		if (!miapeExtractorInputParameters.isLocalProcessing())
 			mzIdentMLFile = uploadFile(mzIdentMLFile);
 
 		taskStatus = CONVERTING;
-		firePropertyChange(NOTIFICATION, null,
-				"Extracting MIAPE MS information from mzML file...");
+		firePropertyChange(NOTIFICATION, null, "Extracting data from mzML file...");
 
 		String miapeMSMetadataFilePath = null;
 		if (tinnyMiapeMS != null) {
@@ -322,38 +309,24 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 		String[] identifiers;
 		if (miapeExtractorInputParameters.isLocalProcessing()) {
 			if (tinnyMiapeMS != null)
-				identifiers = miapeLocalExtractor
-						.storeMiapeMSMSIFromMzMLAndMzIdentMLAndMetadata(
-								mzMLfile, miapeMSMetadataFilePath,
-								mzIdentMLFile, userName, password,
-								miapeExtractorInputParameters.getProjectName(),
-								fastParser);
+				identifiers = miapeLocalExtractor.storeMiapeMSMSIFromMzMLAndMzIdentMLAndMetadata(mzMLfile,
+						miapeMSMetadataFilePath, mzIdentMLFile, userName, password,
+						miapeExtractorInputParameters.getProjectName(), fastParser);
 			else
-				identifiers = miapeLocalExtractor
-						.storeMiapeMSMSIFromMzMLAndMzIdentML(mzMLfile,
-								mzIdentMLFile, userName, password,
-								miapeExtractorInputParameters.getProjectName(),
-								fastParser);
+				identifiers = miapeLocalExtractor.storeMiapeMSMSIFromMzMLAndMzIdentML(mzMLfile, mzIdentMLFile, userName,
+						password, miapeExtractorInputParameters.getProjectName(), fastParser);
 		} else {
-			firePropertyChange(NOTIFICATION, null,
-					"Waiting for server response...");
-			firePropertyChange(MIAPE_CREATION_WAITING_FOR_SERVER, null,
-					getRunIdentifier());
+			firePropertyChange(NOTIFICATION, null, "Waiting for server response...");
+			firePropertyChange(MIAPE_CREATION_WAITING_FOR_SERVER, null, getRunIdentifier());
 			if (tinnyMiapeMS != null)
-				identifiers = miapeExtractorWebservice
-						.storeMiapeMSMSIFromMzMLandMzIdentMLAndMetadata(
-								mzMLfile, miapeMSMetadataFilePath,
-								mzIdentMLFile, userName, password,
-								miapeExtractorInputParameters.getProjectName(),
-								fastParser, MainFrame.emailNotifications)
+				identifiers = miapeExtractorWebservice.storeMiapeMSMSIFromMzMLandMzIdentMLAndMetadata(mzMLfile,
+						miapeMSMetadataFilePath, mzIdentMLFile, userName, password,
+						miapeExtractorInputParameters.getProjectName(), fastParser, MainFrame.emailNotifications)
 						.toArray(new String[0]);
 			else
-				identifiers = miapeExtractorWebservice
-						.storeMiapeMSMSIFromMzMLandMzIdentML(mzMLfile,
-								mzIdentMLFile, userName, password,
-								miapeExtractorInputParameters.getProjectName(),
-								fastParser, MainFrame.emailNotifications)
-						.toArray(new String[0]);
+				identifiers = miapeExtractorWebservice.storeMiapeMSMSIFromMzMLandMzIdentML(mzMLfile, mzIdentMLFile,
+						userName, password, miapeExtractorInputParameters.getProjectName(), fastParser,
+						MainFrame.emailNotifications).toArray(new String[0]);
 		}
 
 		if (identifiers[1] != null && !"".equals(identifiers[1]))
@@ -364,27 +337,23 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 
 	}
 
-	private void extractMIAPEfromMGFFile(
-			MiapeXmlFile<MiapeMSDocument> miapeMsXML) throws IOException {
+	private void extractMIAPEfromMGFFile(MiapeXmlFile<MiapeMSDocument> miapeMsXML) throws IOException {
 
 		taskStatus = UPLOADING;
 		if (miapeExtractorInputParameters.isLocalProcessing()) {
-			uploadedMGFFile = uploadFile(miapeExtractorInputParameters
-					.getMgfFileName());
+			uploadedMGFFile = uploadFile(miapeExtractorInputParameters.getMgfFileName());
 		}
 
-		firePropertyChange(NOTIFICATION, null,
-				"Extracting MIAPE MS information from MGF file + metadata...");
+		firePropertyChange(NOTIFICATION, null, "Extracting data from MGF file + metadata...");
 		taskStatus = CONVERTING;
 
 		String identifier;
 
-		MiapeXmlFile<MiapeMSDocument> miapeMSWithResultingData = addResultingData(
-				miapeMsXML, miapeExtractorInputParameters.getProjectName());
+		MiapeXmlFile<MiapeMSDocument> miapeMSWithResultingData = addResultingData(miapeMsXML,
+				miapeExtractorInputParameters.getProjectName());
 		// log.info(miapeMsXML);
 		if (miapeExtractorInputParameters.isLocalProcessing()) {
-			identifier = miapeLocalExtractor.storeMiapeMS(
-					miapeMSWithResultingData.toDocument(), userName, password,
+			identifier = miapeLocalExtractor.storeMiapeMS(miapeMSWithResultingData.toDocument(), userName, password,
 					miapeExtractorInputParameters.getProjectName());
 
 		} else {
@@ -393,15 +362,12 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			firePropertyChange(NOTIFICATION, null,
-					"Waiting for server response...");
-			firePropertyChange(MIAPE_CREATION_WAITING_FOR_SERVER, null,
-					getRunIdentifier());
+			firePropertyChange(NOTIFICATION, null, "Waiting for server response...");
+			firePropertyChange(MIAPE_CREATION_WAITING_FOR_SERVER, null, getRunIdentifier());
 
 			try {
-				identifier = String
-						.valueOf(miapeAPIWebservice.storeMiapeMS(userName,
-								password, miapeMSWithResultingData.toBytes()));
+				identifier = String.valueOf(
+						miapeAPIWebservice.storeMiapeMS(userName, password, miapeMSWithResultingData.toBytes()));
 			} catch (MiapeDatabaseException_Exception e) {
 				e.printStackTrace();
 				identifier = e.getMessage();
@@ -417,21 +383,17 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 		checkOutput();
 	}
 
-	private void extractMIAPEfromMzIdentMLFile(
-			MiapeXmlFile<MiapeMSDocument> miapeMsXML) throws IOException {
+	private void extractMIAPEfromMzIdentMLFile(MiapeXmlFile<MiapeMSDocument> miapeMsXML) throws IOException {
 
 		taskStatus = UPLOADING;
-		String mzIdentMLfile = miapeExtractorInputParameters
-				.getMzIdentMLFileName();
+		String mzIdentMLfile = miapeExtractorInputParameters.getMzIdentMLFileName();
 		if (!miapeExtractorInputParameters.isLocalProcessing()) {
 			mzIdentMLfile = uploadFile(mzIdentMLfile);
 			if (miapeExtractorInputParameters.isMzIdentMLPlusMGFSelected())
-				uploadedMGFFile = uploadFile(miapeExtractorInputParameters
-						.getMgfFileName());
+				uploadedMGFFile = uploadFile(miapeExtractorInputParameters.getMgfFileName());
 		} else {
 			if (miapeExtractorInputParameters.isXTandemPlusMGFSelected())
-				uploadedMGFFile = miapeExtractorInputParameters
-						.getMgfFileName();
+				uploadedMGFFile = miapeExtractorInputParameters.getMgfFileName();
 		}
 
 		taskStatus = CONVERTING;
@@ -439,15 +401,13 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 		String[] identifiers = new String[2];
 
 		if (miapeMsXML != null) {
-			firePropertyChange(NOTIFICATION, null,
-					"Extracting MIAPE MSI information from mzIdentML file + metadata...");
-			MiapeXmlFile<MiapeMSDocument> miapeMSWithResultingData = addResultingData(
-					miapeMsXML, miapeExtractorInputParameters.getProjectName());
+			firePropertyChange(NOTIFICATION, null, "Extracting data from mzIdentML file + metadata...");
+			MiapeXmlFile<MiapeMSDocument> miapeMSWithResultingData = addResultingData(miapeMsXML,
+					miapeExtractorInputParameters.getProjectName());
 			// log.info(miapeMsXML);
 			if (miapeExtractorInputParameters.isLocalProcessing()) {
-				identifiers = miapeLocalExtractor.storeMiapeMSMSIFromMzIdentML(
-						mzIdentMLfile, miapeMSWithResultingData.toBytes(),
-						userName, password,
+				identifiers = miapeLocalExtractor.storeMiapeMSMSIFromMzIdentML(mzIdentMLfile,
+						miapeMSWithResultingData.toBytes(), userName, password,
 						miapeExtractorInputParameters.getProjectName());
 			} else {
 				try {
@@ -455,18 +415,13 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				firePropertyChange(NOTIFICATION, null,
-						"Waiting for server response...");
-				firePropertyChange(MIAPE_CREATION_WAITING_FOR_SERVER, null,
-						getRunIdentifier());
+				firePropertyChange(NOTIFICATION, null, "Waiting for server response...");
+				firePropertyChange(MIAPE_CREATION_WAITING_FOR_SERVER, null, getRunIdentifier());
 				log.info(miapeMsXML);
 				identifiers = miapeExtractorWebservice
-						.storeMiapeMSMSIFromMzIdentML(mzIdentMLfile,
-								miapeMSWithResultingData.toBytes(), userName,
-								password,
-								miapeExtractorInputParameters.getProjectName(),
-								MainFrame.emailNotifications).toArray(
-								new String[0]);
+						.storeMiapeMSMSIFromMzIdentML(mzIdentMLfile, miapeMSWithResultingData.toBytes(), userName,
+								password, miapeExtractorInputParameters.getProjectName(), MainFrame.emailNotifications)
+						.toArray(new String[0]);
 			}
 			if (identifiers[1] != null && !"".equals(identifiers[1]))
 				id_msi = identifiers[1];
@@ -474,33 +429,26 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 				id_ms = identifiers[0];
 
 		} else {
-			firePropertyChange(NOTIFICATION, null,
-					"Extracting MIAPE MSI information from mzIdentML file...");
+			firePropertyChange(NOTIFICATION, null, "Extracting data from mzIdentML file...");
 
 			int idMS = -1;
-			Integer associatedMiapeMSID = miapeExtractorInputParameters
-					.getAssociatedMiapeMS();
+			Integer associatedMiapeMSID = miapeExtractorInputParameters.getAssociatedMiapeMS();
 			if (associatedMiapeMSID != null)
 				idMS = associatedMiapeMSID;
 
 			if (miapeExtractorInputParameters.isLocalProcessing()) {
-				identifiers = miapeLocalExtractor.storeMiapeMSIFromMzIdentML(
-						mzIdentMLfile, idMS, userName, password,
+				identifiers = miapeLocalExtractor.storeMiapeMSIFromMzIdentML(mzIdentMLfile, idMS, userName, password,
 						miapeExtractorInputParameters.getProjectName());
 				id_msi = identifiers[1];
 				id_ms = identifiers[0];
 
 			} else {
-				firePropertyChange(NOTIFICATION, null,
-						"Waiting for server response...");
-				firePropertyChange(MIAPE_CREATION_WAITING_FOR_SERVER, null,
-						getRunIdentifier());
+				firePropertyChange(NOTIFICATION, null, "Waiting for server response...");
+				firePropertyChange(MIAPE_CREATION_WAITING_FOR_SERVER, null, getRunIdentifier());
 				identifiers = miapeExtractorWebservice
-						.storeMiapeMSIFromMzIdentML(mzIdentMLfile, idMS,
-								userName, password,
-								miapeExtractorInputParameters.getProjectName(),
-								MainFrame.emailNotifications).toArray(
-								new String[0]);
+						.storeMiapeMSIFromMzIdentML(mzIdentMLfile, idMS, userName, password,
+								miapeExtractorInputParameters.getProjectName(), MainFrame.emailNotifications)
+						.toArray(new String[0]);
 				id_msi = identifiers[1];
 				id_ms = identifiers[0];
 			}
@@ -511,30 +459,26 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 
 	/**
 	 * Add resulting data to the miape ms document.
-	 * 
+	 *
 	 * @param miapeMsXML
 	 * @return
 	 */
-	private MiapeXmlFile<MiapeMSDocument> addResultingData(
-			MiapeXmlFile<MiapeMSDocument> miapeMsXML, String projectName) {
+	private MiapeXmlFile<MiapeMSDocument> addResultingData(MiapeXmlFile<MiapeMSDocument> miapeMsXML,
+			String projectName) {
 
 		ResultingData resultingData = getResultingDataFromUploadedFile(projectName);
 		if (resultingData != null) {
-			ResultingDataAdapter resultingDataAdapter = new ResultingDataAdapter(
-					resultingData, new ObjectFactory(),
-					new MsControlVocabularyXmlFactory(new ObjectFactory(),
-							getCvManager()));
+			ResultingDataAdapter resultingDataAdapter = new ResultingDataAdapter(resultingData, new ObjectFactory(),
+					new MsControlVocabularyXmlFactory(new ObjectFactory(), getCvManager()));
 			try {
 				File file = miapeMsXML.toFile();
-				JAXBContext jc = JAXBContext
-						.newInstance("org.proteored.miapeapi.xml.ms.autogenerated");
+				JAXBContext jc = JAXBContext.newInstance("org.proteored.miapeapi.xml.ms.autogenerated");
 				Unmarshaller unmarshaller = jc.createUnmarshaller();
 
 				MSMIAPEMS miapeMS = (MSMIAPEMS) unmarshaller.unmarshal(file);
 				miapeMS.getMSResultingData().add(resultingDataAdapter.adapt());
 
-				MiapeMSDocument doc = new MiapeMSDocumentImpl(miapeMS, null,
-						getCvManager(), userName, password);
+				MiapeMSDocument doc = new MiapeMSDocumentImpl(miapeMS, null, getCvManager(), userName, password);
 				return doc.toXml();
 			} catch (JAXBException e) {
 				e.printStackTrace();
@@ -547,22 +491,17 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 		String fileType = null;
 		String fileName = null;
 		String fileLocation = null;
-		if (miapeExtractorInputParameters.isMzIdentMLPlusMGFSelected()
-				|| miapeExtractorInputParameters.isMGFSelected()
+		if (miapeExtractorInputParameters.isMzIdentMLPlusMGFSelected() || miapeExtractorInputParameters.isMGFSelected()
 				|| miapeExtractorInputParameters.isXTandemPlusMGFSelected()) {
 			fileName = "MGF file";
-			fileType = MSFileType.getInstance(getCvManager())
-					.getCVTermByAccession(MSFileType.MASCOT_MGF)
+			fileType = MSFileType.getInstance(getCvManager()).getCVTermByAccession(MSFileType.MASCOT_MGF)
 					.getPreferredName();
 			// if remote repository is not selected to store the files, save
 			// first the mgf file locally
 			if (!miapeExtractorInputParameters.storeMIAPEsInDB()) {
 				try {
-					uploadedMGFFile = FileManager
-							.saveLocalFile(uploadedMGFFile, projectName)
-							.toURI().toString();
-					LocalFilesIndex.getInstance().indexFileByProjectName(
-							projectName, uploadedMGFFile);
+					uploadedMGFFile = FileManager.saveLocalFile(uploadedMGFFile, projectName).toURI().toString();
+					LocalFilesIndex.getInstance().indexFileByProjectName(projectName, uploadedMGFFile);
 				} catch (IOException e) {
 
 				}
@@ -571,16 +510,12 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 		} else if (miapeExtractorInputParameters.isMzMLPlusMzIdentMLSelected()
 				|| miapeExtractorInputParameters.isMzMLSelected()) {
 			fileName = "mzML file";
-			fileType = MSFileType.getInstance(getCvManager())
-					.getCVTermByAccession(MSFileType.MZML_ACC)
+			fileType = MSFileType.getInstance(getCvManager()).getCVTermByAccession(MSFileType.MZML_ACC)
 					.getPreferredName();
 			if (!miapeExtractorInputParameters.storeMIAPEsInDB()) {
 				try {
-					uploadedMzMLFile = FileManager
-							.saveLocalFile(uploadedMzMLFile, projectName)
-							.toURI().toString();
-					LocalFilesIndex.getInstance().indexFileByProjectName(
-							projectName, uploadedMzMLFile);
+					uploadedMzMLFile = FileManager.saveLocalFile(uploadedMzMLFile, projectName).toURI().toString();
+					LocalFilesIndex.getInstance().indexFileByProjectName(projectName, uploadedMzMLFile);
 				} catch (IOException e) {
 
 				}
@@ -588,8 +523,8 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 			fileLocation = uploadedMzMLFile;
 		}
 		if (fileName != null)
-			return MiapeMSDocumentFactory.createResultingDataBuilder(fileName)
-					.dataFileType(fileType).dataFileURI(fileLocation).build();
+			return MiapeMSDocumentFactory.createResultingDataBuilder(fileName).dataFileType(fileType)
+					.dataFileURI(fileLocation).build();
 		return null;
 	}
 
@@ -597,8 +532,7 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 		return OntologyLoaderTask.getCvManager();
 	}
 
-	private void extractMIAPEfromMzMLFile(boolean fastParser,
-			MiapeXmlFile<MiapeMSDocument> miapeMsXML) {
+	private void extractMIAPEfromMzMLFile(boolean fastParser, MiapeXmlFile<MiapeMSDocument> miapeMsXML) {
 
 		taskStatus = UPLOADING;
 		String mzMLfile = miapeExtractorInputParameters.getMzMLFileName();
@@ -606,10 +540,8 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 			mzMLfile = uploadFile(mzMLfile);
 
 		taskStatus = CONVERTING;
-		firePropertyChange(NOTIFICATION, null,
-				"Extracting MIAPE MS information from mzML file...");
-		final MiapeMSDocument miapeMSMetadata = miapeExtractorInputParameters
-				.getMiapeMSMetadata();
+		firePropertyChange(NOTIFICATION, null, "Extracting data from mzML file...");
+		final MiapeMSDocument miapeMSMetadata = miapeExtractorInputParameters.getMiapeMSMetadata();
 		String miapeMSMetadataFilePath = null;
 		if (miapeMsXML != null) {
 			miapeMSMetadataFilePath = miapeMsXML.toFile().getAbsolutePath();
@@ -622,36 +554,24 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 		String[] identifiers = new String[2];
 		if (miapeExtractorInputParameters.isLocalProcessing()) {
 			if (miapeMSMetadata != null)
-				id_ms = miapeLocalExtractor.storeMiapeMSFromMzMLAndMetadata(
-						mzMLfile, miapeMSMetadataFilePath, userName, password,
-						miapeExtractorInputParameters.getProjectName(),
-						fastParser);
+				id_ms = miapeLocalExtractor.storeMiapeMSFromMzMLAndMetadata(mzMLfile, miapeMSMetadataFilePath, userName,
+						password, miapeExtractorInputParameters.getProjectName(), fastParser);
 			else
-				id_ms = miapeLocalExtractor.storeMiapeMSFromMzML(mzMLfile,
-						userName, password,
-						miapeExtractorInputParameters.getProjectName(),
-						fastParser);
+				id_ms = miapeLocalExtractor.storeMiapeMSFromMzML(mzMLfile, userName, password,
+						miapeExtractorInputParameters.getProjectName(), fastParser);
 			id_msi = null;
 		} else {
-			firePropertyChange(NOTIFICATION, null,
-					"Waiting for server response...");
-			firePropertyChange(MIAPE_CREATION_WAITING_FOR_SERVER, null,
-					getRunIdentifier());
+			firePropertyChange(NOTIFICATION, null, "Waiting for server response...");
+			firePropertyChange(MIAPE_CREATION_WAITING_FOR_SERVER, null, getRunIdentifier());
 
 			if (miapeMSMetadata != null)
-				identifiers = miapeExtractorWebservice
-						.storeMiapeMSFromMzMLAndMetadata(mzMLfile,
-								miapeMSMetadataFilePath, -1, userName,
-								password,
-								miapeExtractorInputParameters.getProjectName(),
-								fastParser, MainFrame.emailNotifications)
-						.toArray(new String[0]);
+				identifiers = miapeExtractorWebservice.storeMiapeMSFromMzMLAndMetadata(mzMLfile,
+						miapeMSMetadataFilePath, -1, userName, password, miapeExtractorInputParameters.getProjectName(),
+						fastParser, MainFrame.emailNotifications).toArray(new String[0]);
 			else
-				identifiers = miapeExtractorWebservice.storeMiapeMSFromMzML(
-						mzMLfile, -1, userName, password,
-						miapeExtractorInputParameters.getProjectName(),
-						fastParser, MainFrame.emailNotifications).toArray(
-						new String[0]);
+				identifiers = miapeExtractorWebservice.storeMiapeMSFromMzML(mzMLfile, -1, userName, password,
+						miapeExtractorInputParameters.getProjectName(), fastParser, MainFrame.emailNotifications)
+						.toArray(new String[0]);
 			if (identifiers[1] != null && !"".equals(identifiers[1]))
 				id_msi = identifiers[1];
 			if (identifiers[0] != null && !"".equals(identifiers[0]))
@@ -662,21 +582,17 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 
 	}
 
-	private void extractMIAPEfromXTandemXMLFile(
-			MiapeXmlFile<MiapeMSDocument> miapeMsXML) throws IOException {
+	private void extractMIAPEfromXTandemXMLFile(MiapeXmlFile<MiapeMSDocument> miapeMsXML) throws IOException {
 
 		taskStatus = UPLOADING;
-		String xTandemXMLfile = miapeExtractorInputParameters
-				.getXTandemFileName();
+		String xTandemXMLfile = miapeExtractorInputParameters.getXTandemFileName();
 		if (!miapeExtractorInputParameters.isLocalProcessing()) {
 			xTandemXMLfile = uploadFile(xTandemXMLfile);
 			if (miapeExtractorInputParameters.isXTandemPlusMGFSelected())
-				uploadedMGFFile = uploadFile(miapeExtractorInputParameters
-						.getMgfFileName());
+				uploadedMGFFile = uploadFile(miapeExtractorInputParameters.getMgfFileName());
 		} else {
 			if (miapeExtractorInputParameters.isXTandemPlusMGFSelected())
-				uploadedMGFFile = miapeExtractorInputParameters
-						.getMgfFileName();
+				uploadedMGFFile = miapeExtractorInputParameters.getMgfFileName();
 		}
 
 		taskStatus = CONVERTING;
@@ -684,35 +600,27 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 		String[] identifiers = new String[2];
 
 		if (miapeMsXML != null) {
-			firePropertyChange(NOTIFICATION, null,
-					"Extracting MIAPE MSI information from XTandem XML file + metadata...");
-			MiapeXmlFile<MiapeMSDocument> miapeMSWithResultingData = addResultingData(
-					miapeMsXML, miapeExtractorInputParameters.getProjectName());
+			firePropertyChange(NOTIFICATION, null, "Extracting data from XTandem XML file + metadata...");
+			MiapeXmlFile<MiapeMSDocument> miapeMSWithResultingData = addResultingData(miapeMsXML,
+					miapeExtractorInputParameters.getProjectName());
 			// log.info(miapeMsXML);
 			if (miapeExtractorInputParameters.isLocalProcessing()) {
-				identifiers = miapeLocalExtractor
-						.storeMiapeMSMSIFromXTandemXML(xTandemXMLfile,
-								miapeMSWithResultingData.toBytes(), userName,
-								password,
-								miapeExtractorInputParameters.getProjectName());
+				identifiers = miapeLocalExtractor.storeMiapeMSMSIFromXTandemXML(xTandemXMLfile,
+						miapeMSWithResultingData.toBytes(), userName, password,
+						miapeExtractorInputParameters.getProjectName());
 			} else {
 				try {
 					Thread.sleep(1L);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				firePropertyChange(NOTIFICATION, null,
-						"Waiting for server response...");
-				firePropertyChange(MIAPE_CREATION_WAITING_FOR_SERVER, null,
-						getRunIdentifier());
+				firePropertyChange(NOTIFICATION, null, "Waiting for server response...");
+				firePropertyChange(MIAPE_CREATION_WAITING_FOR_SERVER, null, getRunIdentifier());
 				log.info(miapeMsXML);
 				identifiers = miapeExtractorWebservice
-						.storeMiapeMSMSIFromXTandemXML(xTandemXMLfile,
-								miapeMSWithResultingData.toBytes(), userName,
-								password,
-								miapeExtractorInputParameters.getProjectName(),
-								MainFrame.emailNotifications).toArray(
-								new String[0]);
+						.storeMiapeMSMSIFromXTandemXML(xTandemXMLfile, miapeMSWithResultingData.toBytes(), userName,
+								password, miapeExtractorInputParameters.getProjectName(), MainFrame.emailNotifications)
+						.toArray(new String[0]);
 			}
 			if (identifiers[1] != null && !"".equals(identifiers[1]))
 				id_msi = identifiers[1];
@@ -720,35 +628,93 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 				id_ms = identifiers[0];
 
 		} else {
-			firePropertyChange(NOTIFICATION, null,
-					"Extracting MIAPE MSI information from XTandem XML file...");
+			firePropertyChange(NOTIFICATION, null, "Extracting data from XTandem XML file...");
 
 			int idMS = -1;
-			Integer associatedMiapeMSID = miapeExtractorInputParameters
-					.getAssociatedMiapeMS();
+			Integer associatedMiapeMSID = miapeExtractorInputParameters.getAssociatedMiapeMS();
 			if (associatedMiapeMSID != null)
 				idMS = associatedMiapeMSID;
 
 			if (miapeExtractorInputParameters.isLocalProcessing()) {
-				identifiers = miapeLocalExtractor.storeMiapeMSIFromXTandemXML(
-						xTandemXMLfile, idMS, userName, password,
+				identifiers = miapeLocalExtractor.storeMiapeMSIFromXTandemXML(xTandemXMLfile, idMS, userName, password,
 						miapeExtractorInputParameters.getProjectName());
 				id_msi = identifiers[1];
 				id_ms = identifiers[0];
 
 			} else {
-				firePropertyChange(NOTIFICATION, null,
-						"Waiting for server response...");
-				firePropertyChange(MIAPE_CREATION_WAITING_FOR_SERVER, null,
-						getRunIdentifier());
+				firePropertyChange(NOTIFICATION, null, "Waiting for server response...");
+				firePropertyChange(MIAPE_CREATION_WAITING_FOR_SERVER, null, getRunIdentifier());
 				identifiers = miapeExtractorWebservice
-						.storeMiapeMSIFromXTandemXML(xTandemXMLfile, idMS,
-								userName, password,
-								miapeExtractorInputParameters.getProjectName(),
-								MainFrame.emailNotifications).toArray(
-								new String[0]);
+						.storeMiapeMSIFromXTandemXML(xTandemXMLfile, idMS, userName, password,
+								miapeExtractorInputParameters.getProjectName(), MainFrame.emailNotifications)
+						.toArray(new String[0]);
 				id_msi = identifiers[1];
 				id_ms = identifiers[0];
+			}
+
+		}
+		checkOutput();
+
+	}
+
+	private void extractMIAPEfromDTASelectFile(MiapeXmlFile<MiapeMSDocument> miapeMsXML)
+			throws IOException, MethodNotSupportedException {
+
+		taskStatus = UPLOADING;
+		String dtaSelectFile = miapeExtractorInputParameters.getDtaSelectFileName();
+		if (!miapeExtractorInputParameters.isLocalProcessing()) {
+			dtaSelectFile = uploadFile(dtaSelectFile);
+			if (miapeExtractorInputParameters.isDTASelectPlusMGFSelected())
+				uploadedMGFFile = uploadFile(miapeExtractorInputParameters.getMgfFileName());
+		} else {
+			if (miapeExtractorInputParameters.isDTASelectPlusMGFSelected())
+				uploadedMGFFile = miapeExtractorInputParameters.getMgfFileName();
+		}
+
+		taskStatus = CONVERTING;
+
+		String[] identifiers = new String[2];
+
+		if (miapeMsXML != null) {
+			firePropertyChange(NOTIFICATION, null, "Extracting data from DTASelect file + metadata...");
+			MiapeXmlFile<MiapeMSDocument> miapeMSWithResultingData = addResultingData(miapeMsXML,
+					miapeExtractorInputParameters.getProjectName());
+			// log.info(miapeMsXML);
+			if (miapeExtractorInputParameters.isLocalProcessing()) {
+				identifiers = miapeLocalExtractor.storeMiapeMSMSIFromDTASelect(dtaSelectFile,
+						miapeMSWithResultingData.toBytes(), userName, password,
+						miapeExtractorInputParameters.getProjectName());
+			} else {
+				try {
+					Thread.sleep(1L);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				throw new MethodNotSupportedException(
+						"Extract MIAPE MSI from DTASelect is not supported by webservice");
+			}
+			if (identifiers[1] != null && !"".equals(identifiers[1]))
+				id_msi = identifiers[1];
+			if (identifiers[0] != null && !"".equals(identifiers[0]))
+				id_ms = identifiers[0];
+
+		} else {
+			firePropertyChange(NOTIFICATION, null, "Extracting data from DTASelect file...");
+
+			int idMS = -1;
+			Integer associatedMiapeMSID = miapeExtractorInputParameters.getAssociatedMiapeMS();
+			if (associatedMiapeMSID != null)
+				idMS = associatedMiapeMSID;
+
+			if (miapeExtractorInputParameters.isLocalProcessing()) {
+				identifiers = miapeLocalExtractor.storeMiapeMSIFromDTASelect(dtaSelectFile, idMS, userName, password,
+						miapeExtractorInputParameters.getProjectName());
+				id_msi = identifiers[1];
+				id_ms = identifiers[0];
+
+			} else {
+				throw new MethodNotSupportedException(
+						"Extract MIAPE MSI from DTASelect is not supported by webservice");
 			}
 
 		}
@@ -766,8 +732,7 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 
 		taskStatus = CONVERTING;
 
-		final MiapeMSDocument miapeMSMetadata = miapeExtractorInputParameters
-				.getMiapeMSMetadata();
+		final MiapeMSDocument miapeMSMetadata = miapeExtractorInputParameters.getMiapeMSMetadata();
 		String miapeMSMetadataFilePath = null;
 		if (miapeMSMetadata != null) {
 			MiapeXmlFile<MiapeMSDocument> miapeMsXML = miapeMSMetadata.toXml();
@@ -783,117 +748,76 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 
 		// MSI
 		if (miapeType.equals("MSI")) {
-			firePropertyChange(NOTIFICATION, null,
-					"Extracting MIAPE MSI information from PRIDE file...");
+			firePropertyChange(NOTIFICATION, null, "Extracting data from PRIDE file...");
 			if (miapeExtractorInputParameters.isLocalProcessing()) {
-				id_msi = miapeLocalExtractor.storeMiapeMSIFromPRIDE(prideFile,
-						userName, password,
+				id_msi = miapeLocalExtractor.storeMiapeMSIFromPRIDE(prideFile, userName, password,
 						miapeExtractorInputParameters.getProjectName());
 
 			} else {
-				firePropertyChange(NOTIFICATION, null,
-						"Waiting for server response...");
-				firePropertyChange(MIAPE_CREATION_WAITING_FOR_SERVER, null,
-						getRunIdentifier());
+				firePropertyChange(NOTIFICATION, null, "Waiting for server response...");
+				firePropertyChange(MIAPE_CREATION_WAITING_FOR_SERVER, null, getRunIdentifier());
 
-				identifiers = miapeExtractorWebservice.storeMiapeMSIFromPRIDE(
-						prideFile, -1, userName, password,
-						miapeExtractorInputParameters.getProjectName(),
-						MainFrame.emailNotifications).toArray(new String[0]);
+				identifiers = miapeExtractorWebservice
+						.storeMiapeMSIFromPRIDE(prideFile, -1, userName, password,
+								miapeExtractorInputParameters.getProjectName(), MainFrame.emailNotifications)
+						.toArray(new String[0]);
 				if (identifiers[1] != null && !"".equals(identifiers[1]))
 					id_msi = identifiers[1];
 				id_ms = identifiers[0];
 			}
 			// MS
 		} else if (miapeType.equals("MS")) {
-			firePropertyChange(NOTIFICATION, null,
-					"Extracting MIAPE MS information from PRIDE file...");
+			firePropertyChange(NOTIFICATION, null, "Extracting data from PRIDE file...");
 			if (miapeExtractorInputParameters.isLocalProcessing()) {
 				if (miapeMSMetadata != null)
-					id_ms = miapeLocalExtractor
-							.storeMiapeMSFromPRIDEAndMetadata(prideFile,
-									miapeMSMetadataFilePath, userName,
-									password, miapeExtractorInputParameters
-											.getProjectName());
+					id_ms = miapeLocalExtractor.storeMiapeMSFromPRIDEAndMetadata(prideFile, miapeMSMetadataFilePath,
+							userName, password, miapeExtractorInputParameters.getProjectName());
 				else
-					id_ms = miapeLocalExtractor.storeMiapeMSFromPRIDE(
-							prideFile, userName, password,
+					id_ms = miapeLocalExtractor.storeMiapeMSFromPRIDE(prideFile, userName, password,
 							miapeExtractorInputParameters.getProjectName());
 			} else {
-				firePropertyChange(NOTIFICATION, null,
-						"Waiting for server response...");
-				firePropertyChange(MIAPE_CREATION_WAITING_FOR_SERVER, null,
-						getRunIdentifier());
+				firePropertyChange(NOTIFICATION, null, "Waiting for server response...");
+				firePropertyChange(MIAPE_CREATION_WAITING_FOR_SERVER, null, getRunIdentifier());
 
 				if (miapeMSMetadata != null)
-					identifiers = miapeExtractorWebservice
-							.storeMiapeMSFromPRIDEAndMetadata(
-									prideFile,
-									miapeMSMetadataFilePath,
-									-1,
-									userName,
-									password,
-									miapeExtractorInputParameters
-											.getProjectName(),
-									MainFrame.emailNotifications).toArray(
-									new String[0]);
+					identifiers = miapeExtractorWebservice.storeMiapeMSFromPRIDEAndMetadata(prideFile,
+							miapeMSMetadataFilePath, -1, userName, password,
+							miapeExtractorInputParameters.getProjectName(), MainFrame.emailNotifications)
+							.toArray(new String[0]);
 				else
 					identifiers = miapeExtractorWebservice
-							.storeMiapeMSFromPRIDE(
-									prideFile,
-									-1,
-									userName,
-									password,
-									miapeExtractorInputParameters
-											.getProjectName(),
-									MainFrame.emailNotifications).toArray(
-									new String[0]);
+							.storeMiapeMSFromPRIDE(prideFile, -1, userName, password,
+									miapeExtractorInputParameters.getProjectName(), MainFrame.emailNotifications)
+							.toArray(new String[0]);
 				if (identifiers[0] != null && !"".equals(identifiers[0]))
 					id_ms = identifiers[0];
 			}
 			// MS and MSI
 		} else if (miapeType.equals("MS_MSI")) {
 
-			firePropertyChange(NOTIFICATION, null,
-					"Extracting MIAPE MS and MSI information from PRIDE file...");
+			firePropertyChange(NOTIFICATION, null, "Extracting data from PRIDE file...");
 			if (miapeExtractorInputParameters.isLocalProcessing()) {
 				if (miapeMSMetadata != null)
-					identifiers = miapeLocalExtractor
-							.storeMiapeMSMSIFromPRIDEAndMetadata(prideFile,
-									miapeMSMetadataFilePath, userName,
-									password, miapeExtractorInputParameters
-											.getProjectName());
+					identifiers = miapeLocalExtractor.storeMiapeMSMSIFromPRIDEAndMetadata(prideFile,
+							miapeMSMetadataFilePath, userName, password,
+							miapeExtractorInputParameters.getProjectName());
 				else
-					identifiers = miapeLocalExtractor.storeMiapeMSMSIFromPRIDE(
-							prideFile, userName, password,
+					identifiers = miapeLocalExtractor.storeMiapeMSMSIFromPRIDE(prideFile, userName, password,
 							miapeExtractorInputParameters.getProjectName());
 			} else {
-				firePropertyChange(NOTIFICATION, null,
-						"Waiting for server response...");
-				firePropertyChange(MIAPE_CREATION_WAITING_FOR_SERVER, null,
-						getRunIdentifier());
+				firePropertyChange(NOTIFICATION, null, "Waiting for server response...");
+				firePropertyChange(MIAPE_CREATION_WAITING_FOR_SERVER, null, getRunIdentifier());
 
 				if (miapeMSMetadata != null)
 					identifiers = miapeExtractorWebservice
-							.storeMiapeMSMSIFromPRIDEAndMetadata(
-									prideFile,
-									miapeMSMetadataFilePath,
-									userName,
-									password,
-									miapeExtractorInputParameters
-											.getProjectName(),
-									MainFrame.emailNotifications).toArray(
-									new String[0]);
+							.storeMiapeMSMSIFromPRIDEAndMetadata(prideFile, miapeMSMetadataFilePath, userName, password,
+									miapeExtractorInputParameters.getProjectName(), MainFrame.emailNotifications)
+							.toArray(new String[0]);
 				else
 					identifiers = miapeExtractorWebservice
-							.storeMiapeMSMSIFromPRIDE(
-									prideFile,
-									userName,
-									password,
-									miapeExtractorInputParameters
-											.getProjectName(),
-									MainFrame.emailNotifications).toArray(
-									new String[0]);
+							.storeMiapeMSMSIFromPRIDE(prideFile, userName, password,
+									miapeExtractorInputParameters.getProjectName(), MainFrame.emailNotifications)
+							.toArray(new String[0]);
 			}
 			if (identifiers[0] != null && !"".equals(identifiers[0]))
 				id_ms = identifiers[0];
@@ -927,8 +851,7 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 
 	@Override
 	public Void doInBackground() {
-		log.info("Number of calls to convert is: "
-				+ MiapeExtractionTask.numTasks + " by "
+		log.info("Number of calls to convert is: " + MiapeExtractionTask.numTasks + " by "
 				+ Thread.currentThread().getId() + " thread");
 
 		setProgress(0);
@@ -948,14 +871,11 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 			} catch (Exception e) {
 				e.printStackTrace();
 				if (!isCancelled())
-					firePropertyChange(
-							MIAPE_CREATION_ERROR,
-							null,
-							new MiapeExtractionResult(
-									identifier,
+					firePropertyChange(MIAPE_CREATION_ERROR, null,
+							new MiapeExtractionResult(identifier,
 									e.getMessage()
-											+ "\nThere was a problem submitting the file.\nCheck if the format was correct. Try again and if the problem persists,"
-											+ " contact support at miape_support@proteored.org"));
+											+ "\nThere was a problem.\nCheck if the format was correct. Try again and if the problem persists,"
+											+ " contact support at smartinez@proteored.org"));
 				// this.cancel(true);
 			} finally {
 				// setProgress(100);
@@ -1017,15 +937,12 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 			}
 			if (taskStatus == UPLOADING) {
 				firePropertyChange(MIAPE_CREATION_ERROR, null,
-						new MiapeExtractionResult(identifier,
-								"Error while the file was being uploaded."));
+						new MiapeExtractionResult(identifier, "Error while the file was being uploaded."));
 				return;
 			}
 			if (id_msi != null || id_ms != null) {
-				if ((id_msi != null && !id_msi.startsWith("error"))
-						|| (id_ms != null && !id_ms.startsWith("error"))) {
-					firePropertyChange(NOTIFICATION, null,
-							"MIAPE(s) document(s) successfully stored");
+				if ((id_msi != null && !id_msi.startsWith("error")) || (id_ms != null && !id_ms.startsWith("error"))) {
+					firePropertyChange(NOTIFICATION, null, "Dataset(s) successfully imported");
 				}
 				String msiUrl = null;
 				String msUrl = null;
@@ -1033,17 +950,11 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 					if (Integer.valueOf(id_ms) > 0) {
 						firePropertyChange(MIAPE_MS_CREATED_DONE, null, id_ms);
 						if (storeInRepository) {
-							msUrl = MainFrame.miapetool_access_script
-									+ "&pmMIAPEType=MS&pmIDMIAPE=" + id_ms;
+							msUrl = MainFrame.miapetool_access_script + "&pmMIAPEType=MS&pmIDMIAPE=" + id_ms;
 						} else {
-							msUrl = new File(
-									FileManager
-											.getMiapeLocalDataPath(getParameters()
-													.getProjectName())
-											+ FileManager
-													.getMiapeMSILocalFileName(Integer
-															.valueOf(id_ms)))
-									.toURI().toString();
+							msUrl = new File(FileManager.getMiapeLocalDataPath(getParameters().getProjectName())
+									+ FileManager.getMiapeMSILocalFileName(Integer.valueOf(id_ms), null)).toURI()
+											.toString();
 						}
 					}
 				}
@@ -1051,23 +962,17 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 					if (Integer.valueOf(id_msi) > 0) {
 						firePropertyChange(MIAPE_MSI_CREATED_DONE, null, id_msi);
 						if (storeInRepository) {
-							msiUrl = MainFrame.miapetool_access_script
-									+ "&pmMIAPETYPE=MSI&pmIDMIAPE=" + id_msi;
+							msiUrl = MainFrame.miapetool_access_script + "&pmMIAPETYPE=MSI&pmIDMIAPE=" + id_msi;
 						} else {
-							msiUrl = new File(
-									FileManager
-											.getMiapeLocalDataPath(getParameters()
-													.getProjectName())
-											+ FileManager
-													.getMiapeMSILocalFileName(Integer
-															.valueOf(id_msi)))
-									.toURI().toString();
+							msiUrl = new File(FileManager.getMiapeLocalDataPath(getParameters().getProjectName())
+									+ FileManager.getMiapeMSILocalFileName(Integer.valueOf(id_msi), null)).toURI()
+											.toString();
 						}
 					}
 				}
 				directLinksText = "";
 				if (msUrl != null || msiUrl != null)
-					directLinksText = "Direct link to your documents:\n";
+					directLinksText = "Direct link to your datasets:\n";
 				if (msUrl != null)
 					directLinksText += msUrl;
 				if (msiUrl != null) {
@@ -1085,13 +990,11 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 						unit = "seconds";
 					}
 
-					firePropertyChange(NOTIFICATION, null,
-							"The operation took " + duration + " " + unit);
+					firePropertyChange(NOTIFICATION, null, "The operation took " + duration + " " + unit);
 				}
 				// show the option to open a browser or not
 				if (msUrl != null || msiUrl != null) {
-					MiapeExtractionResult result = new MiapeExtractionResult(
-							identifier);
+					MiapeExtractionResult result = new MiapeExtractionResult(identifier);
 					if (msUrl != null)
 						result.setDirectLinkToMIAPEMS(new URL(msUrl));
 					if (msiUrl != null)
@@ -1101,36 +1004,28 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 						result.setMiapeMS_Identifier(Integer.valueOf(id_ms));
 					if (id_msi != null && !id_msi.startsWith("error"))
 						result.setMiapeMSI_Identifier(Integer.valueOf(id_msi));
-					result.setMilliseconds(System.currentTimeMillis()
-							- initialTime);
+					result.setMilliseconds(System.currentTimeMillis() - initialTime);
 					firePropertyChange(MIAPE_CREATION_TOTAL_DONE, null, result);
 				}
 
 			} else {
 				if (id_msi != null)
-					firePropertyChange(
-							NOTIFICATION,
-							null,
-							id_msi
-									+ "\n"
-									+ "If you need help contact support at miape_support@proteored.org");
+					firePropertyChange(NOTIFICATION, null,
+							id_msi + "\n" + "If you need help contact support at miape_support@proteored.org");
 
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			firePropertyChange(
-					MIAPE_CREATION_ERROR,
-					null,
-					new MiapeExtractionResult(identifier, "Error: "
-							+ e.getMessage()));
+			firePropertyChange(MIAPE_CREATION_ERROR, null,
+					new MiapeExtractionResult(identifier, "Error: " + e.getMessage()));
 		}
 	}
 
 	/**
 	 * Upload a file reading it from the URL: inputURL. The destination of the
 	 * file is located in the ftpPath from the parentDialog
-	 * 
+	 *
 	 * @param inputURL
 	 * @return the URL of the uploaded file
 	 */
@@ -1140,30 +1035,21 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 		try {
 			File inputFile = new File(inputURL);
 			if (!inputFile.exists())
-				throw new IllegalArgumentException("The file '" + inputURL
-						+ "' doesn't exist or is not available right now");
+				throw new IllegalArgumentException(
+						"The file '" + inputURL + "' doesn't exist or is not available right now");
 			log.info("Compressing file: " + inputURL);
 			// firstly, compress the file in a temporally file
 			File tempZipFile = File.createTempFile(inputFile.getName(), ".gz");
 			tempZipFile.deleteOnExit();
-			firePropertyChange(NOTIFICATION, null, "Compressing '" + inputURL
-					+ "' before the uploading");
-			firePropertyChange(NOTIFICATION, null,
-					"Depending on the file size, it may take several minutes...");
-			firePropertyChange(MIAPE_CREATION_COMPRESSING_FILE, null,
-					getRunIdentifier());
+			firePropertyChange(NOTIFICATION, null, "Compressing '" + inputURL + "' before the uploading");
+			firePropertyChange(NOTIFICATION, null, "Depending on the file size, it may take several minutes...");
+			firePropertyChange(MIAPE_CREATION_COMPRESSING_FILE, null, getRunIdentifier());
 			tempZipFile = ZipManager.compressGZipFile(inputFile, tempZipFile);
 			tempZipFile.deleteOnExit();
-			firePropertyChange(
-					NOTIFICATION,
-					null,
-					"File compressed in a temp file: "
-							+ tempZipFile.getAbsolutePath());
-			firePropertyChange(MIAPE_CREATION_COMPRESSING_FILE_DONE, null,
-					getRunIdentifier());
+			firePropertyChange(NOTIFICATION, null, "File compressed in a temp file: " + tempZipFile.getAbsolutePath());
+			firePropertyChange(MIAPE_CREATION_COMPRESSING_FILE_DONE, null, getRunIdentifier());
 			// Then upload the file to the ftpPath
-			String outputURLString = MainFrame.ftpPath + inputFile.getName()
-					+ ".gz";
+			String outputURLString = MainFrame.ftpPath + inputFile.getName() + ".gz";
 			outputURL = new URL(outputURLString);
 			log.info("Uploading file: " + outputURL);
 			URLConnection outputConnection = outputURL.openConnection();
@@ -1171,13 +1057,10 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 			// Thread threadProgress = new Thread(waiting);
 			// threadProgress.start();
 			firePropertyChange(NOTIFICATION, null, "Uploading file...");
-			firePropertyChange(MIAPE_CREATION_UPLOADING_FILE, null,
-					getRunIdentifier());
-			BufferedOutputStream os = new BufferedOutputStream(
-					outputConnection.getOutputStream()); // To
-															// upload
-			BufferedInputStream is = new BufferedInputStream(
-					new FileInputStream(tempZipFile));
+			firePropertyChange(MIAPE_CREATION_UPLOADING_FILE, null, getRunIdentifier());
+			BufferedOutputStream os = new BufferedOutputStream(outputConnection.getOutputStream()); // To
+																									// upload
+			BufferedInputStream is = new BufferedInputStream(new FileInputStream(tempZipFile));
 			ZipManager.copyInputStream(is, os);
 
 			firePropertyChange(NOTIFICATION, null, "File uploaded");
@@ -1186,20 +1069,17 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 			if (tempZipFile.delete())
 				log.info(tempZipFile.getAbsolutePath() + " removed");
 			log.info("File uploaded to: " + outputURLString);
-			firePropertyChange(MIAPE_CREATION_UPLOADING_FILE_DONE, null,
-					getRunIdentifier());
+			firePropertyChange(MIAPE_CREATION_UPLOADING_FILE_DONE, null, getRunIdentifier());
 			return outputURLString;
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 			firePropertyChange(MIAPE_CREATION_ERROR, null,
-					new MiapeExtractionResult(identifier,
-							"Error uploading file: " + e.getMessage()));
+					new MiapeExtractionResult(identifier, "Error uploading file: " + e.getMessage()));
 			cancel(true);
 		} catch (IOException e) {
 			e.printStackTrace();
 			firePropertyChange(MIAPE_CREATION_ERROR, null,
-					new MiapeExtractionResult(identifier,
-							"Error uploading file: " + e.getMessage()));
+					new MiapeExtractionResult(identifier, "Error uploading file: " + e.getMessage()));
 			cancel(true);
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
@@ -1209,8 +1089,7 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 				sb.append(": " + e.getMessage());
 			sb.append("\n");
 			sb.append("Check if the file name is correct or has incorrect characteres");
-			firePropertyChange(MIAPE_CREATION_ERROR, null,
-					new MiapeExtractionResult(identifier, sb.toString()));
+			firePropertyChange(MIAPE_CREATION_ERROR, null, new MiapeExtractionResult(identifier, sb.toString()));
 		}
 		throw new IllegalMiapeArgumentException();
 	}

@@ -23,9 +23,9 @@ import org.proteored.miapeapi.webservice.clients.miapeapi.MiapeSecurityException
 
 /**
  * This class manages the miape retriever tasks in a thread safe way
- * 
+ *
  * @author Salva
- * 
+ *
  */
 public class MiapeRetrieverManager implements PropertyChangeListener {
 
@@ -50,14 +50,12 @@ public class MiapeRetrieverManager implements PropertyChangeListener {
 	private MiapeRetrieverManager(String userName, String password) {
 		this.userName = userName;
 		this.password = password;
-		WebservicesLoaderTask webserviceLoader = WebservicesLoaderTask
-				.getInstace();
+		WebservicesLoaderTask webserviceLoader = WebservicesLoaderTask.getInstace();
 		webserviceLoader.addPropertyChangeListener(this);
 		webserviceLoader.execute();
 	}
 
-	public static MiapeRetrieverManager getInstance(String userName,
-			String password) {
+	public static MiapeRetrieverManager getInstance(String userName, String password) {
 		if (instance == null)
 			instance = new MiapeRetrieverManager(userName, password);
 
@@ -66,50 +64,43 @@ public class MiapeRetrieverManager implements PropertyChangeListener {
 		return instance;
 	}
 
-	public String addRetrieving(Integer miapeID, String miapeType,
-			PropertyChangeListener listener) {
+	public String addRetrieving(Integer miapeID, String miapeType, PropertyChangeListener listener) {
 		if (listener != null && !retrievingListeners.contains(listener))
 			retrievingListeners.add(listener);
 
 		if (miapeID == null || miapeID <= 0)
-			throw new IllegalMiapeArgumentException("Error: invalid MIAPE ID: "
-					+ miapeID);
+			throw new IllegalMiapeArgumentException("Error: invalid MIAPE ID: " + miapeID);
 
 		// Check if it is already retrieved
 		if (miapeType.equals("MSI")) {
-			File file = new File(FileManager.getMiapeMSIXMLFilePath(miapeID));
-			if (file.exists()
-					&& file.lastModified() > Long.valueOf("1349251004048")) {
+			File file = new File(FileManager.getMiapeMSIXMLFileLocalPathFromMiapeInformation(null, miapeID, null));
+			if (file.exists() && file.lastModified() > Long.valueOf("1349251004048")) {
 				startAssociatedMiapeMSRetrieving(miapeID);
 				// log.info("MIAPE MSI " + miapeID + " found in local system");
 				return null;
 			}
 		} else if (miapeType.equals("MS")) {
-			File file = new File(FileManager.getMiapeMSXMLFilePath(miapeID));
-			if (file.exists()
-					&& file.lastModified() > Long.valueOf("1349251004048")) {
+			File file = new File(FileManager.getMiapeMSXMLFileLocalPath(miapeID, null, null));
+			if (file.exists() && file.lastModified() > Long.valueOf("1349251004048")) {
 				// log.info("MIAPE MS " + miapeID + " found in local system");
 				return null;
 			}
 		} else if (miapeType.equals("GE")) {
 			File file = new File(FileManager.getMiapeGEXMLFilePath(miapeID));
-			if (file.exists()
-					&& file.lastModified() > Long.valueOf("1349251004048")) {
+			if (file.exists() && file.lastModified() > Long.valueOf("1349251004048")) {
 				// log.info("MIAPE GE " + miapeID + " found in local system");
 				return null;
 			}
 		} else if (miapeType.equals("GI")) {
 			File file = new File(FileManager.getMiapeGIXMLFilePath(miapeID));
-			if (file.exists()
-					&& file.lastModified() > Long.valueOf("1349251004048")) {
+			if (file.exists() && file.lastModified() > Long.valueOf("1349251004048")) {
 				// log.info("MIAPE GI " + miapeID + " found in local system");
 				return null;
 			}
 		}
 
 		while (miapeAPIWebservice == null) {
-			miapeAPIWebservice = WebservicesLoaderTask.getInstace()
-					.getMiapeAPIWebservice(true);
+			miapeAPIWebservice = WebservicesLoaderTask.getInstace().getMiapeAPIWebservice(true);
 			try {
 				Thread.sleep(500);
 				log.info("Waiting for the webservce initialization");
@@ -118,25 +109,21 @@ public class MiapeRetrieverManager implements PropertyChangeListener {
 			}
 		}
 		if (!miapeRetrievers.containsKey(miapeType + miapeID)) {
-			MiapeRetrieverTask retriever = new MiapeRetrieverTask(miapeID,
-					miapeAPIWebservice, userName, password, miapeType);
+			MiapeRetrieverTask retriever = new MiapeRetrieverTask(miapeID, miapeAPIWebservice, userName, password,
+					miapeType);
 			if (retriever != null) {
 				retriever.addPropertyChangeListener(this);
 				setListenersToRetrieverTask(retriever);
-				log.info("adding retrieving of MIAPE " + miapeType + " :"
-						+ miapeID);
+				log.info("adding retrieving of MIAPE " + miapeType + " :" + miapeID);
 
 				miapeRetrievers.put(miapeType + miapeID, retriever);
 				queue.add(miapeType + miapeID);
 			}
 		} else {
-			log.info("retrieving of MIAPE MSI : " + miapeID
-					+ " is already started");
+			log.info("retrieving of MIAPE MSI : " + miapeID + " is already started");
 			// add listener if not already present
-			miapeRetrievers.get(miapeType + miapeID)
-					.removePropertyChangeListener(listener);
-			miapeRetrievers.get(miapeType + miapeID).addPropertyChangeListener(
-					listener);
+			miapeRetrievers.get(miapeType + miapeID).removePropertyChangeListener(listener);
+			miapeRetrievers.get(miapeType + miapeID).addPropertyChangeListener(listener);
 		}
 		// execute the following
 		return executeRetrieving(null, null);
@@ -153,16 +140,14 @@ public class MiapeRetrieverManager implements PropertyChangeListener {
 
 	}
 
-	public String addRetrievingWithPriority(Integer miapeID, String miapeType,
-			PropertyChangeListener listener) {
+	public String addRetrievingWithPriority(Integer miapeID, String miapeType, PropertyChangeListener listener) {
 		if (listener != null && !retrievingListeners.contains(listener))
 			retrievingListeners.add(listener);
 
 		String pair = miapeType + miapeID;
 
 		String ret = addRetrieving(miapeID, miapeType, listener);
-		MiapeRetrieverTask miapeMsiRetrieverTask = miapeRetrievers
-				.get(miapeType + miapeID);
+		MiapeRetrieverTask miapeMsiRetrieverTask = miapeRetrievers.get(miapeType + miapeID);
 
 		if (miapeMsiRetrieverTask != null) {
 			StateValue state = miapeMsiRetrieverTask.getState();
@@ -183,13 +168,11 @@ public class MiapeRetrieverManager implements PropertyChangeListener {
 	private void removeRetrieving(Integer miapeID, String miapeType) {
 
 		if (miapeID == null || miapeID <= 0 || miapeType == null)
-			throw new IllegalMiapeArgumentException("Error: invalid MIAPE ID: "
-					+ miapeID);
+			throw new IllegalMiapeArgumentException("Error: invalid MIAPE ID: " + miapeID);
 		String miapeIDTypePair = miapeType + miapeID;
 		if (miapeRetrievers.containsKey(miapeIDTypePair)) {
 			log.info("Removing retrieving task: " + miapeID + " " + miapeType);
-			MiapeRetrieverTask miapeRetrieverTask = miapeRetrievers
-					.get(miapeIDTypePair);
+			MiapeRetrieverTask miapeRetrieverTask = miapeRetrievers.get(miapeIDTypePair);
 
 			if (miapeRetrieverTask.getState().equals(StateValue.STARTED))
 				miapeRetrieverTask.cancel(true);
@@ -211,14 +194,13 @@ public class MiapeRetrieverManager implements PropertyChangeListener {
 	/**
 	 * Execute a miape retrieving. If miapeID and miapeType is null, an
 	 * available task will be started
-	 * 
+	 *
 	 * @param miapeID
 	 * @return
 	 */
 	private String executeRetrieving(Integer miapeID, String miapeType) {
 		String key = miapeType + miapeID;
-		if (miapeID != null && miapeType != null
-				&& miapeRetrievers.containsKey(key)) {
+		if (miapeID != null && miapeType != null && miapeRetrievers.containsKey(key)) {
 			log.info("executing retrieving of MIAPE MSI :" + miapeID);
 			MiapeRetrieverTask miapeMsiRetrieverTask = miapeRetrievers.get(key);
 			miapeMsiRetrieverTask.execute();
@@ -233,11 +215,9 @@ public class MiapeRetrieverManager implements PropertyChangeListener {
 						final StateValue state = retr.getState();
 						if (StateValue.STARTED.equals(state)) {
 							numExecuting++;
-						} else if (numExecuting < CONCURRENT_RETRIEVINGS
-								&& StateValue.PENDING.equals(state)) {
-							log.info("executing PENDING MIAPE "
-									+ retr.getMiapeType() + ":"
-									+ retr.getMiapeID() + " retrieving task");
+						} else if (numExecuting < CONCURRENT_RETRIEVINGS && StateValue.PENDING.equals(state)) {
+							log.info("executing PENDING MIAPE " + retr.getMiapeType() + ":" + retr.getMiapeID()
+									+ " retrieving task");
 							retr.execute();
 							numExecuting++;
 						}
@@ -290,20 +270,16 @@ public class MiapeRetrieverManager implements PropertyChangeListener {
 
 	private IntegerString getIntegerString(String pair) {
 		if (pair.startsWith("MSI")) {
-			return new IntegerString(Integer.valueOf(pair.substring(pair
-					.indexOf("I") + 1)), "MSI");
+			return new IntegerString(Integer.valueOf(pair.substring(pair.indexOf("I") + 1)), "MSI");
 		}
 		if (pair.startsWith("MS")) {
-			return new IntegerString(Integer.valueOf(pair.substring(pair
-					.indexOf("S") + 1)), "MS");
+			return new IntegerString(Integer.valueOf(pair.substring(pair.indexOf("S") + 1)), "MS");
 		}
 		if (pair.startsWith("GE")) {
-			return new IntegerString(Integer.valueOf(pair.substring(pair
-					.indexOf("E") + 1)), "GE");
+			return new IntegerString(Integer.valueOf(pair.substring(pair.indexOf("E") + 1)), "GE");
 		}
 		if (pair.startsWith("GI")) {
-			return new IntegerString(Integer.valueOf(pair.substring(pair
-					.indexOf("I") + 1)), "GI");
+			return new IntegerString(Integer.valueOf(pair.substring(pair.indexOf("I") + 1)), "GI");
 		}
 		return null;
 	}
@@ -312,8 +288,7 @@ public class MiapeRetrieverManager implements PropertyChangeListener {
 		for (String id : queue) {
 			MiapeRetrieverTask retr = miapeRetrievers.get(id);
 			if (retr != null) {
-				log.info("canceling retrieving of MIAPE MSI :"
-						+ retr.getMiapeID());
+				log.info("canceling retrieving of MIAPE MSI :" + retr.getMiapeID());
 				retr.cancel(true);
 			}
 		}
@@ -344,18 +319,15 @@ public class MiapeRetrieverManager implements PropertyChangeListener {
 	@Override
 	public synchronized void propertyChange(PropertyChangeEvent evt) {
 
-		if (WebservicesLoaderTask.WEBSERVICES_LOADED.equals(evt
-				.getPropertyName())) {
+		if (WebservicesLoaderTask.WEBSERVICES_LOADED.equals(evt.getPropertyName())) {
 			Object[] ret = (Object[]) evt.getNewValue();
 			if (ret.length == 2) {
 				miapeAPIWebservice = (MiapeAPIWebserviceDelegate) ret[0];
 			}
-		} else if (MiapeRetrieverTask.MIAPE_LOADER_DONE.equals(evt
-				.getPropertyName())) {
+		} else if (MiapeRetrieverTask.MIAPE_LOADER_DONE.equals(evt.getPropertyName())) {
 			String message = (String) evt.getNewValue();
 			if (message.contains(MiapeRetrieverTask.MESSAGE_SPLITTER)) {
-				Object[] splitted = message
-						.split(MiapeRetrieverTask.SCAPED_MESSAGE_SPLITTER);
+				Object[] splitted = message.split(MiapeRetrieverTask.SCAPED_MESSAGE_SPLITTER);
 
 				int miapeID = Integer.valueOf((String) splitted[0]);
 				String miapeType = (String) splitted[1];
@@ -372,18 +344,15 @@ public class MiapeRetrieverManager implements PropertyChangeListener {
 				if ("MSI".equals(miapeType))
 					startAssociatedMiapeMSRetrieving(miapeID);
 			}
-		} else if (MiapeRetrieverTask.MIAPE_LOADER_ERROR.equals(evt
-				.getPropertyName())) {
+		} else if (MiapeRetrieverTask.MIAPE_LOADER_ERROR.equals(evt.getPropertyName())) {
 			String message = (String) evt.getNewValue();
 			if (message.contains(MiapeRetrieverTask.MESSAGE_SPLITTER)) {
-				Object[] splitted = message
-						.split(MiapeRetrieverTask.SCAPED_MESSAGE_SPLITTER);
+				Object[] splitted = message.split(MiapeRetrieverTask.SCAPED_MESSAGE_SPLITTER);
 
 				int miapeID = Integer.valueOf((String) splitted[0]);
 				String miapeType = (String) splitted[1];
 				String errorMessage = (String) splitted[2];
-				log.info("Error downloading MIAPE " + miapeType + " " + miapeID
-						+ ": " + errorMessage);
+				log.info("Error downloading MIAPE " + miapeType + " " + miapeID + ": " + errorMessage);
 				// remove retrieving
 				removeRetrieving(miapeID, miapeType);
 
@@ -410,17 +379,15 @@ public class MiapeRetrieverManager implements PropertyChangeListener {
 		log.debug("Getting MIAPE MSI Header id = " + miapeID);
 		try {
 			final File msiFile = new File(
-					FileManager.getMiapeMSIXMLFilePath(miapeID));
+					FileManager.getMiapeMSIXMLFileLocalPathFromMiapeInformation(null, miapeID, null));
 			MiapeHeader miapeHeader = null;
 			if (msiFile.exists()) {
 				miapeHeader = new MiapeHeader(msiFile, false);
 			} else {
 
 				if (miapeAPIWebservice == null)
-					miapeAPIWebservice = WebservicesLoaderTask.getInstace()
-							.getMiapeAPIWebservice(true);
-				byte[] miapeHeaderBytes = miapeAPIWebservice
-						.getMiapeMSIHeaderById(miapeID, userName, password);
+					miapeAPIWebservice = WebservicesLoaderTask.getInstace().getMiapeAPIWebservice(true);
+				byte[] miapeHeaderBytes = miapeAPIWebservice.getMiapeMSIHeaderById(miapeID, userName, password);
 				if (miapeHeaderBytes != null) {
 					miapeHeader = new MiapeHeader(miapeHeaderBytes);
 
@@ -449,7 +416,7 @@ public class MiapeRetrieverManager implements PropertyChangeListener {
 	/**
 	 * Gets the state of the {@link MiapeRetrieverTask} if the MIAPE MSI with
 	 * that ID is in the queue. Or null if not.
-	 * 
+	 *
 	 * @param miapeID
 	 * @return
 	 */

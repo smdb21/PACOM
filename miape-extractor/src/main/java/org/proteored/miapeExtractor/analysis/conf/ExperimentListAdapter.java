@@ -18,8 +18,7 @@ import org.proteored.miapeapi.interfaces.Adapter;
 
 public class ExperimentListAdapter implements Adapter<ExperimentList> {
 	private final CPExperimentList cpExperimentList;
-	private static final Logger log = Logger
-			.getLogger("log4j.logger.org.proteored");
+	private static final Logger log = Logger.getLogger("log4j.logger.org.proteored");
 	private JAXBContext jc;
 	private final Integer minPeptideLength;
 	private final boolean groupingAtExperimentListLevel;
@@ -31,8 +30,7 @@ public class ExperimentListAdapter implements Adapter<ExperimentList> {
 		this(expList, null, false, null, false);
 	}
 
-	public ExperimentListAdapter(CPExperimentList expList,
-			boolean processInParallel) {
+	public ExperimentListAdapter(CPExperimentList expList, boolean processInParallel) {
 		this(expList, null, false, null, processInParallel);
 	}
 
@@ -44,19 +42,17 @@ public class ExperimentListAdapter implements Adapter<ExperimentList> {
 		this(confFile, null, false, null, processInParallel);
 	}
 
-	public ExperimentListAdapter(CPExperimentList expList,
-			Integer minPeptideLength, boolean groupingAtExperimentListLevel,
-			List<Filter> filters, boolean processInParallel) {
+	public ExperimentListAdapter(CPExperimentList expList, Integer minPeptideLength,
+			boolean groupingAtExperimentListLevel, List<Filter> filters, boolean processInParallel) {
 		this.minPeptideLength = minPeptideLength;
-		this.cpExperimentList = expList;
+		cpExperimentList = expList;
 		this.filters = filters;
 		this.groupingAtExperimentListLevel = groupingAtExperimentListLevel;
 		this.processInParallel = processInParallel;
 	}
 
-	public ExperimentListAdapter(File confFile, Integer minPeptideLength,
-			boolean groupingAtExperimentListLevel, List<Filter> filters,
-			boolean processInParallel) {
+	public ExperimentListAdapter(File confFile, Integer minPeptideLength, boolean groupingAtExperimentListLevel,
+			List<Filter> filters, boolean processInParallel) {
 		this.minPeptideLength = minPeptideLength;
 		this.groupingAtExperimentListLevel = groupingAtExperimentListLevel;
 		this.processInParallel = processInParallel;
@@ -67,20 +63,16 @@ public class ExperimentListAdapter implements Adapter<ExperimentList> {
 
 		// check if exists
 		if (!confFile.exists())
-			throw new IllegalArgumentException(confFile.getAbsolutePath()
-					+ " doesn't exist!");
+			throw new IllegalArgumentException(confFile.getAbsolutePath() + " doesn't exist!");
 
 		try {
-			jc = JAXBContext
-					.newInstance("org.proteored.miapeExtractor.analysis.conf.jaxb");
-			this.cpExperimentList = (CPExperimentList) jc.createUnmarshaller()
-					.unmarshal(confFile);
+			jc = JAXBContext.newInstance("org.proteored.miapeExtractor.analysis.conf.jaxb");
+			cpExperimentList = (CPExperimentList) jc.createUnmarshaller().unmarshal(confFile);
 		} catch (JAXBException e) {
 			log.warn(e.getMessage());
 			// e.printStackTrace();
-			throw new IllegalArgumentException("Error loading "
-					+ confFile.getAbsolutePath() + " config file: "
-					+ e.getMessage());
+			throw new IllegalArgumentException(
+					"Error loading " + confFile.getAbsolutePath() + " config file: " + e.getMessage());
 		}
 
 	}
@@ -96,17 +88,13 @@ public class ExperimentListAdapter implements Adapter<ExperimentList> {
 	public ExperimentList adapt() {
 		log.info("Adapting experiment list");
 		List<Experiment> experimentList = new ArrayList<Experiment>();
-		if (cpExperimentList != null
-				&& cpExperimentList.getCPExperiment() != null) {
+		if (cpExperimentList != null && cpExperimentList.getCPExperiment() != null) {
 			for (CPExperiment xmlExp : cpExperimentList.getCPExperiment()) {
-				experimentList.add(new ExperimentAdapter(xmlExp,
-						minPeptideLength, this.filters, this.processInParallel)
-						.adapt());
+				experimentList.add(new ExperimentAdapter(xmlExp, minPeptideLength, filters, processInParallel).adapt());
 			}
-			ExperimentList elist = new ExperimentList(
-					cpExperimentList.getName(), experimentList,
-					this.groupingAtExperimentListLevel, this.filters,
-					this.minPeptideLength, OntologyLoaderTask.getCvManager());
+			ExperimentList elist = new ExperimentList(cpExperimentList.getName(), experimentList,
+					groupingAtExperimentListLevel, filters, minPeptideLength, OntologyLoaderTask.getCvManager(),
+					processInParallel);
 			return elist;
 		}
 		return null;

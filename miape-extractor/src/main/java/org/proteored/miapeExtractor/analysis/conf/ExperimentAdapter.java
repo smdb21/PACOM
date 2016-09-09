@@ -19,8 +19,7 @@ import org.proteored.miapeapi.interfaces.Adapter;
 public class ExperimentAdapter implements Adapter<Experiment> {
 	private final CPExperiment xmlExp;
 	private final Integer minPeptideLength;
-	private static final Logger log = Logger
-			.getLogger("log4j.logger.org.proteored");
+	private static final Logger log = Logger.getLogger("log4j.logger.org.proteored");
 	private JAXBContext jc;
 	private final List<Filter> filters;
 	private final boolean processInParallel;
@@ -33,13 +32,12 @@ public class ExperimentAdapter implements Adapter<Experiment> {
 		this(xmlExp, null, null, processInParallel);
 	}
 
-	public ExperimentAdapter(CPExperiment xmlExp, Integer minPeptideLength,
-			List<Filter> filters) {
+	public ExperimentAdapter(CPExperiment xmlExp, Integer minPeptideLength, List<Filter> filters) {
 		this(xmlExp, minPeptideLength, filters, false);
 	}
 
-	public ExperimentAdapter(CPExperiment xmlExp, Integer minPeptideLength,
-			List<Filter> filters, boolean processInParallel) {
+	public ExperimentAdapter(CPExperiment xmlExp, Integer minPeptideLength, List<Filter> filters,
+			boolean processInParallel) {
 		this.xmlExp = xmlExp;
 		this.minPeptideLength = minPeptideLength;
 		this.filters = filters;
@@ -54,8 +52,7 @@ public class ExperimentAdapter implements Adapter<Experiment> {
 		this(confFile, null, null, processInParallel);
 	}
 
-	public ExperimentAdapter(File confFile, Integer minPeptideLength,
-			List<Filter> filters, boolean processInParallel) {
+	public ExperimentAdapter(File confFile, Integer minPeptideLength, List<Filter> filters, boolean processInParallel) {
 		this.minPeptideLength = minPeptideLength;
 		this.processInParallel = processInParallel;
 		this.filters = filters;
@@ -64,26 +61,22 @@ public class ExperimentAdapter implements Adapter<Experiment> {
 
 		// check if exists
 		if (!confFile.exists())
-			throw new IllegalArgumentException(confFile.getAbsolutePath()
-					+ " doesn't exist!");
+			throw new IllegalArgumentException(confFile.getAbsolutePath() + " doesn't exist!");
 
 		try {
-			jc = JAXBContext
-					.newInstance("org.proteored.miapeExtractor.analysis.conf.jaxb");
-			this.xmlExp = (CPExperiment) jc.createUnmarshaller().unmarshal(
-					confFile);
+			jc = JAXBContext.newInstance("org.proteored.miapeExtractor.analysis.conf.jaxb");
+			xmlExp = (CPExperiment) jc.createUnmarshaller().unmarshal(confFile);
 		} catch (JAXBException e) {
 			log.warn(e.getMessage());
 			// e.printStackTrace();
-			throw new IllegalArgumentException("Error loading "
-					+ confFile.getAbsolutePath() + " config file: "
-					+ e.getMessage());
+			throw new IllegalArgumentException(
+					"Error loading " + confFile.getAbsolutePath() + " config file: " + e.getMessage());
 		}
 
 	}
 
 	public CPExperiment getCpExperiment() {
-		return this.xmlExp;
+		return xmlExp;
 	}
 
 	@Override
@@ -92,15 +85,13 @@ public class ExperimentAdapter implements Adapter<Experiment> {
 		List<Replicate> replicates = new ArrayList<Replicate>();
 		if (xmlExp != null && xmlExp.getCPReplicate() != null) {
 			for (CPReplicate xmlRep : xmlExp.getCPReplicate()) {
-				replicates.add(new ReplicateAdapter(xmlRep, xmlExp.getName(),
-						xmlExp.isCurated(), minPeptideLength, this.filters,
-						this.processInParallel).adapt());
+				replicates.add(new ReplicateAdapter(xmlRep, xmlExp.getName(), xmlExp.isCurated(), minPeptideLength,
+						filters, processInParallel).adapt());
 			}
 
 		}
-		Experiment ret = new Experiment(xmlExp.getName(), replicates,
-				this.filters, this.minPeptideLength,
-				OntologyLoaderTask.getCvManager());
+		Experiment ret = new Experiment(xmlExp.getName(), replicates, filters, minPeptideLength,
+				OntologyLoaderTask.getCvManager(), processInParallel);
 		return ret;
 	}
 

@@ -34,8 +34,7 @@ public class WebservicesLoaderTask extends SwingWorker<String, Void> {
 		return instance;
 	}
 
-	public MiapeAPIWebserviceDelegate getMiapeAPIWebservice(
-			boolean waitIfNotLoaded) {
+	public MiapeAPIWebserviceDelegate getMiapeAPIWebservice(boolean waitIfNotLoaded) {
 		if (waitIfNotLoaded && (webservices == null || webservices[0] == null))
 			try {
 				getWebservices();
@@ -46,8 +45,7 @@ public class WebservicesLoaderTask extends SwingWorker<String, Void> {
 		return (MiapeAPIWebserviceDelegate) webservices[0];
 	}
 
-	public MiapeExtractorDelegate getMiapeExtractorWebservice(
-			boolean waitIfNotLoaded) {
+	public MiapeExtractorDelegate getMiapeExtractorWebservice(boolean waitIfNotLoaded) {
 		if (waitIfNotLoaded && (webservices == null || webservices[1] == null))
 			try {
 				getWebservices();
@@ -60,10 +58,9 @@ public class WebservicesLoaderTask extends SwingWorker<String, Void> {
 	@Override
 	protected String doInBackground() throws Exception {
 
-		log.info("Initializing webservices");
+		// log.info("Initializing webservices");
 		try {
-			if (webservices == null || webservices.length != 2
-					|| webservices[0] == null || webservices[1] == null)
+			if (webservices == null || webservices.length != 2 || webservices[0] == null || webservices[1] == null)
 				getWebservices();
 			return null;
 		} catch (Exception e) {
@@ -77,81 +74,62 @@ public class WebservicesLoaderTask extends SwingWorker<String, Void> {
 		// Get properties from resource file
 		Properties prop = PropertiesReader.getProperties();
 
-		URL miapeExtractorEndPoint = new URL(
-				prop.getProperty(PropertiesReader.MIAPE_EXTRACTOR_WEBSERVICE_ENDPOINT));
-		log.info("Reading properties file: "
-				+ PropertiesReader.MIAPE_EXTRACTOR_WEBSERVICE_ENDPOINT + ": "
+		URL miapeExtractorEndPoint = new URL(prop.getProperty(PropertiesReader.MIAPE_EXTRACTOR_WEBSERVICE_ENDPOINT));
+		log.info("Reading properties file: " + PropertiesReader.MIAPE_EXTRACTOR_WEBSERVICE_ENDPOINT + ": "
 				+ miapeExtractorEndPoint);
 
-		URL miapeAPIEndPoint = new URL(
-				prop.getProperty(PropertiesReader.MIAPE_API_WEBSERVICE_ENDPOINT));
-		log.info("Reading properties file: "
-				+ PropertiesReader.MIAPE_API_WEBSERVICE_ENDPOINT + ": "
-				+ miapeAPIEndPoint);
+		URL miapeAPIEndPoint = new URL(prop.getProperty(PropertiesReader.MIAPE_API_WEBSERVICE_ENDPOINT));
+		log.info(
+				"Reading properties file: " + PropertiesReader.MIAPE_API_WEBSERVICE_ENDPOINT + ": " + miapeAPIEndPoint);
 
-		String miapeAPIServiceName = prop
-				.getProperty(PropertiesReader.MIAPE_API_WEBSERVICE_SERVICENAME);
-		log.info("Reading properties file: "
-				+ PropertiesReader.MIAPE_API_WEBSERVICE_SERVICENAME + ": "
+		String miapeAPIServiceName = prop.getProperty(PropertiesReader.MIAPE_API_WEBSERVICE_SERVICENAME);
+		log.info("Reading properties file: " + PropertiesReader.MIAPE_API_WEBSERVICE_SERVICENAME + ": "
 				+ miapeAPIServiceName);
 
-		String miapeAPINameSpace = prop
-				.getProperty(PropertiesReader.MIAPE_API_WEBSERVICE_NAMESPACEURI);
-		log.info("Reading properties file: "
-				+ PropertiesReader.MIAPE_API_WEBSERVICE_NAMESPACEURI + ": "
+		String miapeAPINameSpace = prop.getProperty(PropertiesReader.MIAPE_API_WEBSERVICE_NAMESPACEURI);
+		log.info("Reading properties file: " + PropertiesReader.MIAPE_API_WEBSERVICE_NAMESPACEURI + ": "
 				+ miapeAPINameSpace);
 
-		String miapeExtractorServiceName = prop
-				.getProperty(PropertiesReader.MIAPE_EXTRACTOR_WEBSERVICE_SERVICENAME);
-		log.info("Reading properties file: "
-				+ PropertiesReader.MIAPE_EXTRACTOR_WEBSERVICE_SERVICENAME
-				+ ": " + miapeExtractorServiceName);
+		String miapeExtractorServiceName = prop.getProperty(PropertiesReader.MIAPE_EXTRACTOR_WEBSERVICE_SERVICENAME);
+		log.info("Reading properties file: " + PropertiesReader.MIAPE_EXTRACTOR_WEBSERVICE_SERVICENAME + ": "
+				+ miapeExtractorServiceName);
 
-		String miapeExtractorNameSpace = prop
-				.getProperty(PropertiesReader.MIAPE_EXTRACTOR_WEBSERVICE_NAMESPACEURI);
-		log.info("Reading properties file: "
-				+ PropertiesReader.MIAPE_EXTRACTOR_WEBSERVICE_NAMESPACEURI
-				+ ": " + miapeExtractorNameSpace);
+		String miapeExtractorNameSpace = prop.getProperty(PropertiesReader.MIAPE_EXTRACTOR_WEBSERVICE_NAMESPACEURI);
+		log.info("Reading properties file: " + PropertiesReader.MIAPE_EXTRACTOR_WEBSERVICE_NAMESPACEURI + ": "
+				+ miapeExtractorNameSpace);
 
 		// Create the miape_api webservice proxy
 		try {
-			QName serviceName = new QName(miapeAPINameSpace,
-					miapeAPIServiceName);
-			MiapeAPIWebserviceService miapeAPIWebserviceService = new MiapeAPIWebserviceService(
-					miapeAPIEndPoint, serviceName);
-			MiapeAPIWebserviceDelegate miapeAPIWebservice = miapeAPIWebserviceService
-					.getMiapeAPIWebservicePort();
+			QName serviceName = new QName(miapeAPINameSpace, miapeAPIServiceName);
+			MiapeAPIWebserviceService miapeAPIWebserviceService = new MiapeAPIWebserviceService(miapeAPIEndPoint,
+					serviceName);
+			MiapeAPIWebserviceDelegate miapeAPIWebservice = miapeAPIWebserviceService.getMiapeAPIWebservicePort();
 			// ((BindingProvider) miapeAPIWebservice).getRequestContext().put(
 			// BindingProviderProperties.REQUEST_TIMEOUT,
 			// WEBSERVICE_TIMEOUT);
 			webservices[0] = miapeAPIWebservice;
 
 		} catch (Exception e) {
-			throw new IllegalMiapeArgumentException(
-					"Error loading miape api webservice: " + e.getMessage());
+			throw new IllegalMiapeArgumentException("Error loading miape api webservice: " + e.getMessage());
 		}
 
 		// Create the miape_generator webservice proxy
 
 		try {
-			log.info("miapeExtractorEndPoint=" + miapeExtractorEndPoint);
-			QName serviceName = new QName(miapeExtractorNameSpace,
-					miapeExtractorServiceName);
-			MiapeExtractorService miapeExtractorService = new MiapeExtractorService(
-					miapeExtractorEndPoint, serviceName);
-			MiapeExtractorDelegate miapeExtractorWebservice = miapeExtractorService
-					.getMiapeExtractorPort();
+			// log.info("miapeExtractorEndPoint=" + miapeExtractorEndPoint);
+			QName serviceName = new QName(miapeExtractorNameSpace, miapeExtractorServiceName);
+			MiapeExtractorService miapeExtractorService = new MiapeExtractorService(miapeExtractorEndPoint,
+					serviceName);
+			MiapeExtractorDelegate miapeExtractorWebservice = miapeExtractorService.getMiapeExtractorPort();
 			// ((BindingProvider) miapeExtractorWebservice).getRequestContext()
 			// .put(BindingProviderProperties.REQUEST_TIMEOUT,
 			// WEBSERVICE_TIMEOUT);
 			webservices[1] = miapeExtractorWebservice;
 
 		} catch (Exception e) {
-			throw new IllegalMiapeArgumentException(
-					"Error loading miape extractor webservice: "
-							+ e.getMessage());
+			throw new IllegalMiapeArgumentException("Error loading miape extractor webservice: " + e.getMessage());
 		}
-		log.info("Webservice initialized");
+		// log.info("Webservice initialized");
 		return null;
 
 	}
@@ -169,8 +147,7 @@ public class WebservicesLoaderTask extends SwingWorker<String, Void> {
 			e.printStackTrace();
 			string = e.getMessage();
 		}
-		if (!isCancelled() && string == null && webservices[0] != null
-				&& webservices[1] != null)
+		if (!isCancelled() && string == null && webservices[0] != null && webservices[1] != null)
 			firePropertyChange(WEBSERVICES_LOADED, null, webservices);
 		else
 			firePropertyChange(WEBSERVICES_ERROR, null, string);

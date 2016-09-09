@@ -474,7 +474,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButtonCancelLoading">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Stop loading MIAPE tree"/>
+            <Property name="text" type="java.lang.String" value="Stop loading input data"/>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
@@ -483,7 +483,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButtonStartLoading">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Reload MIAPE tree"/>
+            <Property name="text" type="java.lang.String" value="Reload input data"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonStartLoadingActionPerformed"/>
@@ -655,7 +655,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel2">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Level 1 Name (experiment):"/>
+            <Property name="text" type="java.lang.String" value="Level 1 Name (i.e. experiment / biological replicate):"/>
             <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;The level 1 can represent an experiment or simply a &lt;br&gt;&#xa;compilation of peptide and protein identification sets.&#xa;&lt;/html&gt;"/>
           </Properties>
         </Component>
@@ -679,7 +679,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel3">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Level 2 Name (replicate/fraction/band):"/>
+            <Property name="text" type="java.lang.String" value="Level 2 Name (i.e. technical replicate/fraction/band):"/>
             <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;The level 2 can represent a peptide and protein identification set comming from:&lt;br&gt;&#xa;&lt;ul&gt;&#xa;&lt;li&gt;a technical/biological replicate,&lt;/li&gt;&#xa;&lt;li&gt;a fraction in a LC separation,&lt;/li&gt;&#xa;&lt;li&gt;a gel spot,&lt;/li&gt;&#xa;&lt;li&gt;or a gel band.&lt;/li&gt;&#xa;&lt;/html&gt;"/>
           </Properties>
         </Component>
@@ -853,7 +853,7 @@
         <Component class="javax.swing.JButton" name="jButtonAddCuratedExperiment">
           <Properties>
             <Property name="text" type="java.lang.String" value="Add curated experiment"/>
-            <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Click to add a &lt;b&gt;curated experiment&lt;/b&gt; to the inspection project.&lt;br&gt;&#xa;Curated experiments are created in the MIAPE Extractor Charts&lt;br&gt;&#xa;viewer, usually after applying some filters.&lt;br&gt;&#xa;This curated projects are lighter than normal projects&lt;br&gt;&#xa;since filtered-out data is discarted and is not loaded.&#xa;&lt;/html&gt;"/>
+            <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Click to add a &lt;b&gt;curated experiment&lt;/b&gt; to the inspection project.&lt;br&gt;&#xa;Curated experiments are created in the Data Comparison and Inspection Charts&lt;br&gt;&#xa;viewer, usually after applying some filters.&lt;br&gt;&#xa;This curated projects are lighter than normal projects&lt;br&gt;&#xa;since filtered-out data is discarted and is not loaded.&#xa;&lt;/html&gt;"/>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
@@ -863,7 +863,7 @@
         <Component class="javax.swing.JButton" name="jButtonRemoveCuratedExperiment">
           <Properties>
             <Property name="text" type="java.lang.String" value="Remove curated experiment"/>
-            <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Click to remove the selected curated experiment.&lt;br&gt;&#xa;Curated experiments are created in the MIAPE Extractor Charts&lt;br&gt;&#xa;viewer, usually after applying some filters.&lt;br&gt;&#xa;This curated projects are lighter than normal projects&lt;br&gt;&#xa;since filtered-out data is discarted and is not loaded.&#xa;&lt;/html&gt;"/>
+            <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Click to remove the selected curated experiment.&lt;br&gt;&#xa;Curated experiments are created in the Data Comparison and Inspection Charts&lt;br&gt;&#xa;viewer, usually after applying some filters.&lt;br&gt;&#xa;This curated projects are lighter than normal projects&lt;br&gt;&#xa;since filtered-out data is discarted and is not loaded.&#xa;&lt;/html&gt;"/>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>

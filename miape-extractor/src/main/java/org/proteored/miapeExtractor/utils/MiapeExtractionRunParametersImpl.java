@@ -15,8 +15,7 @@ import org.proteored.miapeapi.interfaces.ms.MiapeMSDocument;
 import org.proteored.miapeapi.xml.ms.MiapeMSDocumentImpl;
 import org.proteored.miapeapi.xml.ms.merge.MiapeMSMerger;
 
-public class MiapeExtractionRunParametersImpl implements
-		MiapeExtractionRunParameters {
+public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParameters {
 
 	private boolean isFastParsing;
 	private boolean isMzIdentMLPlusMGFSelected;
@@ -29,7 +28,7 @@ public class MiapeExtractionRunParametersImpl implements
 	private boolean isPRIDESelected;
 	private boolean isMzMLSelected;
 	private boolean isMzIdentMLSelected;
-	private boolean isLocalProcessing = false;
+	private boolean isLocalProcessing = true;
 	private String mzIdentMLFileName;
 	private String mzMLFileName;
 	private String mgfFileName;
@@ -43,6 +42,9 @@ public class MiapeExtractionRunParametersImpl implements
 	private boolean isMgfSelected;
 	private boolean storeMIAPEsInDB;
 	private boolean xtandemPlusMGFSelected;
+	private String dtaSelectFileName;
+	private boolean DTASelectPlusMGFSelected;
+	private boolean DTASelectSelected;
 
 	@Override
 	public boolean isFastParsing() {
@@ -206,6 +208,22 @@ public class MiapeExtractionRunParametersImpl implements
 		this.xTandemFileName = xTandemFileName;
 	}
 
+	/**
+	 * @return the dtaSelectFileName
+	 */
+	@Override
+	public String getDtaSelectFileName() {
+		return dtaSelectFileName;
+	}
+
+	/**
+	 * @param dtaSelectFileName
+	 *            the dtaSelectFileName to set
+	 */
+	public void setDtaSelectFileName(String dtaSelectFileName) {
+		this.dtaSelectFileName = dtaSelectFileName;
+	}
+
 	public void addInputFile(File inputFile) {
 		inputFiles.add(inputFile);
 	}
@@ -221,22 +239,14 @@ public class MiapeExtractionRunParametersImpl implements
 
 	@Override
 	public String toString() {
-		return "MiapeExtractionRunParametersImpl [isFastParsing="
-				+ isFastParsing + ", isMzIdentMLPlusMGFSelected="
-				+ isMzIdentMLPlusMGFSelected + ", miapeMSMetadata="
-				+ miapeMSMetadata + ", isMzMLPlusMzIdentMLSelected="
-				+ isMzMLPlusMzIdentMLSelected + ", isMIAPEMSChecked="
-				+ isMIAPEMSChecked + ", projectName=" + projectName
-				+ ", isMIAPEMSIChecked=" + isMIAPEMSIChecked
-				+ ", isXTandemSelected=" + isXTandemSelected
-				+ ", isPRIDESelected=" + isPRIDESelected + ", isMzMLSelected="
-				+ isMzMLSelected + ", isMzIdentMLSelected="
-				+ isMzIdentMLSelected + ", isLocalProcessing="
-				+ isLocalProcessing + ", mzIdentMLFileName="
-				+ mzIdentMLFileName + ", mzMLFileName=" + mzMLFileName
-				+ ", mgfFileName=" + mgfFileName + ", PRIDEXMLFileName="
-				+ PRIDEXMLFileName + ", xTandemFileName=" + xTandemFileName
-				+ "]";
+		return "MiapeExtractionRunParametersImpl [isFastParsing=" + isFastParsing + ", isMzIdentMLPlusMGFSelected="
+				+ isMzIdentMLPlusMGFSelected + ", miapeMSMetadata=" + miapeMSMetadata + ", isMzMLPlusMzIdentMLSelected="
+				+ isMzMLPlusMzIdentMLSelected + ", isMIAPEMSChecked=" + isMIAPEMSChecked + ", projectName="
+				+ projectName + ", isMIAPEMSIChecked=" + isMIAPEMSIChecked + ", isXTandemSelected=" + isXTandemSelected
+				+ ", isPRIDESelected=" + isPRIDESelected + ", isMzMLSelected=" + isMzMLSelected
+				+ ", isMzIdentMLSelected=" + isMzIdentMLSelected + ", isLocalProcessing=" + isLocalProcessing
+				+ ", mzIdentMLFileName=" + mzIdentMLFileName + ", mzMLFileName=" + mzMLFileName + ", mgfFileName="
+				+ mgfFileName + ", PRIDEXMLFileName=" + PRIDEXMLFileName + ", xTandemFileName=" + xTandemFileName + "]";
 	}
 
 	public void consolidate() {
@@ -247,8 +257,11 @@ public class MiapeExtractionRunParametersImpl implements
 		} else if (getMgfFileName() != null && getXTandemFileName() != null) {
 			setXtandemPlusMGFSelected(true);
 			someOptionIsCorrect = true;
-		} else if (getMgfFileName() != null && getMzIdentMLFileName() == null
-				&& getxTandemFileName() == null) {
+		} else if (getMgfFileName() != null && getDtaSelectFileName() != null) {
+			setDTASelectPlusMGFSelected(true);
+			someOptionIsCorrect = true;
+		} else if (getMgfFileName() != null && getMzIdentMLFileName() == null && getxTandemFileName() == null
+				&& getDtaSelectFileName() == null) {
 			setMGFSelected(true);
 			someOptionIsCorrect = true;
 		} else if (getMzMLFileName() != null && getMzIdentMLFileName() != null) {
@@ -260,6 +273,9 @@ public class MiapeExtractionRunParametersImpl implements
 		} else if (getXTandemFileName() != null) {
 			setXTandemSelected(true);
 			someOptionIsCorrect = true;
+		} else if (getDtaSelectFileName() != null) {
+			setDTASelectSelected(true);
+			someOptionIsCorrect = true;
 		} else if (getPRIDEXMLFileName() != null) {
 			setPRIDESelected(true);
 			someOptionIsCorrect = true;
@@ -268,24 +284,21 @@ public class MiapeExtractionRunParametersImpl implements
 			someOptionIsCorrect = true;
 		}
 		if (!someOptionIsCorrect)
-			throw new IllegalMiapeArgumentException(
-					"Some error has been detected on input batch file");
+			throw new IllegalMiapeArgumentException("Some error has been detected on input batch file");
 
-		if ((isMzIdentMLPlusMGFSelected() || isXtandemPlusMGFSelected())
+		if ((isMzIdentMLPlusMGFSelected() || isXtandemPlusMGFSelected() || isDTASelectPlusMGFSelected())
 				&& getMiapeMSMetadata() == null)
 			throw new IllegalMiapeArgumentException(
-					"Some MIAPE MS metadata template is required for MGF + mzIdentML or MGF + XTandem MIAPE Extraction. Include a METADATA line type in the batch file.");
+					"Some MIAPE MS metadata template is required for importing datasets from MGF + mzIdentML, MGF + XTandem or MGF + DTASelect. Include a METADATA line type in the batch file.");
 
 		if (!isLocalProcessing() && isFastParsing())
 			throw new IllegalMiapeArgumentException(
 					"Fast parsing is not applicable for remote processing (not LOCAL PROCESSING)");
 
 		if (getMzMLFileName() == null && isFastParsing())
-			throw new IllegalMiapeArgumentException(
-					"Fast parsing is only applicable for processing MZML files");
+			throw new IllegalMiapeArgumentException("Fast parsing is only applicable for processing MZML files");
 
-		if (getPRIDEXMLFileName() != null
-				&& (!isMIAPEMSIChecked() && !isMIAPEMSChecked()))
+		if (getPRIDEXMLFileName() != null && (!isMIAPEMSIChecked() && !isMIAPEMSChecked()))
 			throw new IllegalMiapeArgumentException(
 					"MS OUTPUT, MSI OUTPUT or MS MSI OUTPUT is required for processing PRIDE XML files");
 
@@ -296,27 +309,20 @@ public class MiapeExtractionRunParametersImpl implements
 		if (getInputFiles().isEmpty())
 			throw new IllegalMiapeArgumentException("No input files defined!");
 
-		if (getMiapeMSMetadata() != null
-				&& getAssociatedMiapeMSGeneratorJob() != null)
-			throw new IllegalMiapeArgumentException(
-					"METADATA and MS_REF cannot be present at the same job");
+		if (getMiapeMSMetadata() != null && getAssociatedMiapeMSGeneratorJob() != null)
+			throw new IllegalMiapeArgumentException("METADATA and MS_REF cannot be present at the same job");
 
 		// Merge metadata with a MIAPE MS containing only the project name
 		if (miapeMSMetadata != null) {
 
-			MiapeExtractionParametersUtil.setNameToMetadataMiapeMS(
-					(MiapeMSDocumentImpl) miapeMSMetadata, this);
+			MiapeExtractionParametersUtil.setNameToMetadataMiapeMS((MiapeMSDocumentImpl) miapeMSMetadata, this);
 			// merge with a MIAPE_MS containing only the project
 			MiapeDate today = new MiapeDate(new Date());
 			MiapeMSDocument miapeMSJustWithProject = (MiapeMSDocument) MiapeMSDocumentFactory
-					.createMiapeMSDocumentBuilder(
-							MiapeDocumentFactory
-									.createProjectBuilder(getProjectName())
-									.date(new MiapeDate(new Date())).build(),
-							miapeMSMetadata.getName(), null).date(today)
-					.modificationDate(new Date()).build();
-			MiapeMSDocument ret = MiapeMSMerger.getInstance(
-					OntologyLoaderTask.getCvManager()).merge(miapeMSMetadata,
+					.createMiapeMSDocumentBuilder(MiapeDocumentFactory.createProjectBuilder(getProjectName())
+							.date(new MiapeDate(new Date())).build(), miapeMSMetadata.getName(), null)
+					.date(today).modificationDate(new Date()).build();
+			MiapeMSDocument ret = MiapeMSMerger.getInstance(OntologyLoaderTask.getCvManager()).merge(miapeMSMetadata,
 					miapeMSJustWithProject);
 			setMiapeMSMetadata(ret);
 
@@ -345,8 +351,7 @@ public class MiapeExtractionRunParametersImpl implements
 		this.associatedMiapeMS = associatedMiapeMS;
 	}
 
-	public void setAssociatedMIAPEMSGeneratorJob(
-			Integer associatedMiapeMSGeneratorJob) {
+	public void setAssociatedMIAPEMSGeneratorJob(Integer associatedMiapeMSGeneratorJob) {
 		this.associatedMiapeMSGeneratorJob = associatedMiapeMSGeneratorJob;
 	}
 
@@ -434,9 +439,34 @@ public class MiapeExtractionRunParametersImpl implements
 	 * @param associatedMiapeMSGeneratorJob
 	 *            the associatedMiapeMSGeneratorJob to set
 	 */
-	public void setAssociatedMiapeMSGeneratorJob(
-			Integer associatedMiapeMSGeneratorJob) {
+	public void setAssociatedMiapeMSGeneratorJob(Integer associatedMiapeMSGeneratorJob) {
 		this.associatedMiapeMSGeneratorJob = associatedMiapeMSGeneratorJob;
+	}
+
+	@Override
+	public boolean isDTASelectSelected() {
+		return DTASelectSelected;
+	}
+
+	@Override
+	public boolean isDTASelectPlusMGFSelected() {
+		return DTASelectPlusMGFSelected;
+	}
+
+	/**
+	 * @param dTASelectPlusMGFSelected
+	 *            the dTASelectPlusMGFSelected to set
+	 */
+	public void setDTASelectPlusMGFSelected(boolean dTASelectPlusMGFSelected) {
+		DTASelectPlusMGFSelected = dTASelectPlusMGFSelected;
+	}
+
+	/**
+	 * @param dTASelectSelected
+	 *            the dTASelectSelected to set
+	 */
+	public void setDTASelectSelected(boolean dTASelectSelected) {
+		DTASelectSelected = dTASelectSelected;
 	}
 
 }

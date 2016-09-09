@@ -227,7 +227,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			parentFrame.setEnabled(true);
 			parentFrame.setVisible(true);
 		}
-		GeneralOptionsDialog.getInstance(this).dispose();
+		GeneralOptionsDialogNoParallel.getInstance(this).dispose();
 		super.dispose();
 	}
 
@@ -294,7 +294,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		if (instance == null)
 			instance = new ChartManagerFrame(parentDialog, cfgFile);
 		instance.cfgFile = cfgFile;
-		GeneralOptionsDialog generalOptionsDialog = GeneralOptionsDialog.getInstance(instance, true);
+		GeneralOptionsDialogNoParallel generalOptionsDialog = GeneralOptionsDialogNoParallel.getInstance(instance,
+				true);
 		boolean group = generalOptionsDialog.groupProteinsAtExperimentListLevel();
 		int pepLength = generalOptionsDialog.getMinPeptideLength();
 		boolean parallel = generalOptionsDialog.isLocalProcessingInParallel();
@@ -330,9 +331,10 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	}
 
 	/**
-	 * Checks if something has changed on the {@link GeneralOptionsDialog}. If
-	 * yes, the data it will return true. It also checks if the cgfFile is
-	 * different and it will return true. Otherwise, it will return false.
+	 * Checks if something has changed on the
+	 * {@link GeneralOptionsDialogNoParallel}. If yes, the data it will return
+	 * true. It also checks if the cgfFile is different and it will return true.
+	 * Otherwise, it will return false.
 	 *
 	 *
 	 * @return
@@ -363,10 +365,11 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 	/**
 	 * Loads the data with the parameters taken from the
-	 * {@link GeneralOptionsDialog}
+	 * {@link GeneralOptionsDialogNoParallel}
 	 */
 	private void loadData() {
-		GeneralOptionsDialog generalOptionsDialog = GeneralOptionsDialog.getInstance(instance, true);
+		GeneralOptionsDialogNoParallel generalOptionsDialog = GeneralOptionsDialogNoParallel.getInstance(instance,
+				true);
 		boolean groupingAtExperimentListLevel = generalOptionsDialog.groupProteinsAtExperimentListLevel();
 		int minPeptideLength = generalOptionsDialog.getMinPeptideLength();
 
@@ -383,7 +386,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		previousCfgFileSize = this.cfgFile.length();
 		isLocalProcessingInParallel = processInParallel;
 		CPExperimentList cpExpList = getCPExperimentList(cfgFile);
-		setTitle(cpExpList.getName() + " - MIAPE Extractor Charts");
+		setTitle(cpExpList.getName() + " - Data Comparison and Inspection Charts");
 
 		// set to "loading data..." the information labels
 		setInformation1("Loading data...");
@@ -911,9 +914,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 								.addComponent(jProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jProgressBarMemoryUsage, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)));
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jProgressBarMemoryUsage, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)));
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
@@ -984,16 +987,13 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 		javax.swing.GroupLayout jPanelPeptideCountingLayout = new javax.swing.GroupLayout(jPanelPeptideCounting);
 		jPanelPeptideCounting.setLayout(jPanelPeptideCountingLayout);
-		jPanelPeptideCountingLayout
-				.setHorizontalGroup(
-						jPanelPeptideCountingLayout
-								.createParallelGroup(
-										javax.swing.GroupLayout.Alignment.LEADING)
-								.addGroup(jPanelPeptideCountingLayout.createSequentialGroup().addContainerGap()
-										.addGroup(jPanelPeptideCountingLayout
-												.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-												.addComponent(jCheckBoxUniquePeptides)
-												.addComponent(jCheckBoxCountNonConclusiveProteins))
+		jPanelPeptideCountingLayout.setHorizontalGroup(
+				jPanelPeptideCountingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(jPanelPeptideCountingLayout.createSequentialGroup().addContainerGap()
+								.addGroup(jPanelPeptideCountingLayout
+										.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+										.addComponent(jCheckBoxUniquePeptides)
+										.addComponent(jCheckBoxCountNonConclusiveProteins))
 								.addContainerGap(35, Short.MAX_VALUE)));
 		jPanelPeptideCountingLayout.setVerticalGroup(jPanelPeptideCountingLayout
 				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1030,7 +1030,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 		jButtonShowTable.setIcon(new javax.swing.ImageIcon(
 				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\table.png")); // NOI18N
-		jButtonShowTable.setToolTipText("<html>Show identification table.</html>");
+		jButtonShowTable.setToolTipText("<html>Show dataset in a table.</html>");
 		jButtonShowTable.setEnabled(false);
 		jButtonShowTable.addMouseListener(new java.awt.event.MouseAdapter() {
 			@Override
@@ -1071,8 +1071,15 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 		jButtonExport2PEX.setIcon(new javax.swing.ImageIcon(
 				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\pex.png")); // NOI18N
+		// jButtonExport2PEX.setToolTipText(
+		// "<html>Prepare current data for a ProteomeXchange
+		// submission.<br>\nRequired files will be prepared at an output
+		// folder,<br>\nand a Bulk Submission Summary file will be
+		// created<br>\nto use it in the ProteomeXchange submission
+		// tool.</html>");
 		jButtonExport2PEX.setToolTipText(
-				"<html>Prepare current data for a ProteomeXchange submission.<br>\nRequired files will be prepared at an output folder,<br>\nand a Bulk Submission Summary file will be created<br>\nto use it in the ProteomeXchange submission tool.</html>");
+				"<html>ProteomeXchange submission not supported anymore.<br>\nWe apologize for the inconveniences.</html>");
+
 		jButtonExport2PEX.setEnabled(false);
 		jButtonExport2PEX.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -1115,8 +1122,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 														.addPreferredGap(
 																javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 														.addComponent(jButtonDiscardFilteredData,
-																javax.swing.GroupLayout.PREFERRED_SIZE, 47,
-																javax.swing.GroupLayout.PREFERRED_SIZE))
+																javax.swing.GroupLayout.PREFERRED_SIZE,
+																47, javax.swing.GroupLayout.PREFERRED_SIZE))
 												.addComponent(jButtonExport2PRIDE, javax.swing.GroupLayout.DEFAULT_SIZE,
 														101, Short.MAX_VALUE))
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1140,14 +1147,14 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
 												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
 						.addContainerGap()));
-		jPanelInformationLayout
-				.setVerticalGroup(jPanelInformationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(jPanelInformationLayout.createSequentialGroup()
-								.addComponent(jLabelInformation1, javax.swing.GroupLayout.PREFERRED_SIZE, 21,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jLabelInformation2, javax.swing.GroupLayout.PREFERRED_SIZE, 24,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
+		jPanelInformationLayout.setVerticalGroup(jPanelInformationLayout
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanelInformationLayout.createSequentialGroup()
+						.addComponent(jLabelInformation1, javax.swing.GroupLayout.PREFERRED_SIZE, 21,
+								javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jLabelInformation2, javax.swing.GroupLayout.PREFERRED_SIZE, 24,
+								javax.swing.GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jLabelInformation3, javax.swing.GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1167,7 +1174,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 						.addGroup(jPanelInformationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 								.addComponent(jButtonExport2PEX, javax.swing.GroupLayout.DEFAULT_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(jButtonExport2PRIDE)).addContainerGap()));
+								.addComponent(jButtonExport2PRIDE))
+						.addContainerGap()));
 
 		javax.swing.GroupLayout jPanelLeftLayout = new javax.swing.GroupLayout(jPanelLeft);
 		jPanelLeft.setLayout(jPanelLeftLayout);
@@ -1194,12 +1202,12 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 								.addComponent(jPanelChartType, javax.swing.GroupLayout.PREFERRED_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jPanelPeptideCounting, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jPanelAdditionalCustomizations, javax.swing.GroupLayout.DEFAULT_SIZE, 381,
-								Short.MAX_VALUE)));
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jPanelPeptideCounting, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jPanelAdditionalCustomizations, javax.swing.GroupLayout.DEFAULT_SIZE, 381,
+										Short.MAX_VALUE)));
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
@@ -1318,7 +1326,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		});
 		jMenuFilters.add(jCheckBoxMenuItemProteinACCFilter);
 
-		jCheckBoxMenuItemPeptideNumberFilter.setText("Peptide Number Filter");
+		jCheckBoxMenuItemPeptideNumberFilter.setText("Peptides per proteins Filter");
 		jCheckBoxMenuItemPeptideNumberFilter.setToolTipText("Filter by the number of peptide that each protein has");
 		jCheckBoxMenuItemPeptideNumberFilter.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -1418,7 +1426,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	}
 
 	private void jMenuItemGeneralOptionsActionPerformed(java.awt.event.ActionEvent evt) {
-		GeneralOptionsDialog.getInstance(this, false).setVisible(true);
+		GeneralOptionsDialogNoParallel.getInstance(this, false).setVisible(true);
 	}
 
 	private void jButtonDiscardFilteredDataActionPerformed(java.awt.event.ActionEvent evt) {
@@ -2325,6 +2333,10 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		c.gridy++;
 		JCheckBox showPeptidesCheckBox = optionsFactory.getShowPeptidesCheckBox();
 		panel.add(showPeptidesCheckBox, c);
+
+		c.gridy++;
+		JCheckBox showPeptidesCheckBoxPlusCharge = optionsFactory.getShowPeptidesPlusChargeCheckBox();
+		panel.add(showPeptidesCheckBoxPlusCharge, c);
 
 		c.gridy++;
 		JCheckBox showProteinsCheckBox = optionsFactory.getShowProteinsCheckBox();
@@ -3655,6 +3667,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			appendStatus(notificacion);
 		} else if (DataLoaderTask.DATA_LOADED_START.equals(evt.getPropertyName())) {
 			appendStatus("Reading project data...");
+			appendStatus("Depending on the size of the data, it can take a few minutes...");
 			setEmptyChart();
 			disableControls(false);
 			setProgressBarIndeterminate(true);
@@ -3682,7 +3695,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			startShowingChart();
 			jButtonShowTable.setEnabled(true);
 			jButtonExport2Excel.setEnabled(true);
-			jButtonExport2PEX.setEnabled(true);
+			// jButtonExport2PEX.setEnabled(true);
 			jButtonExport2PRIDE.setEnabled(true);
 
 		} else if (DataLoaderTask.DATA_LOADED_ERROR.equals(evt.getPropertyName())) {

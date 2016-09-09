@@ -3126,8 +3126,8 @@ public class DatasetFactory {
 	}
 
 	public static CategoryDataset createPSM_PEP_PROT_DataSet(List<IdentificationSet> idSets, boolean showPSMs,
-			boolean showPeptides, boolean showProteins, boolean distinguishModificatedPeptides,
-			boolean countNonConclusiveProteins) {
+			boolean showPeptides, boolean showPeptidesPlusCharge, boolean showProteins,
+			boolean distinguishModificatedPeptides, boolean countNonConclusiveProteins) {
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		String error = null;
 		try {
@@ -3139,6 +3139,10 @@ public class DatasetFactory {
 				if (showPeptides) {
 					int numPeptides = idSet.getNumDifferentPeptides(distinguishModificatedPeptides);
 					dataset.addValue(numPeptides, "Peptides", idSet.getFullName());
+				}
+				if (showPeptidesPlusCharge) {
+					int numPeptidesPlusCharge = idSet.getNumDifferentPeptidesPlusCharge(distinguishModificatedPeptides);
+					dataset.addValue(numPeptidesPlusCharge, "Peptides (diff z)", idSet.getFullName());
 				}
 				if (showProteins) {
 					int numProteins = idSet.getNumDifferentProteinGroups(countNonConclusiveProteins);

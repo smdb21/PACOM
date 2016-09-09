@@ -6,8 +6,7 @@ import org.proteored.miapeapi.cv.ControlVocabularyManager;
 import org.proteored.miapeapi.spring.SpringHandler;
 
 public class OntologyLoaderTask extends SwingWorker<Void, Void> {
-	private static org.apache.log4j.Logger log = org.apache.log4j.Logger
-			.getLogger("log4j.logger.org.proteored");
+	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("log4j.logger.org.proteored");
 	private static ControlVocabularyManager cvManager;
 	public final static String ONTOLOGY_LOADING_STARTED = "ontology loaing starting";
 	public final static String ONTOLOGY_LOADING_ERROR = "ontology loaing error";
@@ -18,14 +17,13 @@ public class OntologyLoaderTask extends SwingWorker<Void, Void> {
 	}
 
 	@Override
-	protected Void doInBackground() throws Exception {
+	public Void doInBackground() throws Exception {
 		try {
-			this.t1 = System.currentTimeMillis();
+			t1 = System.currentTimeMillis();
 			log.info("Running background loader");
 			log.info("Loading ontologies");
 			firePropertyChange(ONTOLOGY_LOADING_STARTED, null, null);
-			cvManager = SpringHandler.getInstance("miape-extractor-spring.xml")
-					.getCVManager();
+			cvManager = SpringHandler.getInstance("miape-extractor-spring.xml").getCVManager();
 
 			return null;
 		} catch (Exception e) {
@@ -40,22 +38,24 @@ public class OntologyLoaderTask extends SwingWorker<Void, Void> {
 	protected void done() {
 		log.info("Ontologies loaded");
 		long t2 = System.currentTimeMillis();
-		long time = t2 - this.t1;
+		long time = t2 - t1;
 		firePropertyChange(ONTOLOGY_LOADING_FINISHED, null, time);
 		super.done();
 	}
 
 	public static ControlVocabularyManager getCvManager() {
-		if (cvManager == null)
-			cvManager = SpringHandler.getInstance("miape-extractor-spring.xml")
-					.getCVManager();
+		if (cvManager == null) {
+			final SpringHandler instance = SpringHandler.getInstance("miape-extractor-spring.xml");
+			cvManager = instance.getCVManager();
+		}
 		return cvManager;
 	}
 
 	public static ControlVocabularyManager getTestCvManager() {
-		if (cvManager == null)
-			cvManager = SpringHandler.getInstance(
-					"miape-extractor-spring-test.xml").getCVManager();
+		if (cvManager == null) {
+			final SpringHandler instance = SpringHandler.getInstance("miape-extractor-spring-test.xml");
+			cvManager = instance.getCVManager();
+		}
 		return cvManager;
 	}
 }
