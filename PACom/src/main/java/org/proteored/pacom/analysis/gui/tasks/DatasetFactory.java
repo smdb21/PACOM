@@ -3549,7 +3549,7 @@ public class DatasetFactory {
 	}
 
 	private static List<XYSeries> getXYRTSeries(IdentificationSet idSet1, IdentificationSet idSet2, boolean inMinutes) {
-		XYSeries normalSeries = new XYSeries(idSet1.getName() + " vs " + idSet2.getName());
+		XYSeries normalSeries = new XYSeries(idSet1.getName() + " (x) vs " + idSet2.getName() + " (y)");
 
 		HashMap<String, PeptideOccurrence> peptideOccurrences1 = idSet1.getPeptideChargeOccurrenceList(true);
 		HashMap<String, PeptideOccurrence> peptideOccurrences2 = idSet2.getPeptideChargeOccurrenceList(true);

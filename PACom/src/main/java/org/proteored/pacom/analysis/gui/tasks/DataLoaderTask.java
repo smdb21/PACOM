@@ -32,9 +32,10 @@ public class DataLoaderTask extends SwingWorker<ExperimentList, Void> {
 		this.processInParallel = processInParallel;
 	}
 
-	public DataLoaderTask(CPExperimentList cpExpList, boolean processInParallel) {
-		this(cpExpList, null, false, null, processInParallel);
-	}
+	// public DataLoaderTask(CPExperimentList cpExpList, boolean
+	// processInParallel) {
+	// this(cpExpList, null, false, null, processInParallel);
+	// }
 
 	@Override
 	protected ExperimentList doInBackground() throws Exception {

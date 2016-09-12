@@ -146,12 +146,12 @@
     <dependency>
     	<groupId>edu.scripps.yates</groupId>
     	<artifactId>dtaselectparser</artifactId>
-    	<version>1.0.2-SNAPSHOT</version>
+    	<version>1.1</version>
     </dependency>
     <dependency>
     	<groupId>edu.scripps.yates</groupId>
     	<artifactId>utilities</artifactId>
-    	<version>1.0.1-SNAPSHOT</version>
+    	<version>1.1</version>
     </dependency>
   </dependencies>
   <repositories>
@@ -274,17 +274,7 @@
           </execution>
         </executions>
       </plugin>
-    </plugins>
-  </build>
-  <profiles>
-    <profile>
-      <id>gui</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
+      <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-jar-plugin</artifactId>
             <version>3.0.2</version>
@@ -294,10 +284,12 @@
                 <manifest>
                   <addClasspath>true</addClasspath>
                   <mainClass>org.proteored.pacom.gui.MainFrame</mainClass>
-                  <classpathPrefix>lib</classpathPrefix>
+                  <classpathPrefix>lib/</classpathPrefix>
+                  <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                  <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                 </manifest>
-                
               </archive>
+              
               <outputDirectory>${project.build.directory}</outputDirectory>
             </configuration>
           </plugin>
@@ -319,9 +311,20 @@
               </descriptors>
             </configuration>
           </plugin>
-        </plugins>
-      </build>
-    </profile>
+    </plugins>
+  </build>
+<!--   <profiles> -->
+<!--     <profile> -->
+<!--       <id>gui</id> -->
+<!--       <activation> -->
+<!--         <activeByDefault>true</activeByDefault> -->
+<!--       </activation> -->
+<!--       <build> -->
+<!--         <plugins> -->
+          
+<!--         </plugins> -->
+<!--       </build> -->
+<!--     </profile> -->
 <!--     <profile> -->
 <!--       <id>miape-extractor-webstart-build</id> -->
 <!--       <build> -->
@@ -364,5 +367,5 @@
 <!--         </plugins> -->
 <!--       </build> -->
 <!--     </profile> -->
-  </profiles>
+<!--   </profiles> -->
 </project>

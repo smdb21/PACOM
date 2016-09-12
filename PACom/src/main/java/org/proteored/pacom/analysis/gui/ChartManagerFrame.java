@@ -1883,6 +1883,10 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		c.gridy++;
 		panel.add(showInMinutesCheckBox, c);
 
+		final JCheckBox showTotalSeriesCheckBox = optionsFactory.getShowTotalSerieCheckBox(false);
+		c.gridy++;
+		panel.add(showTotalSeriesCheckBox, c);
+
 		jPanelAddOptions.setLayout(new BorderLayout());
 		jPanelAddOptions.add(panel, BorderLayout.NORTH);
 

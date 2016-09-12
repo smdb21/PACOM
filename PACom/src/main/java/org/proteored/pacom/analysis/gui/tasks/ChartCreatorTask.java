@@ -1133,12 +1133,17 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				yAxisLabel += " / ";
 			yAxisLabel += "Peptides";
 		}
+		if (showPeptidesPlusCharge) {
+			if (!"".equals(yAxisLabel))
+				yAxisLabel += " / ";
+			yAxisLabel += "Peptides (diff by z)";
+		}
 		if (showProteins) {
 			if (!"".equals(yAxisLabel))
 				yAxisLabel += " / ";
 			yAxisLabel += "Proteins";
 		}
-		if (showPSMs || showPeptides || showProteins)
+		if (showPSMs || showPeptides || showProteins || showPeptidesPlusCharge)
 			yAxisLabel = "# of " + yAxisLabel;
 		else
 			throw new IllegalMiapeArgumentException("Select PSM, Peptides or Proteins to generate the chart");
