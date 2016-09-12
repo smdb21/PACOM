@@ -439,9 +439,10 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 		boolean showParent = optionsFactory.isTotalSerieShown();
 		boolean inMinutes = optionsFactory.showInMinutes();
+		final HashMap<String, JCheckBox> idSetsJCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
 		if (inMinutes)
 			xAxisLabel = "RT (min)";
-		List<IdentificationSet> idSets = getIdentificationSets(null, null, showParent);
+		List<IdentificationSet> idSets = getIdentificationSets(null, idSetsJCheckBoxes, showParent);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 			HistogramDataset dataset = DatasetFactory.createPeptideRTHistogramDataSet(idSets, bins, histogramType,
 					inMinutes);
@@ -469,7 +470,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
 			List<JPanel> chartList = new ArrayList<JPanel>();
 			for (Experiment experiment : experimentList.getExperiments()) {
-				idSets = getIdentificationSets(experiment.getName(), null, true);
+				idSets = getIdentificationSets(experiment.getName(), idSetsJCheckBoxes, showParent);
 				HistogramDataset dataset = DatasetFactory.createPeptideRTHistogramDataSet(idSets, bins, histogramType,
 						inMinutes);
 				HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType), experiment.getName(),
@@ -1200,8 +1201,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		String xAxisLabel = "m/z";
 		String yAxisLabel = "Delta(m/z)";
 		boolean showRegressionLine = optionsFactory.showRegressionLine();
-		final HashMap<String, JCheckBox> scoreComparisonJCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
-		List<IdentificationSet> idSets = getIdentificationSets(null, scoreComparisonJCheckBoxes, false);
+		final HashMap<String, JCheckBox> experimentJCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
+		List<IdentificationSet> idSets = getIdentificationSets(null, experimentJCheckBoxes, false);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 			XYDataset dataset = DatasetFactory.createDeltaMzOverMzXYDataSet(idSets);
 			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
@@ -1238,7 +1239,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			List<JPanel> chartList = new ArrayList<JPanel>();
 			for (Experiment experiment : experimentList.getExperiments()) {
 				try {
-					idSets = getIdentificationSets(experiment.getName(), scoreComparisonJCheckBoxes, false);
+					idSets = getIdentificationSets(experiment.getName(), experimentJCheckBoxes, false);
 					XYDataset dataset = DatasetFactory.createDeltaMzOverMzXYDataSet(idSets);
 					XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);

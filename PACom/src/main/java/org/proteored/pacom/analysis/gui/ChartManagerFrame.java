@@ -1889,7 +1889,22 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 		jPanelAddOptions.setLayout(new BorderLayout());
 		jPanelAddOptions.add(panel, BorderLayout.NORTH);
+		if (!ONE_SERIES_PER_EXPERIMENT_LIST.equals(options)) {
+			JLabel label = new JLabel("Select from the following checkBoxes:");
+			c.gridy++;
+			panel.add(label, c);
+			JPanel checkboxesPanel = null;
+			if (ONE_CHART_PER_EXPERIMENT.equals(options)) {
+				checkboxesPanel = optionsFactory.getReplicatesCheckboxes(true, false, 2);
+			} else if (ONE_SERIES_PER_EXPERIMENT.equals(options)) {
+				checkboxesPanel = optionsFactory.getExperimentsCheckboxes(false, 2);
+			} else if (ONE_SERIES_PER_REPLICATE.equals(options)) {
+				checkboxesPanel = optionsFactory.getReplicatesCheckboxes(false, false, 2);
+			}
 
+			c.gridy++;
+			panel.add(checkboxesPanel, c);
+		}
 	}
 
 	private void addPeptideRTComparisonControls(String options) {
