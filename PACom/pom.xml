@@ -222,41 +222,15 @@
         <version>1.0-beta-2</version>
       </extension>
     </extensions>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-dependency-plugin</artifactId>
-                    <versionRange>[1.0.0,)</versionRange>
-                    <goals>
-                      <goal>copy-dependencies</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore />
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
+    
     <plugins>
+    
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.5.1</version>
+        <version>3.5.1</version>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>1.8</source>
+          <target>1.8</target>
         </configuration>
       </plugin>
       <plugin>
@@ -277,43 +251,40 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jar-plugin</artifactId>
-            <version>3.0.2</version>
-            <configuration>
-              <finalName>PACom</finalName>
-              <archive>
-                <manifest>
-                  <addClasspath>true</addClasspath>
-                  <mainClass>org.proteored.pacom.gui.MainFrame</mainClass>
-                  <classpathPrefix>lib/</classpathPrefix>
-                  <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                  <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                </manifest>
-              </archive>
-              
-              <outputDirectory>${project.build.directory}</outputDirectory>
-            </configuration>
-          </plugin>
+       
           <plugin>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>assembly</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>assembly</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <finalName>${assembly.dir}</finalName>
-              <descriptors>
-                <descriptor>${basedir}/src/main/resources/assembly.xml</descriptor>
-              </descriptors>
-            </configuration>
-          </plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<finalName>pacom</finalName>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+                  			<mainClass>org.proteored.pacom.gui.MainFrame</mainClass>
+							<classpathPrefix>lib</classpathPrefix>
+						</manifest>
+					</archive>
+					<outputDirectory>${project.build.directory}</outputDirectory>
+				</configuration>
+			</plugin>
+          <plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>assembly</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<finalName>${assembly.dir}</finalName>
+					<descriptors>
+						<descriptor>${basedir}/src/main/resources/assembly.xml</descriptor>
+					</descriptors>
+				</configuration>
+			</plugin>
     </plugins>
   </build>
 <!--   <profiles> -->
