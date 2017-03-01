@@ -48,13 +48,12 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 	public static final JFileChooser fileChooser = new javax.swing.JFileChooser();
 
 	public String WELCOME_MESSAGE = "<html>Options:"
-			+ "<ul><li>Import datasets from standard data files ('<b>Import data Extraction</b>' menu). Login is required.</li>"
+			+ "<ul><li>Import datasets ('<b>Import data </b>' menu). Login is required.</li>"
 			+ "<li>Inspect your data ('<b>Data inspection</b>' menu). Login is not required for already created inspection projects.</li>"
 			+ "<li>Browse over the MIAPE projects in the ProteoRed MIAPE repository ('<b>MIAPE repository browser</b>' menu). Login is required.</li></ul>"
 
 			+ "If you don't have an account, you can click on '<b>create account</b>' button on login dialog.</html>";
-	public String WELCOME_MESSAGE_LOCAL = "<html>Options:"
-			+ "<ul><li>Import datasets from standard data files ('<b>Import data</b>' menu).</li>"
+	public String WELCOME_MESSAGE_LOCAL = "<html>Options:" + "<ul><li>Import datasets ('<b>Import data</b>' menu).</li>"
 			+ "<li>Inspect your data ('<b>Data inspection</b>' menu).</li></ul></html>";
 
 	private static final String URL_MIAPE_EXTRACTOR_TUTORIAL = "http://legacy.proteored.org/miape/MIAPE%20Extractor%20Tutorial.pdf";
@@ -278,7 +277,7 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 		jMenuItemMIAPEExtractionBatchTutorial = new javax.swing.JMenuItem();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		setTitle("PACOM - Protein Assay COMparator");
+		setTitle("PACOM - Proteomics Assay COMparator");
 		setResizable(false);
 
 		jLabelInit.setFont(new java.awt.Font("Dialog", 0, 12));
@@ -331,7 +330,7 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 				javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.ALT_MASK));
 		jMenuItemStandard2MIAPE.setText("Import data");
 		jMenuItemStandard2MIAPE.setToolTipText(
-				"<html>\nExtract and import MIAPE information from input data files such as:<br>\n<ul>\n<li>mzIdentML</li>\n<li>mzML</li>\n<li>PRIDE XML</li>\n<li>X!Tandem output XML</li>\n</ul>\n</html>");
+				"<html>\nExtract and import datasets from input data files such as:<br>\n<ul>\n<li>mzIdentML</li>\n<li>mzML</li>\n<li>PRIDE XML</li>\n<li>X!Tandem output XML</li>\n</ul>\n</html>");
 		jMenuItemStandard2MIAPE.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -417,8 +416,8 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 
 		jMenuItemMIAPEExtractionTutorial.setAccelerator(
 				javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.ALT_MASK));
-		jMenuItemMIAPEExtractionTutorial.setText("Protein Assay COmparator Tutorial");
-		jMenuItemMIAPEExtractionTutorial.setToolTipText("Download the Protein Assay COmparator  Tutorial (PDF)");
+		jMenuItemMIAPEExtractionTutorial.setText("PACOM Tutorial");
+		jMenuItemMIAPEExtractionTutorial.setToolTipText("Download the PACOM Tutorial (PDF)");
 		jMenuItemMIAPEExtractionTutorial.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {

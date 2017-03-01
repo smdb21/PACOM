@@ -230,6 +230,8 @@ public class ReplicateAdapter implements Adapter<Replicate> {
 
 		try {
 			ret = MiapeMSIXmlFactory.getFactory(processInParallel).toDocument(msiFile, cvManager, null, null, null);
+
+			// TODO fix and enable this
 			addProteinDescriptionFromUniprot(ret);
 			return ret;
 		} catch (MiapeDatabaseException e) {
@@ -258,7 +260,6 @@ public class ReplicateAdapter implements Adapter<Replicate> {
 						if (FastaParser.isUniProtACC(protein.getAccession())
 								&& !protein.getAccession().contains("Reverse")) {
 							accessionsToLookUp.add(protein.getAccession());
-
 						}
 					}
 
