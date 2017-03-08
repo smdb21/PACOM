@@ -4,6 +4,7 @@
 
 package org.proteored.pacom.gui;
 
+import java.awt.Font;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -13,6 +14,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker.StateValue;
@@ -179,7 +182,7 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 		StringBuilder sb = new StringBuilder();
 		sb.append("<html>Error initializating the tool: <b>" + message
 				+ "</b><br/>Try to restart and if the problem persist, contact to 'miape_support@proteored.org'</html>");
-		// this.jLabelInit.setText(sb.toString());
+				// this.jLabelInit.setText(sb.toString());
 
 		// cancel tasks
 		if (ontologyLoader != null)
@@ -280,20 +283,22 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 		setTitle("PACOM - Proteomics Assay COMparator");
 		setResizable(false);
 
-		jLabelInit.setFont(new java.awt.Font("Dialog", 0, 12));
+		jLabelInit.setFont(new Font("Dialog", Font.PLAIN, 18));
 		jLabelInit.setText("Welcome text");
 		jLabelInit.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
 		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+		jPanel1Layout
+				.setHorizontalGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
+						.addGroup(jPanel1Layout.createSequentialGroup().addContainerGap()
+								.addComponent(jLabelInit, GroupLayout.DEFAULT_SIZE, 814, Short.MAX_VALUE)
+								.addContainerGap()));
+		jPanel1Layout
+				.setVerticalGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
+						.addGroup(jPanel1Layout.createSequentialGroup().addContainerGap()
+								.addComponent(jLabelInit, GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
+								.addContainerGap()));
 		jPanel1.setLayout(jPanel1Layout);
-		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanel1Layout.createSequentialGroup().addContainerGap()
-						.addComponent(jLabelInit, javax.swing.GroupLayout.DEFAULT_SIZE, 814, Short.MAX_VALUE)
-						.addContainerGap()));
-		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanel1Layout.createSequentialGroup().addContainerGap()
-						.addComponent(jLabelInit, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
-						.addContainerGap()));
 
 		if (!localWorkflow) {
 			jMenu1.setText("Login");
@@ -442,15 +447,15 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 		setJMenuBar(jMenuBar1);
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup().addContainerGap()
+						.addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addContainerGap()));
+		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup().addContainerGap()
+						.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, 186, GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(184, Short.MAX_VALUE)));
 		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jPanel1,
-						javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addContainerGap()));
-		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jPanel1,
-						javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addContainerGap()));
 
 		pack();
 		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
