@@ -72,6 +72,8 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 	private Miape2ExperimentListDialog miape2experimentListDialog;
 	private static Boolean unattendedRetrieverEnabled;
 	private MiapeExtractionBatchFrame miapeExtractionBatchFrame;
+
+	private final boolean checkUpdates = false;
 	public static boolean localWorkflow = false;
 
 	/**
@@ -92,7 +94,7 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 		}
 
 		try {
-			version = PropertiesReader.getProperties().getProperty(PropertiesReader.MIAPE_EXTRACTOR_VERSION);
+			version = PropertiesReader.getProperties().getProperty(PropertiesReader.PACOM_VERSION);
 			if (version != null) {
 				String suffix = " (v" + version + ")";
 				if (!getTitle().endsWith(suffix))
@@ -111,10 +113,13 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 			// this.ontologyLoader.execute();
 
 			// Launch update checker
-			updateTask = new CheckUpdateTask();
-			updateTask.addPropertyChangeListener(this);
-			updateTask.execute();
-
+			if (checkUpdates) {
+				// this has to be modified
+				// TODO
+				updateTask = new CheckUpdateTask();
+				updateTask.addPropertyChangeListener(this);
+				updateTask.execute();
+			}
 			initializeProperties();
 			initComponents();
 
@@ -639,7 +644,7 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 		if (version == null) {
 			try {
 
-				version = PropertiesReader.getProperties().getProperty(PropertiesReader.MIAPE_EXTRACTOR_VERSION);
+				version = PropertiesReader.getProperties().getProperty(PropertiesReader.PACOM_VERSION);
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

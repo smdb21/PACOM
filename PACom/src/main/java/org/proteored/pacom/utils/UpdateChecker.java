@@ -48,9 +48,9 @@ public class UpdateChecker {
 			// Get properties from resource file
 			Properties prop = PropertiesReader.getProperties();
 			String version = prop
-					.getProperty(PropertiesReader.MIAPE_EXTRACTOR_VERSION);
+					.getProperty(PropertiesReader.PACOM_VERSION);
 			String website = prop
-					.getProperty(PropertiesReader.MIAPE_EXTRACTOR_WEBSITE);
+					.getProperty(PropertiesReader.PACOM_WEBSITE);
 
 			URL url = new URL(website + "/v" + version + "/MIAPE_Extractor_v"
 					+ version + ".zip");
@@ -105,7 +105,7 @@ public class UpdateChecker {
 			try {
 				prop = PropertiesReader.getProperties();
 				String website = prop
-						.getProperty(PropertiesReader.MIAPE_EXTRACTOR_WEBSITE);
+						.getProperty(PropertiesReader.PACOM_WEBSITE);
 				HttpUtilities.openURL(website);
 			} catch (Exception e) {
 				e.printStackTrace();
