@@ -447,18 +447,18 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		lblforPrideExport.setToolTipText(
 				"<html>Input type + MS data file:<br>\r\nUse one of these options if you want later to export a PRIDE XML file containing the spectra. \r\n</html>");
 		GroupLayout gl_panel = new GroupLayout(panel);
-		gl_panel.setHorizontalGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel.createSequentialGroup().addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel.createSequentialGroup().addContainerGap().addComponent(lblforPrideExport))
-						.addGroup(gl_panel.createSequentialGroup().addContainerGap()
-								.addComponent(jRadioButtonMzIdentMLMGF))
-						.addGroup(gl_panel.createSequentialGroup().addContainerGap()
-								.addComponent(jRadioButtonMzMLMzIdentML))
-						.addGroup(
-								gl_panel.createSequentialGroup().addContainerGap().addComponent(jRadioButtonXTandemMGF))
-						.addGroup(gl_panel.createSequentialGroup().addContainerGap()
-								.addComponent(jRadioButtonDTASelectMGF)))
-				.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+		gl_panel.setHorizontalGroup(gl_panel.createParallelGroup(Alignment.LEADING).addGroup(gl_panel
+				.createSequentialGroup().addContainerGap()
+				.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+						.addComponent(jRadioButtonXTandemMGF, GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
+						.addGroup(gl_panel.createParallelGroup(Alignment.LEADING, false).addComponent(lblforPrideExport)
+								.addComponent(jRadioButtonDTASelectMGF, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(jRadioButtonMzIdentMLMGF, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(jRadioButtonMzMLMzIdentML, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+				.addContainerGap()));
 		gl_panel.setVerticalGroup(gl_panel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel.createSequentialGroup().addComponent(lblforPrideExport)
 						.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(jRadioButtonMzIdentMLMGF)
@@ -559,26 +559,24 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		});
 
 		javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-		jPanel5.setLayout(jPanel5Layout);
-		jPanel5Layout.setHorizontalGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+		jPanel5Layout.setHorizontalGroup(jPanel5Layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(jPanel5Layout.createSequentialGroup().addContainerGap()
-						.addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-								.addComponent(jLabelMiapeMSMetadata, javax.swing.GroupLayout.Alignment.LEADING,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)
-								.addComponent(jComboBoxMetadata, javax.swing.GroupLayout.Alignment.LEADING, 0, 263,
-										Short.MAX_VALUE))
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jButtonEditMetadata).addContainerGap(340, Short.MAX_VALUE)));
-		jPanel5Layout.setVerticalGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(jPanel5Layout.createParallelGroup(Alignment.TRAILING, false)
+								.addComponent(jLabelMiapeMSMetadata, Alignment.LEADING, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(jComboBoxMetadata, Alignment.LEADING, 0, 263, Short.MAX_VALUE))
+				.addPreferredGap(ComponentPlacement.RELATED).addComponent(jButtonEditMetadata)
+				.addContainerGap(340, Short.MAX_VALUE)));
+		jPanel5Layout.setVerticalGroup(jPanel5Layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(jPanel5Layout.createSequentialGroup().addContainerGap()
-						.addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-								.addComponent(jButtonEditMetadata).addComponent(jComboBoxMetadata,
-										javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jLabelMiapeMSMetadata, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
+						.addGroup(jPanel5Layout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(jComboBoxMetadata, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(jButtonEditMetadata))
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(jLabelMiapeMSMetadata, GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
 						.addContainerGap()));
+		jPanel5.setLayout(jPanel5Layout);
 
 		jScrollPane2.setViewportView(jPanel5);
 
@@ -587,8 +585,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 				.createSequentialGroup().addContainerGap()
 				.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
 						.addGroup(jPanel1Layout.createSequentialGroup()
-								.addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
+								.addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, 238, GroupLayout.PREFERRED_SIZE)
 								.addPreferredGap(ComponentPlacement.RELATED)
 								.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING, false)
 										.addComponent(jPanel8, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
@@ -605,7 +602,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 										.addComponent(jTextFieldInputFile2).addComponent(jTextFieldInputFile,
 												GroupLayout.DEFAULT_SIZE, 618, Short.MAX_VALUE))
 								.addGap(18)
-								.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
+								.addGroup(jPanel1Layout.createParallelGroup(Alignment.TRAILING)
 										.addComponent(jButtonInputFile2).addComponent(jButtonInputFile))))
 				.addContainerGap()));
 		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
@@ -621,13 +618,14 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 						.addComponent(jButtonInputFile2))
 				.addPreferredGap(ComponentPlacement.RELATED)
 				.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
+						.addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE)
 						.addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 308, Short.MAX_VALUE)
 						.addGroup(jPanel1Layout.createSequentialGroup()
 								.addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 										GroupLayout.PREFERRED_SIZE)
 								.addPreferredGap(ComponentPlacement.RELATED).addComponent(jPanel8,
-										GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-						.addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE)).addContainerGap()));
+										GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+				.addContainerGap()));
 		jPanel1.setLayout(jPanel1Layout);
 
 		jPanel2.setBorder(new TitledBorder(null, "Select (or create) a project name", TitledBorder.LEADING,
