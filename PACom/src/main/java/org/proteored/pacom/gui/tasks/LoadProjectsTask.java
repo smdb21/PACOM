@@ -76,8 +76,13 @@ public class LoadProjectsTask extends SwingWorker<Void, Void> {
 					projectsHashMap.put(counter++, projectName);
 				}
 				log.info(localMIAPEProjects.size() + " projects loaded");
-				firePropertyChange(MiapeExtractionTask.NOTIFICATION, null,
-						localMIAPEProjects.size() + " projects loaded");
+				if (!localMIAPEProjects.isEmpty()) {
+					firePropertyChange(MiapeExtractionTask.NOTIFICATION, null,
+							localMIAPEProjects.size() + " projects loaded");
+				} else {
+					firePropertyChange(MiapeExtractionTask.NOTIFICATION, null, "No projects found in the file system.");
+				}
+
 				// disabled cache in order to show the projects that have been
 				// just created
 				// addToLocalCache(projectsHashMap);
@@ -113,7 +118,11 @@ public class LoadProjectsTask extends SwingWorker<Void, Void> {
 				}
 				log.info(ret.size() + " projects loaded");
 				addToRemoteCache(userID, ret);
-				firePropertyChange(MiapeExtractionTask.NOTIFICATION, null, ret.size() + " projects loaded");
+				if (!ret.isEmpty()) {
+					firePropertyChange(MiapeExtractionTask.NOTIFICATION, null, ret.size() + " projects loaded");
+				} else {
+					firePropertyChange(MiapeExtractionTask.NOTIFICATION, null, "No projects found in the file system.");
+				}
 				return ret;
 			} catch (MiapeDatabaseException_Exception e) {
 				firePropertyChange(MiapeExtractionTask.NOTIFICATION, null,
