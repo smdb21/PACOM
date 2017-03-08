@@ -3572,7 +3572,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 	public void startShowingChart() {
 		if (!dataLoader.isDone()) {
-			appendStatus("MIAPE data is already being loading. Please wait...");
+			appendStatus("Datasets have already being loading. Please wait...");
 			return;
 		}
 		setEmptyChart();
