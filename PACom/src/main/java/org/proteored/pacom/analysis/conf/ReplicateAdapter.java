@@ -258,7 +258,10 @@ public class ReplicateAdapter implements Adapter<Replicate> {
 					if (protein.getDescription() == null || "".equals(protein.getDescription())) {
 						if (FastaParser.isUniProtACC(protein.getAccession())
 								&& !protein.getAccession().contains("Reverse")) {
-							accessionsToLookUp.add(protein.getAccession());
+							String uniProtACC = FastaParser.getUniProtACC(protein.getAccession());
+							if (uniProtACC != null) {
+								accessionsToLookUp.add(uniProtACC);
+							}
 						}
 					}
 
@@ -272,19 +275,25 @@ public class ReplicateAdapter implements Adapter<Replicate> {
 			final Map<String, Entry> annotatedProteins = upr.getAnnotatedProteins(null, accessionsToLookUp);
 			for (IdentifiedProteinSet proteinSet : ret.getIdentifiedProteinSets()) {
 				for (String proteinAcc : proteinSet.getIdentifiedProteins().keySet()) {
-					if (annotatedProteins.containsKey(proteinAcc)) {
-						String description = null;
-						final Entry uniprotProtein = annotatedProteins.get(proteinAcc);
-						if (uniprotProtein.getAccession() != null) {
-							final List<String> descriptions = getDescriptions(uniprotProtein);
-							if (descriptions != null && !descriptions.isEmpty()) {
-								description = descriptions.get(0);
-							}
-						}
-						if (description != null) {
-							final IdentifiedProtein protein = proteinSet.getIdentifiedProteins().get(proteinAcc);
-							if (protein instanceof IdentifiedProteinImpl) {
-								((IdentifiedProteinImpl) protein).setDescription(description);
+					if (FastaParser.isUniProtACC(proteinAcc) && !proteinAcc.contains("Reverse")) {
+						String uniProtACC = FastaParser.getUniProtACC(proteinAcc);
+						if (uniProtACC != null) {
+							if (annotatedProteins.containsKey(uniProtACC)) {
+								String description = null;
+								final Entry uniprotProtein = annotatedProteins.get(uniProtACC);
+								if (uniprotProtein.getAccession() != null) {
+									final List<String> descriptions = getDescriptions(uniprotProtein);
+									if (descriptions != null && !descriptions.isEmpty()) {
+										description = descriptions.get(0);
+									}
+								}
+								if (description != null) {
+									final IdentifiedProtein protein = proteinSet.getIdentifiedProteins()
+											.get(proteinAcc);
+									if (protein instanceof IdentifiedProteinImpl) {
+										((IdentifiedProteinImpl) protein).setDescription(description);
+									}
+								}
 							}
 						}
 					}
