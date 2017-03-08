@@ -33,7 +33,6 @@ import org.proteored.pacom.analysis.util.FileManager;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 
 import edu.scripps.yates.annotations.uniprot.UniprotProteinLocalRetriever;
-import edu.scripps.yates.annotations.uniprot.UniprotRetriever;
 import edu.scripps.yates.annotations.uniprot.xml.Entry;
 import edu.scripps.yates.annotations.uniprot.xml.EvidencedStringType;
 import edu.scripps.yates.annotations.uniprot.xml.ProteinType;
@@ -269,7 +268,7 @@ public class ReplicateAdapter implements Adapter<Replicate> {
 		if (!accessionsToLookUp.isEmpty()) {
 			log.info("Trying to recover protein descriptions for " + accessionsToLookUp.size() + " proteins");
 			File uniprotReleasesFolder = FileManager.getUniprotFolder();
-			UniprotRetriever upr = new UniprotProteinLocalRetriever(uniprotReleasesFolder, true);
+			UniprotProteinLocalRetriever upr = new UniprotProteinLocalRetriever(uniprotReleasesFolder, true);
 			final Map<String, Entry> annotatedProteins = upr.getAnnotatedProteins(null, accessionsToLookUp);
 			for (IdentifiedProteinSet proteinSet : ret.getIdentifiedProteinSets()) {
 				for (String proteinAcc : proteinSet.getIdentifiedProteins().keySet()) {
