@@ -31,8 +31,6 @@ import org.proteored.pacom.gui.tasks.OntologyLoaderWaiter;
 import org.proteored.pacom.utils.MiapeExtractorSoftware;
 import org.proteored.pacom.utils.PropertiesReader;
 
-import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
-
 /**
  *
  * @author __USER__
@@ -89,8 +87,15 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 		 * miapeMS.toXml().toString());
 		 */
 		try {
-			UIManager.setLookAndFeel(new WindowsLookAndFeel());
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
 		}
 
 		try {
