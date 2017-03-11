@@ -1,7 +1,7 @@
 # PACOM (Proteomics Assay COMparator)
 PACOM is a Java stand alone tool that is able to import, integrate, manage and compare numerous proteomics datasets at the same time, offering a rich set of graphical representation of the most common proteomics data features
 
-Download the latest version [**here**] (http://sealion.scripps.edu:8080/hudson/job/PACOM/).
+Download the latest version [**here**] (http://sealion.scripps.edu:8080/hudson/job/PACOM/lastSuccessfulBuild/artifact/PACom/target/).
 
 For more information and details about the tool, go to (todo)
 
