@@ -132,8 +132,8 @@ public class ManualIdentificationSetCreatorDialog extends javax.swing.JDialog im
 		jPanel1.setLayout(jPanel1Layout);
 		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(jPanel1Layout.createSequentialGroup().addContainerGap().addComponent(jButtonSelectFile)
-						.addGap(18, 18, 18).addComponent(jTextFieldFilePath, javax.swing.GroupLayout.DEFAULT_SIZE, 426,
-								Short.MAX_VALUE)
+						.addGap(18, 18, 18)
+						.addComponent(jTextFieldFilePath, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
 						.addContainerGap()));
 		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(jPanel1Layout.createSequentialGroup().addGap(8, 8, 8)
@@ -229,34 +229,31 @@ public class ManualIdentificationSetCreatorDialog extends javax.swing.JDialog im
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(
-				layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout
-						.createSequentialGroup().addGroup(layout
-								.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout
-										.createSequentialGroup().addContainerGap().addGroup(
-												layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-														.addComponent(jLabelInfo).addComponent(jLabelInfo2)))
-								.addGroup(layout.createSequentialGroup().addGap(34, 34, 34)
-										.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-												.addComponent(jLabelInfo4).addComponent(jLabelInfo3).addComponent(
-														jLabelInfo5)
-												.addComponent(jLabelInfo6)))
-								.addGroup(layout.createSequentialGroup().addContainerGap()
-										.addGroup(layout
-												.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-												.addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-												.addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-												.addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-												.addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-						.addContainerGap(12, Short.MAX_VALUE)));
+		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout
+				.createSequentialGroup()
+				.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(layout.createSequentialGroup().addContainerGap()
+								.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+										.addComponent(jLabelInfo).addComponent(jLabelInfo2)))
+						.addGroup(layout.createSequentialGroup().addGap(34, 34, 34)
+								.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+										.addComponent(jLabelInfo4).addComponent(jLabelInfo3).addComponent(jLabelInfo5)
+										.addComponent(jLabelInfo6)))
+						.addGroup(layout.createSequentialGroup().addContainerGap()
+								.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+										.addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING,
+												javax.swing.GroupLayout.DEFAULT_SIZE,
+												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
+								.addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
+								.addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE))))
+				.addContainerGap(12, Short.MAX_VALUE)));
 		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jLabelInfo)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jLabelInfo2)
@@ -267,16 +264,15 @@ public class ManualIdentificationSetCreatorDialog extends javax.swing.JDialog im
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE,
 								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addContainerGap()));
+				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+				.addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+						javax.swing.GroupLayout.PREFERRED_SIZE)
+				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+				.addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+						javax.swing.GroupLayout.PREFERRED_SIZE)
+				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+				.addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+						javax.swing.GroupLayout.PREFERRED_SIZE).addContainerGap()));
 
 		pack();
 	}// </editor-fold>
@@ -419,6 +415,7 @@ public class ManualIdentificationSetCreatorDialog extends javax.swing.JDialog im
 			log.info("MIAPE MSI created");
 			saved = false;
 			appendStatus("File parsed successfully.");
+			appendStatus("Now click on Import Data button in order to actually import the data.");
 			miapeMSIBuilder = (MiapeMSIDocumentBuilder) evt.getNewValue();
 			int numProteins = getNumProteins(miapeMSIBuilder);
 			int numPeptides = getNumPeptides(miapeMSIBuilder);

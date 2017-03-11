@@ -1009,9 +1009,12 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 				}
 
 			} else {
-				if (id_msi != null)
+				if (id_msi != null) {
 					firePropertyChange(NOTIFICATION, null,
 							id_msi + "\n" + "If you need help contact support at miape_support@proteored.org");
+				} else {
+
+				}
 
 			}
 

@@ -1,12 +1,15 @@
 
 START_MIAPE_EXTRACTION	1
-DTASELECT	C:\Users\Salva\Desktop\data\PINT projects\Aaron comparison dataset\MudPIT_replicate1.txt
-MIAPE_PROJECT	dtaSelectProject
+DTASELECT	Z:\share\Salva\data\Aaron comparison dataset\MudPIT_replicate1.txt
+MIAPE_PROJECT	AARON
 END_MIAPE_EXTRACTION
 
 START_MIAPE_EXTRACTION	2
-DTASELECT	C:\Users\Salva\Desktop\data\PINT projects\Aaron comparison dataset\MudPIT_replicate2.txt
-MIAPE_PROJECT	dtaSelectProject
+DTASELECT	Z:\share\Salva\data\Aaron comparison dataset\MudPIT_replicate2.txt
+MIAPE_PROJECT	AARON
 END_MIAPE_EXTRACTION
 
-
+START_MIAPE_EXTRACTION	3
+DTASELECT	Z:\share\Salva\data\Aaron comparison dataset\MudPIT_replicate3.txt
+MIAPE_PROJECT	AARON
+END_MIAPE_EXTRACTION
