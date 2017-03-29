@@ -23,38 +23,35 @@ public class ExperimentAdapter implements Adapter<Experiment> {
 	private JAXBContext jc;
 	private final List<Filter> filters;
 	private final boolean processInParallel;
+	private final boolean annotateProteinsInUniprot;
 
-	public ExperimentAdapter(CPExperiment xmlExp) {
-		this(xmlExp, null, null);
-	}
-
-	public ExperimentAdapter(CPExperiment xmlExp, boolean processInParallel) {
-		this(xmlExp, null, null, processInParallel);
-	}
-
-	public ExperimentAdapter(CPExperiment xmlExp, Integer minPeptideLength, List<Filter> filters) {
-		this(xmlExp, minPeptideLength, filters, false);
+	public ExperimentAdapter(CPExperiment xmlExp, Integer minPeptideLength, List<Filter> filters,
+			boolean annotateProteinsInUniprot) {
+		this(xmlExp, minPeptideLength, filters, false, annotateProteinsInUniprot);
 	}
 
 	public ExperimentAdapter(CPExperiment xmlExp, Integer minPeptideLength, List<Filter> filters,
-			boolean processInParallel) {
+			boolean processInParallel, boolean annotateProteinsInUniprot) {
 		this.xmlExp = xmlExp;
 		this.minPeptideLength = minPeptideLength;
 		this.filters = filters;
 		this.processInParallel = processInParallel;
+		this.annotateProteinsInUniprot = annotateProteinsInUniprot;
 	}
 
-	public ExperimentAdapter(File confFile) {
-		this(confFile, null, null, false);
+	public ExperimentAdapter(File confFile, boolean annotateProteinsInUniprot) {
+		this(confFile, null, null, false, annotateProteinsInUniprot);
 	}
 
-	public ExperimentAdapter(File confFile, boolean processInParallel) {
-		this(confFile, null, null, processInParallel);
+	public ExperimentAdapter(File confFile, boolean processInParallel, boolean annotateProteinsInUniprot) {
+		this(confFile, null, null, processInParallel, annotateProteinsInUniprot);
 	}
 
-	public ExperimentAdapter(File confFile, Integer minPeptideLength, List<Filter> filters, boolean processInParallel) {
+	public ExperimentAdapter(File confFile, Integer minPeptideLength, List<Filter> filters, boolean processInParallel,
+			boolean annotateProteinsInUniprot) {
 		this.minPeptideLength = minPeptideLength;
 		this.processInParallel = processInParallel;
+		this.annotateProteinsInUniprot = annotateProteinsInUniprot;
 		this.filters = filters;
 		if (confFile == null)
 			throw new IllegalArgumentException("Provide a no null file!");
@@ -86,7 +83,7 @@ public class ExperimentAdapter implements Adapter<Experiment> {
 		if (xmlExp != null && xmlExp.getCPReplicate() != null) {
 			for (CPReplicate xmlRep : xmlExp.getCPReplicate()) {
 				replicates.add(new ReplicateAdapter(xmlRep, xmlExp.getName(), xmlExp.isCurated(), minPeptideLength,
-						filters, processInParallel).adapt());
+						filters, processInParallel, annotateProteinsInUniprot).adapt());
 			}
 
 		}

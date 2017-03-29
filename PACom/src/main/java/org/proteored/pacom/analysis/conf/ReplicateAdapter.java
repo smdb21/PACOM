@@ -50,17 +50,10 @@ public class ReplicateAdapter implements Adapter<Replicate> {
 	private final Integer minPeptideLength;
 	private final List<Filter> filters;
 	private final boolean processInParallel;
-
-	public ReplicateAdapter(CPReplicate xmlRep, String experimentName, boolean curated) {
-		this(xmlRep, experimentName, curated, null, null, false);
-	}
-
-	public ReplicateAdapter(CPReplicate xmlRep, String experimentName, boolean curated, boolean processInParallel) {
-		this(xmlRep, experimentName, curated, null, null, processInParallel);
-	}
+	private final boolean annotateProteinsInUniprot;
 
 	public ReplicateAdapter(CPReplicate xmlRep, String experimentName, boolean curated, Integer minPeptideLength,
-			List<Filter> filters, boolean processInParallel) {
+			List<Filter> filters, boolean processInParallel, boolean annotateProteinsInUniprot) {
 		this.xmlRep = xmlRep;
 		cvManager = OntologyLoaderTask.getCvManager();
 		this.experimentName = experimentName;
@@ -68,6 +61,7 @@ public class ReplicateAdapter implements Adapter<Replicate> {
 		this.minPeptideLength = minPeptideLength;
 		this.filters = filters;
 		this.processInParallel = processInParallel;
+		this.annotateProteinsInUniprot = annotateProteinsInUniprot;
 	}
 
 	@Override
@@ -231,7 +225,9 @@ public class ReplicateAdapter implements Adapter<Replicate> {
 			ret = MiapeMSIXmlFactory.getFactory(processInParallel).toDocument(msiFile, cvManager, null, null, null);
 
 			// TODO fix and enable this
-			addProteinDescriptionFromUniprot(ret);
+			if (annotateProteinsInUniprot) {
+				addProteinDescriptionFromUniprot(ret);
+			}
 			return ret;
 		} catch (MiapeDatabaseException e) {
 			log.warn(e.getMessage());

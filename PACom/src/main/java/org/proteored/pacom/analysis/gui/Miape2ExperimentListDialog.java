@@ -2105,7 +2105,8 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 	}
 
 	private void initializeProjectTree(File projectFile) {
-		CPExperimentList cpExperimentList = new ExperimentListAdapter(projectFile).getCpExperimentList();
+		CPExperimentList cpExperimentList = new ExperimentListAdapter(projectFile, getAnnotateProteinsInUniprot())
+				.getCpExperimentList();
 		String projectName = cpExperimentList.getName();
 		DefaultMutableTreeNode nodoRaizMSI = new DefaultMutableTreeNode(cpExperimentList);
 		DefaultTreeModel modeloArbolMSI = new DefaultTreeModel(nodoRaizMSI);
@@ -2210,9 +2211,16 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 		saved = true;
 	}
 
+	private boolean getAnnotateProteinsInUniprot() {
+		// TODO
+		// SALVA: get this from interface
+		return true;
+	}
+
 	private void addExperimentToProjectTree(File projectFile) {
 		final DefaultMutableTreeNode experimentListNode = jTreeProject.getRootNode();
-		CPExperiment CPExperiment = new ExperimentAdapter(projectFile).getCpExperiment();
+		CPExperiment CPExperiment = new ExperimentAdapter(projectFile, getAnnotateProteinsInUniprot())
+				.getCpExperiment();
 		CPExperiment.setCurated(true);
 		CPExperimentList cpExperimentList = (CPExperimentList) experimentListNode.getUserObject();
 		cpExperimentList.getCPExperiment().add(CPExperiment);

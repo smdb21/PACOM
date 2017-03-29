@@ -22,41 +22,31 @@ public class ExperimentListAdapter implements Adapter<ExperimentList> {
 	private JAXBContext jc;
 	private final Integer minPeptideLength;
 	private final boolean groupingAtExperimentListLevel;
-
+	private final boolean annotateProteinsInUniprot;
 	private final List<Filter> filters;
 	private final boolean processInParallel;
 
-	public ExperimentListAdapter(CPExperimentList expList) {
-		this(expList, null, false, null, false);
-	}
-
-	public ExperimentListAdapter(CPExperimentList expList, boolean processInParallel) {
-		this(expList, null, false, null, processInParallel);
-	}
-
-	public ExperimentListAdapter(File confFile) {
-		this(confFile, null, false, null, false);
-	}
-
-	public ExperimentListAdapter(File confFile, boolean processInParallel) {
-		this(confFile, null, false, null, processInParallel);
+	public ExperimentListAdapter(File confFile, boolean annotateProteinsInUniprot) {
+		this(confFile, null, false, null, false, annotateProteinsInUniprot);
 	}
 
 	public ExperimentListAdapter(CPExperimentList expList, Integer minPeptideLength,
-			boolean groupingAtExperimentListLevel, List<Filter> filters, boolean processInParallel) {
+			boolean groupingAtExperimentListLevel, List<Filter> filters, boolean processInParallel,
+			boolean annotateProteinsInUniprot) {
 		this.minPeptideLength = minPeptideLength;
 		cpExperimentList = expList;
 		this.filters = filters;
 		this.groupingAtExperimentListLevel = groupingAtExperimentListLevel;
 		this.processInParallel = processInParallel;
+		this.annotateProteinsInUniprot = annotateProteinsInUniprot;
 	}
 
 	public ExperimentListAdapter(File confFile, Integer minPeptideLength, boolean groupingAtExperimentListLevel,
-			List<Filter> filters, boolean processInParallel) {
+			List<Filter> filters, boolean processInParallel, boolean annotateProteinsInUniprot) {
 		this.minPeptideLength = minPeptideLength;
 		this.groupingAtExperimentListLevel = groupingAtExperimentListLevel;
 		this.processInParallel = processInParallel;
-
+		this.annotateProteinsInUniprot = annotateProteinsInUniprot;
 		this.filters = filters;
 		if (confFile == null)
 			throw new IllegalArgumentException("Provide a no null file!");
@@ -90,7 +80,8 @@ public class ExperimentListAdapter implements Adapter<ExperimentList> {
 		List<Experiment> experimentList = new ArrayList<Experiment>();
 		if (cpExperimentList != null && cpExperimentList.getCPExperiment() != null) {
 			for (CPExperiment xmlExp : cpExperimentList.getCPExperiment()) {
-				experimentList.add(new ExperimentAdapter(xmlExp, minPeptideLength, filters, processInParallel).adapt());
+				experimentList.add(new ExperimentAdapter(xmlExp, minPeptideLength, filters, processInParallel,
+						annotateProteinsInUniprot).adapt());
 			}
 			ExperimentList elist = new ExperimentList(cpExperimentList.getName(), experimentList,
 					groupingAtExperimentListLevel, filters, minPeptideLength, OntologyLoaderTask.getCvManager(),

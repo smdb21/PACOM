@@ -418,8 +418,15 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	}
 
 	private CPExperimentList getCPExperimentList(File cfgFile) {
-		CPExperimentList cpExpList = new ExperimentListAdapter(cfgFile).getCpExperimentList();
+		CPExperimentList cpExpList = new ExperimentListAdapter(cfgFile, isAnnotateProteinsInUniprot())
+				.getCpExperimentList();
 		return cpExpList;
+	}
+
+	private boolean isAnnotateProteinsInUniprot() {
+		// TODO GET THIS FROM INTERFACE
+		// SALVA
+		return true;
 	}
 
 	private void loadButtonIcons() {
@@ -916,9 +923,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 								.addComponent(jProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jProgressBarMemoryUsage, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)));
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jProgressBarMemoryUsage, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)));
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
@@ -989,16 +996,13 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 		javax.swing.GroupLayout jPanelPeptideCountingLayout = new javax.swing.GroupLayout(jPanelPeptideCounting);
 		jPanelPeptideCounting.setLayout(jPanelPeptideCountingLayout);
-		jPanelPeptideCountingLayout
-				.setHorizontalGroup(
-						jPanelPeptideCountingLayout
-								.createParallelGroup(
-										javax.swing.GroupLayout.Alignment.LEADING)
-								.addGroup(jPanelPeptideCountingLayout.createSequentialGroup().addContainerGap()
-										.addGroup(jPanelPeptideCountingLayout
-												.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-												.addComponent(jCheckBoxUniquePeptides)
-												.addComponent(jCheckBoxCountNonConclusiveProteins))
+		jPanelPeptideCountingLayout.setHorizontalGroup(
+				jPanelPeptideCountingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(jPanelPeptideCountingLayout.createSequentialGroup().addContainerGap()
+								.addGroup(jPanelPeptideCountingLayout
+										.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+										.addComponent(jCheckBoxUniquePeptides)
+										.addComponent(jCheckBoxCountNonConclusiveProteins))
 								.addContainerGap(35, Short.MAX_VALUE)));
 		jPanelPeptideCountingLayout.setVerticalGroup(jPanelPeptideCountingLayout
 				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1127,8 +1131,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 														.addPreferredGap(
 																javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 														.addComponent(jButtonDiscardFilteredData,
-																javax.swing.GroupLayout.PREFERRED_SIZE, 47,
-																javax.swing.GroupLayout.PREFERRED_SIZE))
+																javax.swing.GroupLayout.PREFERRED_SIZE,
+																47, javax.swing.GroupLayout.PREFERRED_SIZE))
 												.addComponent(jButtonExport2PRIDE, javax.swing.GroupLayout.DEFAULT_SIZE,
 														101, Short.MAX_VALUE))
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1152,14 +1156,14 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
 												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
 						.addContainerGap()));
-		jPanelInformationLayout
-				.setVerticalGroup(jPanelInformationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(jPanelInformationLayout.createSequentialGroup()
-								.addComponent(jLabelInformation1, javax.swing.GroupLayout.PREFERRED_SIZE, 21,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jLabelInformation2, javax.swing.GroupLayout.PREFERRED_SIZE, 24,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
+		jPanelInformationLayout.setVerticalGroup(jPanelInformationLayout
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanelInformationLayout.createSequentialGroup()
+						.addComponent(jLabelInformation1, javax.swing.GroupLayout.PREFERRED_SIZE, 21,
+								javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jLabelInformation2, javax.swing.GroupLayout.PREFERRED_SIZE, 24,
+								javax.swing.GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jLabelInformation3, javax.swing.GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1179,7 +1183,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 						.addGroup(jPanelInformationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 								.addComponent(jButtonExport2PEX, javax.swing.GroupLayout.DEFAULT_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(jButtonExport2PRIDE)).addContainerGap()));
+								.addComponent(jButtonExport2PRIDE))
+						.addContainerGap()));
 
 		javax.swing.GroupLayout jPanelLeftLayout = new javax.swing.GroupLayout(jPanelLeft);
 		jPanelLeft.setLayout(jPanelLeftLayout);
@@ -1206,12 +1211,12 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 								.addComponent(jPanelChartType, javax.swing.GroupLayout.PREFERRED_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jPanelPeptideCounting, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jPanelAdditionalCustomizations, javax.swing.GroupLayout.DEFAULT_SIZE, 381,
-								Short.MAX_VALUE)));
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jPanelPeptideCounting, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jPanelAdditionalCustomizations, javax.swing.GroupLayout.DEFAULT_SIZE, 381,
+										Short.MAX_VALUE)));
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
@@ -3875,7 +3880,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			jProgressBar.setIndeterminate(false);
 			CPExperimentList cpExpList = getCPExperimentList(cfgFile);
 			dataLoader = new DataLoaderTask(cpExpList, minPeptideLength, groupProteinsAtExperimentListLevel, null,
-					isLocalProcessingInParallel);
+					isLocalProcessingInParallel, isAnnotateProteinsInUniprot());
 			// filters);
 			dataLoader.addPropertyChangeListener(this);
 			dataLoader.execute();

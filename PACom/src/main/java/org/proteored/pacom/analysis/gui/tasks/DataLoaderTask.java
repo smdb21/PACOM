@@ -19,17 +19,19 @@ public class DataLoaderTask extends SwingWorker<ExperimentList, Void> {
 	private final List<Filter> filters;
 	private final boolean groupingAtExperimentListLevel;
 	private final boolean processInParallel;
+	private final boolean annotateProteinsInUniprot;
 	public static final String DATA_LOADED_DONE = "data loaded done";
 	public static final String DATA_LOADED_START = "data loaded start";
 	public static final String DATA_LOADED_ERROR = "data loaded error";
 
 	public DataLoaderTask(CPExperimentList cpExpList, Integer minPeptideLength, boolean groupingAtExperimentListLevel,
-			List<Filter> filters, boolean processInParallel) {
+			List<Filter> filters, boolean processInParallel, boolean annotateProteinsInUniprot) {
 		this.cpExpList = cpExpList;
 		this.minPeptideLength = minPeptideLength;
 		this.filters = filters;
 		this.groupingAtExperimentListLevel = groupingAtExperimentListLevel;
 		this.processInParallel = processInParallel;
+		this.annotateProteinsInUniprot = annotateProteinsInUniprot;
 	}
 
 	// public DataLoaderTask(CPExperimentList cpExpList, boolean
@@ -49,7 +51,7 @@ public class DataLoaderTask extends SwingWorker<ExperimentList, Void> {
 			log.info("Loading data");
 
 			ExperimentList expList = new ExperimentListAdapter(cpExpList, minPeptideLength,
-					groupingAtExperimentListLevel, filters, processInParallel).adapt();
+					groupingAtExperimentListLevel, filters, processInParallel, annotateProteinsInUniprot).adapt();
 			firePropertyChange(DATA_LOADED_DONE, null, expList);
 
 			return expList;
