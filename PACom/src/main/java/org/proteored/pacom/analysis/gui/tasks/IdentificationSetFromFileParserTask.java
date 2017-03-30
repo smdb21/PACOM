@@ -69,8 +69,9 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 			List<IdentifiedPeptide> peptides = new ArrayList<IdentifiedPeptide>();
 			String previousProteinACC = null;
 			String scoreName = null;
-
+			int numLine = 0;
 			while ((line = dis.readLine()) != null) {
+				numLine++;
 				if (line.trim().startsWith("#")) {
 					scoreName = getScoreName(line);
 					continue;
@@ -93,19 +94,25 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 
 					// PEPTIDE SEQUENCE
 					String seq = null;
-					if (split.length > 1)
+					if (split.length > 1) {
 						seq = split[1].trim();
+					}
 					// Parse peptide sequence
 					seq = parseSequence(seq);
 					IdentifiedPeptideImpl peptide = null;
 					if (seq != null) {
 						peptide = new IdentifiedPeptideImpl(seq);
 						peptides.add(peptide);
+					} else {
+						log.warn("Peptide is null in line " + numLine + ": " + line);
 					}
 
 					// PEPTIDE SCORE
 					if (split.length > 2) {
 						try {
+							if (scoreName == null) {
+								scoreName = getScoreName("");
+							}
 							String trim = split[2].trim();
 
 							trim = trim.replace(",", ".");
@@ -326,6 +333,9 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 		} else if (firstLine.toLowerCase().contains("paragon:confidence")) {
 			// paragon confidence
 			scoreName = cvManager.getControlVocabularyName(new Accession("MS:1001167"), Score.getInstance(cvManager));
+		} else {
+			// confidence score
+			scoreName = cvManager.getControlVocabularyName(new Accession("MS:1001193"), Score.getInstance(cvManager));
 		}
 		return scoreName;
 	}
