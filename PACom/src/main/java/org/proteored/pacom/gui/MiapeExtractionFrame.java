@@ -114,7 +114,6 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	public boolean isShallowParsing = false;
 	private MIAPEMSChecker miapeMSChecker;
 	private boolean extractionStarted = false;
-	private File currentPath = new File(".");
 	private int currentUserID;
 	private boolean listenToItemEvents;
 
@@ -258,7 +257,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	private void initComponents() {
 
 		buttonGroupInputFileFormat = new javax.swing.ButtonGroup();
-		jFileChooser = MainFrame.fileChooser;
+		jFileChooser = new JFileChooser(MainFrame.currentFolder);
 		buttonGroupProcessingType = new javax.swing.ButtonGroup();
 		buttonGroupStoreOrNotStore = new javax.swing.ButtonGroup();
 		jPanel1 = new javax.swing.JPanel();
@@ -1108,7 +1107,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 
 	private String selectFile(int _mode) {
 		String filename = "";
-		jFileChooser = new JFileChooser(currentPath);
+		jFileChooser = new JFileChooser(MainFrame.currentFolder);
 		switch (_mode) {
 		case ALLMODE:
 			jFileChooser.setDialogTitle("Select a file");
@@ -1154,11 +1153,11 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		File selectedFile = jFileChooser.getSelectedFile();
 		if (selectedFile != null) {
 			filename = selectedFile.toString();
-			if (selectedFile.isDirectory())
-				currentPath = selectedFile;
-			else
-				currentPath = selectedFile.getParentFile();
-
+			if (selectedFile.isDirectory()) {
+				MainFrame.currentFolder = selectedFile;
+			} else {
+				MainFrame.currentFolder = selectedFile.getParentFile();
+			}
 			log.info("Selected File: " + filename);
 		} else
 			filename = "null";

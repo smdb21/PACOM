@@ -114,7 +114,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 	private void initComponents() {
 
 		// jFileChooser1 = new javax.swing.JFileChooser();
-		jFileChooser1 = MainFrame.fileChooser;
+		jFileChooser1 = new JFileChooser(MainFrame.currentFolder);
 		jPanel1 = new javax.swing.JPanel();
 		jTextFieldBatchFile = new javax.swing.JTextField();
 		jButtonSelectBatchFile = new javax.swing.JButton();
@@ -340,18 +340,18 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 	}
 
 	private void selectInputBatchFile() {
-		File currentDirectory = new File(System.getProperty("user.dir"));
-		if (jFileChooser1 != null)
-			currentDirectory = jFileChooser1.getCurrentDirectory();
-		jFileChooser1 = new JFileChooser(currentDirectory);
+
+		jFileChooser1 = new JFileChooser(MainFrame.currentFolder);
 		jFileChooser1.setDialogTitle("Select a import batch file");
 		jFileChooser1.setFileFilter(new TFileExtension("txt files", new String[] { "txt" }));
 		jFileChooser1.showOpenDialog(this);
 		File file;
-		if (jFileChooser1.getSelectedFile() != null) {
+		File selectedFile = jFileChooser1.getSelectedFile();
+		if (selectedFile != null) {
+			MainFrame.currentFolder = selectedFile.getParentFile();
 			jTextAreaStatus.setText("");
 			appendStatus("Loading batch file...");
-			file = jFileChooser1.getSelectedFile();
+			file = selectedFile;
 			MiapeExtractionTask.resetIdentifiers();
 
 			jTextFieldBatchFile.setText(file.getAbsolutePath());

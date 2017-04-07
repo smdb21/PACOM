@@ -25,12 +25,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -48,9 +51,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingWorker.StateValue;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -59,15 +62,22 @@ import org.apache.log4j.Logger;
 import org.jfree.ui.ExtensionFileFilter;
 import org.jfree.ui.RefineryUtilities;
 import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
+import org.proteored.miapeapi.experiment.VennData;
+import org.proteored.miapeapi.experiment.model.Experiment;
 import org.proteored.miapeapi.experiment.model.ExperimentList;
 import org.proteored.miapeapi.experiment.model.IdentificationItemEnum;
+import org.proteored.miapeapi.experiment.model.IdentificationSet;
 import org.proteored.miapeapi.experiment.model.PeptideOccurrence;
 import org.proteored.miapeapi.experiment.model.ProteinGroupOccurrence;
+import org.proteored.miapeapi.experiment.model.Replicate;
 import org.proteored.miapeapi.experiment.model.filters.FDRFilter;
 import org.proteored.miapeapi.experiment.model.filters.Filter;
+import org.proteored.miapeapi.experiment.model.filters.Filters;
 import org.proteored.miapeapi.experiment.model.filters.PeptideSequenceFilter;
 import org.proteored.miapeapi.experiment.model.filters.ProteinACCFilter;
 import org.proteored.miapeapi.experiment.model.filters.ScoreFilter;
+import org.proteored.miapeapi.experiment.model.sort.ProteinComparatorKey;
+import org.proteored.miapeapi.experiment.model.sort.ProteinGroupComparisonType;
 import org.proteored.miapeapi.experiment.model.sort.SorterUtil;
 import org.proteored.pacom.analysis.charts.WordCramChart;
 import org.proteored.pacom.analysis.conf.ExperimentListAdapter;
@@ -87,8 +97,7 @@ import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.gui.MainFrame;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 
-import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
-
+import edu.scripps.yates.utilities.checksum.MD5Checksum;
 import edu.scripps.yates.utilities.dates.DatesUtil;
 
 /**
@@ -189,12 +198,12 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	private AppliedFiltersDialog filtersDialog;
 	private PEXBulkSubmissionSummaryFileCreatorDialog pexSubmissionDialog;
 	File cfgFile;
-	private File currentFolder = new File(System.getProperty("user.dir"));
 	private Long previousCfgFileSize;
 	private Integer minPeptideLength;
 	private Boolean groupProteinsAtExperimentListLevel;
 	private Boolean isLocalProcessingInParallel;
 	private boolean errorLoadingData;
+	private String previousMd5Checksum;
 
 	@Override
 	public void dispose() {
@@ -245,10 +254,10 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		if (parentFrame != null)
 			parentFrame.setVisible(false);
 
-		try {
-			UIManager.setLookAndFeel(new WindowsLookAndFeel());
-		} catch (UnsupportedLookAndFeelException e) {
-		}
+		// try {
+		// UIManager.setLookAndFeel(new WindowsLookAndFeel());
+		// } catch (UnsupportedLookAndFeelException e) {
+		// }
 		initComponents();
 		// set icon image
 		setIconImage(ImageManager.getImageIcon(ImageManager.PROTEORED_MIAPE_API).getImage());
@@ -349,6 +358,16 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		}
 		if (cfgFile != null && !cfgFile.getAbsolutePath().equals(this.cfgFile.getAbsolutePath()))
 			return true;
+		try {
+			String md5Checksum = MD5Checksum.getMD5Checksum(cfgFile.getAbsolutePath());
+			if (previousMd5Checksum == null || (cfgFile != null && !md5Checksum.equals(previousMd5Checksum))) {
+				previousMd5Checksum = md5Checksum;
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		if (previousCfgFileSize == null || (cfgFile != null && cfgFile.length() != previousCfgFileSize))
 			return true;
 		if (this.minPeptideLength == null || minPeptideLength != this.minPeptideLength)
@@ -650,9 +669,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 		String ret = "<html>Peptides: " + numPeptides + " (" + numDifferentPeptides + " uniques)<br>";
 		ret += "Protein groups: " + numProteins;
-		if (numDifferentProteins != numProteins)
+		if (numDifferentProteins != numProteins) {
 			ret += " (" + numDifferentProteins + " uniques)";
-
+		}
 		if (genesFromProteinGroup > 0) {
 			log.debug(genesFromProteinGroup + " genes");
 			ret += "<br>Human genes: " + genesFromProteinGroup;
@@ -852,7 +871,6 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		jPanelAddOptions = new javax.swing.JPanel();
 		jPanelPeptideCounting = new javax.swing.JPanel();
 		jCheckBoxUniquePeptides = new javax.swing.JCheckBox();
-		jCheckBoxCountNonConclusiveProteins = new javax.swing.JCheckBox();
 		jPanelInformation = new javax.swing.JPanel();
 		jLabelInformation1 = new javax.swing.JLabel();
 		jLabelInformation2 = new javax.swing.JLabel();
@@ -923,9 +941,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 								.addComponent(jProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jProgressBarMemoryUsage, javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)));
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jProgressBarMemoryUsage, javax.swing.GroupLayout.PREFERRED_SIZE,
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)));
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
@@ -971,8 +989,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 		jPanelAdditionalCustomizations.setViewportView(jPanelAddOptions);
 
-		jPanelPeptideCounting.setBorder(javax.swing.BorderFactory
-				.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Peptide and protein counting"));
+		jPanelPeptideCounting.setBorder(
+				new TitledBorder(null, "Peptide counting", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 
 		jCheckBoxUniquePeptides.setText("distinguish mod. and unmod. peptides");
 		jCheckBoxUniquePeptides.setToolTipText(
@@ -984,32 +1002,14 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			}
 		});
 
-		jCheckBoxCountNonConclusiveProteins.setText("count non-conclusive proteins");
-		jCheckBoxCountNonConclusiveProteins.setToolTipText(
-				"<html>If this option is selected:<br>\nProtein groups with a NON-CONSLUSIVE evidence<br>\nare taken into account in any chart.<br>\n</html>");
-		jCheckBoxCountNonConclusiveProteins.addItemListener(new java.awt.event.ItemListener() {
-			@Override
-			public void itemStateChanged(java.awt.event.ItemEvent evt) {
-				jCheckBoxCountNonConclusiveProteinsItemStateChanged(evt);
-			}
-		});
-
 		javax.swing.GroupLayout jPanelPeptideCountingLayout = new javax.swing.GroupLayout(jPanelPeptideCounting);
-		jPanelPeptideCounting.setLayout(jPanelPeptideCountingLayout);
-		jPanelPeptideCountingLayout.setHorizontalGroup(
-				jPanelPeptideCountingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(jPanelPeptideCountingLayout.createSequentialGroup().addContainerGap()
-								.addGroup(jPanelPeptideCountingLayout
-										.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-										.addComponent(jCheckBoxUniquePeptides)
-										.addComponent(jCheckBoxCountNonConclusiveProteins))
-								.addContainerGap(35, Short.MAX_VALUE)));
-		jPanelPeptideCountingLayout.setVerticalGroup(jPanelPeptideCountingLayout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+		jPanelPeptideCountingLayout.setHorizontalGroup(jPanelPeptideCountingLayout
+				.createParallelGroup(Alignment.LEADING).addGroup(jPanelPeptideCountingLayout.createSequentialGroup()
+						.addContainerGap().addComponent(jCheckBoxUniquePeptides).addContainerGap(55, Short.MAX_VALUE)));
+		jPanelPeptideCountingLayout.setVerticalGroup(jPanelPeptideCountingLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(jPanelPeptideCountingLayout.createSequentialGroup().addComponent(jCheckBoxUniquePeptides)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jCheckBoxCountNonConclusiveProteins)
-						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+						.addContainerGap(30, Short.MAX_VALUE)));
+		jPanelPeptideCounting.setLayout(jPanelPeptideCountingLayout);
 
 		jPanelInformation.setBorder(javax.swing.BorderFactory
 				.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Information"));
@@ -1131,8 +1131,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 														.addPreferredGap(
 																javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 														.addComponent(jButtonDiscardFilteredData,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																47, javax.swing.GroupLayout.PREFERRED_SIZE))
+																javax.swing.GroupLayout.PREFERRED_SIZE, 47,
+																javax.swing.GroupLayout.PREFERRED_SIZE))
 												.addComponent(jButtonExport2PRIDE, javax.swing.GroupLayout.DEFAULT_SIZE,
 														101, Short.MAX_VALUE))
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1156,14 +1156,14 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
 												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
 						.addContainerGap()));
-		jPanelInformationLayout.setVerticalGroup(jPanelInformationLayout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanelInformationLayout.createSequentialGroup()
-						.addComponent(jLabelInformation1, javax.swing.GroupLayout.PREFERRED_SIZE, 21,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jLabelInformation2, javax.swing.GroupLayout.PREFERRED_SIZE, 24,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
+		jPanelInformationLayout
+				.setVerticalGroup(jPanelInformationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(jPanelInformationLayout.createSequentialGroup()
+								.addComponent(jLabelInformation1, javax.swing.GroupLayout.PREFERRED_SIZE, 21,
+										javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jLabelInformation2, javax.swing.GroupLayout.PREFERRED_SIZE, 24,
+										javax.swing.GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jLabelInformation3, javax.swing.GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1183,40 +1183,30 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 						.addGroup(jPanelInformationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 								.addComponent(jButtonExport2PEX, javax.swing.GroupLayout.DEFAULT_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(jButtonExport2PRIDE))
-						.addContainerGap()));
+								.addComponent(jButtonExport2PRIDE)).addContainerGap()));
 
 		javax.swing.GroupLayout jPanelLeftLayout = new javax.swing.GroupLayout(jPanelLeft);
-		jPanelLeft.setLayout(jPanelLeftLayout);
-		jPanelLeftLayout.setHorizontalGroup(jPanelLeftLayout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelLeftLayout.createSequentialGroup()
-						.addGroup(jPanelLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-								.addComponent(jPanelAdditionalCustomizations, javax.swing.GroupLayout.DEFAULT_SIZE, 286,
-										Short.MAX_VALUE)
-								.addComponent(jPanelInformation, javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(jPanelChartType, javax.swing.GroupLayout.Alignment.LEADING,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)
-								.addComponent(jPanelPeptideCounting, javax.swing.GroupLayout.Alignment.LEADING,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE))
+		jPanelLeftLayout.setHorizontalGroup(jPanelLeftLayout.createParallelGroup(Alignment.TRAILING)
+				.addGroup(jPanelLeftLayout.createSequentialGroup().addGroup(jPanelLeftLayout
+						.createParallelGroup(Alignment.TRAILING)
+						.addComponent(jPanelAdditionalCustomizations, GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+						.addComponent(jPanelPeptideCounting, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 280,
+								Short.MAX_VALUE)
+						.addComponent(jPanelInformation, GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE).addComponent(
+								jPanelChartType, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE))
 						.addContainerGap()));
-		jPanelLeftLayout
-				.setVerticalGroup(jPanelLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(jPanelLeftLayout.createSequentialGroup().addContainerGap()
-								.addComponent(jPanelInformation, javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jPanelChartType, javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jPanelPeptideCounting, javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jPanelAdditionalCustomizations, javax.swing.GroupLayout.DEFAULT_SIZE, 381,
-										Short.MAX_VALUE)));
+		jPanelLeftLayout.setVerticalGroup(jPanelLeftLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(jPanelLeftLayout.createSequentialGroup().addContainerGap()
+						.addComponent(jPanelInformation, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(jPanelChartType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(jPanelPeptideCounting, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(jPanelAdditionalCustomizations, GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)));
+		jPanelLeft.setLayout(jPanelLeftLayout);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
@@ -1414,25 +1404,6 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds((screenSize.width - 935) / 2, (screenSize.height - 836) / 2, 935, 836);
 	}// </editor-fold>
-		// GEN-END:initComponents
-
-	private void jCheckBoxCountNonConclusiveProteinsItemStateChanged(java.awt.event.ItemEvent evt) {
-		// if (evt.getStateChange() == ItemEvent.SELECTED) {
-		// JOptionPane
-		// .showMessageDialog(
-		// this,
-		// "<html>NON CONCLUSIVE proteins will be taken into account for all the
-		// charts.<br>"
-		// +
-		// "Following the recomendations from '<a
-		// href=\"http://www.biomedcentral.com/pubmed/16009968\">Nesvizhskii A,
-		// Aebersold R: Interpretation of shotgun proteomic data. Mol Cell
-		// Proteomics 2005, 4(10):1419-1440</a>.</html>",
-		// "NON-CONCLUSIVE proteins will be taken into account",
-		// JOptionPane.INFORMATION_MESSAGE);
-		// }
-		startShowingChart();
-	}
 
 	private void jMenuItemGeneralOptionsActionPerformed(java.awt.event.ActionEvent evt) {
 		GeneralOptionsDialogNoParallel.getInstance(this, false).setVisible(true);
@@ -1504,7 +1475,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	private void showIdentificationTable() {
 		log.info("Showing identification table");
 		// if (this.identificationTable == null)
-		identificationTable = IdentificationTableFrame.getInstance(this, experimentList);
+		identificationTable = IdentificationTableFrame.getInstance(this, toSet(experimentList));
 		identificationTable.setVisible(true);
 
 	}
@@ -1596,7 +1567,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	}
 
 	private void exportToTSV() {
-		ExporterDialog exporterDialog = new ExporterDialog(this, experimentList);
+
+		ExporterDialog exporterDialog = new ExporterDialog(this, toSet(experimentList));
 		exporterDialog.setVisible(true);
 	}
 
@@ -3059,11 +3031,324 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				}
 			});
 			jPanelAddOptions.add(jbuttonSave);
-
 			jPanelAddOptions.add(optionsFactory.getJLabelIntersectionsText());
+
+			// add the buttons per chart (in chart per experiment there is one
+			// graph per experiment
+			String option = (String) jComboBoxChartOptions.getSelectedItem();
+			List<String> experimentNames = new ArrayList<String>();
+			if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
+				for (Experiment experiment : experimentList.getExperiments()) {
+					experimentNames.add(experiment.getFullName());
+				}
+			} else {
+				// add null
+				experimentNames.add(null);
+			}
+			// loop over the experiment names
+			for (String experimentName : experimentNames) {
+				String labelString = "Export buttons:";
+				if (experimentName != null) {
+					labelString = "Export buttons for '" + experimentName + "':";
+				}
+				JLabel labelExperiment = new JLabel(labelString);
+				jPanelAddOptions.add(labelExperiment);
+				String overlapString = "1,2";
+				// export just in 1 button
+				JButton jbuttonExportJustIn1 = new JButton("Export just in 1");
+				jbuttonExportJustIn1.addActionListener(new java.awt.event.ActionListener() {
+					@Override
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						exportJustIn1(experimentName);
+					}
+				});
+				jPanelAddOptions.add(jbuttonExportJustIn1);
+				// export just in 2 button
+				JButton jbuttonExportJustIn2 = new JButton("Export just in 2");
+				jbuttonExportJustIn2.addActionListener(new java.awt.event.ActionListener() {
+					@Override
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						exportJustIn2(experimentName);
+					}
+				});
+				jPanelAddOptions.add(jbuttonExportJustIn2);
+
+				if (numberOfSelectedCheckBoxes > 2) {
+					overlapString += ",3";
+					// export just in 3 button
+					JButton jbuttonExportJustIn3 = new JButton("Export just in 3");
+					jbuttonExportJustIn3.addActionListener(new java.awt.event.ActionListener() {
+						@Override
+						public void actionPerformed(java.awt.event.ActionEvent evt) {
+							exportJustIn3(experimentName);
+						}
+					});
+					jPanelAddOptions.add(jbuttonExportJustIn3);
+				}
+				// export overlapped button
+				JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
+				jbuttonExportOverlap.addActionListener(new java.awt.event.ActionListener() {
+					@Override
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						exportOverlapped(experimentName);
+					}
+				});
+				jPanelAddOptions.add(jbuttonExportOverlap);
+			}
 		}
 
 		jPanelAddOptions.repaint();
+	}
+
+	/**
+	 * 
+	 */
+	protected void exportJustIn1(String experimentName) {
+		if (chartCreator != null) {
+			VennData vennData = chartCreator.getVennData(experimentName);
+			if (vennData != null) {
+				log.info(vennData.getUniqueTo1().size() + " just in 1");
+				IdentificationSet idSet = getSelectedIdentificationSetsForVennChart(experimentName)[0];
+				String datasetName = null;
+				if (idSet != null) {
+					datasetName = idSet.getName();
+				}
+				exportSubset(vennData.getUniqueTo1(), datasetName);
+			}
+		}
+	}
+
+	private IdentificationSet[] getSelectedIdentificationSetsForVennChart(String experimentName) {
+		IdentificationSet[] ret = new IdentificationSet[3];
+		IdentificationSet idSet1 = null;
+		IdentificationSet idSet2 = null;
+		IdentificationSet idSet3 = null;
+		String option = (String) jComboBoxChartOptions.getSelectedItem();
+		final HashMap<String, JCheckBox> checkBoxControls = optionsFactory.getIdSetsJCheckBoxes();
+		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
+			final List<Experiment> experiments = experimentList.getExperiments();
+			for (Experiment experiment : experiments) {
+				for (Object identificationSet : experiment.getNextLevelIdentificationSetList()) {
+					Replicate replicate = (Replicate) identificationSet;
+					String repName = replicate.getFullName();
+					if (checkBoxControls.containsKey(repName) && checkBoxControls.get(repName).isSelected()) {
+						if (idSet1 == null) {
+							idSet1 = replicate;
+						} else if (idSet2 == null) {
+							idSet2 = replicate;
+						} else if (idSet3 == null) {
+							idSet3 = replicate;
+						}
+					}
+				}
+			}
+		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
+			final List<Experiment> experiments = experimentList.getExperiments();
+
+			for (Experiment experiment : experiments) {
+				String expName = experiment.getFullName();
+				if (checkBoxControls.containsKey(expName) && checkBoxControls.get(expName).isSelected()) {
+					if (idSet1 == null) {
+						idSet1 = experiment;
+					} else if (idSet2 == null) {
+						idSet2 = experiment;
+					} else if (idSet3 == null) {
+						idSet3 = experiment;
+					}
+				}
+			}
+		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
+			idSet1 = experimentList;
+		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
+			List<JPanel> chartList = new ArrayList<JPanel>();
+			String intersectionText = "";
+			for (Experiment experiment : experimentList.getExperiments()) {
+				if (experiment.getFullName().equals(experimentName)) {
+					int numReplicates = 1;
+					idSet1 = null;
+					idSet2 = null;
+					idSet3 = null;
+					for (Replicate replicate : experiment.getNextLevelIdentificationSetList()) {
+						String repName = replicate.getFullName();
+						if (checkBoxControls.containsKey(repName) && checkBoxControls.get(repName).isSelected()) {
+							if (idSet1 == null) {
+								idSet1 = replicate;
+							} else if (idSet2 == null) {
+								idSet2 = replicate;
+							} else if (idSet3 == null) {
+								idSet3 = replicate;
+							}
+						}
+					}
+				}
+			}
+		}
+		ret[0] = idSet1;
+		ret[1] = idSet2;
+		ret[2] = idSet3;
+		return ret;
+	}
+
+	protected void exportJustIn2(String experimentName) {
+		if (chartCreator != null) {
+			VennData vennData = chartCreator.getVennData(experimentName);
+			if (vennData != null) {
+				log.info(vennData.getUniqueTo2Keys().size() + " just in 2");
+				IdentificationSet idSet = getSelectedIdentificationSetsForVennChart(experimentName)[1];
+				String datasetName = null;
+				if (idSet != null) {
+					datasetName = idSet.getName();
+				}
+				exportSubset(vennData.getUniqueTo2(), datasetName);
+			}
+		}
+	}
+
+	protected void exportJustIn3(String experimentName) {
+		if (chartCreator != null) {
+			VennData vennData = chartCreator.getVennData(experimentName);
+			if (vennData != null) {
+				log.info(vennData.getUniqueTo3().size() + " just in 3");
+				IdentificationSet idSet = getSelectedIdentificationSetsForVennChart(experimentName)[2];
+				String datasetName = null;
+				if (idSet != null) {
+					datasetName = idSet.getName();
+				}
+				exportSubset(vennData.getUniqueTo3(), datasetName);
+			}
+		}
+	}
+
+	protected void exportOverlapped(String experimentName) {
+		if (chartCreator != null) {
+			VennData vennData = chartCreator.getVennData(experimentName);
+			if (vennData != null) {
+				Collection<Object> intersection123 = vennData.getIntersection123();
+				if (!intersection123.isEmpty()) {
+					log.info(intersection123.size() + " overlapped");
+					String datasetName1 = null;
+					String datasetName2 = null;
+					String datasetName3 = null;
+					IdentificationSet idSet1 = getSelectedIdentificationSetsForVennChart(experimentName)[0];
+					if (idSet1 != null) {
+						datasetName1 = idSet1.getName();
+					}
+					IdentificationSet idSet2 = getSelectedIdentificationSetsForVennChart(experimentName)[1];
+					if (idSet2 != null) {
+						datasetName2 = idSet2.getName();
+					}
+					IdentificationSet idSet3 = getSelectedIdentificationSetsForVennChart(experimentName)[2];
+					if (idSet3 != null) {
+						datasetName3 = idSet3.getName();
+					}
+					exportSubset(intersection123, datasetName1, datasetName2, datasetName3);
+				} else {
+					Collection<Object> intersection12 = vennData.getIntersection12();
+					if (!intersection12.isEmpty()) {
+						String datasetName1 = null;
+						String datasetName2 = null;
+						IdentificationSet idSet1 = getSelectedIdentificationSetsForVennChart(experimentName)[0];
+						if (idSet1 != null) {
+							datasetName1 = idSet1.getName();
+						}
+						IdentificationSet idSet2 = getSelectedIdentificationSetsForVennChart(experimentName)[1];
+						if (idSet2 != null) {
+							datasetName2 = idSet2.getName();
+						}
+
+						log.info(intersection12.size() + " overlapped");
+						exportSubset(intersection12, datasetName1, datasetName2);
+					}
+				}
+			}
+		}
+
+	}
+
+	private Set<IdentificationSet> toSet(IdentificationSet... idSets) {
+		Set<IdentificationSet> ret = new HashSet<IdentificationSet>();
+		for (IdentificationSet idSet : idSets) {
+			if (idSet != null) {
+				ret.add(idSet);
+			}
+		}
+		return ret;
+	}
+
+	/**
+	 * @param uniqueTo2
+	 */
+	private void exportSubset(Collection<Object> collection, String... datasetNames) {
+		if (collection.isEmpty()) {
+			return;
+		}
+		Set<IdentificationSet> idSets = new HashSet<IdentificationSet>();
+		for (String datasetName : datasetNames) {
+			IdentificationSet idSet = getDatasetFromName(experimentList, datasetName);
+			if (idSet != null) {
+				idSets.add(idSet);
+			}
+		}
+
+		ExporterDialog exporterDialog = new ExporterDialog(this, idSets);
+
+		Filters filter = null;
+		if (currentChartType.equals(PROTEIN_OVERLAPING)) {
+
+			Set<ProteinComparatorKey> keys = new HashSet<ProteinComparatorKey>();
+			for (Object object : collection) {
+				if (object instanceof ProteinGroupOccurrence) {
+					ProteinGroupOccurrence pgo = (ProteinGroupOccurrence) object;
+					keys.add(pgo.getKey(additionalOptionsPanelFactory.getProteinGroupComparisonType()));
+				} else {
+					log.info(object.getClass().getName());
+				}
+			}
+			filter = new ProteinACCFilter(keys);
+		} else if (currentChartType.equals(PEPTIDE_OVERLAPING)) {
+			Set<String> sequences = new HashSet<String>();
+			for (Object object : collection) {
+				if (object instanceof PeptideOccurrence) {
+					PeptideOccurrence po = (PeptideOccurrence) object;
+					sequences.add(po.getKey());
+				} else if (object instanceof String) {
+					sequences.add((String) object);
+				} else {
+					log.info(object.getClass().getName() + "");
+				}
+			}
+			filter = new PeptideSequenceFilter(sequences, true, null);
+		}
+		exporterDialog.setFilter(filter);
+		exporterDialog.setVisible(true);
+
+	}
+
+	/**
+	 * @param experimentList2
+	 * @param datasetName
+	 * @return
+	 */
+	private IdentificationSet getDatasetFromName(IdentificationSet idSet, String datasetName) {
+		if (idSet.getName().equals(datasetName)) {
+			return idSet;
+		}
+		try {
+			for (Object obj : idSet.getNextLevelIdentificationSetList()) {
+				IdentificationSet idSet2 = (IdentificationSet) obj;
+				IdentificationSet ret = getDatasetFromName(idSet2, datasetName);
+				if (ret != null) {
+					return ret;
+				}
+			}
+		} catch (UnsupportedOperationException e) {
+			return null;
+		}
+		return null;
+	}
+
+	public ProteinGroupComparisonType getComparisonType() {
+		return additionalOptionsPanelFactory.getProteinGroupComparisonType();
 	}
 
 	private void addOverlappingControlsSeriePerReplicate(Integer numberOfSelectedCheckBoxes,
@@ -3111,6 +3396,49 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			});
 			jPanelAddOptions.add(jbuttonSave);
 			jPanelAddOptions.add(optionsFactory.getJLabelIntersectionsText());
+
+			JLabel labelExperiment = new JLabel("Export buttons:");
+			jPanelAddOptions.add(labelExperiment);
+			String overlapString = "1,2";
+			// export just in 1 button
+			JButton jbuttonExportJustIn1 = new JButton("Export just in 1");
+			jbuttonExportJustIn1.addActionListener(new java.awt.event.ActionListener() {
+				@Override
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					exportJustIn1(null);
+				}
+			});
+			jPanelAddOptions.add(jbuttonExportJustIn1);
+			// export just in 2 button
+			JButton jbuttonExportJustIn2 = new JButton("Export just in 2");
+			jbuttonExportJustIn2.addActionListener(new java.awt.event.ActionListener() {
+				@Override
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					exportJustIn2(null);
+				}
+			});
+			jPanelAddOptions.add(jbuttonExportJustIn2);
+			if (numberOfSelectedCheckBoxes > 2) {
+				overlapString += ",3";
+				// export just in 3 button
+				JButton jbuttonExportJustIn3 = new JButton("Export just in 3");
+				jbuttonExportJustIn3.addActionListener(new java.awt.event.ActionListener() {
+					@Override
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						exportJustIn3(null);
+					}
+				});
+				jPanelAddOptions.add(jbuttonExportJustIn3);
+			}
+			// export overlapped button
+			JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
+			jbuttonExportOverlap.addActionListener(new java.awt.event.ActionListener() {
+				@Override
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					exportOverlapped(null);
+				}
+			});
+			jPanelAddOptions.add(jbuttonExportOverlap);
 		}
 
 		jPanelAddOptions.repaint();
@@ -3158,8 +3486,50 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 					saveOverlappingImage();
 				}
 			});
+			String overlapString = "1,2";
 			jPanelAddOptions.add(jbuttonSave);
 			jPanelAddOptions.add(optionsFactory.getJLabelIntersectionsText());
+			JLabel labelExperiment = new JLabel("Export buttons:");
+			jPanelAddOptions.add(labelExperiment);
+			// export just in 1 button
+			JButton jbuttonExportJustIn1 = new JButton("Export just in 1");
+			jbuttonExportJustIn1.addActionListener(new java.awt.event.ActionListener() {
+				@Override
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					exportJustIn1(null);
+				}
+			});
+			jPanelAddOptions.add(jbuttonExportJustIn1);
+			// export just in 2 button
+			JButton jbuttonExportJustIn2 = new JButton("Export just in 2");
+			jbuttonExportJustIn2.addActionListener(new java.awt.event.ActionListener() {
+				@Override
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					exportJustIn2(null);
+				}
+			});
+			jPanelAddOptions.add(jbuttonExportJustIn2);
+			if (numberOfSelectedCheckBoxes > 2) {
+				overlapString += ",3";
+				// export just in 3 button
+				JButton jbuttonExportJustIn3 = new JButton("Export just in 3");
+				jbuttonExportJustIn3.addActionListener(new java.awt.event.ActionListener() {
+					@Override
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						exportJustIn3(null);
+					}
+				});
+				jPanelAddOptions.add(jbuttonExportJustIn3);
+			}
+			// export overlapped button
+			JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
+			jbuttonExportOverlap.addActionListener(new java.awt.event.ActionListener() {
+				@Override
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					exportOverlapped(null);
+				}
+			});
+			jPanelAddOptions.add(jbuttonExportOverlap);
 		}
 
 		jPanelAddOptions.repaint();
@@ -3181,13 +3551,13 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 						JLabel label = (JLabel) component3;
 						final ImageIcon icon = (ImageIcon) label.getIcon();
 						final Image image = icon.getImage();
-						JFileChooser fileChooser = new JFileChooser();
+						JFileChooser fileChooser = new JFileChooser(MainFrame.currentFolder);
 						fileChooser.addChoosableFileFilter(new ExtensionFileFilter("JPG images", "jpg"));
 						int retVal = fileChooser.showSaveDialog(this);
 
 						if (retVal == JFileChooser.APPROVE_OPTION) {
 							file = fileChooser.getSelectedFile();
-
+							MainFrame.currentFolder = file.getParentFile();
 							String path = ImageUtils.saveImage(image, file);
 							appendStatus("Image file saved to:" + path);
 						}
@@ -3204,13 +3574,13 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 						JLabel label = (JLabel) component3;
 						final ImageIcon icon = (ImageIcon) label.getIcon();
 						final Image image = icon.getImage();
-						JFileChooser fileChooser = new JFileChooser();
+						JFileChooser fileChooser = new JFileChooser(MainFrame.currentFolder);
 						fileChooser.addChoosableFileFilter(new ExtensionFileFilter("JPG images", "jpg"));
 						int retVal = fileChooser.showSaveDialog(this);
 
 						if (retVal == JFileChooser.APPROVE_OPTION) {
 							file = fileChooser.getSelectedFile();
-
+							MainFrame.currentFolder = file.getParentFile();
 							String path = ImageUtils.saveImage(image, file);
 							appendStatus("Image file saved to:" + path);
 						}
@@ -3237,7 +3607,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		log.info("Saving overlapping image");
 		String error = "";
 		File file = null;
-		JFileChooser fileChooser = new JFileChooser();
+		JFileChooser fileChooser = new JFileChooser(MainFrame.currentFolder);
 		try {
 			final Component component = jPanelChart.getComponent(0);
 			if (component instanceof JPanel) {
@@ -3256,6 +3626,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 							if (retVal == JFileChooser.APPROVE_OPTION) {
 								file = fileChooser.getSelectedFile();
+								MainFrame.currentFolder = file.getParentFile();
 
 								String path = ImageUtils.saveImage(image, file);
 								appendStatus("Image file saved to:" + path);
@@ -3293,13 +3664,13 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 					JLabel label = (JLabel) component2;
 					final ImageIcon icon = (ImageIcon) label.getIcon();
 					final Image image = icon.getImage();
-					JFileChooser fileChooser = new JFileChooser(currentFolder);
+					JFileChooser fileChooser = new JFileChooser(MainFrame.currentFolder);
 					fileChooser.addChoosableFileFilter(new ExtensionFileFilter("JPG images", "jpg"));
 					int retVal = fileChooser.showSaveDialog(this);
 
 					if (retVal == JFileChooser.APPROVE_OPTION) {
 						file = fileChooser.getSelectedFile();
-						currentFolder = file.getParentFile();
+						MainFrame.currentFolder = file.getParentFile();
 						String path = ImageUtils.saveImage(image, file);
 						appendStatus("Image file saved to:" + path);
 					}
@@ -3562,7 +3933,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				&& filterDialog.isFilterTaskFinished()) {
 			String formatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG)
 					.format(new Date(System.currentTimeMillis()));
-			appendStatus("Creating chart at '" + formatedDate + "'...");
+			appendStatus("Creating chart '" + chartType + " (" + option + ") " + "' at '" + formatedDate + "'...");
 			setProgressBarIndeterminate(true);
 			disableControls(false);
 			chartCreator = new ChartCreatorTask(this, chartType, option, experimentList);
@@ -3631,7 +4002,6 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	private javax.swing.JButton jButtonSaveAsFiltered;
 	private javax.swing.JButton jButtonSeeAppliedFilters;
 	private javax.swing.JButton jButtonShowTable;
-	private javax.swing.JCheckBox jCheckBoxCountNonConclusiveProteins;
 	public javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemFDRFilter;
 	public javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemModificationFilter;
 	public javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemOcurrenceFilter;
@@ -3670,6 +4040,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	private javax.swing.JSeparator jSeparator1;
 	private javax.swing.JSeparator jSeparator2;
 	private javax.swing.JTextArea jTextAreaStatus;
+	private AdditionalOptionsPanelFactory additionalOptionsPanelFactory;
 
 	// End of variables declaration//GEN-END:variables
 
@@ -3680,7 +4051,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		// log.info("Disabling controls");
 		jComboBoxChartOptions.setEnabled(b);
 		jCheckBoxUniquePeptides.setEnabled(b);
-		jCheckBoxCountNonConclusiveProteins.setEnabled(b);
+		// jCheckBoxCountNonConclusiveProteins.setEnabled(b);
 		optionsFactory.disableAdditionalOptionControls(b);
 		// log.info("Finish disabling/enabling");
 	}
@@ -4131,13 +4502,13 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	private void saveWordCramCharts(List<WordCramChart> charts) {
 		if (charts != null && !charts.isEmpty()) {
 
-			JFileChooser fileChooser = new JFileChooser(currentFolder);
+			JFileChooser fileChooser = new JFileChooser(MainFrame.currentFolder);
 			fileChooser.addChoosableFileFilter(new ExtensionFileFilter("TIF images", "tif"));
 			int retVal = fileChooser.showSaveDialog(this);
 
 			if (retVal == JFileChooser.APPROVE_OPTION) {
 				File file = fileChooser.getSelectedFile();
-				currentFolder = file.getParentFile();
+				MainFrame.currentFolder = file.getParentFile();
 				for (int i = 0; i < charts.size(); i++) {
 					if ("".equals(FilenameUtils.getExtension(file.getAbsolutePath())))
 						file = new File(file.getAbsolutePath() + ".tif");
@@ -4168,7 +4539,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	}
 
 	public boolean countNonConclusiveProteins() {
-		return jCheckBoxCountNonConclusiveProteins.isSelected();
+		// return jCheckBoxCountNonConclusiveProteins.isSelected();
+		return false;
 	}
 
 	public void setErrorLoadingData(boolean b) {
@@ -4199,5 +4571,16 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			}
 		}
 		return new ArrayList<String>();
+	}
+
+	/**
+	 * @param additionalOptionsPanelFactory
+	 */
+	public void setAdditionalOptionsPanelFactory(AdditionalOptionsPanelFactory additionalOptionsPanelFactory) {
+		this.additionalOptionsPanelFactory = additionalOptionsPanelFactory;
+	}
+
+	public AdditionalOptionsPanelFactory getAdditionalOptionsPanelFactory() {
+		return this.additionalOptionsPanelFactory;
 	}
 }

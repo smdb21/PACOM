@@ -41,8 +41,8 @@ import org.proteored.miapeapi.experiment.model.ExtendedIdentifiedPeptide;
 import org.proteored.miapeapi.experiment.model.PeptideOccurrence;
 import org.proteored.miapeapi.experiment.model.Replicate;
 import org.proteored.miapeapi.experiment.model.sort.Order;
+import org.proteored.miapeapi.experiment.model.sort.ProteinGroupComparisonType;
 import org.proteored.miapeapi.experiment.model.sort.SorterUtil;
-import org.proteored.miapeapi.xml.util.ProteinGroupComparisonType;
 import org.proteored.pacom.analysis.charts.HeatChart;
 import org.proteored.pacom.analysis.charts.WordCramChart;
 import org.proteored.pacom.analysis.genes.GeneDistributionReader;
@@ -205,6 +205,9 @@ public class AdditionalOptionsPanelFactory {
 
 	public AdditionalOptionsPanelFactory(ChartManagerFrame frame) {
 		this.frame = frame;
+		if (this.frame != null) {
+			this.frame.setAdditionalOptionsPanelFactory(this);
+		}
 	}
 
 	// public static AdditionalOptionsPanelFactory getInstance(ChartManagerFrame
@@ -1923,8 +1926,10 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public JLabel getJLabelIntersectionsText() {
-		if (jLabelIntersectionsText == null)
+		if (jLabelIntersectionsText == null) {
 			jLabelIntersectionsText = new JLabel();
+			controlList.add(jLabelIntersectionsText);
+		}
 		return jLabelIntersectionsText;
 	}
 
@@ -2326,7 +2331,7 @@ public class AdditionalOptionsPanelFactory {
 				}
 			});
 
-			jradioButtonFirstProteinPerGroup = new JRadioButton("share the first protein");
+			jradioButtonFirstProteinPerGroup = new JRadioButton("share the protein with more evidence");
 			jradioButtonFirstProteinPerGroup.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2353,26 +2358,31 @@ public class AdditionalOptionsPanelFactory {
 			group.add(jradioButtonAllProteinsPerGroup);
 			group.add(jradioButtonBestProteinPerGroup);
 			group.add(jradioButtonFirstProteinPerGroup);
+			group.add(jradioButtonShareOneProtein);
 		}
-		jradioButtonAllProteinsPerGroup
-				.setToolTipText("<html>Take into account <b>all the proteins </b> per each protein group<br>"
-						+ "(just groups containing the same set of proteins will be considered as equivalents).</html>");
-		jradioButtonFirstProteinPerGroup
-				.setToolTipText("<html>Take into account just the <b>first protein</b> per each protein group.</html>");
-		jradioButtonBestProteinPerGroup
-				.setToolTipText("<html>Take into account the <b>best protein</b> per each protein group<br>"
-						+ "(the protein containing the best score if available, or<br>"
-						+ "the protein containing the best peptide).</html>");
+		jradioButtonAllProteinsPerGroup.setToolTipText(
+				"<html>Protein groups having <b>all the proteins in common</b> are considered as equivalent.</html>");
+		jradioButtonFirstProteinPerGroup.setToolTipText(
+				"<html>Protein groups having <b>the protein with more evidence in common</b> are considered as equivalent.<br>"
+						+ "(the protein with more evidence in the group is the one with a unique peptide, or having more peptides or more PSMs).</html>");
+
+		jradioButtonBestProteinPerGroup.setToolTipText(
+				"<html>Protein groups having the same <b>best protein</b> are considered as equivalent.<br>"
+						+ "(the best protein is the the protein containing the best score if available, or<br>"
+						+ "the one containing the best peptide, taking into account the peptide score if recognized).</html>");
+		jradioButtonShareOneProtein.setToolTipText(
+				"<html>Protein groups having <b>at least one protein in common </b>are considered as equivalent.</html>");
 
 		jPanel.add(jradioButtonAllProteinsPerGroup);
 		jPanel.add(jradioButtonFirstProteinPerGroup);
 		jPanel.add(jradioButtonBestProteinPerGroup);
+		jPanel.add(jradioButtonShareOneProtein);
 		return jPanel;
 	}
 
 	public ProteinGroupComparisonType getProteinGroupComparisonType() {
 		if (jradioButtonFirstProteinPerGroup != null && jradioButtonFirstProteinPerGroup.isSelected())
-			return ProteinGroupComparisonType.FIRST_PROTEIN;
+			return ProteinGroupComparisonType.HIGHER_EVIDENCE_PROTEIN;
 		if (jradioButtonAllProteinsPerGroup != null && jradioButtonAllProteinsPerGroup.isSelected())
 			return ProteinGroupComparisonType.ALL_PROTEINS;
 		if (jradioButtonBestProteinPerGroup != null && jradioButtonBestProteinPerGroup.isSelected())

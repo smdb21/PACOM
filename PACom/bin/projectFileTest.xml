@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CP_ExperimentList name="TEST">
+	<CP_Experiment curated="false" name="964-HPLC-RF CNB Jurkat">
+		<CP_Replicate name="replicate:15">
+			<CP_MSI_List>
+				<CP_MSI id="4619" name="MIAPE_MSI_4619.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="4598" name="MIAPE_MS_4598.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="replicate:16">
+			<CP_MSI_List>
+				<CP_MSI id="4620" name="MIAPE_MSI_4620.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="4599" name="MIAPE_MS_4599.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+		<CP_Replicate name="replicate:17">
+			<CP_MSI_List>
+				<CP_MSI id="4621" name="MIAPE_MSI_4621.xml"/>
+			</CP_MSI_List>
+			<CP_MS_List>
+				<CP_MS id="4600" name="MIAPE_MS_4600.xml"/>
+			</CP_MS_List>
+		</CP_Replicate>
+	</CP_Experiment>
+</CP_ExperimentList>

@@ -9,7 +9,6 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -31,12 +30,11 @@ import org.proteored.miapeapi.experiment.model.IdentificationItemEnum;
 import org.proteored.miapeapi.experiment.model.IdentificationSet;
 import org.proteored.miapeapi.experiment.model.ProteinGroup;
 import org.proteored.miapeapi.experiment.model.ProteinGroupOccurrence;
-import org.proteored.miapeapi.xml.util.ProteinGroupComparisonType;
+import org.proteored.miapeapi.experiment.model.sort.ProteinGroupComparisonType;
 import org.proteored.pacom.analysis.util.ImageUtils;
 
 public class VennChart {
-	private static final Logger log = Logger
-			.getLogger("log4j.logger.org.proteored");
+	private static final Logger log = Logger.getLogger("log4j.logger.org.proteored");
 	private Image image;
 	private final JPanel chartPanel = new JPanel();
 	private Integer intersection12 = null;
@@ -53,11 +51,9 @@ public class VennChart {
 
 	private final org.proteored.miapeapi.experiment.VennData vennData;
 
-	public VennChart(String title, IdentificationSet idset1, String label1,
-			IdentificationSet idset2, String label2, IdentificationSet idset3,
-			String label3, IdentificationItemEnum plotItem, Boolean distModPep,
-			Boolean countNonConclusiveProteins,
-			ProteinGroupComparisonType proteinGroupComparisonType) {
+	public VennChart(String title, IdentificationSet idset1, String label1, IdentificationSet idset2, String label2,
+			IdentificationSet idset3, String label3, IdentificationItemEnum plotItem, Boolean distModPep,
+			Boolean countNonConclusiveProteins, ProteinGroupComparisonType proteinGroupComparisonType) {
 
 		if (title != null)
 			title = title.replace(" ", "%20");
@@ -74,10 +70,6 @@ public class VennChart {
 		if (idset3 != null)
 			name3 = idset3.getFullName();
 
-		Set<String> list1 = new HashSet<String>();
-		Set<String> list2 = new HashSet<String>();
-		Set<String> list3 = new HashSet<String>();
-
 		// experiment set
 		if (plotItem.equals(IdentificationItemEnum.PROTEIN)) {
 
@@ -85,17 +77,13 @@ public class VennChart {
 			Collection proteinGroupOccurrenceList2 = null;
 			Collection proteinGroupOccurrenceList3 = null;
 			if (idset1 != null)
-				proteinGroupOccurrenceList1 = idset1
-						.getProteinGroupOccurrenceList().values();
+				proteinGroupOccurrenceList1 = idset1.getProteinGroupOccurrenceList().values();
 			if (idset2 != null)
-				proteinGroupOccurrenceList2 = idset2
-						.getProteinGroupOccurrenceList().values();
+				proteinGroupOccurrenceList2 = idset2.getProteinGroupOccurrenceList().values();
 			if (idset3 != null)
-				proteinGroupOccurrenceList3 = idset3
-						.getProteinGroupOccurrenceList().values();
-			this.vennData = new VennData(proteinGroupOccurrenceList1,
-					proteinGroupOccurrenceList2, proteinGroupOccurrenceList3,
-					proteinGroupComparisonType, countNonConclusiveProteins);
+				proteinGroupOccurrenceList3 = idset3.getProteinGroupOccurrenceList().values();
+			this.vennData = new VennData(proteinGroupOccurrenceList1, proteinGroupOccurrenceList2,
+					proteinGroupOccurrenceList3, proteinGroupComparisonType, countNonConclusiveProteins);
 			URL url;
 			try {
 				url = createChartURL(title, label1, label2, label3);
@@ -107,15 +95,17 @@ public class VennChart {
 			}
 
 		} else {
+			Collection pepList1 = null;
+			Collection pepList2 = null;
+			Collection pepList3 = null;
 			if (idset1 != null)
-				list1 = idset1.getPeptideOccurrenceList(distModPep).keySet();// getPeptideHash(idset1,
+				pepList1 = idset1.getPeptideOccurrenceList(distModPep).values();// getPeptideHash(idset1,
 			if (idset2 != null) // distModPep);
-				list2 = idset2.getPeptideOccurrenceList(distModPep).keySet();// getPeptideHash(idset2,
+				pepList2 = idset2.getPeptideOccurrenceList(distModPep).values();// getPeptideHash(idset2,
 			if (idset3 != null) // distModPep);
-				list3 = idset3.getPeptideOccurrenceList(distModPep).keySet();// getPeptideHash(idset3,
+				pepList3 = idset3.getPeptideOccurrenceList(distModPep).values();// getPeptideHash(idset3,
 			// distModPep);
-			this.vennData = new VennData(list1, list2, list3, null,
-					countNonConclusiveProteins);
+			this.vennData = new VennData(pepList1, pepList2, pepList3, null, countNonConclusiveProteins);
 			URL url;
 			try {
 				// url = createChartURL(title, label1, list1, label2, list2,
@@ -128,6 +118,18 @@ public class VennChart {
 				throw new IllegalMiapeArgumentException(e.getMessage());
 			}
 		}
+	}
+
+	public Collection<Object> getJustIn1() {
+		return this.vennData.getUniqueTo1();
+	}
+
+	public Collection<Object> getJustIn2() {
+		return this.vennData.getUniqueTo2();
+	}
+
+	public Collection<Object> getJustIn3() {
+		return this.vennData.getUniqueTo3();
 	}
 
 	private Comparator getShareOneProteinComparator() {
@@ -150,8 +152,7 @@ public class VennChart {
 			public int compare(Object o1, Object o2) {
 				ProteinGroup pg1 = null;
 				ProteinGroup pg2 = null;
-				if (o1 instanceof ProteinGroupOccurrence
-						&& o2 instanceof ProteinGroupOccurrence) {
+				if (o1 instanceof ProteinGroupOccurrence && o2 instanceof ProteinGroupOccurrence) {
 					pg1 = ((ProteinGroupOccurrence) o1).getFirstOccurrence();
 					pg2 = ((ProteinGroupOccurrence) o2).getFirstOccurrence();
 				}
@@ -160,10 +161,8 @@ public class VennChart {
 					pg2 = (ProteinGroup) o2;
 				}
 				if (pg1 != null && pg2 != null) {
-					ExtendedIdentifiedProtein bestProtein1 = pg1
-							.getBestProtein();
-					ExtendedIdentifiedProtein bestProtein2 = pg2
-							.getBestProtein();
+					ExtendedIdentifiedProtein bestProtein1 = pg1.getBestProtein();
+					ExtendedIdentifiedProtein bestProtein2 = pg2.getBestProtein();
 					if (bestProtein1.equals(bestProtein2))
 						return 0;
 					else
@@ -182,8 +181,7 @@ public class VennChart {
 			public int compare(Object o1, Object o2) {
 				ProteinGroup pg1 = null;
 				ProteinGroup pg2 = null;
-				if (o1 instanceof ProteinGroupOccurrence
-						&& o2 instanceof ProteinGroupOccurrence) {
+				if (o1 instanceof ProteinGroupOccurrence && o2 instanceof ProteinGroupOccurrence) {
 					pg1 = ((ProteinGroupOccurrence) o1).getFirstOccurrence();
 					pg2 = ((ProteinGroupOccurrence) o2).getFirstOccurrence();
 				}
@@ -192,8 +190,7 @@ public class VennChart {
 					pg2 = (ProteinGroup) o2;
 				}
 				if (pg1 != null && pg2 != null)
-					if (pg1.getAccessions().get(0)
-							.equals(pg2.getAccessions().get(0)))
+					if (pg1.getAccessions().get(0).equals(pg2.getAccessions().get(0)))
 						return 0;
 					else
 						return 1;
@@ -215,8 +212,7 @@ public class VennChart {
 					pg1 = (ProteinGroup) o1;
 					pg2 = (ProteinGroup) o2;
 				}
-				if (o1 instanceof ProteinGroupOccurrence
-						&& o2 instanceof ProteinGroupOccurrence) {
+				if (o1 instanceof ProteinGroupOccurrence && o2 instanceof ProteinGroupOccurrence) {
 					pg1 = ((ProteinGroupOccurrence) o1).getFirstOccurrence();
 					pg2 = ((ProteinGroupOccurrence) o2).getFirstOccurrence();
 				}
@@ -324,22 +320,17 @@ public class VennChart {
 	// // }
 	// }
 
-	private URL createChartURL(String title, String label1, String label2,
-			String label3) throws MalformedURLException {
+	private URL createChartURL(String title, String label1, String label2, String label3) throws MalformedURLException {
 		StringBuilder sb = new StringBuilder();
-		sb.append("http://chart.apis.google.com/chart?chs="
-				+ ChartProperties.DEFAULT_CHART_WIDTH + "x"
+		sb.append("http://chart.apis.google.com/chart?chs=" + ChartProperties.DEFAULT_CHART_WIDTH + "x"
 				+ ChartProperties.DEFAULT_CHART_HEIGHT);
 		sb.append("&chd=t:" + getDataString(vennData));
 		sb.append("&cht=v");
 
 		sb.append("&chdl=");
-		final String listString1 = getListString(label1,
-				vennData.getCollection1());
-		final String listString2 = getListString(label2,
-				vennData.getCollection2());
-		final String listString3 = getListString(label3,
-				vennData.getCollection3());
+		final String listString1 = getListString(label1, vennData.getCollection1());
+		final String listString2 = getListString(label2, vennData.getCollection2());
+		final String listString3 = getListString(label3, vennData.getCollection3());
 		sb.append(listString1);
 		if (!"".equals(listString1) && !"".equals(listString2))
 			sb.append("|");
@@ -446,24 +437,24 @@ public class VennChart {
 		int size3 = vennData.getSize3();
 		sb.append(size1 + "," + size2 + "," + size3);
 		// The fourth value specifies the size of the intersection of A and B.
-		this.intersection12 = vennData.getIntersection12().size();
+		this.intersection12 = vennData.getIntersection12Keys().size();
 		sb.append("," + intersection12);
 		// The fifth value specifies the size of the intersection of A and C.
 		// For a chart with only
 		// two circles, do not specify a value here.
-		this.intersection13 = vennData.getIntersection13().size();
+		this.intersection13 = vennData.getIntersection13Keys().size();
 		sb.append("," + intersection13);
 		// The sixth value specifies the size of the intersection of B and C.
 		// For a chart with only
 		// two circles, do not specify a value here.
 
-		this.intersection23 = vennData.getIntersection23().size();
+		this.intersection23 = vennData.getIntersection23Keys().size();
 		sb.append("," + intersection23);
 
 		// The seventh value specifies the size of the common intersection of A,
 		// B, and C. For a
 		// chart with only two circles, do not specify a value here.
-		this.intersection123 = vennData.getIntersection123().size();
+		this.intersection123 = vennData.getIntersection123Keys().size();
 		if (this.intersection123 > 0)
 			sb.append("," + intersection123);
 
@@ -569,15 +560,13 @@ public class VennChart {
 
 	private Image getImageFromURL(URL url) {
 		try {
-			image = java.awt.Toolkit.getDefaultToolkit().getDefaultToolkit()
-					.createImage(url);
+			image = java.awt.Toolkit.getDefaultToolkit().getDefaultToolkit().createImage(url);
 		} catch (SecurityException e) {
 			throw new IllegalMiapeArgumentException(e.getMessage());
 		}
 		if (image == null)
 			throw new IllegalMiapeArgumentException(
-					"It is not possible to reach the URL: " + url
-							+ ". Check the internet connection.");
+					"It is not possible to reach the URL: " + url + ". Check the internet connection.");
 		return image;
 	}
 
@@ -586,11 +575,9 @@ public class VennChart {
 		return outputFile.getAbsolutePath();
 	}
 
-	private void saveGraphicJpeg(BufferedImage chart, File outputFile,
-			float quality) throws IOException {
+	private void saveGraphicJpeg(BufferedImage chart, File outputFile, float quality) throws IOException {
 		// Setup correct compression for jpeg.
-		Iterator<ImageWriter> iter = ImageIO
-				.getImageWritersByFormatName("jpeg");
+		Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("jpeg");
 		ImageWriter writer = iter.next();
 		ImageWriteParam iwp = writer.getDefaultWriteParam();
 		iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
@@ -666,121 +653,87 @@ public class VennChart {
 
 		if (experiment != null)
 			sb.append("<b>" + experiment + "</b><br>");
-		int union = this.vennData.getUnion123().size();
+		int union = this.vennData.getUnion123Keys().size();
 
 		if (name1 != null)
-			sb.append("<br> 1 -> "
-					+ name1
-					+ " = "
-					+ this.vennData.getSize1()
-					+ " ("
-					+ df.format(Double.valueOf(this.vennData.getSize1() * 100.0
-							/ union)) + "% of union)");
+			sb.append("<br> 1 -> " + name1 + " = " + this.vennData.getSize1() + " ("
+					+ df.format(Double.valueOf(this.vennData.getSize1() * 100.0 / union)) + "% of union)");
 		if (name2 != null)
-			sb.append("<br> 2 -> "
-					+ name2
-					+ " = "
-					+ this.vennData.getSize2()
-					+ " ("
-					+ df.format(Double.valueOf(this.vennData.getSize2() * 100.0
-							/ union)) + "% of union)");
+			sb.append("<br> 2 -> " + name2 + " = " + this.vennData.getSize2() + " ("
+					+ df.format(Double.valueOf(this.vennData.getSize2() * 100.0 / union)) + "% of union)");
 		if (name3 != null)
-			sb.append("<br> 3 -> "
-					+ name3
-					+ " = "
-					+ this.vennData.getSize3()
-					+ " ("
-					+ df.format(Double.valueOf(this.vennData.getSize3() * 100.0
-							/ union)) + "% of union)");
+			sb.append("<br> 3 -> " + name3 + " = " + this.vennData.getSize3() + " ("
+					+ df.format(Double.valueOf(this.vennData.getSize3() * 100.0 / union)) + "% of union)");
 		sb.append("<br>");
 		sb.append("<br>Union=" + union + " (100%)");
 
 		if (name1 != null && name2 != null) {
 			if (!"".equals(sb.toString()))
 				sb.append("<br>");
-			sb.append("Overlap (1,2) = "
-					+ intersection12
-					+ " ("
-					+ df.format(Double.valueOf(intersection12 * 100.0
-							/ this.vennData.getUnion12().size()))
+			sb.append("Overlap (1,2) = " + intersection12 + " ("
+					+ df.format(Double.valueOf(intersection12 * 100.0 / this.vennData.getUnion12().size()))
 					+ "% of union)");
 		}
 		if (name1 != null && name3 != null) {
 			if (!"".equals(sb.toString()))
 				sb.append("<br>");
-			sb.append("Overlap (1,3) = "
-					+ intersection13
-					+ " ("
-					+ df.format(Double.valueOf(intersection13 * 100.0
-							/ this.vennData.getUnion13().size()))
+			sb.append("Overlap (1,3) = " + intersection13 + " ("
+					+ df.format(Double.valueOf(intersection13 * 100.0 / this.vennData.getUnion13().size()))
 					+ "% of union)");
 		}
 		if (name3 != null && name2 != null) {
 			if (!"".equals(sb.toString()))
 				sb.append("<br>");
-			sb.append("Overlap (2,3) = "
-					+ intersection23
-					+ " ("
-					+ df.format(intersection23 * 100.0
-							/ this.vennData.getUnion23().size())
-					+ "% of union)");
+			sb.append("Overlap (2,3) = " + intersection23 + " ("
+					+ df.format(intersection23 * 100.0 / this.vennData.getUnion23().size()) + "% of union)");
 		}
 
 		if (name1 != null && name2 != null && name3 != null) {
 			if (!"".equals(sb.toString()))
 				sb.append("<br>");
-			sb.append("Overlap (1,2,3) = " + intersection123 + " ("
-					+ df.format(intersection123 * 100.0 / union)
+			sb.append("Overlap (1,2,3) = " + intersection123 + " (" + df.format(intersection123 * 100.0 / union)
 					+ "% of union)");
 		}
 		if (name1 != null) {
 			if (!"".equals(sb.toString()))
 				sb.append("<br>");
-			Double just1 = this.vennData.getUniqueTo1().size() * 100.0 / union;
-			int overlappedTo1 = this.vennData.getIntersection12().size()
-					+ this.vennData.getIntersection13().size()
-					- this.vennData.getIntersection123().size();
-			sb.append("Just in 1 = "
-					+ this.vennData.getUniqueTo1().size()
-					+ " ("
-					+ df.format(just1)
-					+ "% of union) ("
-					+ df.format((overlappedTo1) * 100.0
-							/ this.vennData.getSize1()) + "% overlapped)");
+			Double just1 = this.vennData.getUniqueTo1Keys().size() * 100.0 / union;
+			int overlappedTo1 = this.vennData.getIntersection12Keys().size()
+					+ this.vennData.getIntersection13Keys().size() - this.vennData.getIntersection123Keys().size();
+			sb.append(
+					"Just in 1 = " + this.vennData.getUniqueTo1Keys().size() + " (" + df.format(just1) + "% of union) ("
+							+ df.format((overlappedTo1) * 100.0 / this.vennData.getSize1()) + "% overlapped)");
 		}
 		if (name2 != null) {
 			if (!"".equals(sb.toString()))
 				sb.append("<br>");
-			Double just2 = this.vennData.getUniqueTo2().size() * 100.0 / union;
-			int overlappedTo2 = this.vennData.getIntersection12().size()
-					+ this.vennData.getIntersection23().size()
-					- this.vennData.getIntersection123().size();
-			sb.append("Just in 2 = "
-					+ this.vennData.getUniqueTo2().size()
-					+ " ("
-					+ df.format(just2)
-					+ "% of union) ("
-					+ df.format((overlappedTo2) * 100.0
-							/ this.vennData.getSize2()) + "% overlapped)");
+			Double just2 = this.vennData.getUniqueTo2Keys().size() * 100.0 / union;
+			int overlappedTo2 = this.vennData.getIntersection12().size() + this.vennData.getIntersection23().size()
+					- this.vennData.getIntersection123Keys().size();
+			sb.append(
+					"Just in 2 = " + this.vennData.getUniqueTo2Keys().size() + " (" + df.format(just2) + "% of union) ("
+							+ df.format((overlappedTo2) * 100.0 / this.vennData.getSize2()) + "% overlapped)");
 		}
 		if (name3 != null) {
 			if (!"".equals(sb.toString()))
 				sb.append("<br>");
-			Double just3 = this.vennData.getUniqueTo3().size() * 100.0 / union;
-			int overlappedTo3 = this.vennData.getIntersection13().size()
-					+ this.vennData.getIntersection23().size()
-					- this.vennData.getIntersection123().size();
-			sb.append("Just in 3 = "
-					+ this.vennData.getUniqueTo3().size()
-					+ " ("
-					+ df.format(just3)
-					+ "% of union) ("
-					+ df.format((overlappedTo3) * 100.0
-							/ this.vennData.getSize3()) + "% overlapped)");
+			Double just3 = this.vennData.getUniqueTo3Keys().size() * 100.0 / union;
+			int overlappedTo3 = this.vennData.getIntersection13().size() + this.vennData.getIntersection23().size()
+					- this.vennData.getIntersection123Keys().size();
+			sb.append(
+					"Just in 3 = " + this.vennData.getUniqueTo3Keys().size() + " (" + df.format(just3) + "% of union) ("
+							+ df.format((overlappedTo3) * 100.0 / this.vennData.getSize3()) + "% overlapped)");
 		}
 		sb.append("<br><br>");
 
 		return sb.toString();
+	}
+
+	/**
+	 * @return
+	 */
+	public VennData getVennData() {
+		return this.vennData;
 	}
 
 }

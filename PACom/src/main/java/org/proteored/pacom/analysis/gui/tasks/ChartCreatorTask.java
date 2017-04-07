@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.JCheckBox;
@@ -24,13 +25,14 @@ import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.data.statistics.HistogramType;
 import org.jfree.data.xy.XYDataset;
 import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
+import org.proteored.miapeapi.experiment.VennData;
 import org.proteored.miapeapi.experiment.model.Experiment;
 import org.proteored.miapeapi.experiment.model.ExperimentList;
 import org.proteored.miapeapi.experiment.model.IdentificationItemEnum;
 import org.proteored.miapeapi.experiment.model.IdentificationSet;
 import org.proteored.miapeapi.experiment.model.Replicate;
 import org.proteored.miapeapi.experiment.model.filters.FDRFilter;
-import org.proteored.miapeapi.xml.util.ProteinGroupComparisonType;
+import org.proteored.miapeapi.experiment.model.sort.ProteinGroupComparisonType;
 import org.proteored.pacom.analysis.charts.BarChart;
 import org.proteored.pacom.analysis.charts.CombinedChart;
 import org.proteored.pacom.analysis.charts.HeatMapChart;
@@ -59,6 +61,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	private String error;
 	private final AdditionalOptionsPanelFactory optionsFactory;
 	private final boolean countNonConclusiveProteins;
+	private final Map<String, VennData> vennDataMap = new HashMap<String, VennData>();
 
 	public ChartCreatorTask(ChartManagerFrame parent, String chartType, String optionParam,
 			ExperimentList experimentList) {
@@ -71,7 +74,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		this.parent = parent;
 		optionsFactory = parent.getOptionsFactory();
 		countNonConclusiveProteins = parent.countNonConclusiveProteins();
-		log.info("Creating a new chart creator");
+		log.info("Creating a new chart creator: CountNonConclusive:" + countNonConclusiveProteins);
 	}
 
 	@Override
@@ -1266,6 +1269,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see javax.swing.SwingWorker#done()
 	 */
 	@Override
@@ -2329,6 +2333,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	// }
 
 	private Object showOverlappingChart(IdentificationItemEnum plotItem) {
+		this.vennDataMap.clear();
 		parent.setInformation1(parent.getCurrentChartType() + " / " + plotItem);
 		IdentificationSet idSet1 = null;
 		String label1 = null;
@@ -2339,9 +2344,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		final HashMap<String, JCheckBox> checkBoxControls = optionsFactory.getIdSetsJCheckBoxes();
 
 		ProteinGroupComparisonType proteinSelection = null;
-		if (IdentificationItemEnum.PROTEIN.equals(plotItem))
+		if (IdentificationItemEnum.PROTEIN.equals(plotItem)) {
 			proteinSelection = optionsFactory.getProteinGroupComparisonType();
-
+		}
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 			final List<Experiment> experiments = experimentList.getExperiments();
 			for (Experiment experiment : experiments) {
@@ -2365,6 +2370,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			VennChart chart = new VennChart(parent.getChartTitle(chartType), idSet1, label1, idSet2, label2, idSet3,
 					label3, plotItem, parent.distinguishModifiedPeptides(), countNonConclusiveProteins,
 					proteinSelection);
+			this.vennDataMap.put(null, chart.getVennData());
 			String intersectionsText = chart.getIntersectionsText(null);
 			optionsFactory.setIntersectionText(intersectionsText);
 			return chart.getChartPanel();
@@ -2390,6 +2396,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			VennChart chart = new VennChart(parent.getChartTitle(chartType), idSet1, label1, idSet2, label2, idSet3,
 					label3, plotItem, parent.distinguishModifiedPeptides(), countNonConclusiveProteins,
 					proteinSelection);
+			this.vennDataMap.put(null, chart.getVennData());
 			optionsFactory.setIntersectionText(chart.getIntersectionsText(null));
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
@@ -2399,6 +2406,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			VennChart chart = new VennChart(parent.getChartTitle(chartType), idSet1, label1, idSet2, label2, idSet3,
 					label3, plotItem, parent.distinguishModifiedPeptides(), countNonConclusiveProteins,
 					proteinSelection);
+			this.vennDataMap.put(null, chart.getVennData());
 			optionsFactory.setIntersectionText(chart.getIntersectionsText(null));
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
@@ -2432,6 +2440,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				VennChart chart = new VennChart(parent.getChartTitle(chartType) + " (" + experiment.getName() + ")",
 						idSet1, label1, idSet2, label2, idSet3, label3, plotItem, parent.distinguishModifiedPeptides(),
 						countNonConclusiveProteins, proteinSelection);
+				this.vennDataMap.put(experiment.getName(), chart.getVennData());
 				intersectionText += chart.getIntersectionsText(experiment.getName());
 				chartList.add(chart.getChartPanel());
 			}
@@ -3744,7 +3753,22 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	}
 
 	public void notifyProgress(String message) {
-
 		firePropertyChange(DATASET_PROGRESS, null, message);
+	}
+
+	/**
+	 * @param experimentName
+	 * @return
+	 * 
+	 */
+	public VennData getVennData(String experimentName) {
+		return this.vennDataMap.get(experimentName);
+	}
+
+	/**
+	 * @return
+	 */
+	public String getChartType() {
+		return this.chartType + " (" + this.option + ")";
 	}
 }

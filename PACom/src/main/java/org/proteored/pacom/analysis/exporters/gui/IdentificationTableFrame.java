@@ -10,7 +10,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
@@ -23,6 +26,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.log4j.Logger;
 import org.jfree.ui.RefineryUtilities;
 import org.proteored.miapeapi.experiment.model.IdentificationSet;
+import org.proteored.miapeapi.experiment.model.sort.ProteinGroupComparisonType;
 import org.proteored.pacom.analysis.exporters.ExporterManager;
 import org.proteored.pacom.analysis.exporters.tasks.JTableLoader;
 import org.proteored.pacom.analysis.exporters.util.ExportedColumns;
@@ -35,12 +39,11 @@ import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
  * 
  * @author __USER__
  */
-public class IdentificationTableFrame extends javax.swing.JFrame implements
-		ExporterManager, PropertyChangeListener {
+public class IdentificationTableFrame extends javax.swing.JFrame implements ExporterManager, PropertyChangeListener {
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
 	private static final int NUM_MIN_TYPED_CHARS = 2;
 
-	private final IdentificationSet idSet;
+	private final Set<IdentificationSet> idSets = new HashSet<IdentificationSet>();
 
 	private JTableLoader tableExporter;
 	private JPanel scrollPanel;
@@ -49,15 +52,15 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements
 	private final ChartManagerFrame parentFrame;
 	private static IdentificationTableFrame instance;
 
-	public static IdentificationTableFrame getInstance(
-			ChartManagerFrame parent, IdentificationSet idSet) {
-		if (instance == null || !idSet.equals(instance.idSet))
-			instance = new IdentificationTableFrame(parent, idSet);
+	public static IdentificationTableFrame getInstance(ChartManagerFrame parent, Collection<IdentificationSet> idSets) {
+		if (instance == null || !idSets.containsAll(instance.idSets))
+			instance = new IdentificationTableFrame(parent, idSets);
 
 		// Just enable if the FDR filter is enabled
-		if (idSet != null && parent.getFiltersDialog() != null
-				&& parent.getFiltersDialog().isFDRFilterDefined())
+		if (idSets != null && !idSets.isEmpty() && parent.getFiltersDialog() != null
+				&& parent.getFiltersDialog().isFDRFilterDefined()) {
 			instance.jCheckBoxIncludeDecoy.setEnabled(true);
+		}
 		return instance;
 	}
 
@@ -68,30 +71,39 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements
 		super.setVisible(b);
 	}
 
+	private String getIdentificationSetNameString() {
+		StringBuilder sb = new StringBuilder();
+		for (IdentificationSet identificationSet : idSets) {
+			if (!"".equals(sb.toString())) {
+				sb.append(",");
+			}
+			sb.append(identificationSet.getName());
+		}
+		return sb.toString();
+	}
+
 	/** Creates new form IdentificationTableFrame */
-	private IdentificationTableFrame(ChartManagerFrame parent,
-			IdentificationSet idSet) {
+	private IdentificationTableFrame(ChartManagerFrame parent, Collection<IdentificationSet> idSets) {
 		try {
 			UIManager.setLookAndFeel(new WindowsLookAndFeel());
 		} catch (UnsupportedLookAndFeelException e) {
 		}
 		initComponents();
 		// MainFrame.autoScroll(jScrollPane3, jTextAreaStatus);
-		this.idSet = idSet;
-		if (this.idSet != null)
-			setTitle("Identification table: '" + idSet.getName() + "'");
-		else
+		this.idSets.addAll(idSets);
+		if (!this.idSets.isEmpty()) {
+			setTitle("Identification table: '" + getIdentificationSetNameString() + "'");
+		} else {
 			setTitle("Identification table");
+		}
 		loadTable();
 		// Just enable if the protein sequences have not been retrieved before
-		jCheckBoxSearchForProteinSequence.setEnabled(!parent
-				.isProteinSequencesRetrieved());
+		jCheckBoxSearchForProteinSequence.setEnabled(!parent.isProteinSequencesRetrieved());
 
 		parentFrame = parent;
 
 		// set icon image
-		setIconImage(ImageManager
-				.getImageIcon(ImageManager.PROTEORED_MIAPE_API).getImage());
+		setIconImage(ImageManager.getImageIcon(ImageManager.PROTEORED_MIAPE_API).getImage());
 
 		// set font to textarea
 		jTextAreaStatus.setFont(new JLabel().getFont());
@@ -101,21 +113,17 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements
 	}
 
 	private void updateColumnNamesComboBox() {
-		List<String> columnsStringList = ExportedColumns
-				.getColumnsStringForTable(
-						isReplicateAndExperimentOriginIncluded(),
-						showPeptides(), isGeneInfoIncluded(),
-						jCheckBoxIncludeDecoy.isEnabled(), idSet);
-		jComboBoxColumnNames.setModel(new DefaultComboBoxModel(
-				columnsStringList.toArray()));
+		List<String> columnsStringList = ExportedColumns.getColumnsStringForTable(
+				isReplicateAndExperimentOriginIncluded(), showPeptides(), isGeneInfoIncluded(),
+				jCheckBoxIncludeDecoy.isEnabled(), idSets);
+		jComboBoxColumnNames.setModel(new DefaultComboBoxModel(columnsStringList.toArray()));
 		jComboBoxColumnNames.setSelectedIndex(3);
 
 	}
 
 	@Override
 	public void dispose() {
-		if (tableExporter != null
-				&& tableExporter.getState() == StateValue.STARTED) {
+		if (tableExporter != null && tableExporter.getState() == StateValue.STARTED) {
 			boolean canceled = tableExporter.cancel(true);
 			while (!canceled) {
 				canceled = tableExporter.cancel(true);
@@ -163,114 +171,102 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements
 		jPanelLeft.setPreferredSize(new java.awt.Dimension(283, 400));
 		jPanelLeft.setRequestFocusEnabled(false);
 
-		jPanelOptions.setBorder(javax.swing.BorderFactory.createTitledBorder(
-				javax.swing.BorderFactory.createEtchedBorder(), "Options"));
+		jPanelOptions.setBorder(javax.swing.BorderFactory
+				.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Options"));
 
 		jCheckBoxIncludeDecoy.setText("include DECOY hits");
-		jCheckBoxIncludeDecoy
-				.setToolTipText("<html>If this options is activated, decoy peptides/proteins <br>will also be included in the exported file.<br>\nThis options only is available if a FDR filter is applied.</html>");
+		jCheckBoxIncludeDecoy.setToolTipText(
+				"<html>If this options is activated, decoy peptides/proteins <br>will also be included in the exported file.<br>\nThis options only is available if a FDR filter is applied.</html>");
 		jCheckBoxIncludeDecoy.setEnabled(false);
-		jCheckBoxIncludeDecoy
-				.addActionListener(new java.awt.event.ActionListener() {
-					@Override
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						jCheckBoxIncludeDecoyActionPerformed(evt);
-					}
-				});
+		jCheckBoxIncludeDecoy.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jCheckBoxIncludeDecoyActionPerformed(evt);
+			}
+		});
 
-		jCheckBoxIncludeExperimentReplicateOrigin
-				.setText("include project tree level names");
-		jCheckBoxIncludeExperimentReplicateOrigin
-				.setToolTipText("<html>\nAdd columns indicating at which node of the comparison project tree, each identification item belongs\n</html>");
-		jCheckBoxIncludeExperimentReplicateOrigin
-				.addActionListener(new java.awt.event.ActionListener() {
-					@Override
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						jCheckBoxIncludeExperimentReplicateOriginActionPerformed(evt);
-					}
-				});
+		jCheckBoxIncludeExperimentReplicateOrigin.setText("include project tree level names");
+		jCheckBoxIncludeExperimentReplicateOrigin.setToolTipText(
+				"<html>\nAdd columns indicating at which node of the comparison project tree, each identification item belongs\n</html>");
+		jCheckBoxIncludeExperimentReplicateOrigin.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jCheckBoxIncludeExperimentReplicateOriginActionPerformed(evt);
+			}
+		});
 
-		jCheckBoxSearchForProteinSequence
-				.setText("calculate protein coverages");
-		jCheckBoxSearchForProteinSequence
-				.setToolTipText("<html>\nThis options will retrieve protein sequences from the Internet in order to\n<br>\ncalculate the protein coverage. Depending on the number of proteins you\n<br>have, it can take several minutes.\n</html>");
-		jCheckBoxSearchForProteinSequence
-				.addActionListener(new java.awt.event.ActionListener() {
-					@Override
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						jCheckBoxSearchForProteinSequenceActionPerformed(evt);
-					}
-				});
+		jCheckBoxSearchForProteinSequence.setText("calculate protein coverages");
+		jCheckBoxSearchForProteinSequence.setToolTipText(
+				"<html>\nThis options will retrieve protein sequences from the Internet in order to\n<br>\ncalculate the protein coverage. Depending on the number of proteins you\n<br>have, it can take several minutes.\n</html>");
+		jCheckBoxSearchForProteinSequence.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jCheckBoxSearchForProteinSequenceActionPerformed(evt);
+			}
+		});
 
 		jCheckBoxIncludeGeneInfo.setText("include gene information");
-		jCheckBoxIncludeGeneInfo
-				.setToolTipText("<html>\nThis option will add some columns containing information<br>\nabout the genes associated with each protein.\n</html>");
-		jCheckBoxIncludeGeneInfo
-				.addActionListener(new java.awt.event.ActionListener() {
-					@Override
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						jCheckBoxIncludeGeneInfoActionPerformed(evt);
-					}
-				});
+		jCheckBoxIncludeGeneInfo.setToolTipText(
+				"<html>\nThis option will add some columns containing information<br>\nabout the genes associated with each protein.\n</html>");
+		jCheckBoxIncludeGeneInfo.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jCheckBoxIncludeGeneInfoActionPerformed(evt);
+			}
+		});
 
 		jCheckBoxCollapsePeptides.setText("show just the best peptides");
-		jCheckBoxCollapsePeptides
-				.setToolTipText("<html>\nIf this option is activated, if the same peptide has been detected\n<br>\nmore than once, it will appear only once in the exported table and\n<br>\nthe score will be the best score of all occurrences.</html>");
+		jCheckBoxCollapsePeptides.setToolTipText(
+				"<html>\nIf this option is activated, if the same peptide has been detected\n<br>\nmore than once, it will appear only once in the exported table and\n<br>\nthe score will be the best score of all occurrences.</html>");
 		jCheckBoxCollapsePeptides.setEnabled(false);
-		jCheckBoxCollapsePeptides
-				.addActionListener(new java.awt.event.ActionListener() {
-					@Override
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						jCheckBoxCollapsePeptidesActionPerformed(evt);
-					}
-				});
+		jCheckBoxCollapsePeptides.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jCheckBoxCollapsePeptidesActionPerformed(evt);
+			}
+		});
 
 		jCheckBoxCollapseProteins.setSelected(true);
 		jCheckBoxCollapseProteins.setText("show just the best proteins");
-		jCheckBoxCollapseProteins
-				.setToolTipText("<html>\nIf this option is activated, if the same protein has been detected\n<br>\nmore than once, it will appear only once in the exported table and\n<br>\nthe score will be the best score of all occurrences.</html>");
-		jCheckBoxCollapseProteins
-				.addActionListener(new java.awt.event.ActionListener() {
-					@Override
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						jCheckBoxCollapseProteinsActionPerformed(evt);
-					}
-				});
+		jCheckBoxCollapseProteins.setToolTipText(
+				"<html>\nIf this option is activated, if the same protein has been detected\n<br>\nmore than once, it will appear only once in the exported table and\n<br>\nthe score will be the best score of all occurrences.</html>");
+		jCheckBoxCollapseProteins.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jCheckBoxCollapseProteinsActionPerformed(evt);
+			}
+		});
 
 		buttonGroupProteinOrPeptide.add(jRadioButtonShowProteins);
 		jRadioButtonShowProteins.setSelected(true);
 		jRadioButtonShowProteins.setText("show proteins");
 		jRadioButtonShowProteins.setToolTipText("Show just proteins");
-		jRadioButtonShowProteins
-				.addActionListener(new java.awt.event.ActionListener() {
-					@Override
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						jRadioButtonShowProteinsActionPerformed(evt);
-					}
-				});
+		jRadioButtonShowProteins.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jRadioButtonShowProteinsActionPerformed(evt);
+			}
+		});
 
 		buttonGroupProteinOrPeptide.add(jRadioButtonShowPeptides);
 		jRadioButtonShowPeptides.setText("show peptides");
 		jRadioButtonShowPeptides.setToolTipText("Show just peptides");
-		jRadioButtonShowPeptides
-				.addActionListener(new java.awt.event.ActionListener() {
-					@Override
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						jRadioButtonShowPeptidesActionPerformed(evt);
-					}
-				});
+		jRadioButtonShowPeptides.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jRadioButtonShowPeptidesActionPerformed(evt);
+			}
+		});
 
-		jCheckBoxIncludeNonConclusiveProteins
-				.setText("include NON Conclusive proteins");
-		jCheckBoxIncludeNonConclusiveProteins
-				.setToolTipText("<html>Select this checkbox in order to exclude the <b>Non Conclusive</b> proteins<br>in the exported data.<br><b>Non conclusive protein</b> is a protein that shares all its matched peptides<br> with either conclusive or indistinguishable proteins.<br>\nA <b>conclusive protein</b> is a protein identified by at least one unique (distinct, discrete) peptide (peptides are considered different only if they can be distinguished by evidence in mass spectrum)<br>\nA <b>indistinguisable protein</b> is a member of a group of proteins sharing all peptides that are exclusive to the group (peptides are considered different only if they can be distinguished by evidence in mass spectrum).</html>\");\n");
-		jCheckBoxIncludeNonConclusiveProteins
-				.addActionListener(new java.awt.event.ActionListener() {
-					@Override
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						jCheckBoxIncludeNonConclusiveProteinsActionPerformed(evt);
-					}
-				});
+		jCheckBoxIncludeNonConclusiveProteins.setText("include NON Conclusive proteins");
+		jCheckBoxIncludeNonConclusiveProteins.setToolTipText(
+				"<html>Select this checkbox in order to exclude the <b>Non Conclusive</b> proteins<br>in the exported data.<br><b>Non conclusive protein</b> is a protein that shares all its matched peptides<br> with either conclusive or indistinguishable proteins.<br>\nA <b>conclusive protein</b> is a protein identified by at least one unique (distinct, discrete) peptide (peptides are considered different only if they can be distinguished by evidence in mass spectrum)<br>\nA <b>indistinguisable protein</b> is a member of a group of proteins sharing all peptides that are exclusive to the group (peptides are considered different only if they can be distinguished by evidence in mass spectrum).</html>\");\n");
+		jCheckBoxIncludeNonConclusiveProteins.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jCheckBoxIncludeNonConclusiveProteinsActionPerformed(evt);
+			}
+		});
 
 		jButtonCancel.setText("cancel");
 		jButtonCancel.setToolTipText("Cancel data loading");
@@ -282,125 +278,69 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements
 			}
 		});
 
-		javax.swing.GroupLayout jPanelOptionsLayout = new javax.swing.GroupLayout(
-				jPanelOptions);
+		javax.swing.GroupLayout jPanelOptionsLayout = new javax.swing.GroupLayout(jPanelOptions);
 		jPanelOptions.setLayout(jPanelOptionsLayout);
 		jPanelOptionsLayout
-				.setHorizontalGroup(jPanelOptionsLayout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanelOptionsLayout
-										.createSequentialGroup()
-										.addGroup(
-												jPanelOptionsLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.LEADING)
-														.addComponent(
-																jCheckBoxIncludeDecoy)
-														.addComponent(
-																jCheckBoxIncludeExperimentReplicateOrigin)
-														.addComponent(
-																jCheckBoxIncludeGeneInfo)
-														.addComponent(
-																jCheckBoxIncludeNonConclusiveProteins)
-														.addComponent(
-																jCheckBoxSearchForProteinSequence)
-														.addComponent(
-																jRadioButtonShowPeptides)
-														.addComponent(
-																jCheckBoxCollapseProteins)
-														.addComponent(
-																jRadioButtonShowProteins)
-														.addGroup(
-																jPanelOptionsLayout
-																		.createSequentialGroup()
-																		.addComponent(
-																				jCheckBoxCollapsePeptides)
+				.setHorizontalGroup(
+						jPanelOptionsLayout
+								.createParallelGroup(
+										javax.swing.GroupLayout.Alignment.LEADING)
+								.addGroup(
+										jPanelOptionsLayout.createSequentialGroup()
+												.addGroup(
+														jPanelOptionsLayout
+																.createParallelGroup(
+																		javax.swing.GroupLayout.Alignment.LEADING)
+																.addComponent(jCheckBoxIncludeDecoy)
+																.addComponent(jCheckBoxIncludeExperimentReplicateOrigin)
+																.addComponent(jCheckBoxIncludeGeneInfo)
+																.addComponent(jCheckBoxIncludeNonConclusiveProteins)
+																.addComponent(jCheckBoxSearchForProteinSequence)
+																.addComponent(jRadioButtonShowPeptides)
+																.addComponent(jCheckBoxCollapseProteins)
+																.addComponent(jRadioButtonShowProteins)
+																.addGroup(jPanelOptionsLayout.createSequentialGroup()
+																		.addComponent(jCheckBoxCollapsePeptides)
 																		.addPreferredGap(
 																				javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-																		.addComponent(
-																				jButtonCancel)))
-										.addContainerGap(
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)));
-		jPanelOptionsLayout
-				.setVerticalGroup(jPanelOptionsLayout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanelOptionsLayout
-										.createSequentialGroup()
-										.addComponent(
-												jCheckBoxIncludeDecoy,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
-												30,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(
-												jCheckBoxIncludeExperimentReplicateOrigin,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
-												30,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(
-												jCheckBoxIncludeGeneInfo,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
-												30,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(
-												jCheckBoxIncludeNonConclusiveProteins,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
-												30,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(
-												jCheckBoxSearchForProteinSequence,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
-												30,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jRadioButtonShowProteins)
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
-										.addComponent(jRadioButtonShowPeptides)
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(
-												jCheckBoxCollapseProteins,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
-												30,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addGroup(
-												jPanelOptionsLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(
-																jCheckBoxCollapsePeptides,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																30,
-																javax.swing.GroupLayout.PREFERRED_SIZE)
-														.addComponent(
-																jButtonCancel))
-										.addGap(81, 81, 81)));
+																.addComponent(jButtonCancel)))
+						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+		jPanelOptionsLayout.setVerticalGroup(jPanelOptionsLayout
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanelOptionsLayout.createSequentialGroup()
+						.addComponent(jCheckBoxIncludeDecoy, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+								javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jCheckBoxIncludeExperimentReplicateOrigin, javax.swing.GroupLayout.PREFERRED_SIZE,
+								30, javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jCheckBoxIncludeGeneInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+								javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jCheckBoxIncludeNonConclusiveProteins, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+								javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jCheckBoxSearchForProteinSequence, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+								javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jRadioButtonShowProteins)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+								javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(jRadioButtonShowPeptides)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jCheckBoxCollapseProteins, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+								javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addGroup(jPanelOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jCheckBoxCollapsePeptides, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+										javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addComponent(jButtonCancel))
+						.addGap(81, 81, 81)));
 
 		jPanelFilterByColumn.setBorder(javax.swing.BorderFactory
-				.createTitledBorder(
-						javax.swing.BorderFactory.createEtchedBorder(),
-						"Filter table"));
+				.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Filter table"));
 
-		jComboBoxColumnNames.setModel(new javax.swing.DefaultComboBoxModel(
-				new String[] { "asdf" }));
+		jComboBoxColumnNames.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "asdf" }));
 		jComboBoxColumnNames.setToolTipText("Column names");
 		jComboBoxColumnNames.addItemListener(new java.awt.event.ItemListener() {
 			@Override
@@ -421,71 +361,36 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements
 
 		jLabel2.setText("Filter:");
 
-		javax.swing.GroupLayout jPanelFilterByColumnLayout = new javax.swing.GroupLayout(
-				jPanelFilterByColumn);
+		javax.swing.GroupLayout jPanelFilterByColumnLayout = new javax.swing.GroupLayout(jPanelFilterByColumn);
 		jPanelFilterByColumn.setLayout(jPanelFilterByColumnLayout);
 		jPanelFilterByColumnLayout
-				.setHorizontalGroup(jPanelFilterByColumnLayout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanelFilterByColumnLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												jPanelFilterByColumnLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.LEADING)
-														.addComponent(jLabel1)
-														.addComponent(jLabel2))
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addGroup(
-												jPanelFilterByColumnLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.LEADING)
-														.addComponent(
-																jTextFieldFilter,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																185,
-																Short.MAX_VALUE)
-														.addComponent(
-																jComboBoxColumnNames,
-																0, 185,
-																Short.MAX_VALUE))
-										.addContainerGap()));
-		jPanelFilterByColumnLayout
-				.setVerticalGroup(jPanelFilterByColumnLayout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanelFilterByColumnLayout
-										.createSequentialGroup()
-										.addGroup(
-												jPanelFilterByColumnLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(jLabel1)
-														.addComponent(
-																jComboBoxColumnNames,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addGroup(
-												jPanelFilterByColumnLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(jLabel2)
-														.addComponent(
-																jTextFieldFilter,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.PREFERRED_SIZE))
-										.addContainerGap(
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)));
+				.setHorizontalGroup(
+						jPanelFilterByColumnLayout
+								.createParallelGroup(
+										javax.swing.GroupLayout.Alignment.LEADING)
+								.addGroup(jPanelFilterByColumnLayout.createSequentialGroup().addContainerGap()
+										.addGroup(jPanelFilterByColumnLayout
+												.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+												.addComponent(jLabel1).addComponent(jLabel2))
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addGroup(jPanelFilterByColumnLayout
+										.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+										.addComponent(jTextFieldFilter, javax.swing.GroupLayout.DEFAULT_SIZE, 185,
+												Short.MAX_VALUE)
+										.addComponent(jComboBoxColumnNames, 0, 185, Short.MAX_VALUE))
+						.addContainerGap()));
+		jPanelFilterByColumnLayout.setVerticalGroup(
+				jPanelFilterByColumnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(jPanelFilterByColumnLayout.createSequentialGroup().addGroup(jPanelFilterByColumnLayout
+								.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jLabel1)
+								.addComponent(jComboBoxColumnNames, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addGroup(jPanelFilterByColumnLayout
+								.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jLabel2)
+								.addComponent(jTextFieldFilter, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		jPanelStatus.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -503,127 +408,62 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements
 		jProgressBar1.setPreferredSize(new java.awt.Dimension(316, 57));
 		jProgressBar1.setStringPainted(true);
 
-		javax.swing.GroupLayout jPanelStatusLayout = new javax.swing.GroupLayout(
-				jPanelStatus);
+		javax.swing.GroupLayout jPanelStatusLayout = new javax.swing.GroupLayout(jPanelStatus);
 		jPanelStatus.setLayout(jPanelStatusLayout);
+		jPanelStatusLayout.setHorizontalGroup(jPanelStatusLayout
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelStatusLayout.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(jPanelStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+								.addComponent(jProgressBar1, javax.swing.GroupLayout.Alignment.LEADING,
+										javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+								.addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING,
+										javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE))
+								.addContainerGap()));
 		jPanelStatusLayout
-				.setHorizontalGroup(jPanelStatusLayout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								javax.swing.GroupLayout.Alignment.TRAILING,
-								jPanelStatusLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												jPanelStatusLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.TRAILING)
-														.addComponent(
-																jProgressBar1,
-																javax.swing.GroupLayout.Alignment.LEADING,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																244,
-																Short.MAX_VALUE)
-														.addComponent(
-																jScrollPane3,
-																javax.swing.GroupLayout.Alignment.LEADING,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																244,
-																Short.MAX_VALUE))
-										.addContainerGap()));
-		jPanelStatusLayout
-				.setVerticalGroup(jPanelStatusLayout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanelStatusLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addComponent(
-												jScrollPane3,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												23, Short.MAX_VALUE)
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(
-												jProgressBar1,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
-												22,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addContainerGap(
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)));
-
-		javax.swing.GroupLayout jPanelLeftLayout = new javax.swing.GroupLayout(
-				jPanelLeft);
-		jPanelLeft.setLayout(jPanelLeftLayout);
-		jPanelLeftLayout
-				.setHorizontalGroup(jPanelLeftLayout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanelLeftLayout
-										.createSequentialGroup()
-										.addGroup(
-												jPanelLeftLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.LEADING)
-														.addComponent(
-																jPanelOptions,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																Short.MAX_VALUE)
-														.addComponent(
-																jPanelFilterByColumn,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																Short.MAX_VALUE)
-														.addComponent(
-																jPanelStatus,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																Short.MAX_VALUE))
-										.addContainerGap()));
-		jPanelLeftLayout
-				.setVerticalGroup(jPanelLeftLayout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanelLeftLayout
-										.createSequentialGroup()
-										.addGap(13, 13, 13)
-										.addComponent(
-												jPanelOptions,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
-												288,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addGap(1, 1, 1)
-										.addComponent(
-												jPanelFilterByColumn,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(
-												jPanelStatus,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
+				.setVerticalGroup(
+						jPanelStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addGroup(jPanelStatusLayout.createSequentialGroup().addContainerGap()
+										.addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 23,
 												Short.MAX_VALUE)
-										.addGap(104, 104, 104)));
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 22,
+												javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+
+		javax.swing.GroupLayout jPanelLeftLayout = new javax.swing.GroupLayout(jPanelLeft);
+		jPanelLeft.setLayout(jPanelLeftLayout);
+		jPanelLeftLayout.setHorizontalGroup(jPanelLeftLayout
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanelLeftLayout.createSequentialGroup()
+						.addGroup(jPanelLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addComponent(jPanelOptions, javax.swing.GroupLayout.DEFAULT_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(jPanelFilterByColumn, javax.swing.GroupLayout.DEFAULT_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(jPanelStatus, javax.swing.GroupLayout.DEFAULT_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+						.addContainerGap()));
+		jPanelLeftLayout
+				.setVerticalGroup(jPanelLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(jPanelLeftLayout.createSequentialGroup().addGap(13, 13, 13)
+								.addComponent(jPanelOptions, javax.swing.GroupLayout.PREFERRED_SIZE, 288,
+										javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addGap(1, 1, 1)
+						.addComponent(jPanelFilterByColumn, javax.swing.GroupLayout.PREFERRED_SIZE,
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jPanelStatus, javax.swing.GroupLayout.DEFAULT_SIZE,
+								javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addGap(104, 104, 104)));
 
 		getContentPane().add(jPanelLeft, java.awt.BorderLayout.WEST);
 
-		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit()
-				.getScreenSize();
-		setBounds((screenSize.width - 863) / 2, (screenSize.height - 618) / 2,
-				863, 618);
+		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+		setBounds((screenSize.width - 863) / 2, (screenSize.height - 618) / 2, 863, 618);
 	}// </editor-fold>
 		// GEN-END:initComponents
 
-	private void jComboBoxColumnNamesItemStateChanged(
-			java.awt.event.ItemEvent evt) {
+	private void jComboBoxColumnNamesItemStateChanged(java.awt.event.ItemEvent evt) {
 		if (evt.getStateChange() == ItemEvent.SELECTED) {
 			applyFilters();
 		}
@@ -635,23 +475,18 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements
 
 	private void applyFilters() {
 		// Just if loading table is not running
-		if (tableExporter == null
-				|| tableExporter.getState() != StateValue.STARTED) {
+		if (tableExporter == null || tableExporter.getState() != StateValue.STARTED) {
 			final String text = jTextFieldFilter.getText();
 			String currentSelection = null;
 			// if (text.length() > NUM_MIN_TYPED_CHARS)
 			if (jComboBoxColumnNames.getSelectedIndex() != -1) {
-				currentSelection = (String) jComboBoxColumnNames
-						.getSelectedItem();
+				currentSelection = (String) jComboBoxColumnNames.getSelectedItem();
 			}
 
-			IdentificationTableFrame.this.scrollablePanel.setFilter(
-					currentSelection, text);
-			int rowCount = IdentificationTableFrame.this.scrollablePanel
-					.getTable().getRowCount();
+			IdentificationTableFrame.this.scrollablePanel.setFilter(currentSelection, text);
+			int rowCount = IdentificationTableFrame.this.scrollablePanel.getTable().getRowCount();
 			if (rowCount > 0)
-				IdentificationTableFrame.this.appendStatus("Showing "
-						+ rowCount + " rows");
+				IdentificationTableFrame.this.appendStatus("Showing " + rowCount + " rows");
 
 		} else {
 			log.info("Not filtering because the table is being loading");
@@ -673,14 +508,12 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements
 		}
 	}
 
-	private void jCheckBoxIncludeNonConclusiveProteinsActionPerformed(
-			ActionEvent evt) {
+	private void jCheckBoxIncludeNonConclusiveProteinsActionPerformed(ActionEvent evt) {
 		updateSizesLabels();
 		loadTable();
 	}
 
-	private void jRadioButtonShowPeptidesActionPerformed(
-			java.awt.event.ActionEvent evt) {
+	private void jRadioButtonShowPeptidesActionPerformed(java.awt.event.ActionEvent evt) {
 		if (jRadioButtonShowPeptides.isSelected()) {
 			jCheckBoxCollapsePeptides.setSelected(true);
 			jCheckBoxCollapsePeptides.setEnabled(true);
@@ -692,8 +525,7 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements
 		}
 	}
 
-	private void jRadioButtonShowProteinsActionPerformed(
-			java.awt.event.ActionEvent evt) {
+	private void jRadioButtonShowProteinsActionPerformed(java.awt.event.ActionEvent evt) {
 		if (jRadioButtonShowProteins.isSelected()) {
 			jCheckBoxCollapseProteins.setSelected(true);
 			jCheckBoxCollapseProteins.setEnabled(true);
@@ -705,36 +537,30 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements
 
 	}
 
-	private void jCheckBoxCollapseProteinsActionPerformed(
-			java.awt.event.ActionEvent evt) {
+	private void jCheckBoxCollapseProteinsActionPerformed(java.awt.event.ActionEvent evt) {
 		updateSizesLabels();
 		loadTable();
 	}
 
-	private void jCheckBoxCollapsePeptidesActionPerformed(
-			java.awt.event.ActionEvent evt) {
+	private void jCheckBoxCollapsePeptidesActionPerformed(java.awt.event.ActionEvent evt) {
 		updateSizesLabels();
 		loadTable();
 	}
 
-	private void jCheckBoxIncludeGeneInfoActionPerformed(
-			java.awt.event.ActionEvent evt) {
+	private void jCheckBoxIncludeGeneInfoActionPerformed(java.awt.event.ActionEvent evt) {
 		loadTable();
 	}
 
-	private void jCheckBoxSearchForProteinSequenceActionPerformed(
-			java.awt.event.ActionEvent evt) {
+	private void jCheckBoxSearchForProteinSequenceActionPerformed(java.awt.event.ActionEvent evt) {
 		loadTable();
 
 	}
 
-	private void jCheckBoxIncludeExperimentReplicateOriginActionPerformed(
-			java.awt.event.ActionEvent evt) {
+	private void jCheckBoxIncludeExperimentReplicateOriginActionPerformed(java.awt.event.ActionEvent evt) {
 		loadTable();
 	}
 
-	private void jCheckBoxIncludeDecoyActionPerformed(
-			java.awt.event.ActionEvent evt) {
+	private void jCheckBoxIncludeDecoyActionPerformed(java.awt.event.ActionEvent evt) {
 		loadTable();
 	}
 
@@ -745,15 +571,13 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements
 
 	public void appendStatus(String notificacion) {
 		jTextAreaStatus.append(notificacion + "\n");
-		jTextAreaStatus
-				.setCaretPosition(jTextAreaStatus.getText().length() - 1);
+		jTextAreaStatus.setCaretPosition(jTextAreaStatus.getText().length() - 1);
 
 	}
 
 	public void setStatus(String notificacion) {
 		jTextAreaStatus.setText(notificacion + "\n");
-		jTextAreaStatus
-				.setCaretPosition(jTextAreaStatus.getText().length() - 1);
+		jTextAreaStatus.setCaretPosition(jTextAreaStatus.getText().length() - 1);
 
 	}
 
@@ -764,8 +588,7 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements
 
 			RefineryUtilities.centerFrameOnScreen(this);
 			applyFilters();
-		} else if (evt.getPropertyName().equals(
-				JTableLoader.DATA_EXPORTING_DONE)) {
+		} else if (evt.getPropertyName().equals(JTableLoader.DATA_EXPORTING_DONE)) {
 			String items = "proteins";
 			if (showPeptides())
 				items = "peptides";
@@ -780,8 +603,8 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements
 				int numNonconclusive = numLoaded - num;
 				String notificacion = numLoaded + " " + items + " loaded.";
 				if (numNonconclusive > 0) {
-					notificacion = notificacion + " " + numNonconclusive
-							+ " NONCONCLUSIVE " + items + " were included.";
+					notificacion = notificacion + " " + numNonconclusive + " NONCONCLUSIVE " + items
+							+ " were included.";
 					appendStatus(notificacion);
 				}
 			} else {
@@ -803,19 +626,16 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements
 
 		} else if (evt.getPropertyName().equals("progress")) {
 			jProgressBar1.setValue((Integer) evt.getNewValue());
-		} else if (evt.getPropertyName().equals(
-				JTableLoader.DATA_EXPORTING_SORTING)) {
+		} else if (evt.getPropertyName().equals(JTableLoader.DATA_EXPORTING_SORTING)) {
 			if (showPeptides()) {
 				appendStatus("Sorting peptides by best score...");
 			} else {
 				appendStatus("Sorting proteins by best peptide score...");
 			}
 			jButtonCancel.setEnabled(true);
-		} else if (evt.getPropertyName().equals(
-				JTableLoader.DATA_EXPORTING_SORTING_DONE)) {
+		} else if (evt.getPropertyName().equals(JTableLoader.DATA_EXPORTING_SORTING_DONE)) {
 			appendStatus("Data sorted. Now loading table...");
-		} else if (evt.getPropertyName().equals(
-				JTableLoader.DATA_EXPORTING_CANCELED)) {
+		} else if (evt.getPropertyName().equals(JTableLoader.DATA_EXPORTING_CANCELED)) {
 			int num = (Integer) evt.getNewValue();
 			jButtonCancel.setEnabled(false);
 			jProgressBar1.setValue(0);
@@ -850,8 +670,7 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements
 		pack();
 
 		// Load data in table
-		if (tableExporter != null
-				&& tableExporter.getState().equals(StateValue.STARTED)) {
+		if (tableExporter != null && tableExporter.getState().equals(StateValue.STARTED)) {
 			while (true || !tableExporter.getState().equals(StateValue.STARTED)) {
 				final boolean canceled = tableExporter.cancel(true);
 				if (canceled)
@@ -864,10 +683,8 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements
 
 			@Override
 			public void run() {
-				tableExporter = new JTableLoader(IdentificationTableFrame.this,
-						idSet, scrollablePanel.getTable());
-				tableExporter
-						.addPropertyChangeListener(IdentificationTableFrame.this);
+				tableExporter = new JTableLoader(IdentificationTableFrame.this, idSets, scrollablePanel.getTable());
+				tableExporter.addPropertyChangeListener(IdentificationTableFrame.this);
 				tableExporter.execute();
 			}
 		});
@@ -876,45 +693,41 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements
 
 	private int getNum() {
 		int num = 0;
-		if (jRadioButtonShowProteins.isSelected()) {
-			if (jCheckBoxCollapseProteins.isSelected()) {
-				num = idSet
-						.getNumDifferentProteinGroups(isNonConclusiveProteinsIncluded());
+		for (IdentificationSet idSet : idSets) {
+			if (jRadioButtonShowProteins.isSelected()) {
+				if (jCheckBoxCollapseProteins.isSelected()) {
+					num += idSet.getNumDifferentProteinGroups(isNonConclusiveProteinsIncluded());
 
-				if (!jCheckBoxIncludeDecoy.isEnabled()
-						|| !jCheckBoxIncludeDecoy.isSelected()) {
-					num = num - idSet.getNumDifferentProteinGroupsDecoys();
-				}
-				if (isNonConclusiveProteinsIncluded())
-					num += idSet.getNumDifferentNonConclusiveProteinGroups();
+					if (!jCheckBoxIncludeDecoy.isEnabled() || !jCheckBoxIncludeDecoy.isSelected()) {
+						num = num - idSet.getNumDifferentProteinGroupsDecoys();
+					}
+					if (isNonConclusiveProteinsIncluded())
+						num += idSet.getNumDifferentNonConclusiveProteinGroups();
 
-			} else {
-				num = idSet
-						.getTotalNumProteinGroups(isNonConclusiveProteinsIncluded());
-				if (!jCheckBoxIncludeDecoy.isEnabled()
-						|| !jCheckBoxIncludeDecoy.isSelected()) {
-					num = num - idSet.getNumProteinGroupDecoys();
-				}
-				if (isNonConclusiveProteinsIncluded())
-					num += idSet.getTotalNumNonConclusiveProteinGroups();
+				} else {
+					num += idSet.getTotalNumProteinGroups(isNonConclusiveProteinsIncluded());
+					if (!jCheckBoxIncludeDecoy.isEnabled() || !jCheckBoxIncludeDecoy.isSelected()) {
+						num = num - idSet.getNumProteinGroupDecoys();
+					}
+					if (isNonConclusiveProteinsIncluded())
+						num += idSet.getTotalNumNonConclusiveProteinGroups();
 
-			}
-
-		} else {
-			if (jCheckBoxCollapsePeptides.isSelected()) {
-				num = idSet.getNumDifferentPeptides(true);
-
-				if (!jCheckBoxIncludeDecoy.isEnabled()
-						|| !jCheckBoxIncludeDecoy.isSelected()) {
-					num = num - idSet.getNumDifferentPeptideDecoys(true);
 				}
 
 			} else {
+				if (jCheckBoxCollapsePeptides.isSelected()) {
+					num += idSet.getNumDifferentPeptides(true);
 
-				num = idSet.getTotalNumPeptides();
-				if (!jCheckBoxIncludeDecoy.isEnabled()
-						|| !jCheckBoxIncludeDecoy.isSelected()) {
-					num = num - idSet.getNumPeptideDecoys();
+					if (!jCheckBoxIncludeDecoy.isEnabled() || !jCheckBoxIncludeDecoy.isSelected()) {
+						num = num - idSet.getNumDifferentPeptideDecoys(true);
+					}
+
+				} else {
+
+					num += idSet.getTotalNumPeptides();
+					if (!jCheckBoxIncludeDecoy.isEnabled() || !jCheckBoxIncludeDecoy.isSelected()) {
+						num = num - idSet.getNumPeptideDecoys();
+					}
 				}
 			}
 		}
@@ -989,10 +802,33 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements
 
 	@Override
 	public boolean isFDRApplied() {
-		if (idSet != null && parentFrame.getFiltersDialog() != null
+		if (idSets != null && !idSets.isEmpty() && parentFrame.getFiltersDialog() != null
 				&& parentFrame.getFiltersDialog().isFDRFilterDefined())
 			return true;
 		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.proteored.pacom.analysis.exporters.ExporterManager#
+	 * isDistinguishModifiedPeptides()
+	 */
+	@Override
+	public boolean isDistinguishModifiedPeptides() {
+		return parentFrame.distinguishModifiedPeptides();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.proteored.pacom.analysis.exporters.ExporterManager#getComparisonType(
+	 * )
+	 */
+	@Override
+	public ProteinGroupComparisonType getComparisonType() {
+		return this.parentFrame.getComparisonType();
 	}
 
 }

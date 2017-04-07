@@ -7,6 +7,7 @@ package org.proteored.pacom.gui;
 import java.awt.Font;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
@@ -16,7 +17,6 @@ import java.util.Properties;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker.StateValue;
 import javax.swing.UIManager;
@@ -46,7 +46,6 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 	public int userID;
 	// by default
 	public static String miapetool_access_script = "http://www.proteored.org/acceso.asp?pmArea=8";
-	public static final JFileChooser fileChooser = new javax.swing.JFileChooser();
 
 	public String WELCOME_MESSAGE = "<html>Options:"
 			+ "<ul><li>Import datasets ('<b>Import data </b>' menu). Login is required.</li>"
@@ -76,6 +75,8 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 
 	private final boolean checkUpdates = false;
 	public static boolean localWorkflow = false;
+
+	public static File currentFolder = new File(".");
 
 	/**
 	 * Creates new form MainFrame

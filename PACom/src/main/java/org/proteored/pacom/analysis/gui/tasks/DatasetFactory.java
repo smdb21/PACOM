@@ -34,11 +34,12 @@ import org.proteored.miapeapi.experiment.model.ProteinGroupOccurrence;
 import org.proteored.miapeapi.experiment.model.datamanager.DataManager;
 import org.proteored.miapeapi.experiment.model.filters.FDRFilter;
 import org.proteored.miapeapi.experiment.model.grouping.ProteinEvidence;
+import org.proteored.miapeapi.experiment.model.sort.ProteinComparatorKey;
+import org.proteored.miapeapi.experiment.model.sort.ProteinGroupComparisonType;
 import org.proteored.miapeapi.experiment.model.sort.SorterUtil;
 import org.proteored.miapeapi.interfaces.ms.Spectrometer;
 import org.proteored.miapeapi.interfaces.msi.Database;
 import org.proteored.miapeapi.interfaces.msi.InputParameter;
-import org.proteored.miapeapi.xml.util.ProteinGroupComparisonType;
 import org.proteored.pacom.analysis.exporters.util.ExporterUtil;
 import org.proteored.pacom.analysis.genes.ENSGInfo;
 import org.proteored.pacom.analysis.genes.GeneDistributionReader;
@@ -3392,7 +3393,7 @@ public class DatasetFactory {
 		DefaultCategoryDataset accumulativeDataSet = new DefaultCategoryDataset();
 
 		try {
-			HashMap<String, Set<String>> hashMapKeys = getHashMapKeys(idSets, itemType, distModPeptides,
+			HashMap<String, Set<ProteinComparatorKey>> hashMapKeys = getHashMapKeys(idSets, itemType, distModPeptides,
 					proteinGroupComparisonType);
 
 			VennData globalVenn = null;
@@ -3401,10 +3402,11 @@ public class DatasetFactory {
 			for (int i = 0; i < idSets.size(); i++) {
 				IdentificationSet idSet = idSets.get(i);
 				String idSetName = idSet.getFullName();
-				Set<String> keys = hashMapKeys.get(idSet.getFullName());
+				Set<ProteinComparatorKey> keys = hashMapKeys.get(idSet.getFullName());
 
 				if (accumulativeTrend) {
-					globalVenn = new VennData(keys, union, null, null, countNonConclusiveProteins);
+					globalVenn = new VennData(keys, union, null, proteinGroupComparisonType,
+							countNonConclusiveProteins);
 					union = globalVenn.getUnion12();
 					int num = 0;
 					for (Object obj : union) {
@@ -3431,7 +3433,7 @@ public class DatasetFactory {
 					moreThanOne = true;
 					final String idSetName2 = idSet2.getFullName();
 					log.info("Comparing " + idSet.getFullName() + " with " + idSetName2);
-					Set<String> keys2 = hashMapKeys.get(idSet2.getFullName());
+					Set<ProteinComparatorKey> keys2 = hashMapKeys.get(idSet2.getFullName());
 					VennData venn = null;
 					if (unique == null) {
 						venn = new VennData(keys, keys2, null, null, countNonConclusiveProteins);
@@ -3458,13 +3460,13 @@ public class DatasetFactory {
 		return datasets;
 	}
 
-	private static HashMap<String, Set<String>> getHashMapKeys(List<IdentificationSet> idSets,
+	private static HashMap<String, Set<ProteinComparatorKey>> getHashMapKeys(List<IdentificationSet> idSets,
 			IdentificationItemEnum itemType, Boolean distModPeptides,
 			ProteinGroupComparisonType proteinGroupComparisonType) {
-		HashMap<String, Set<String>> ret = new HashMap<String, Set<String>>();
+		HashMap<String, Set<ProteinComparatorKey>> ret = new HashMap<String, Set<ProteinComparatorKey>>();
 		if (IdentificationItemEnum.PROTEIN.equals(itemType)) {
 			for (IdentificationSet identificationSet : idSets) {
-				final Set<String> proteinAccSet = new HashSet<String>();
+				final Set<ProteinComparatorKey> proteinAccSet = new HashSet<ProteinComparatorKey>();
 				for (Object object : identificationSet.getProteinGroupOccurrenceList().values()) {
 					ProteinGroupOccurrence pgo = (ProteinGroupOccurrence) object;
 					// if (pgo.getEvidence() != ProteinEvidence.NONCONCLUSIVE)
@@ -3476,9 +3478,15 @@ public class DatasetFactory {
 			for (IdentificationSet identificationSet : idSets) {
 				final Set<String> peptideKeySet = identificationSet.getPeptideOccurrenceList(distModPeptides).keySet();
 				final String fullName = identificationSet.getFullName();
-				ret.put(identificationSet.getFullName(), peptideKeySet);
-				final Set<String> set = ret.get(identificationSet.getFullName());
-				log.info(ret.size() + "-> " + fullName + ": " + set.size() + " - " + peptideKeySet.size());
+				Set<ProteinComparatorKey> proteinComparatorKeySet = new HashSet<ProteinComparatorKey>();
+				for (String peptideKey : peptideKeySet) {
+					ProteinComparatorKey pck = new ProteinComparatorKey(peptideKey,
+							ProteinGroupComparisonType.BEST_PROTEIN);
+					proteinComparatorKeySet.add(pck);
+				}
+				ret.put(identificationSet.getFullName(), proteinComparatorKeySet);
+				log.info(ret.size() + "-> " + fullName + ": " + proteinComparatorKeySet.size() + " - "
+						+ peptideKeySet.size());
 			}
 		}
 		return ret;

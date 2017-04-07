@@ -82,18 +82,35 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 	private void checkIntegrity() {
 		List<String> databaseNames = new ArrayList<String>();
 		List<Integer> listofNonExistingFiles = new ArrayList<Integer>();
+		Set<String> uniqueIds = new HashSet<String>();
 		if (expList != null) {
+			uniqueIds.add(expList.getName());
 			final List<CPExperiment> cpExperiments = expList.getCPExperiment();
 			if (cpExperiments != null) {
 				int total = cpExperiments.size();
 				int n = 1;
 				for (CPExperiment cpExperiment : cpExperiments) {
+					if (uniqueIds.contains(cpExperiment.getName())) {
+						throw new IllegalMiapeArgumentException("'" + cpExperiment.getName()
+								+ "' node name is repeated. You can not name different nodes with the same name. Please rename one of them with a unique name");
+					}
+					uniqueIds.add(cpExperiment.getName());
 					setProgress(n * 100 / total);
 					n++;
 					boolean curated = cpExperiment.isCurated();
 					if (cpExperiment.getCPReplicate() != null) {
 						for (CPReplicate cpReplicate : cpExperiment.getCPReplicate()) {
+							if (uniqueIds.contains(cpReplicate.getName())) {
+								throw new IllegalMiapeArgumentException("'" + cpReplicate.getName()
+										+ "' node name is repeated. You can not name different nodes with the same name. Please rename one of them with a unique name");
+							}
+							uniqueIds.add(cpReplicate.getName());
 							List<String> repScoreNames = new ArrayList<String>();
+
+							if (true) {
+								continue;
+							}
+
 							// key=MIAPEMSI_ID - value=List<scoreNames>:
 							HashMap<Integer, List<String>> replicateScoreNames = new HashMap<Integer, List<String>>();
 							// just check if more than one MIAPE MSI is in a
@@ -206,8 +223,8 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 					log.info("MIRAR ESTO: " + miapeId);
 				}
 			}
-			String message = "<html><b>Warning:</b><br>" + "Some MIAPE MSIs are not stored locally in "
-					+ FileManager.getMiapeDataPath() + ".<br>" + "Some MIAPEs requested in the comparison project";
+			String message = "<html><b>Warning:</b><br>" + "Some datasets are not stored locally in "
+					+ FileManager.getMiapeDataPath() + ".<br>" + "Some datasets in the comparison project";
 			if (!miapesNotBeingDownloaded.isEmpty()) {
 				message = message + " ('" + getCSVStringFromIntegerList(miapesNotBeingDownloaded)
 						+ "') are not being downloaded from server."

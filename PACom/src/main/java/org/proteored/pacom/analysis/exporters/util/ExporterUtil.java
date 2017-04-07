@@ -5,6 +5,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -36,7 +37,7 @@ public class ExporterUtil {
 	private static boolean includeGeneInfo;
 	private static boolean excludeNonConclusiveProteins;
 	private final HashMap<String, List<ENSGInfo>> proteinGeneMapping;
-	private final IdentificationSet idSet;
+	private final Set<IdentificationSet> idSets = new HashSet<IdentificationSet>();
 	// Protein Score Order
 	private List<String> proteinScoreNames;
 	// Peptide Score Order
@@ -45,13 +46,14 @@ public class ExporterUtil {
 	private static boolean testOntologies;
 	public static final String VALUE_SEPARATOR = ",";
 
-	private ExporterUtil(IdentificationSet idSet, boolean includeReplicateAndExperimentOrigin, boolean includePeptides,
-			boolean includeGeneInfo, boolean retrieveProteinSequences, boolean excludeNonConclusiveProteins) {
+	private ExporterUtil(Collection<IdentificationSet> idSets, boolean includeReplicateAndExperimentOrigin,
+			boolean includePeptides, boolean includeGeneInfo, boolean retrieveProteinSequences,
+			boolean excludeNonConclusiveProteins) {
 		ExporterUtil.includeReplicateAndExperimentOrigin = includeReplicateAndExperimentOrigin;
 		ExporterUtil.includePeptides = includePeptides;
 		ExporterUtil.includeGeneInfo = includeGeneInfo;
 		ExporterUtil.excludeNonConclusiveProteins = excludeNonConclusiveProteins;
-		this.idSet = idSet;
+		this.idSets.addAll(idSets);
 
 		proteinGeneMapping = GeneDistributionReader.getInstance().getProteinGeneMapping(null);
 
@@ -62,9 +64,9 @@ public class ExporterUtil {
 		ExporterUtil.testOntologies = testOntologies;
 	}
 
-	public static ExporterUtil getInstance(IdentificationSet idSet, boolean includeReplicateAndExperimentOrigin,
-			boolean includePeptides, boolean includeGeneInfo, boolean retrieveProteinSequences,
-			boolean excludeNonConclusiveProteins) {
+	public static ExporterUtil getInstance(Collection<IdentificationSet> idSets,
+			boolean includeReplicateAndExperimentOrigin, boolean includePeptides, boolean includeGeneInfo,
+			boolean retrieveProteinSequences, boolean excludeNonConclusiveProteins) {
 		boolean createNewInstance = false;
 		if (instance == null) {
 			createNewInstance = true;
@@ -84,15 +86,16 @@ public class ExporterUtil {
 			createNewInstance = true;
 
 		if (createNewInstance)
-			instance = new ExporterUtil(idSet, includeReplicateAndExperimentOrigin, includePeptides, includeGeneInfo,
+			instance = new ExporterUtil(idSets, includeReplicateAndExperimentOrigin, includePeptides, includeGeneInfo,
 					retrieveProteinSequences, excludeNonConclusiveProteins);
 
-		instance.proteinScoreNames = idSet.getProteinScoreNames();
-		instance.peptideScoreNames = idSet.getPeptideScoreNames();
+		instance.proteinScoreNames = getProteinScoreNames(idSets);
+		instance.peptideScoreNames = getPeptideScoreNames(idSets);
 		return instance;
 	}
 
-	public List<String> getPeptideInfoList(PeptideOccurrence peptideOccurrence, List<String> columns, int index) {
+	public List<String> getPeptideInfoList(PeptideOccurrence peptideOccurrence, List<String> columns, int index,
+			IdentificationSet idSet) {
 
 		List<String> ret = new ArrayList<String>();
 		if (peptideOccurrence == null)
@@ -159,8 +162,7 @@ public class ExporterUtil {
 				} else if (column.equals(ExportedColumns.PSM_LOCAL_FDR.toString())) {
 					ret.add(parseFloat(peptideOccurrence.getBestPeptide().getPSMLocalFDR()));
 				} else if (column.equals(ExportedColumns.PROTEIN_OCCURRENCE.toString())) {
-
-					ret.add(getProteinOccurrence(peptideOccurrence));
+					ret.add(getProteinOccurrence(peptideOccurrence, idSet));
 				} else if (column.equals(ExportedColumns.PROTEIN_GROUP_TYPE.toString())) {
 					// ret.add(cleanString(getProteinGroupType(peptideOccurrence)));
 				} else if (column.equals(ExportedColumns.PROTEIN_ACC.toString())) {
@@ -169,7 +171,7 @@ public class ExporterUtil {
 
 				} else if (column.equals(ExportedColumns.PROTEIN_COV.toString())) {
 
-					ret.add(getProteinCoverage(peptideOccurrence));
+					ret.add(getProteinCoverage(peptideOccurrence, idSet));
 				} else if (column.equals(ExportedColumns.PROTEIN_DESC.toString())) {
 
 					ret.add(getProteinDescription(peptideOccurrence));
@@ -182,7 +184,7 @@ public class ExporterUtil {
 				} else if (column.equals(ExportedColumns.PROTEIN_SCORE.toString())) {
 					// This line should not be used
 					scoreName = proteinScoreNames.get(0);
-					ret.add(getProteinScore(peptideOccurrence, scoreName));
+					ret.add(getProteinScore(peptideOccurrence, scoreName, idSet));
 				} else if (column.equals(ExportedColumns.PEPTIDE_SCORE.toString())) {
 					// This line should not be used
 					scoreName = peptideScoreNames.get(0);
@@ -214,7 +216,7 @@ public class ExporterUtil {
 	}
 
 	public List<String> getProteinInfoList(ProteinGroupOccurrence proteinGroupOccurrence, List<String> columns,
-			Integer index) {
+			Integer index, IdentificationSet idSet) {
 
 		List<String> ret = new ArrayList<String>();
 		if (proteinGroupOccurrence == null)
@@ -329,7 +331,7 @@ public class ExporterUtil {
 		return sb.toString();
 	}
 
-	private String getProteinOccurrence(PeptideOccurrence peptideOccurrence) {
+	private String getProteinOccurrence(PeptideOccurrence peptideOccurrence, IdentificationSet idSet) {
 		StringBuilder occurrenceString = new StringBuilder();
 		List<String> proteinACCs = new ArrayList<String>();
 		for (ExtendedIdentifiedPeptide extendedIdentifiedPeptide : peptideOccurrence.getItemList()) {
@@ -487,7 +489,7 @@ public class ExporterUtil {
 
 	}
 
-	private String getProteinScore(PeptideOccurrence peptideOccurrence, String scoreName) {
+	private String getProteinScore(PeptideOccurrence peptideOccurrence, String scoreName, IdentificationSet idSet) {
 
 		try {
 
@@ -652,7 +654,7 @@ public class ExporterUtil {
 		return cleanString(proteinsDescriptions.toString());
 	}
 
-	private String getProteinCoverage(PeptideOccurrence peptideOccurrence) {
+	private String getProteinCoverage(PeptideOccurrence peptideOccurrence, IdentificationSet idSet) {
 		StringBuilder proteinsCovs = new StringBuilder();
 
 		final ExtendedIdentifiedPeptide peptide = peptideOccurrence.getFirstOccurrence();
@@ -1345,5 +1347,35 @@ public class ExporterUtil {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * @param idSets
+	 * @return
+	 */
+	public static List<String> getProteinScoreNames(Collection<IdentificationSet> idSets) {
+		Set<String> ret = new HashSet<String>();
+		for (IdentificationSet idSet : idSets) {
+			ret.addAll(idSet.getProteinScoreNames());
+		}
+		List<String> list = new ArrayList<String>();
+		Collections.sort(list);
+		return list;
+	}
+
+	/**
+	 * @param idSets
+	 * @return
+	 */
+	public static List<String> getPeptideScoreNames(Collection<IdentificationSet> idSets) {
+		Set<String> ret = new HashSet<String>();
+		for (IdentificationSet idSet : idSets) {
+			ret.addAll(idSet.getPeptideScoreNames());
+		}
+
+		List<String> list = new ArrayList<String>();
+		list.addAll(ret);
+		Collections.sort(list);
+		return list;
 	}
 }

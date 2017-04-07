@@ -388,11 +388,13 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 				.addGroup(jPanel10Layout.createSequentialGroup().addContainerGap()
 						.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
 						.addContainerGap()));
-		jPanel10Layout.setVerticalGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
-						jPanel10Layout.createSequentialGroup().addContainerGap()
-								.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
-								.addContainerGap()));
+		jPanel10Layout
+				.setVerticalGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+								jPanel10Layout.createSequentialGroup()
+										.addContainerGap().addComponent(jScrollPane1,
+												javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
+										.addContainerGap()));
 		if (!MainFrame.localWorkflow) {
 			jTabbedPane.addTab("Remote data", jPanel10);
 		}
@@ -413,11 +415,13 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 				.addGroup(jPanel12Layout.createSequentialGroup().addContainerGap()
 						.addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
 						.addContainerGap()));
-		jPanel12Layout.setVerticalGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
-						jPanel12Layout.createSequentialGroup().addContainerGap()
-								.addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
-								.addContainerGap()));
+		jPanel12Layout
+				.setVerticalGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+								jPanel12Layout.createSequentialGroup()
+										.addContainerGap().addComponent(jScrollPane5,
+												javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
+										.addContainerGap()));
 
 		jTabbedPane.addTab("Imported datasets", jPanel12);
 
@@ -555,9 +559,9 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 										.addComponent(jLabelMIAPEMSINumber, javax.swing.GroupLayout.PREFERRED_SIZE, 69,
 												javax.swing.GroupLayout.PREFERRED_SIZE))
-								.addGroup(jPanel6Layout.createSequentialGroup().addComponent(jButtonCancelLoading)
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jButtonStartLoading)))
+						.addGroup(jPanel6Layout.createSequentialGroup().addComponent(jButtonCancelLoading)
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jButtonStartLoading)))
 						.addContainerGap(108, Short.MAX_VALUE)));
 		jPanel6Layout.setVerticalGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(jPanel6Layout.createSequentialGroup()
@@ -609,14 +613,14 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 						.addComponent(jButtonLoadSavedProject)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jButtonRemoveSavedProject).addContainerGap(26, Short.MAX_VALUE)));
-		jPanel7Layout
-				.setVerticalGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(jPanel7Layout.createSequentialGroup().addContainerGap().addGroup(jPanel7Layout
-								.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jLabel7)
+		jPanel7Layout.setVerticalGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel7Layout.createSequentialGroup().addContainerGap()
+						.addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jLabel7)
 								.addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addComponent(jButtonLoadSavedProject).addComponent(jButtonRemoveSavedProject))
-								.addContainerGap(23, Short.MAX_VALUE)));
+						.addComponent(jButtonLoadSavedProject).addComponent(jButtonRemoveSavedProject))
+						.addContainerGap(23, Short.MAX_VALUE)));
 
 		jPanel3.setBorder(
 				javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Edit"));
@@ -771,27 +775,26 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 
 		javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
 		jPanel8.setLayout(jPanel8Layout);
-		jPanel8Layout
-				.setHorizontalGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(jPanel8Layout.createSequentialGroup().addContainerGap().addComponent(jLabel4)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jTextFieldLabelNameTemplate, javax.swing.GroupLayout.PREFERRED_SIZE, 107,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addGap(18, 18, 18).addComponent(jLabel6)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jTextFieldLabelNumberTemplate, javax.swing.GroupLayout.PREFERRED_SIZE,
-										105, javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addContainerGap(83, Short.MAX_VALUE)));
-		jPanel8Layout
-				.setVerticalGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(jPanel8Layout.createSequentialGroup().addGroup(jPanel8Layout
-								.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jLabel4)
+		jPanel8Layout.setHorizontalGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel8Layout.createSequentialGroup().addContainerGap().addComponent(jLabel4)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jTextFieldLabelNameTemplate, javax.swing.GroupLayout.PREFERRED_SIZE, 107,
+								javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addGap(18, 18, 18).addComponent(jLabel6)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jTextFieldLabelNumberTemplate, javax.swing.GroupLayout.PREFERRED_SIZE, 105,
+								javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(83, Short.MAX_VALUE)));
+		jPanel8Layout.setVerticalGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel8Layout.createSequentialGroup()
+						.addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jLabel4)
 								.addComponent(jTextFieldLabelNameTemplate, javax.swing.GroupLayout.PREFERRED_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addComponent(jLabel6).addComponent(jTextFieldLabelNumberTemplate,
-										javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.PREFERRED_SIZE))
-								.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+						.addComponent(jLabel6).addComponent(jTextFieldLabelNumberTemplate,
+								javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+								javax.swing.GroupLayout.PREFERRED_SIZE))
+						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(),
 				"Load curated experiments"));
@@ -886,12 +889,12 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 		getContentPane().setLayout(layout);
 		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
 				javax.swing.GroupLayout.Alignment.TRAILING,
-				layout.createSequentialGroup().addContainerGap().addGroup(layout
-						.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-						.addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addGroup(layout.createSequentialGroup()
-								.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				layout.createSequentialGroup().addContainerGap()
+						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+								.addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addGroup(layout.createSequentialGroup().addGroup(layout
+										.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 										.addGroup(layout.createSequentialGroup()
 												.addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE,
 														javax.swing.GroupLayout.DEFAULT_SIZE,
@@ -902,18 +905,18 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 														javax.swing.GroupLayout.PREFERRED_SIZE))
 										.addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE,
 												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-										.addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+												.addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE,
+														javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+												.addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE,
+														javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+												.addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE,
+														javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+												.addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE,
+														javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+												.addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE,
+														javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
 						.addContainerGap()));
 		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup().addContainerGap()
@@ -922,32 +925,28 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 								.addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-								.addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addGroup(layout.createSequentialGroup()
-										.addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.PREFERRED_SIZE)))
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+				.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+						.addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
+								javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE,
+								javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addGroup(layout.createSequentialGroup()
+								.addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+				.addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+						javax.swing.GroupLayout.PREFERRED_SIZE)
+				.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		pack();
 	}// </editor-fold>
@@ -1763,25 +1762,31 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 		}
 		CPExperimentList cpExpList = getCPExperimentListFromTree();
 		if (checkTree) {
-			int selectedOption = JOptionPane.showConfirmDialog(this,
-					"<html>Before to save the comparison project, some aspect should be checked:<br>"
-							+ "<ul><li>In order to apply an FDR threshold, the MIAPE MSIs belonging to the same<br>"
-							+ "'level 1' node must have been searched by the same search engine.</li>"
-							+ "<li>The same name for different level 1 nodes is not allowed.</li>"
-							+ "<li>The same name for different level 2 nodes belonging to the same level 1 node is not allowed.</ul><br>"
-							+ "Do you want to check the integrity of your project now?</html>",
-					"Check integrity of the project?", JOptionPane.YES_NO_OPTION);
-			if (selectedOption == JOptionPane.YES_OPTION) {
-				MiapeTreeIntegrityCheckerTask integrityChecker = new MiapeTreeIntegrityCheckerTask(this, cpExpList,
-						false);
-				integrityChecker.addPropertyChangeListener(this);
-				integrityChecker.execute();
-			} else {
-				MiapeTreeIntegrityCheckerTask integrityChecker = new MiapeTreeIntegrityCheckerTask(this, null, false);
-				integrityChecker.addPropertyChangeListener(this);
-				integrityChecker.execute();
-
-			}
+			// int selectedOption = JOptionPane.showConfirmDialog(this,
+			// "<html>Before to save the comparison project, some aspect should
+			// be checked:<br>"
+			// + "<ul><li>In order to apply an FDR threshold, the MIAPE MSIs
+			// belonging to the same<br>"
+			// + "'level 1' node must have been searched by the same search
+			// engine.</li>"
+			// + "<li>The same name for different level 1 nodes is not
+			// allowed.</li>"
+			// + "<li>The same name for different level 2 nodes belonging to the
+			// same level 1 node is not allowed.</ul><br>"
+			// + "Do you want to check the integrity of your project
+			// now?</html>",
+			// "Check integrity of the project?", JOptionPane.YES_NO_OPTION);
+			// if (selectedOption == JOptionPane.YES_OPTION) {
+			MiapeTreeIntegrityCheckerTask integrityChecker = new MiapeTreeIntegrityCheckerTask(this, cpExpList, false);
+			integrityChecker.addPropertyChangeListener(this);
+			integrityChecker.execute();
+			// } else {
+			// MiapeTreeIntegrityCheckerTask integrityChecker = new
+			// MiapeTreeIntegrityCheckerTask(this, null, false);
+			// integrityChecker.addPropertyChangeListener(this);
+			// integrityChecker.execute();
+			//
+			// }
 			return false;
 		}
 		if (cpExpList == null) {
@@ -1985,7 +1990,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 
 						// add the miape node on the replicate node
 						jTreeProject.addNewNode(cpMSI
-						// getMIAPENodeName(String.valueOf(miapeID))
+								// getMIAPENodeName(String.valueOf(miapeID))
 								, replicateTreeNode);
 						jTreeProject.scrollToNode(experimentTreeNode);
 						saved = false;
@@ -2012,7 +2017,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 					cpRep.getCPMSIList().getCPMSI().add(cpMSI);
 
 					jTreeProject.addNewNode(cpMSI
-					// getMIAPENodeName(String.valueOf(miapeID))
+							// getMIAPENodeName(String.valueOf(miapeID))
 							, replicateTreeNode);
 					jTreeProject.scrollToNode(replicateTreeNode);
 					saved = false;
@@ -2453,19 +2458,8 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 		} else if (MiapeTreeIntegrityCheckerTask.INTEGRITY_ERROR.equals(evt.getPropertyName())) {
 			jProgressBar.setIndeterminate(false);
 			String message = (String) evt.getNewValue();
-			final int option = JOptionPane.showConfirmDialog(this, message, "Error in comparison project",
-					JOptionPane.YES_NO_OPTION);
-			if (option == JOptionPane.YES_OPTION) {
-				try {
-					save(false);
-					if (finishPressed)
-						showChartManager();
-				} catch (IllegalMiapeArgumentException e) {
-					setStatus(e.getMessage());
-					return;
-				}
-			} else
-				appendStatus("Save canceled");
+			JOptionPane.showMessageDialog(this, message, "Error in comparison project", JOptionPane.OK_OPTION);
+			appendStatus("Save canceled");
 		} else if (TreeLoaderTask.TREE_LOADER_MSI_NUMBER.equals(evt.getPropertyName())) {
 			Integer num = (Integer) evt.getNewValue();
 			log.debug(num + " datasets loaded");

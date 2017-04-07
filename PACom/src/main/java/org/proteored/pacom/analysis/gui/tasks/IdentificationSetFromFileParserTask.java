@@ -28,6 +28,7 @@ import org.proteored.miapeapi.interfaces.msi.PeptideScore;
 import org.proteored.miapeapi.util.UniprotId2AccMapping;
 import org.proteored.pacom.analysis.exporters.tasks.IdentifiedPeptideImpl;
 import org.proteored.pacom.analysis.exporters.tasks.IdentifiedProteinImpl;
+import org.proteored.pacom.gui.MainFrame;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 
 import com.compomics.dbtoolkit.io.implementations.FASTADBLoader;
@@ -214,9 +215,10 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 			}
 			if (loadNewFastaFile) {
 				if (IdentificationSetFromFileParserTask.fileChooser == null)
-					IdentificationSetFromFileParserTask.fileChooser = new JFileChooser(new File("."));
+					IdentificationSetFromFileParserTask.fileChooser = new JFileChooser(MainFrame.currentFolder);
 				fileChooser.showDialog(null, "Select FASTA file");
 				final File fastaFile = fileChooser.getSelectedFile();
+				MainFrame.currentFolder = fastaFile.getParentFile();
 
 				if (fastaFile.exists()) {
 					log.info("Loading fasta...");

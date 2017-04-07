@@ -25,6 +25,7 @@ import org.proteored.pacom.analysis.gui.tasks.IdentificationSetFromDTASelectFile
 import org.proteored.pacom.analysis.gui.tasks.IdentificationSetFromFileParserTask;
 import org.proteored.pacom.analysis.util.FileManager;
 import org.proteored.pacom.gui.ImageManager;
+import org.proteored.pacom.gui.MainFrame;
 
 import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 
@@ -41,7 +42,6 @@ public class ManualIdentificationSetCreatorDialog extends javax.swing.JDialog im
 	private final Miape2ExperimentListDialog parent;
 	private JFileChooser fileChooser;
 	private boolean saved;
-	private String previousPath;
 	private File selectedFile;
 
 	/** Creates new form ManualIdentificationSetCreatorDialog */
@@ -341,14 +341,12 @@ public class ManualIdentificationSetCreatorDialog extends javax.swing.JDialog im
 	}
 
 	private void selectFile() {
-		if (previousPath == null)
-			previousPath = new File(".").getAbsolutePath();
 
-		fileChooser = new JFileChooser(previousPath);
+		fileChooser = new JFileChooser(MainFrame.currentFolder);
 		fileChooser.showDialog(this, "Select");
 		selectedFile = fileChooser.getSelectedFile();
 		if (selectedFile != null) {
-			previousPath = selectedFile.getParent();
+			MainFrame.currentFolder = selectedFile.getParentFile();
 			// set the name on the text field of the name
 			final String name = FilenameUtils.getName(selectedFile.getAbsolutePath());
 			if (name.contains(".")) {

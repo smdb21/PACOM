@@ -7,29 +7,32 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.SwingWorker;
 
 import org.apache.log4j.Logger;
-import org.proteored.miapeapi.experiment.model.Experiment;
 import org.proteored.miapeapi.experiment.model.ExtendedIdentifiedPeptide;
 import org.proteored.miapeapi.experiment.model.IdentificationSet;
 import org.proteored.miapeapi.experiment.model.PeptideOccurrence;
 import org.proteored.miapeapi.experiment.model.ProteinGroup;
 import org.proteored.miapeapi.experiment.model.ProteinGroupOccurrence;
+import org.proteored.miapeapi.experiment.model.filters.Filters;
+import org.proteored.miapeapi.experiment.model.sort.ProteinComparatorKey;
+import org.proteored.miapeapi.experiment.model.sort.ProteinGroupComparisonType;
 import org.proteored.miapeapi.experiment.model.sort.SorterUtil;
 import org.proteored.pacom.analysis.exporters.Exporter;
 import org.proteored.pacom.analysis.exporters.ExporterManager;
 import org.proteored.pacom.analysis.exporters.util.ExportedColumns;
 import org.proteored.pacom.analysis.exporters.util.ExporterUtil;
 
-public class TSVExporter extends SwingWorker<Void, String> implements
-		Exporter<File> {
+public class TSVExporter extends SwingWorker<Void, String> implements Exporter<File> {
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
 
-	private IdentificationSet idSet;
+	private Set<IdentificationSet> idSets = new HashSet<IdentificationSet>();
 	private final char separator;
 	private final File file;
 	private final boolean includeReplicateAndExperimentOrigin;
@@ -44,23 +47,27 @@ public class TSVExporter extends SwingWorker<Void, String> implements
 
 	private final boolean isFDRApplied;
 
-	public TSVExporter(ExporterManager expManager, IdentificationSet idSet,
-			File file) {
+	private final Filters filter;
+
+	private boolean distinguisModificatedPeptides;
+
+	private ProteinGroupComparisonType comparisonType;
+
+	public TSVExporter(ExporterManager expManager, Collection<IdentificationSet> idSets, File file, Filters filter) {
 
 		this.file = file;
 		this.separator = TAB;
-		this.idSet = idSet;
-
-		this.includeReplicateAndExperimentOrigin = expManager
-				.isReplicateAndExperimentOriginIncluded();
+		this.idSets.addAll(idSets);
+		this.filter = filter;
+		this.includeReplicateAndExperimentOrigin = expManager.isReplicateAndExperimentOriginIncluded();
+		this.comparisonType = expManager.getComparisonType();
 		this.includeDecoyHits = expManager.isDecoyHitsIncluded();
 		this.showPeptides = expManager.showPeptides();
 		this.includeGeneInfo = expManager.isGeneInfoIncluded();
 		this.showBestPeptides = expManager.showBestPeptides();
 		this.showBestProteins = expManager.showBestProteins();
 		this.retrieveProteinSequences = expManager.retrieveProteinSequences();
-		this.excludeNonConclusiveProteins = !expManager
-				.isNonConclusiveProteinsIncluded();
+		this.excludeNonConclusiveProteins = !expManager.isNonConclusiveProteinsIncluded();
 		this.isFDRApplied = expManager.isFDRApplied();
 	}
 
@@ -71,255 +78,234 @@ public class TSVExporter extends SwingWorker<Void, String> implements
 		// create file
 		try {
 			out = new BufferedOutputStream(new FileOutputStream(file));
-			List<String> columnsStringList = ExportedColumns.getColumnsString(
-					this.includeReplicateAndExperimentOrigin,
-					this.showPeptides, this.includeGeneInfo, this.isFDRApplied,
-					this.idSet);
-			String columnsString = ExporterUtil.getInstance(idSet,
-					includeReplicateAndExperimentOrigin, showPeptides,
-					includeGeneInfo, retrieveProteinSequences,
-					excludeNonConclusiveProteins).getStringFromList(
-					columnsStringList, separator)
-					+ NEWLINE;
+
+			List<String> columnsStringList = ExportedColumns.getColumnsString(this.includeReplicateAndExperimentOrigin,
+					this.showPeptides, this.includeGeneInfo, this.isFDRApplied, idSets);
+			ExporterUtil exporterUtil = ExporterUtil.getInstance(idSets, includeReplicateAndExperimentOrigin,
+					showPeptides, includeGeneInfo, retrieveProteinSequences, excludeNonConclusiveProteins);
+			String columnsString = exporterUtil.getStringFromList(columnsStringList, separator) + NEWLINE;
 
 			log.info(columnsString);
 			out.write(columnsString.getBytes());
+
 			// final HashMap<String,
 			// IdentificationOccurrence<ExtendedIdentifiedProtein>>
 			// proteinOccurrenceList = this.idSet
 			// .getProteinOccurrenceList();
+			for (IdentificationSet idSet : idSets) {
+				int progress = 0;
+				// if (progress == 0)
+				// return;
+				if (this.showPeptides) {
+					if (this.showBestPeptides) {
+						final HashMap<String, PeptideOccurrence> peptideOccurrenceHashMap = idSet
+								.getPeptideOccurrenceList(true);
+						// sort if there is a FDR Filter activated that tells us
+						// which is the score sort
 
-			int progress = 0;
-			// if (progress == 0)
-			// return;
-			if (this.showPeptides) {
-				if (this.showBestPeptides) {
-					final HashMap<String, PeptideOccurrence> peptideOccurrenceHashMap = this.idSet
-							.getPeptideOccurrenceList(true);
-					// sort if there is a FDR Filter activated that tells us
-					// which is the score sort
+						ArrayList<PeptideOccurrence> peptideOccurrenceList = new ArrayList<PeptideOccurrence>();
+						for (PeptideOccurrence peptideOccurrence : peptideOccurrenceHashMap.values()) {
+							if (!includeDecoyHits && peptideOccurrence.isDecoy()) {
+								continue;
+							}
+							if (filter != null) {
+								String sequence = peptideOccurrence.getFirstOccurrence()
+										.getKey(distinguisModificatedPeptides);
 
-					firePropertyChange(DATA_EXPORTING_SORTING, null,
-							peptideOccurrenceHashMap.size());
-					ArrayList<PeptideOccurrence> peptideOccurrenceList = new ArrayList<PeptideOccurrence>();
-					for (PeptideOccurrence peptideOccurrence : peptideOccurrenceHashMap
-							.values()) {
-						peptideOccurrenceList.add(peptideOccurrence);
-					}
+								if (filter.canCheck(sequence) && !filter.isValid(sequence)) {
+									continue;
+								}
 
-					SorterUtil
-							.sortPeptideOcurrencesByBestPeptideScore(peptideOccurrenceList);
-					firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
-					Iterator<PeptideOccurrence> iterator = peptideOccurrenceList
-							.iterator();
+							}
+							peptideOccurrenceList.add(peptideOccurrence);
+						}
+						firePropertyChange(DATA_EXPORTING_SORTING, null, peptideOccurrenceList.size());
 
-					int total = peptideOccurrenceHashMap.size();
-					int i = 1;
-					while (iterator.hasNext()) {
-						PeptideOccurrence peptideOccurrence = iterator.next();
+						SorterUtil.sortPeptideOcurrencesByBestPeptideScore(peptideOccurrenceList);
+						firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
+						Iterator<PeptideOccurrence> iterator = peptideOccurrenceList.iterator();
 
-						Thread.sleep(1);
-						boolean isdecoy = peptideOccurrence.isDecoy();
+						int total = peptideOccurrenceList.size();
+						int i = 1;
+						while (iterator.hasNext()) {
+							PeptideOccurrence peptideOccurrence = iterator.next();
 
-						if (includeDecoyHits || (!includeDecoyHits && !isdecoy)) {
-							final List<String> lineStringList = ExporterUtil
-									.getInstance(
-											idSet,
-											includeReplicateAndExperimentOrigin,
-											showPeptides, includeGeneInfo,
-											retrieveProteinSequences,
-											excludeNonConclusiveProteins)
-									.getPeptideInfoList(peptideOccurrence,
-											columnsStringList, i++);
-							String lineString = ExporterUtil.getInstance(idSet,
-									includeReplicateAndExperimentOrigin,
-									showPeptides, includeGeneInfo,
-									retrieveProteinSequences,
-									excludeNonConclusiveProteins)
-									.getStringFromList(lineStringList,
-											separator)
-									+ NEWLINE;
+							Thread.sleep(1);
+
+							final List<String> peptideColumns = exporterUtil.getPeptideInfoList(peptideOccurrence,
+									columnsStringList, i++, idSet);
+							String lineString = exporterUtil.getStringFromList(peptideColumns, separator) + NEWLINE;
 							// log.info(lineString);
 							out.write(lineString.getBytes());
+
+							progress++;
+
+							final int percentage = progress * 100 / total;
+							log.info(percentage + " %");
+							setProgress(percentage);
 						}
+					} else {
+						final List<ExtendedIdentifiedPeptide> identifiedPeptides = idSet.getIdentifiedPeptides();
+						// sort if there is a FDR Filter activated that tells us
+						// which is the score sort
+						List<ExtendedIdentifiedPeptide> peptidelistToExport = new ArrayList<ExtendedIdentifiedPeptide>();
 
-						progress++;
+						for (ExtendedIdentifiedPeptide peptide : identifiedPeptides) {
+							Thread.sleep(1);
+							if (!includeDecoyHits && peptide.isDecoy()) {
+								continue;
+							}
+							String peptideKey = peptide.getKey(distinguisModificatedPeptides);
+							if (filter != null && filter.canCheck(peptideKey)) {
+								if (!filter.isValid(peptideKey)) {
+									continue;
+								}
 
-						final int percentage = progress * 100 / total;
-						log.info(percentage + " %");
-						setProgress(percentage);
-					}
-				} else {
-					final List<ExtendedIdentifiedPeptide> identifiedPeptides = this.idSet
-							.getIdentifiedPeptides();
-					// sort if there is a FDR Filter activated that tells us
-					// which is the score sort
+							}
+							peptidelistToExport.add(peptide);
+						}
+						firePropertyChange(DATA_EXPORTING_SORTING, null, peptidelistToExport.size());
+						SorterUtil.sortPeptidesByBestPeptideScore(peptidelistToExport, true);
+						firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
 
-					firePropertyChange(DATA_EXPORTING_SORTING, null,
-							identifiedPeptides.size());
+						int total = peptidelistToExport.size();
+						int i = 1;
+						for (ExtendedIdentifiedPeptide peptide : peptidelistToExport) {
 
-					SorterUtil.sortPeptidesByBestPeptideScore(
-							identifiedPeptides, true);
-					firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
-
-					int total = identifiedPeptides.size();
-					int i = 1;
-					for (ExtendedIdentifiedPeptide peptide : identifiedPeptides) {
-						Thread.sleep(1);
-						boolean isdecoy = peptide.isDecoy();
-						if (includeDecoyHits || (!includeDecoyHits && !isdecoy)) {
+							Thread.sleep(1);
 
 							PeptideOccurrence peptideOccurrence = new PeptideOccurrence(
 									peptide.getModificationString());
 							peptideOccurrence.addOccurrence(peptide);
-							final List<String> lineStringList = ExporterUtil
-									.getInstance(
-											idSet,
-											includeReplicateAndExperimentOrigin,
-											showPeptides, includeGeneInfo,
-											retrieveProteinSequences,
-											excludeNonConclusiveProteins)
-									.getPeptideInfoList(peptideOccurrence,
-											columnsStringList, i++);
-							String lineString = ExporterUtil.getInstance(idSet,
-									includeReplicateAndExperimentOrigin,
-									showPeptides, includeGeneInfo,
-									retrieveProteinSequences,
-									excludeNonConclusiveProteins)
-									.getStringFromList(lineStringList,
-											separator)
-									+ NEWLINE;
+							final List<String> lineStringList = exporterUtil.getPeptideInfoList(peptideOccurrence,
+									columnsStringList, i++, idSet);
+							String lineString = exporterUtil.getStringFromList(lineStringList, separator) + NEWLINE;
 							// log.info(lineString);
 							out.write(lineString.getBytes());
+
+							progress++;
+							final int percentage = progress * 100 / total;
+							log.info(percentage + " %");
+							setProgress(percentage);
 						}
-
-						progress++;
-						final int percentage = progress * 100 / total;
-						log.info(percentage + " %");
-						setProgress(percentage);
-					}
-				}
-			} else {
-				// JUST PROTEINS
-				if (this.showBestProteins) {
-					final Collection<ProteinGroupOccurrence> proteinOccurrenceSet = this.idSet
-							.getProteinGroupOccurrenceList().values();
-					final List<ProteinGroupOccurrence> proteinGroupOccurrenceList = new ArrayList<ProteinGroupOccurrence>();
-					for (ProteinGroupOccurrence proteinGroupOccurrence : proteinOccurrenceSet) {
-						proteinGroupOccurrenceList.add(proteinGroupOccurrence);
-					}
-					// sort if there is a FDR Filter activated that tells us
-					// which is the score sort
-
-					firePropertyChange(DATA_EXPORTING_SORTING, null,
-							proteinGroupOccurrenceList.size());
-					try {
-						SorterUtil
-								.sortProteinGroupOcurrencesByBestPeptideScore(proteinGroupOccurrenceList);
-					} catch (Exception e) {
-
-					}
-					firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
-					Iterator<ProteinGroupOccurrence> iterator = proteinGroupOccurrenceList
-							.iterator();
-
-					int total = proteinGroupOccurrenceList.size();
-					int i = 1;
-					while (iterator.hasNext()) {
-						ProteinGroupOccurrence proteinGroupOccurrence = iterator
-								.next();
-						Thread.sleep(1);
-						boolean isdecoy = proteinGroupOccurrence.isDecoy();
-						boolean pass = true;
-						if (excludeNonConclusiveProteins
-								&& ExporterUtil
-										.isNonConclusiveProtein(proteinGroupOccurrence)) {
-							pass = false;
-							// log.info("Non conclusive protein skipped");
-						}
-						if (pass
-								&& (includeDecoyHits || (!includeDecoyHits && !isdecoy))) {
-							final List<String> proteinStringList = ExporterUtil
-									.getInstance(
-											idSet,
-											includeReplicateAndExperimentOrigin,
-											showPeptides, includeGeneInfo,
-											retrieveProteinSequences,
-											excludeNonConclusiveProteins)
-									.getProteinInfoList(proteinGroupOccurrence,
-											columnsStringList, i++);
-							String proteinString = ExporterUtil.getInstance(
-									idSet, includeReplicateAndExperimentOrigin,
-									showPeptides, includeGeneInfo,
-									retrieveProteinSequences,
-									excludeNonConclusiveProteins)
-									.getStringFromList(proteinStringList,
-											separator)
-									+ NEWLINE;
-							// System.out.println(peptideString);
-							out.write(proteinString.getBytes());
-						}
-
-						progress++;
-						final int percentage = progress * 100 / total;
-						log.info(percentage + " %");
-						setProgress(percentage);
 					}
 				} else {
-					final List<ProteinGroup> proteinGroups = this.idSet
-							.getIdentifiedProteinGroups();
-					// sort if there is a FDR Filter activated that tells us
-					// which is the score sort
+					// JUST PROTEINS
+					if (this.showBestProteins) {
+						List<ProteinGroupOccurrence> proteinGroupOccurrenceList = new ArrayList<ProteinGroupOccurrence>();
 
-					firePropertyChange(DATA_EXPORTING_SORTING, null,
-							proteinGroups.size());
+						final Collection<ProteinGroupOccurrence> proteinOccurrenceSet = idSet
+								.getProteinGroupOccurrenceList().values();
+						for (ProteinGroupOccurrence proteinGroupOccurrence : proteinOccurrenceSet) {
+							if (excludeNonConclusiveProteins
+									&& ExporterUtil.isNonConclusiveProtein(proteinGroupOccurrence)) {
+								continue;
+							}
+							if (!includeDecoyHits && proteinGroupOccurrence.isDecoy()) {
+								continue;
+							}
+							ProteinComparatorKey key = proteinGroupOccurrence.getKey(this.comparisonType);
+							if (filter != null && filter.canCheck(key)) {
+								if (!filter.isValid(key)) {
+									continue;
+								}
+							}
+							proteinGroupOccurrenceList.add(proteinGroupOccurrence);
+						}
 
-					SorterUtil
-							.sortProteinGroupsByBestPeptideScore(proteinGroups);
-					firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
+						// sort if there is a FDR Filter activated that tells us
+						// which is the score sort
 
-					int total = proteinGroups.size();
-					int i = 1;
-					for (ProteinGroup proteinGroup : proteinGroups) {
-						Thread.sleep(1);
-						boolean isdecoy = proteinGroup.isDecoy();
-						if (includeDecoyHits || (!includeDecoyHits && !isdecoy)) {
-							ProteinGroupOccurrence proteinOccurrence = new ProteinGroupOccurrence();
-							proteinOccurrence.addOccurrence(proteinGroup);
-							final List<String> proteinStringList = ExporterUtil
-									.getInstance(
-											idSet,
-											includeReplicateAndExperimentOrigin,
-											showPeptides, includeGeneInfo,
-											retrieveProteinSequences,
-											excludeNonConclusiveProteins)
-									.getProteinInfoList(proteinOccurrence,
-											columnsStringList, i++);
-							String proteinString = ExporterUtil.getInstance(
-									idSet, includeReplicateAndExperimentOrigin,
-									showPeptides, includeGeneInfo,
-									retrieveProteinSequences,
-									excludeNonConclusiveProteins)
-									.getStringFromList(proteinStringList,
-											separator)
+						firePropertyChange(DATA_EXPORTING_SORTING, null, proteinGroupOccurrenceList.size());
+						try {
+							SorterUtil.sortProteinGroupOcurrencesByBestPeptideScore(proteinGroupOccurrenceList);
+						} catch (Exception e) {
+
+						}
+						firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
+						Iterator<ProteinGroupOccurrence> iterator = proteinGroupOccurrenceList.iterator();
+
+						int total = proteinGroupOccurrenceList.size();
+						int i = 1;
+						while (iterator.hasNext()) {
+							ProteinGroupOccurrence proteinGroupOccurrence = iterator.next();
+							Thread.sleep(1);
+
+							final List<String> proteinStringList = exporterUtil
+									.getProteinInfoList(proteinGroupOccurrence, columnsStringList, i++, idSet);
+							String proteinString = exporterUtil.getStringFromList(proteinStringList, separator)
 									+ NEWLINE;
 							// System.out.println(peptideString);
 							out.write(proteinString.getBytes());
-						}
 
-						progress++;
-						final int percentage = progress * 100 / total;
-						log.info(percentage + " %");
-						setProgress(percentage);
+							progress++;
+							final int percentage = progress * 100 / total;
+							log.info(percentage + " %");
+							setProgress(percentage);
+						}
+					} else {
+						final List<ProteinGroup> proteinGroups = idSet.getIdentifiedProteinGroups();
+						// sort if there is a FDR Filter activated that tells us
+						// which is the score sort
+						List<ProteinGroup> proteinGroupsToExport = new ArrayList<ProteinGroup>();
+						for (ProteinGroup proteinGroup : proteinGroups) {
+							if (!includeDecoyHits && proteinGroup.isDecoy()) {
+								continue;
+							}
+							if (excludeNonConclusiveProteins && ExporterUtil.isNonConclusiveProtein(proteinGroup)) {
+								continue;
+							}
+							ProteinGroupOccurrence proteinOccurrence = new ProteinGroupOccurrence();
+							proteinOccurrence.addOccurrence(proteinGroup);
+							ProteinComparatorKey key = proteinOccurrence.getKey(this.comparisonType);
+							if (filter != null) {
+								if (filter.canCheck(key) && !filter.isValid(key)) {
+									continue;
+								}
+							}
+							proteinGroupsToExport.add(proteinGroup);
+						}
+						firePropertyChange(DATA_EXPORTING_SORTING, null, proteinGroupsToExport.size());
+
+						SorterUtil.sortProteinGroupsByBestPeptideScore(proteinGroupsToExport);
+						firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
+
+						int total = proteinGroupsToExport.size();
+						int i = 1;
+						for (ProteinGroup proteinGroup : proteinGroupsToExport) {
+
+							Thread.sleep(1);
+
+							ProteinGroupOccurrence proteinOccurrence = new ProteinGroupOccurrence();
+							proteinOccurrence.addOccurrence(proteinGroup);
+
+							final List<String> proteinStringList = exporterUtil.getProteinInfoList(proteinOccurrence,
+									columnsStringList, i++, idSet);
+							String proteinString = exporterUtil.getStringFromList(proteinStringList, separator)
+									+ NEWLINE;
+							// System.out.println(peptideString);
+							out.write(proteinString.getBytes());
+
+							progress++;
+							final int percentage = progress * 100 / total;
+							log.info(percentage + " %");
+							setProgress(percentage);
+						}
 					}
 				}
 			}
-		} catch (Exception e) {
+		} catch (
+
+		Exception e)
+
+		{
 			if (!(e instanceof InterruptedException)) {
 				e.printStackTrace();
 				error = e.getMessage();
 			}
-		} finally {
+		} finally
+
+		{
 
 			// Close the BufferedOutputStream
 			try {
@@ -338,14 +324,6 @@ public class TSVExporter extends SwingWorker<Void, String> implements
 
 	public void save() throws IOException {
 		saveAs(file.getAbsolutePath());
-	}
-
-	public IdentificationSet getExperiment() {
-		return idSet;
-	}
-
-	public void setExperiment(Experiment experiment) {
-		this.idSet = experiment;
 	}
 
 	public char getSeparator() {
@@ -382,6 +360,10 @@ public class TSVExporter extends SwingWorker<Void, String> implements
 			this.cancel(true);
 		}
 		return null;
+	}
+
+	public void setDistinguisModificatedPeptides(boolean distinguisModificatedPeptides) {
+		this.distinguisModificatedPeptides = distinguisModificatedPeptides;
 	}
 
 }
