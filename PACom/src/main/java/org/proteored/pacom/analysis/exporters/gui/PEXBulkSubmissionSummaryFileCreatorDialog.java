@@ -85,11 +85,10 @@ public class PEXBulkSubmissionSummaryFileCreatorDialog extends javax.swing.JDial
 			String plural = "";
 			if (numExperiments > 1)
 				plural = "s";
-			String text = "<html>This project contains " + numExperiments + " experiment" + plural + ".<br>"
+			String text = "<html>This project contains " + numExperiments + " dataset" + plural + " (at level 1).<br>"
 					+ numExperiments + " PRIDE XML files will be created and a ProteomeXchange Bulk Submission File";
 
-			text = text
-					+ ".<br>Go to 'Add RAW data files' tab to add RAW files not contained in the MIAPE documents.<br>"
+			text = text + ".<br>Go to 'Add RAW data files' tab to add RAW files not contained in the datasets.<br>"
 					+ "Then, select the output folder and the appropiate general options and click on 'ProteomeXchange' button.</html>";
 			jLabelInformation.setText(text);
 		}
@@ -97,7 +96,7 @@ public class PEXBulkSubmissionSummaryFileCreatorDialog extends javax.swing.JDial
 		jTextAreaDescription.setFont(new JTextField().getFont());
 
 		// set icon image
-		setIconImage(ImageManager.getImageIcon(ImageManager.PROTEORED_MIAPE_API).getImage());
+		setIconImage(ImageManager.getImageIcon(ImageManager.PACOM_LOGO).getImage());
 
 		// set title
 		setTitle("Prepare data for a ProteomeXchange Bulk Submission");

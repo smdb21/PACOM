@@ -271,7 +271,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 
 	private void loadIcons() {
 		// set icon image
-		setIconImage(ImageManager.getImageIcon(ImageManager.PROTEORED_MIAPE_API).getImage());
+		setIconImage(ImageManager.getImageIcon(ImageManager.PACOM_LOGO).getImage());
 		jButtonStartLoading.setIcon(ImageManager.getImageIcon(ImageManager.RELOAD));
 		jButtonStartLoading.setPressedIcon(ImageManager.getImageIcon(ImageManager.RELOAD_CLICKED));
 		jButtonCancelLoading.setIcon(ImageManager.getImageIcon(ImageManager.STOP));

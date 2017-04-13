@@ -44,6 +44,7 @@ import org.proteored.pacom.analysis.exporters.util.ExporterUtil;
 import org.proteored.pacom.analysis.genes.ENSGInfo;
 import org.proteored.pacom.analysis.genes.GeneDistributionReader;
 import org.proteored.pacom.analysis.gui.AdditionalOptionsPanelFactory;
+import org.proteored.pacom.analysis.util.FileManager;
 
 import com.compomics.util.protein.AASequenceImpl;
 import com.compomics.util.protein.Protein;
@@ -1059,7 +1060,7 @@ public class DatasetFactory {
 	 *            only applicable in case of proteins
 	 * @return
 	 */
-	public static double[][] createPeptideOccurrenceHeapMapDataSet(IdentificationSet parentIdSet,
+	public static double[][] createPSMsPerPeptidesHeapMapDataSet(IdentificationSet parentIdSet,
 			List<IdentificationSet> idSets, List<String> rowList, List<String> columnList,
 			List<String> peptideSequenceOrder, Boolean distiguishModificatedPeptides, int minOccurrenceThreshold) {
 
@@ -1082,10 +1083,7 @@ public class DatasetFactory {
 		for (PeptideOccurrence peptideOccurrence : peptideOccurrenceSet) {
 			int present = 0;
 			for (IdentificationSet idSet : idSets) {
-				if (idSet.getPeptideOccurrenceNumber(peptideOccurrence.getFirstOccurrence().getSequence(),
-						distiguishModificatedPeptides) > 0) {
-					present++;
-				}
+				present += idSet.getNumPSMsForAPeptide(peptideOccurrence.getKey());
 			}
 			if (present > 0 && present >= minOccurrenceThreshold)
 				if (!occurrenceRankingPep.containsKey(present)) {
@@ -1105,14 +1103,113 @@ public class DatasetFactory {
 					rowList.add(peptideKey);
 					int numOccurrence = 0;
 					for (IdentificationSet idSet : idSets) {
-						final int peptideOcurrence = idSet.getPeptideOccurrenceNumber(peptideKey,
-								distiguishModificatedPeptides);
-						if (peptideOcurrence > 0)
+						final int numPSMs = idSet.getNumPSMsForAPeptide(peptideKey);
+						if (numPSMs > 0)
 							someValueIsMoreThanZero = true;
 						final String columnName = idSet.getFullName();
 						if (!columnList.contains(columnName))
 							columnList.add(columnName);
-						numOccurrence += peptideOcurrence;
+						numOccurrence += numPSMs;
+						dataset[peptideIndex][identSetIndex] = numPSMs;
+						identSetIndex++;
+					}
+					peptideIndex++;
+				}
+		}
+
+		if (!someValueIsMoreThanZero)
+			throw new IllegalMiapeArgumentException("There is not data to show");
+		double[][] ret = new double[rowList.size()][columnList.size()];
+		for (int row = 0; row < rowList.size(); row++) {
+			for (int column = 0; column < columnList.size(); column++) {
+				ret[row][column] = dataset[row][column];
+			}
+		}
+
+		// if there is a proteinACC filter, then, return just the data from the
+		// proteins of the filter and in the appropriate order
+		if (peptideSequenceOrder != null && !peptideSequenceOrder.isEmpty()) {
+			double[][] newRet = getNewSortedData(peptideSequenceOrder, ret, rowList, columnList);
+			rowList.clear();
+			rowList.addAll(peptideSequenceOrder);
+			return newRet;
+		}
+		return ret;
+	}
+
+	/**
+	 *
+	 * @param parentIdSet
+	 * @param idSets
+	 * @param rowList
+	 * @param columnList
+	 * @param peptideSequenceOrder
+	 * @param plotItem
+	 * @param distiguishModificatedPeptides
+	 * @param minOccurrenceThreshold
+	 * @param countNonConclusiveProteins
+	 * @param peptidesPerProtein
+	 *            only applicable in case of proteins
+	 * @return
+	 */
+	public static double[][] createPeptideOccurrenceHeapMapDataSet(IdentificationSet parentIdSet,
+			List<IdentificationSet> idSets, List<String> rowList, List<String> columnList,
+			List<String> peptideSequenceOrder, Boolean distiguishModificatedPeptides, int minOccurrenceThreshold) {
+
+		if (rowList == null)
+			rowList = new ArrayList<String>();
+
+		if (columnList == null)
+			columnList = new ArrayList<String>();
+		double[][] dataset = null;
+
+		boolean someValueIsMoreThanZero = false;
+		HashMap<Integer, List<String>> occurrenceRankingPep = new HashMap<Integer, List<String>>();
+		// Firstly, to iterate over parent elements and fill the
+		// occurrenceRanking, where the key is the number of idSets that
+		// contains the item<br>
+		// Then, from 1 to numberOfIdSets, build the heatmap
+		final Collection<PeptideOccurrence> peptideOccurrenceSet = parentIdSet
+				.getPeptideOccurrenceList(distiguishModificatedPeptides).values();
+		dataset = new double[peptideOccurrenceSet.size()][idSets.size()];
+		int maxOccurrence = 0;
+		for (PeptideOccurrence peptideOccurrence : peptideOccurrenceSet) {
+			int present = 0;
+			for (IdentificationSet idSet : idSets) {
+				int peptideOccurrenceNumber = idSet.getPeptideOccurrenceNumber(
+						peptideOccurrence.getFirstOccurrence().getSequence(), distiguishModificatedPeptides);
+				present += peptideOccurrenceNumber;
+			}
+			if (present > 0 && present >= minOccurrenceThreshold) {
+				if (maxOccurrence < present) {
+					maxOccurrence = present;
+				}
+				if (!occurrenceRankingPep.containsKey(present)) {
+					List<String> list = new ArrayList<String>();
+					list.add(peptideOccurrence.getKey());
+					occurrenceRankingPep.put(present, list);
+				} else {
+					occurrenceRankingPep.get(present).add(peptideOccurrence.getKey());
+				}
+			}
+		}
+		int peptideIndex = 0;
+		for (int numPresent = maxOccurrence; numPresent >= 0; numPresent--) {
+			final List<String> peptideKeys = occurrenceRankingPep.get(numPresent);
+			if (peptideKeys != null)
+				for (String peptideKey : peptideKeys) {
+					int identSetIndex = 0;
+					rowList.add(peptideKey);
+					for (IdentificationSet idSet : idSets) {
+						final int peptideOcurrence = idSet.getPeptideOccurrenceNumber(peptideKey,
+								distiguishModificatedPeptides);
+						if (peptideOcurrence > 0) {
+							someValueIsMoreThanZero = true;
+						}
+						final String columnName = idSet.getFullName();
+						if (!columnList.contains(columnName)) {
+							columnList.add(columnName);
+						}
 						dataset[peptideIndex][identSetIndex] = peptideOcurrence;
 						identSetIndex++;
 					}
@@ -1262,7 +1359,7 @@ public class DatasetFactory {
 	 * @param columnList
 	 * @param plotItem
 	 * @param distiguishModificatedPeptides
-	 * @param minOccurrenceThreshold
+	 * @param minThreshold
 	 * @param countNonConclusiveProteins
 	 * @param peptidesPerProtein
 	 *            only applicable in case of proteins
@@ -1270,7 +1367,7 @@ public class DatasetFactory {
 	 */
 	public static double[][] createPeptidesPerProteinHeapMapDataSet(IdentificationSet parentIdSet,
 			List<IdentificationSet> idSets, List<String> rowList, List<String> columnList, List<String> proteinACCOrder,
-			Boolean distiguishModificatedPeptides, int minOccurrenceThreshold, Boolean countNonConclusiveProteins,
+			Boolean distiguishModificatedPeptides, int minThreshold, Boolean countNonConclusiveProteins,
 			boolean isPSM) {
 
 		if (rowList == null)
@@ -1281,7 +1378,6 @@ public class DatasetFactory {
 		double[][] dataset = null;
 
 		boolean someValueIsMoreThanZero = false;
-		HashMap<Integer, List<String>> occurrenceRankingPep = new HashMap<Integer, List<String>>();
 		// Firstly, to iterate over parent elements and fill the
 		// occurrenceRanking, where the key is the number of idSets that
 		// contains the item<br>
@@ -1307,16 +1403,20 @@ public class DatasetFactory {
 					if (isPSM) {
 						size = proteinGroupOccurrence.getPeptides().size();
 					} else {
-						size = proteinGroupOccurrence.getPeptides().size();
 						size = DataManager.createPeptideOccurrenceList(proteinGroupOccurrence.getPeptides(),
 								distiguishModificatedPeptides).size();
 					}
 					totalPeptidesForThatProtein += size;
 				}
 			}
-			if (totalPeptidesForThatProtein > 0 && totalPeptidesForThatProtein >= minOccurrenceThreshold)
-				if (maxNumberOfPeptidesPerProtein < totalPeptidesForThatProtein)
+			if (totalPeptidesForThatProtein < minThreshold) {
+				continue;
+			}
+			if (totalPeptidesForThatProtein > 0 && totalPeptidesForThatProtein >= minThreshold) {
+				if (maxNumberOfPeptidesPerProtein < totalPeptidesForThatProtein) {
 					maxNumberOfPeptidesPerProtein = totalPeptidesForThatProtein;
+				}
+			}
 			if (!peptideNumberRankingProt.containsKey(totalPeptidesForThatProtein)) {
 				List<ProteinGroup> list = new ArrayList<ProteinGroup>();
 				list.add(proteinGroupOccurrence.getFirstOccurrence());
@@ -1328,19 +1428,12 @@ public class DatasetFactory {
 
 		}
 		int proteinIndex = 0;
-		for (int peptidesPerprotein = maxNumberOfPeptidesPerProtein; peptidesPerprotein > 0; peptidesPerprotein--) {
+		for (int peptidesPerprotein = maxNumberOfPeptidesPerProtein; peptidesPerprotein >= 0; peptidesPerprotein--) {
 			final List<ProteinGroup> proteinGroups = peptideNumberRankingProt.get(peptidesPerprotein);
-			if (proteinGroups != null)
+			if (proteinGroups != null) {
 				for (ProteinGroup proteinGroup : proteinGroups) {
 					int identSetIndex = 0;
-					List<String> accs = proteinGroup.getAccessions();
-					String key = "";
-					for (String acc : accs) {
-						if (!"".equals(key))
-							key += ",";
-						key += acc;
-					}
-					rowList.add(key);
+					rowList.add(proteinGroup.getAccessionsString());
 					for (IdentificationSet idSet : idSets) {
 						ProteinGroupOccurrence proteinGroupOccurrence = idSet.getProteinGroupOccurrence(proteinGroup);
 						int peptidesPerThisProtein = 0;
@@ -1364,6 +1457,7 @@ public class DatasetFactory {
 					}
 					proteinIndex++;
 				}
+			}
 		}
 
 		if (!someValueIsMoreThanZero)
@@ -1538,7 +1632,8 @@ public class DatasetFactory {
 
 				if (numPeptideList != null && !numPeptideList.isEmpty()) {
 					Double numPeptidesPerProtein = getMeanFromList(numPeptideList);
-					String proteinSequence = proteinGroup.getProteinSequence(retrieveFromInternet);
+					String proteinSequence = proteinGroup.getProteinSequence(retrieveFromInternet,
+							FileManager.getUniprotProteinLocalRetriever());
 					if (proteinSequence != null) {
 						Protein prot = new Protein(new AASequenceImpl(proteinSequence));
 						double mass = prot.getMass();
@@ -1769,8 +1864,10 @@ public class DatasetFactory {
 						&& !countNonConclusiveProteins)
 					continue;
 				try {
-					if (proteinGroupOccurrence.getMeanProteinCoverage(retrieveProteinSeq) != null) {
-						ret[i] = 100 * proteinGroupOccurrence.getMeanProteinCoverage(retrieveProteinSeq);
+					Float meanProteinCoverage = proteinGroupOccurrence.getMeanProteinCoverage(retrieveProteinSeq,
+							FileManager.getUniprotProteinLocalRetriever());
+					if (meanProteinCoverage != null) {
+						ret[i] = 100 * meanProteinCoverage;
 					}
 				} catch (Exception ex) {
 					// do nothing

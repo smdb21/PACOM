@@ -157,7 +157,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_PRIDEXML);
 
 		// set icon image
-		setIconImage(ImageManager.getImageIcon(ImageManager.PROTEORED_MIAPE_API).getImage());
+		setIconImage(ImageManager.getImageIcon(ImageManager.PACOM_LOGO).getImage());
 		jButtonSubmit.setIcon(ImageManager.getImageIcon(ImageManager.ADD));
 		jButtonSubmit.setPressedIcon(ImageManager.getImageIcon(ImageManager.ADD_CLICKED));
 		jButtonClearStatus.setIcon(ImageManager.getImageIcon(ImageManager.CLEAR));

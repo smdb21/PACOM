@@ -8,71 +8,44 @@ import java.util.Set;
 import org.proteored.miapeapi.experiment.model.IdentificationSet;
 
 public enum ExportedColumns {
-	NUMBER("#", 3, ""), EXPERIMENT("Exp", 30, "Experiment(s) names(s)"), REPLICATE("fr/band/rep", 30,
-			"Fraction band or replicate name(s)"), PROTEIN_GROUP_TYPE("protein/group type", 10,
-					"protein evidence type"), PROTEIN_ACC("ACC", 25, "Protein accession"), PROTEIN_DESC("desc", 40,
-							"Protein description"), PROTEIN_SCORE("prot sc", 10, "Protein score"), PROTEIN_COV(
-									"coverage (%)", 10, "Protein coverage %"), PROTEIN_DIFF_SEQ("num.diff.seqs.", 10,
-											"Number of different peptides sequences assigned to the protein"), PROTEIN_NUM_PEPS(
-													"num. peptides", 10,
-													"Number of peptides assigned to the protein"), IS_UNIQUE("unique",
-															6, "Peptide unique"), EXP_MZ("exp.m/z", 10,
-																	"Experimental m/z"), CALC_MZ("calc.m/z", 10,
-																			"Theoretical m/z"), ERROR_MZ("m/z error",
-																					10,
-																					"Error m/z: difference between theoretical and experimental m/z"), CHARGE(
-																							"z", 6,
-																							"Peptide charge"), MISS(
-																									"miss", 6,
-																									"Number of missedcleavages"), PEPTIDE_SCORE(
-																											"pep sc1",
-																											10,
-																											"Peptide score"), PROTEIN_LOCAL_FDR(
-																													"Prot. local-FDR (%)",
-																													10,
-																													"Local FDR at the current position of the ranked list of proteins"), PEPTIDE_LOCAL_FDR(
-																															"Pep. local-FDR (%)",
-																															10,
-																															"Local FDR at the current position of the ranked list of peptides"), PSM_LOCAL_FDR(
-																																	"PSM. local-FDR (%)",
-																																	10,
-																																	"Local FDR at the current position of the ranked list of PSMs"), RETENTION_TIME_SG(
-																																			"rt",
-																																			10,
-																																			"Retention time (in seconds)"), SEQUENCE(
-																																					"sequence",
-																																					60,
-																																					"Peptide sequence (without modifications)"), MODIF_SEQUENCE(
-																																							"modif.seq.",
-																																							60,
-																																							"Peptide sequence containing modifications"), MODIFICATIONS(
-																																									"modifs",
-																																									60,
-																																									"PTM modifications"), PROTEIN_OCCURRENCE(
-																																											"prot.occurr.",
-																																											6,
-																																											"Protein occurrence: number of times that the protein has been detected in the dataset"), PEPTIDE_OCCURRENCE(
-																																													"pep.occurr.",
-																																													6,
-																																													"Peptide occurrence: number of times that the peptide (with the modifications) has been detected in the dataset"), CHROMOSOME_NAME(
-																																															"chr",
-																																															10,
-																																															"Chromosome name"), ENSG_ID(
-																																																	"ENSG",
-																																																	15,
-																																																	"ENSEMBL identifier"), GENE_NAME(
-																																																			"gene name",
-																																																			15,
-																																																			"Gene name"), PROTEIN_EVIDENCE(
-																																																					"pe",
-																																																					6,
-																																																					"Protein evidence (from UniprotKB)"), RESEARCHER(
-																																																							"researcher",
-																																																							20,
-																																																							"Researcher name (internal data for the Spanish HPP consortium)"), GENE_CLASSIFICATION(
-																																																									"gene class",
-																																																									15,
-																																																									"Gene classification (internal data for the Spanish HPP consortium)");
+	NUMBER("#", 3, ""), //
+	EXPERIMENT("Level 1", 30, "Names of the level 1 nodes in the inspection project"), //
+	REPLICATE("Level 2", 30, "Names of the level 2 nodes in the inspection project"), //
+	PROTEIN_GROUP_TYPE("protein/group type", 10, "protein evidence type"), //
+	PROTEIN_ACC("ACC", 25, "Protein accession"), //
+	PROTEIN_DESC("desc", 40, "Protein description"), //
+	PROTEIN_SCORE("prot sc", 10, "Protein score"), //
+	PROTEIN_COV("coverage (%)", 10, "Protein coverage %"), //
+	PROTEIN_DIFF_SEQ("# peptides", 10, "Number of different peptides sequences assigned to the protein"), //
+	PROTEIN_NUM_PEPS("# PSMs", 10, "Number of PSMs assigned to the protein"), //
+	IS_UNIQUE("unique", 6, "Peptide unique"), //
+	EXP_MZ("exp.m/z", 10, "Experimental m/z"), //
+	CALC_MZ("calc.m/z", 10, "Theoretical m/z"), //
+	ERROR_MZ("m/z error", 10, "Error m/z: difference between theoretical and experimental m/z"), //
+	CHARGE("z", 6, "Peptide charge"), //
+	MISS("miss", 6, "Number of missedcleavages"), //
+	PEPTIDE_SCORE("pep sc1", 10, "Peptide score"), //
+	PROTEIN_LOCAL_FDR("Prot. local-FDR (%)", 10, "Local FDR at the current position of the ranked list of proteins"), //
+	PEPTIDE_LOCAL_FDR("Pep. local-FDR (%)", 10, "Local FDR at the current position of the ranked list of peptides"), //
+	PSM_LOCAL_FDR("PSM. local-FDR (%)", 10, "Local FDR at the current position of the ranked list of PSMs"), //
+	RETENTION_TIME_SG("rt", 10, "Retention time (in seconds)"), //
+	SEQUENCE("sequence", 60, "Peptide sequence (without modifications)"), //
+	MODIF_SEQUENCE("modif.seq.", 60, "Peptide sequence containing modifications"), //
+	MODIFICATIONS("modifs", 60, "PTM modifications"), //
+	// PROTEIN_OCCURRENCE("prot.occurr.", 6,
+	// "Protein occurrence: number of times that the protein has been detected
+	// in the dataset"), //
+	PEPTIDE_OCCURRENCE("pep.occurr.", 6,
+			"Peptide occurrence: number of times that the peptide (with the modifications) has been detected in the dataset"), //
+	CHROMOSOME_NAME("chr", 10, "Chromosome name"), //
+	ENSG_ID("ENSG", 15, "ENSEMBL identifier"), //
+	GENE_NAME("gene name", 15, "Gene name"), //
+	PROTEIN_EVIDENCE("pe", 6, "Protein evidence (from UniprotKB)"), //
+	// RESEARCHER("researcher", 20, "Researcher name (internal data for the
+	// Spanish HPP consortium)"), //
+	// GENE_CLASSIFICATION("gene class", 15, "Gene classification (internal data
+	// for the Spanish HPP consortium)")
+	;
 
 	private final String name;
 	private final int defaultWidth;
@@ -101,20 +74,20 @@ public enum ExportedColumns {
 		return this.name;
 	}
 
-	private static List<ExportedColumns> getColumns(boolean includeReplicateAndExperimentOrigin, boolean showPeptides,
-			boolean includeGeneInfo, boolean isFDRApplied) {
+	private static List<ExportedColumns> getColumns(boolean showPeptides, boolean includeGeneInfo,
+			boolean isFDRApplied) {
 		List<ExportedColumns> ret = new ArrayList<ExportedColumns>();
 		ret.add(NUMBER);
-		if (includeReplicateAndExperimentOrigin) {
-			ret.add(EXPERIMENT);
-			ret.add(REPLICATE);
-		}
+
+		ret.add(EXPERIMENT);
+		ret.add(REPLICATE);
+
 		if (includeGeneInfo) {
 			ret.add(CHROMOSOME_NAME);
-			ret.add(RESEARCHER);
+			// ret.add(RESEARCHER);
 			ret.add(ENSG_ID);
 			ret.add(GENE_NAME);
-			ret.add(GENE_CLASSIFICATION);
+			// ret.add(GENE_CLASSIFICATION);
 			ret.add(PROTEIN_EVIDENCE);
 		}
 		// ALWAYS REPORT PROTEINS ACC, even if just peptides are reported (no
@@ -125,7 +98,7 @@ public enum ExportedColumns {
 		// For just proteins
 		if (!showPeptides) {
 			ret.add(PROTEIN_GROUP_TYPE);
-			ret.add(PROTEIN_OCCURRENCE);
+			// ret.add(PROTEIN_OCCURRENCE);
 			ret.add(PROTEIN_SCORE);
 			if (isFDRApplied)
 				ret.add(PROTEIN_LOCAL_FDR);
@@ -156,20 +129,20 @@ public enum ExportedColumns {
 		return ret;
 	}
 
-	private static List<ExportedColumns> getColumnsForTable(boolean includeReplicateAndExperimentOrigin,
-			boolean showPeptides, boolean includeGeneInfo, boolean isFDRApplied) {
+	private static List<ExportedColumns> getColumnsForTable(boolean showPeptides, boolean includeGeneInfo,
+			boolean isFDRApplied) {
 		List<ExportedColumns> ret = new ArrayList<ExportedColumns>();
 		ret.add(NUMBER);
-		if (includeReplicateAndExperimentOrigin) {
-			ret.add(EXPERIMENT);
-			ret.add(REPLICATE);
-		}
+
+		ret.add(EXPERIMENT);
+		ret.add(REPLICATE);
+
 		if (includeGeneInfo) {
 			ret.add(CHROMOSOME_NAME);
-			ret.add(RESEARCHER);
+			// ret.add(RESEARCHER);
 			ret.add(ENSG_ID);
 			ret.add(GENE_NAME);
-			ret.add(GENE_CLASSIFICATION);
+			// ret.add(GENE_CLASSIFICATION);
 			// ret.add(PROTEIN_EVIDENCE);
 		}
 		// ALWAYS REPORT PROTEINS ACC, even if just peptides are reported (no
@@ -183,7 +156,7 @@ public enum ExportedColumns {
 			ret.add(PROTEIN_SCORE);
 			if (isFDRApplied)
 				ret.add(PROTEIN_LOCAL_FDR);
-			ret.add(PROTEIN_OCCURRENCE);
+			// ret.add(PROTEIN_OCCURRENCE);
 			ret.add(PROTEIN_COV);
 			ret.add(PROTEIN_DIFF_SEQ);
 			ret.add(PROTEIN_NUM_PEPS);
@@ -211,11 +184,10 @@ public enum ExportedColumns {
 		return ret;
 	}
 
-	public static List<String> getColumnsString(boolean includeReplicateAndExperimentOrigin, boolean showPeptides,
-			boolean includeGeneInfo, boolean isFDRApplied, Set<IdentificationSet> idSets) {
+	public static List<String> getColumnsString(boolean showPeptides, boolean includeGeneInfo, boolean isFDRApplied,
+			Set<IdentificationSet> idSets) {
 		List<String> ret = new ArrayList<String>();
-		final List<ExportedColumns> columns = getColumns(includeReplicateAndExperimentOrigin, showPeptides,
-				includeGeneInfo, isFDRApplied);
+		final List<ExportedColumns> columns = getColumns(showPeptides, includeGeneInfo, isFDRApplied);
 
 		for (ExportedColumns exportedColumns : columns) {
 			ret.add(exportedColumns.toString());
@@ -251,12 +223,11 @@ public enum ExportedColumns {
 		return ret;
 	}
 
-	public static List<String> getColumnsStringForTable(boolean includeReplicateAndExperimentOrigin,
-			boolean showPeptides, boolean includeGeneInfo, boolean isFDRApplied, Collection<IdentificationSet> idSets) {
+	public static List<String> getColumnsStringForTable(boolean showPeptides, boolean includeGeneInfo,
+			boolean isFDRApplied, Collection<IdentificationSet> idSets) {
 		List<String> ret = new ArrayList<String>();
 
-		final List<ExportedColumns> columns = getColumnsForTable(includeReplicateAndExperimentOrigin, showPeptides,
-				includeGeneInfo, isFDRApplied);
+		final List<ExportedColumns> columns = getColumnsForTable(showPeptides, includeGeneInfo, isFDRApplied);
 
 		for (ExportedColumns exportedColumns : columns) {
 			ret.add(exportedColumns.toString());

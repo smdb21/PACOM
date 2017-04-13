@@ -1,10 +1,9 @@
 package org.proteored.pacom.analysis.exporters;
 
 import org.proteored.miapeapi.experiment.model.sort.ProteinGroupComparisonType;
+import org.proteored.pacom.analysis.util.DataLevel;
 
 public interface ExporterManager {
-
-	public boolean isReplicateAndExperimentOriginIncluded();
 
 	public boolean isDecoyHitsIncluded();
 
@@ -20,13 +19,13 @@ public interface ExporterManager {
 
 	public boolean retrieveProteinSequences();
 
-	public boolean isNonConclusiveProteinsIncluded();
-
 	public boolean isDistinguishModifiedPeptides();
 
 	/**
 	 * @return
 	 */
 	public ProteinGroupComparisonType getComparisonType();
+
+	public DataLevel getDataLevel();
 
 }

@@ -7,7 +7,9 @@ package org.proteored.pacom.analysis.exporters.gui;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
@@ -16,8 +18,13 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker.StateValue;
 import javax.swing.UIManager;
@@ -30,7 +37,9 @@ import org.proteored.miapeapi.experiment.model.sort.ProteinGroupComparisonType;
 import org.proteored.pacom.analysis.exporters.ExporterManager;
 import org.proteored.pacom.analysis.exporters.tasks.JTableLoader;
 import org.proteored.pacom.analysis.exporters.util.ExportedColumns;
+import org.proteored.pacom.analysis.exporters.util.ExporterUtil;
 import org.proteored.pacom.analysis.gui.ChartManagerFrame;
+import org.proteored.pacom.analysis.util.DataLevel;
 import org.proteored.pacom.gui.ImageManager;
 
 import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
@@ -50,6 +59,7 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 
 	private ScrollableJTable scrollablePanel;
 	private final ChartManagerFrame parentFrame;
+	private JButton jButtonExport2Excel;
 	private static IdentificationTableFrame instance;
 
 	public static IdentificationTableFrame getInstance(ChartManagerFrame parent, Collection<IdentificationSet> idSets) {
@@ -73,7 +83,8 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 
 	private String getIdentificationSetNameString() {
 		StringBuilder sb = new StringBuilder();
-		for (IdentificationSet identificationSet : idSets) {
+		for (IdentificationSet identificationSet : ExporterUtil.getSelectedIdentificationSets(this.idSets,
+				getDataLevel())) {
 			if (!"".equals(sb.toString())) {
 				sb.append(",");
 			}
@@ -103,19 +114,22 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 		parentFrame = parent;
 
 		// set icon image
-		setIconImage(ImageManager.getImageIcon(ImageManager.PROTEORED_MIAPE_API).getImage());
+		setIconImage(ImageManager.getImageIcon(ImageManager.PACOM_LOGO).getImage());
 
 		// set font to textarea
 		jTextAreaStatus.setFont(new JLabel().getFont());
 
 		// Initialize combo box of column names
 		updateColumnNamesComboBox();
+
+		// icon button excel
+		jButtonExport2Excel.setIcon(ImageManager.getImageIcon(ImageManager.EXCEL_TABLE));
 	}
 
 	private void updateColumnNamesComboBox() {
-		List<String> columnsStringList = ExportedColumns.getColumnsStringForTable(
-				isReplicateAndExperimentOriginIncluded(), showPeptides(), isGeneInfoIncluded(),
-				jCheckBoxIncludeDecoy.isEnabled(), idSets);
+		List<String> columnsStringList = ExportedColumns.getColumnsStringForTable(showPeptides(), isGeneInfoIncluded(),
+				jCheckBoxIncludeDecoy.isEnabled(),
+				ExporterUtil.getSelectedIdentificationSets(this.idSets, getDataLevel()));
 		jComboBoxColumnNames.setModel(new DefaultComboBoxModel(columnsStringList.toArray()));
 		jComboBoxColumnNames.setSelectedIndex(3);
 
@@ -147,14 +161,12 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 		jPanelLeft = new javax.swing.JPanel();
 		jPanelOptions = new javax.swing.JPanel();
 		jCheckBoxIncludeDecoy = new javax.swing.JCheckBox();
-		jCheckBoxIncludeExperimentReplicateOrigin = new javax.swing.JCheckBox();
 		jCheckBoxSearchForProteinSequence = new javax.swing.JCheckBox();
 		jCheckBoxIncludeGeneInfo = new javax.swing.JCheckBox();
 		jCheckBoxCollapsePeptides = new javax.swing.JCheckBox();
 		jCheckBoxCollapseProteins = new javax.swing.JCheckBox();
 		jRadioButtonShowProteins = new javax.swing.JRadioButton();
 		jRadioButtonShowPeptides = new javax.swing.JRadioButton();
-		jCheckBoxIncludeNonConclusiveProteins = new javax.swing.JCheckBox();
 		jButtonCancel = new javax.swing.JButton();
 		jPanelFilterByColumn = new javax.swing.JPanel();
 		jComboBoxColumnNames = new javax.swing.JComboBox();
@@ -185,16 +197,6 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 			}
 		});
 
-		jCheckBoxIncludeExperimentReplicateOrigin.setText("include project tree level names");
-		jCheckBoxIncludeExperimentReplicateOrigin.setToolTipText(
-				"<html>\nAdd columns indicating at which node of the comparison project tree, each identification item belongs\n</html>");
-		jCheckBoxIncludeExperimentReplicateOrigin.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jCheckBoxIncludeExperimentReplicateOriginActionPerformed(evt);
-			}
-		});
-
 		jCheckBoxSearchForProteinSequence.setText("calculate protein coverages");
 		jCheckBoxSearchForProteinSequence.setToolTipText(
 				"<html>\nThis options will retrieve protein sequences from the Internet in order to\n<br>\ncalculate the protein coverage. Depending on the number of proteins you\n<br>have, it can take several minutes.\n</html>");
@@ -207,7 +209,7 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 
 		jCheckBoxIncludeGeneInfo.setText("include gene information");
 		jCheckBoxIncludeGeneInfo.setToolTipText(
-				"<html>\nThis option will add some columns containing information<br>\nabout the genes associated with each protein.\n</html>");
+				"<html>\nThis option will retrieve genes associated with the proteins from the UniprotKB.\nDepending on the number of proteins you\n<br>have, it can take several minutes.</html>");
 		jCheckBoxIncludeGeneInfo.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -258,16 +260,6 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 			}
 		});
 
-		jCheckBoxIncludeNonConclusiveProteins.setText("include NON Conclusive proteins");
-		jCheckBoxIncludeNonConclusiveProteins.setToolTipText(
-				"<html>Select this checkbox in order to exclude the <b>Non Conclusive</b> proteins<br>in the exported data.<br><b>Non conclusive protein</b> is a protein that shares all its matched peptides<br> with either conclusive or indistinguishable proteins.<br>\nA <b>conclusive protein</b> is a protein identified by at least one unique (distinct, discrete) peptide (peptides are considered different only if they can be distinguished by evidence in mass spectrum)<br>\nA <b>indistinguisable protein</b> is a member of a group of proteins sharing all peptides that are exclusive to the group (peptides are considered different only if they can be distinguished by evidence in mass spectrum).</html>\");\n");
-		jCheckBoxIncludeNonConclusiveProteins.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jCheckBoxIncludeNonConclusiveProteinsActionPerformed(evt);
-			}
-		});
-
 		jButtonCancel.setText("cancel");
 		jButtonCancel.setToolTipText("Cancel data loading");
 		jButtonCancel.setEnabled(false);
@@ -278,64 +270,70 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 			}
 		});
 
+		lblDataLevel = new JLabel("Data level:");
+
+		dataLevelComboBox = new JComboBox();
+		for (DataLevel dataLevel : DataLevel.values()) {
+			dataLevelComboBox.addItem(dataLevel);
+		}
+		dataLevelComboBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				dataLevelSelected();
+			}
+		});
+
+		jButtonExport2Excel = new JButton();
+		jButtonExport2Excel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				exportTSV();
+			}
+		});
+		jButtonExport2Excel.setToolTipText(
+				"<html>Export current data to a Tab Separated Values file<br>that can be opened by Excel.</html>");
+		jButtonExport2Excel.setEnabled(false);
 		javax.swing.GroupLayout jPanelOptionsLayout = new javax.swing.GroupLayout(jPanelOptions);
-		jPanelOptions.setLayout(jPanelOptionsLayout);
-		jPanelOptionsLayout
-				.setHorizontalGroup(
-						jPanelOptionsLayout
-								.createParallelGroup(
-										javax.swing.GroupLayout.Alignment.LEADING)
-								.addGroup(
-										jPanelOptionsLayout.createSequentialGroup()
-												.addGroup(
-														jPanelOptionsLayout
-																.createParallelGroup(
-																		javax.swing.GroupLayout.Alignment.LEADING)
-																.addComponent(jCheckBoxIncludeDecoy)
-																.addComponent(jCheckBoxIncludeExperimentReplicateOrigin)
-																.addComponent(jCheckBoxIncludeGeneInfo)
-																.addComponent(jCheckBoxIncludeNonConclusiveProteins)
-																.addComponent(jCheckBoxSearchForProteinSequence)
-																.addComponent(jRadioButtonShowPeptides)
-																.addComponent(jCheckBoxCollapseProteins)
-																.addComponent(jRadioButtonShowProteins)
-																.addGroup(jPanelOptionsLayout.createSequentialGroup()
-																		.addComponent(jCheckBoxCollapsePeptides)
-																		.addPreferredGap(
-																				javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-																.addComponent(jButtonCancel)))
-						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-		jPanelOptionsLayout.setVerticalGroup(jPanelOptionsLayout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+		jPanelOptionsLayout.setHorizontalGroup(jPanelOptionsLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(jPanelOptionsLayout.createSequentialGroup().addContainerGap()
+						.addGroup(jPanelOptionsLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(jCheckBoxIncludeDecoy).addComponent(jCheckBoxIncludeGeneInfo)
+								.addComponent(jCheckBoxSearchForProteinSequence).addComponent(jRadioButtonShowPeptides)
+								.addComponent(jRadioButtonShowProteins).addComponent(jCheckBoxCollapseProteins)
+								.addGroup(jPanelOptionsLayout.createSequentialGroup().addComponent(lblDataLevel)
+										.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(dataLevelComboBox,
+												GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE))
+								.addComponent(jCheckBoxCollapsePeptides)
+								.addGroup(jPanelOptionsLayout.createSequentialGroup().addComponent(jButtonCancel)
+										.addGap(18).addComponent(jButtonExport2Excel, GroupLayout.PREFERRED_SIZE, 46,
+												GroupLayout.PREFERRED_SIZE)))
+						.addContainerGap(92, Short.MAX_VALUE)));
+		jPanelOptionsLayout.setVerticalGroup(jPanelOptionsLayout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(jPanelOptionsLayout.createSequentialGroup()
-						.addComponent(jCheckBoxIncludeDecoy, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jCheckBoxIncludeExperimentReplicateOrigin, javax.swing.GroupLayout.PREFERRED_SIZE,
-								30, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jCheckBoxIncludeGeneInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jCheckBoxIncludeNonConclusiveProteins, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jCheckBoxSearchForProteinSequence, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jRadioButtonShowProteins)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-								javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(jRadioButtonShowPeptides)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jCheckBoxCollapseProteins, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(jPanelOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-								.addComponent(jCheckBoxCollapsePeptides, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addComponent(jButtonCancel))
-						.addGap(81, 81, 81)));
+						.addComponent(jCheckBoxIncludeDecoy, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(jCheckBoxIncludeGeneInfo, GroupLayout.PREFERRED_SIZE, 30,
+								GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(jCheckBoxSearchForProteinSequence, GroupLayout.PREFERRED_SIZE, 30,
+								GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonShowProteins)
+						.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(jRadioButtonShowPeptides).addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(jCheckBoxCollapseProteins, GroupLayout.PREFERRED_SIZE, 30,
+								GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(jCheckBoxCollapsePeptides, GroupLayout.PREFERRED_SIZE, 30,
+								GroupLayout.PREFERRED_SIZE)
+						.addGap(8)
+						.addGroup(jPanelOptionsLayout.createParallelGroup(Alignment.BASELINE).addComponent(lblDataLevel)
+								.addComponent(dataLevelComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE))
+						.addGap(15)
+						.addGroup(jPanelOptionsLayout.createParallelGroup(Alignment.TRAILING)
+								.addComponent(jButtonCancel).addComponent(jButtonExport2Excel,
+										GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE))
+						.addGap(40)));
+		jPanelOptions.setLayout(jPanelOptionsLayout);
 
 		jPanelFilterByColumn.setBorder(javax.swing.BorderFactory
 				.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Filter table"));
@@ -363,25 +361,23 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 
 		javax.swing.GroupLayout jPanelFilterByColumnLayout = new javax.swing.GroupLayout(jPanelFilterByColumn);
 		jPanelFilterByColumn.setLayout(jPanelFilterByColumnLayout);
-		jPanelFilterByColumnLayout
-				.setHorizontalGroup(
-						jPanelFilterByColumnLayout
-								.createParallelGroup(
-										javax.swing.GroupLayout.Alignment.LEADING)
-								.addGroup(jPanelFilterByColumnLayout.createSequentialGroup().addContainerGap()
-										.addGroup(jPanelFilterByColumnLayout
-												.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-												.addComponent(jLabel1).addComponent(jLabel2))
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addGroup(jPanelFilterByColumnLayout
-										.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-										.addComponent(jTextFieldFilter, javax.swing.GroupLayout.DEFAULT_SIZE, 185,
-												Short.MAX_VALUE)
-										.addComponent(jComboBoxColumnNames, 0, 185, Short.MAX_VALUE))
+		jPanelFilterByColumnLayout.setHorizontalGroup(jPanelFilterByColumnLayout
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanelFilterByColumnLayout.createSequentialGroup().addContainerGap()
+						.addGroup(jPanelFilterByColumnLayout
+								.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(jLabel1)
+								.addComponent(jLabel2))
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addGroup(jPanelFilterByColumnLayout
+								.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addComponent(jTextFieldFilter, javax.swing.GroupLayout.DEFAULT_SIZE, 185,
+										Short.MAX_VALUE)
+								.addComponent(jComboBoxColumnNames, 0, 185, Short.MAX_VALUE))
 						.addContainerGap()));
-		jPanelFilterByColumnLayout.setVerticalGroup(
-				jPanelFilterByColumnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(jPanelFilterByColumnLayout.createSequentialGroup().addGroup(jPanelFilterByColumnLayout
+		jPanelFilterByColumnLayout.setVerticalGroup(jPanelFilterByColumnLayout
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanelFilterByColumnLayout.createSequentialGroup()
+						.addGroup(jPanelFilterByColumnLayout
 								.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jLabel1)
 								.addComponent(jComboBoxColumnNames, javax.swing.GroupLayout.PREFERRED_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -419,49 +415,63 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 										javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
 								.addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING,
 										javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE))
-								.addContainerGap()));
+						.addContainerGap()));
 		jPanelStatusLayout
-				.setVerticalGroup(
-						jPanelStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-								.addGroup(jPanelStatusLayout.createSequentialGroup().addContainerGap()
-										.addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 23,
-												Short.MAX_VALUE)
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 22,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+				.setVerticalGroup(jPanelStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(jPanelStatusLayout.createSequentialGroup().addContainerGap()
+								.addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 22,
+										javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		javax.swing.GroupLayout jPanelLeftLayout = new javax.swing.GroupLayout(jPanelLeft);
-		jPanelLeft.setLayout(jPanelLeftLayout);
-		jPanelLeftLayout.setHorizontalGroup(jPanelLeftLayout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+		jPanelLeftLayout.setHorizontalGroup(jPanelLeftLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(jPanelLeftLayout.createSequentialGroup()
-						.addGroup(jPanelLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-								.addComponent(jPanelOptions, javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(jPanelFilterByColumn, javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(jPanelStatus, javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+						.addGroup(jPanelLeftLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(jPanelOptions, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
+								.addComponent(jPanelStatus, GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
+								.addGroup(Alignment.TRAILING,
+										jPanelLeftLayout.createSequentialGroup().addContainerGap().addComponent(
+												jPanelFilterByColumn, GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)))
 						.addContainerGap()));
-		jPanelLeftLayout
-				.setVerticalGroup(jPanelLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(jPanelLeftLayout.createSequentialGroup().addGap(13, 13, 13)
-								.addComponent(jPanelOptions, javax.swing.GroupLayout.PREFERRED_SIZE, 288,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addGap(1, 1, 1)
-						.addComponent(jPanelFilterByColumn, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jPanelStatus, javax.swing.GroupLayout.DEFAULT_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addGap(104, 104, 104)));
+		jPanelLeftLayout.setVerticalGroup(jPanelLeftLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(jPanelLeftLayout.createSequentialGroup().addGap(13)
+						.addComponent(jPanelOptions, GroupLayout.PREFERRED_SIZE, 314, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(jPanelFilterByColumn, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
+						.addGap(32)
+						.addComponent(jPanelStatus, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addGap(104)));
+		jPanelLeft.setLayout(jPanelLeftLayout);
 
 		getContentPane().add(jPanelLeft, java.awt.BorderLayout.WEST);
 
 		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds((screenSize.width - 863) / 2, (screenSize.height - 618) / 2, 863, 618);
+		setBounds((screenSize.width - 863) / 2, (screenSize.height - 618) / 2, 299, 624);
 	}// </editor-fold>
-		// GEN-END:initComponents
+
+	protected void exportTSV() {
+		ExporterDialog exporterDialog = new ExporterDialog(this, parentFrame,
+				ExporterUtil.getSelectedIdentificationSets(idSets, getDataLevel()));
+		// disable any modification
+		exporterDialog.setControlsDisabled();
+		exporterDialog.setControlStatusEnabled(false);
+		// set exporting parameters
+		exporterDialog.setExporterParameters(this);
+		exporterDialog.enableExportButton(true);
+		exporterDialog.setVisible(true);
+	}
+
+	protected void dataLevelSelected() {
+		updateSizesLabels();
+		loadTable();
+
+	}
+
+	// GEN-END:initComponents
 
 	private void jComboBoxColumnNamesItemStateChanged(java.awt.event.ItemEvent evt) {
 		if (evt.getStateChange() == ItemEvent.SELECTED) {
@@ -508,11 +518,6 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 		}
 	}
 
-	private void jCheckBoxIncludeNonConclusiveProteinsActionPerformed(ActionEvent evt) {
-		updateSizesLabels();
-		loadTable();
-	}
-
 	private void jRadioButtonShowPeptidesActionPerformed(java.awt.event.ActionEvent evt) {
 		if (jRadioButtonShowPeptides.isSelected()) {
 			jCheckBoxCollapsePeptides.setSelected(true);
@@ -556,10 +561,6 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 
 	}
 
-	private void jCheckBoxIncludeExperimentReplicateOriginActionPerformed(java.awt.event.ActionEvent evt) {
-		loadTable();
-	}
-
 	private void jCheckBoxIncludeDecoyActionPerformed(java.awt.event.ActionEvent evt) {
 		loadTable();
 	}
@@ -584,11 +585,13 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals(JTableLoader.DATA_EXPORTING_STARTING)) {
+			enableControls(false);
 			setStatus("Loading " + getNum() + " items in table...");
 
 			RefineryUtilities.centerFrameOnScreen(this);
 			applyFilters();
 		} else if (evt.getPropertyName().equals(JTableLoader.DATA_EXPORTING_DONE)) {
+			enableControls(true);
 			String items = "proteins";
 			if (showPeptides())
 				items = "peptides";
@@ -599,7 +602,7 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 			jButtonCancel.setEnabled(false);
 			int numLoaded = (Integer) evt.getNewValue();
 			int num = getNum();
-			if (isNonConclusiveProteinsIncluded() && num != numLoaded) {
+			if (num != numLoaded) {
 				int numNonconclusive = numLoaded - num;
 				String notificacion = numLoaded + " " + items + " loaded.";
 				if (numNonconclusive > 0) {
@@ -632,40 +635,79 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 			} else {
 				appendStatus("Sorting proteins by best peptide score...");
 			}
-			jButtonCancel.setEnabled(true);
+
 		} else if (evt.getPropertyName().equals(JTableLoader.DATA_EXPORTING_SORTING_DONE)) {
 			appendStatus("Data sorted. Now loading table...");
+		} else if (JTableLoader.DATA_EXPORTING_ERROR.equals(evt.getPropertyName())) {
+
+			enableControls(true);
+			appendStatus("Error: " + evt.getNewValue().toString());
+
 		} else if (evt.getPropertyName().equals(JTableLoader.DATA_EXPORTING_CANCELED)) {
+			enableControls(true);
 			int num = (Integer) evt.getNewValue();
-			jButtonCancel.setEnabled(false);
 			jProgressBar1.setValue(0);
 			scrollablePanel.initializeSorter();
 			scrollablePanel.getTable().repaint();
 			appendStatus("Loading cancelled.");
 			appendStatus(num + " rows where loaded.");
 			applyFilters();
+		} else if (evt.getPropertyName().equals(JTableLoader.PROTEIN_SEQUENCE_RETRIEVAL)) {
+			appendStatus("Retrieving information from uniprotKB...");
+			jProgressBar1.setIndeterminate(true);
+			jProgressBar1.setValue(0);
+			jProgressBar1.setStringPainted(false);
+		} else if (evt.getPropertyName().equals(JTableLoader.PROTEIN_SEQUENCE_RETRIEVAL_DONE)) {
+			appendStatus("Information retrieved.");
+			jProgressBar1.setIndeterminate(false);
+			jProgressBar1.setStringPainted(true);
+		} else if (evt.getPropertyName().equals(JTableLoader.MESSAGE)) {
+			appendStatus(evt.getNewValue().toString());
 		}
 
 	}
 
+	private void enableControls(boolean b) {
+		jButtonCancel.setEnabled(!b);
+		jCheckBoxCollapsePeptides.setEnabled(b);
+		jCheckBoxCollapseProteins.setEnabled(b);
+		jCheckBoxIncludeDecoy.setEnabled(b);
+		jCheckBoxIncludeGeneInfo.setEnabled(b);
+		jCheckBoxSearchForProteinSequence.setEnabled(b);
+		jComboBoxColumnNames.setEnabled(b);
+		jTextFieldFilter.setEnabled(b);
+		dataLevelComboBox.setEnabled(b);
+		jRadioButtonShowPeptides.setEnabled(b);
+		jRadioButtonShowProteins.setEnabled(b);
+		jButtonExport2Excel.setEnabled(b);
+
+	}
+
 	private void loadTable() {
-		scrollablePanel = new ScrollableJTable();
+		if (scrollablePanel == null) {
+			scrollablePanel = new ScrollableJTable();
+			scrollablePanel.setPreferredSize(new Dimension(800, 700));
+			getContentPane().add(scrollablePanel);
+		}
 		// update combo box of column names
 		updateColumnNamesComboBox();
-		// Remove the previous JScrollableJTable if present
-		final Component[] components = getContentPane().getComponents();
-		int indexToRemove = -1;
-		for (int i = 0; i < components.length; i++) {
-			Component component = components[i];
-			if (component instanceof ScrollableJTable)
-				indexToRemove = i;
+
+		if (false) {
+			// Remove the previous JScrollableJTable if present
+			final Component[] components = getContentPane().getComponents();
+			int indexToRemove = -1;
+			for (int i = 0; i < components.length; i++) {
+				Component component = components[i];
+				if (component instanceof ScrollableJTable)
+					indexToRemove = i;
+
+			}
+			if (indexToRemove > -1) {
+				getContentPane().remove(indexToRemove);
+			}
 
 		}
-		if (indexToRemove > -1)
-			getContentPane().remove(indexToRemove);
-
-		scrollablePanel.setPreferredSize(new Dimension(800, 700));
-		getContentPane().add(scrollablePanel);
+		((MyIdentificationTable) scrollablePanel.getTable()).clearData();
 
 		pack();
 
@@ -683,7 +725,8 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 
 			@Override
 			public void run() {
-				tableExporter = new JTableLoader(IdentificationTableFrame.this, idSets, scrollablePanel.getTable());
+				tableExporter = new JTableLoader(IdentificationTableFrame.this,
+						ExporterUtil.getSelectedIdentificationSets(idSets, getDataLevel()), scrollablePanel.getTable());
 				tableExporter.addPropertyChangeListener(IdentificationTableFrame.this);
 				tableExporter.execute();
 			}
@@ -693,37 +736,28 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 
 	private int getNum() {
 		int num = 0;
-		for (IdentificationSet idSet : idSets) {
+		for (IdentificationSet idSet : ExporterUtil.getSelectedIdentificationSets(this.idSets, getDataLevel())) {
 			if (jRadioButtonShowProteins.isSelected()) {
 				if (jCheckBoxCollapseProteins.isSelected()) {
-					num += idSet.getNumDifferentProteinGroups(isNonConclusiveProteinsIncluded());
-
+					num += idSet.getNumDifferentProteinGroups(true);
 					if (!jCheckBoxIncludeDecoy.isEnabled() || !jCheckBoxIncludeDecoy.isSelected()) {
 						num = num - idSet.getNumDifferentProteinGroupsDecoys();
 					}
-					if (isNonConclusiveProteinsIncluded())
-						num += idSet.getNumDifferentNonConclusiveProteinGroups();
-
+					// num += idSet.getNumDifferentNonConclusiveProteinGroups();
 				} else {
-					num += idSet.getTotalNumProteinGroups(isNonConclusiveProteinsIncluded());
+					num += idSet.getTotalNumProteinGroups(true);
 					if (!jCheckBoxIncludeDecoy.isEnabled() || !jCheckBoxIncludeDecoy.isSelected()) {
 						num = num - idSet.getNumProteinGroupDecoys();
 					}
-					if (isNonConclusiveProteinsIncluded())
-						num += idSet.getTotalNumNonConclusiveProteinGroups();
-
+					// num += idSet.getTotalNumNonConclusiveProteinGroups();
 				}
-
 			} else {
 				if (jCheckBoxCollapsePeptides.isSelected()) {
 					num += idSet.getNumDifferentPeptides(true);
-
 					if (!jCheckBoxIncludeDecoy.isEnabled() || !jCheckBoxIncludeDecoy.isSelected()) {
 						num = num - idSet.getNumDifferentPeptideDecoys(true);
 					}
-
 				} else {
-
 					num += idSet.getTotalNumPeptides();
 					if (!jCheckBoxIncludeDecoy.isEnabled() || !jCheckBoxIncludeDecoy.isSelected()) {
 						num = num - idSet.getNumPeptideDecoys();
@@ -741,9 +775,7 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 	private javax.swing.JCheckBox jCheckBoxCollapsePeptides;
 	private javax.swing.JCheckBox jCheckBoxCollapseProteins;
 	private javax.swing.JCheckBox jCheckBoxIncludeDecoy;
-	private javax.swing.JCheckBox jCheckBoxIncludeExperimentReplicateOrigin;
 	private javax.swing.JCheckBox jCheckBoxIncludeGeneInfo;
-	private javax.swing.JCheckBox jCheckBoxIncludeNonConclusiveProteins;
 	private javax.swing.JCheckBox jCheckBoxSearchForProteinSequence;
 	private javax.swing.JComboBox jComboBoxColumnNames;
 	private javax.swing.JLabel jLabel1;
@@ -758,12 +790,10 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 	private javax.swing.JScrollPane jScrollPane3;
 	private javax.swing.JTextArea jTextAreaStatus;
 	private javax.swing.JTextField jTextFieldFilter;
+	private JLabel lblDataLevel;
+	private JComboBox dataLevelComboBox;
 
 	// End of variables declaration//GEN-END:variables
-	@Override
-	public boolean isReplicateAndExperimentOriginIncluded() {
-		return jCheckBoxIncludeExperimentReplicateOrigin.isSelected();
-	}
 
 	@Override
 	public boolean isDecoyHitsIncluded() {
@@ -793,11 +823,6 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 	@Override
 	public boolean retrieveProteinSequences() {
 		return jCheckBoxSearchForProteinSequence.isSelected();
-	}
-
-	@Override
-	public boolean isNonConclusiveProteinsIncluded() {
-		return jCheckBoxIncludeNonConclusiveProteins.isSelected();
 	}
 
 	@Override
@@ -831,4 +856,12 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 		return this.parentFrame.getComparisonType();
 	}
 
+	@Override
+	public DataLevel getDataLevel() {
+		Object dataLevelSelected = dataLevelComboBox.getSelectedItem();
+		if (dataLevelSelected != null) {
+			return (DataLevel) dataLevelSelected;
+		}
+		return DataLevel.LEVEL0;
+	}
 }

@@ -87,7 +87,6 @@ import org.proteored.pacom.analysis.exporters.gui.ExporterToPRIDEDialog;
 import org.proteored.pacom.analysis.exporters.gui.IdentificationTableFrame;
 import org.proteored.pacom.analysis.exporters.gui.PEXBulkSubmissionSummaryFileCreatorDialog;
 import org.proteored.pacom.analysis.genes.GeneDistributionReader;
-import org.proteored.pacom.analysis.gui.pike.Miape2PIKEFrame;
 import org.proteored.pacom.analysis.gui.tasks.ChartCreatorTask;
 import org.proteored.pacom.analysis.gui.tasks.CuratedExperimentSaver;
 import org.proteored.pacom.analysis.gui.tasks.DataLoaderTask;
@@ -114,8 +113,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	public static final String PEPTIDE_NUMBER_HISTOGRAM = "Peptide number";
 	public static final String PROTEIN_OVERLAPING = "Protein overlapping";
 	public static final String PEPTIDE_OVERLAPING = "Peptide overlapping";
-	public static final String PROTEIN_HEATMAP = "Protein heatMap";
-	public static final String PEPTIDE_HEATMAP = "Peptide heatMap";
+	public static final String PROTEIN_OCURRENCE_HEATMAP = "Protein heatMap";
+	public static final String PEPTIDE_OCCURRENCE_HEATMAP = "Peptide heatMap";
+	public static final String PSMS_PER_PEPTIDE_HEATMAP = "PSMs per peptide heatmap";
 	public static final String MODIFICATION_SITES_NUMBER = "Number of modified sites";
 	public static final String MODIFICATED_PEPTIDE_NUMBER = "Number of modified peptides";
 	public static final String PEPTIDE_MODIFICATION_DISTRIBUTION = "Peptide modification distribution";
@@ -139,7 +139,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	public static final String EXCLUSIVE_PROTEIN_NUMBER = "Number of exclusive proteins";
 	public static final String EXCLUSIVE_PEPTIDE_NUMBER = "Number of exclusive peptides";
 	public static final String PEPTIDE_PRESENCY_HEATMAP = "Peptide presence HeatMap";
-	public static final String PROTEIN_NUMBER_OF_PEPTIDES_HEATMAP = "Number of peptides per protein HeatMap";
+	public static final String PEPTIDES_PER_PROTEIN_HEATMAP = "Peptides per protein heatMap";
+	public static final String PSMS_PER_PROTEIN_HEATMAP = "PSMs per protein heatmap";
 	public static final String PEPTIDE_NUM_PER_PROTEIN_MASS = "Number of peptides / protein molecular weight";
 	public static final String HUMAN_CHROMOSOME_COVERAGE = "Human chromosome coverage";
 	public static final String CHR16_MAPPING = "Human chromosome 16 mapping (SPanish-HPP)";
@@ -161,12 +162,13 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			PROTEIN_REPEATABILITY, PEPTIDE_REPEATABILITY, PROTEIN_GROUP_TYPES, EXCLUSIVE_PROTEIN_NUMBER,
 			EXCLUSIVE_PEPTIDE_NUMBER, PROTEIN_SENSITIVITY_SPECIFICITY, PEPTIDE_RT, PEPTIDE_RT_COMPARISON,
 			SINGLE_RT_COMPARISON, SINGLE_HIT_PROTEINS, SPECTROMETERS, INPUT_PARAMETERS, PROTEIN_OVERLAPING,
-			PEPTIDE_OVERLAPING, PROTEIN_COVERAGE, PROTEIN_COVERAGE_DISTRIBUTION, PROTEIN_HEATMAP,
-			PROTEIN_NUMBER_OF_PEPTIDES_HEATMAP, PEPTIDE_HEATMAP, PEPTIDE_PRESENCY_HEATMAP, MODIFICATED_PEPTIDE_NUMBER,
-			MODIFICATION_SITES_NUMBER, PEPTIDE_MODIFICATION_DISTRIBUTION, PEPTIDE_MONITORING,
-			MISSEDCLEAVAGE_DISTRIBUTION, FDR, FDR_VS_SCORE, PEPTIDE_MASS_DISTRIBUTION, PEPTIDE_LENGTH_DISTRIBUTION,
-			PEPTIDE_CHARGE_HISTOGRAM, CHR_MAPPING, CHR_PEPTIDES_MAPPING, HUMAN_CHROMOSOME_COVERAGE, CHR16_MAPPING,
-			DELTA_MZ_OVER_MZ, PROTEIN_NAME_CLOUD, PEPTIDE_COUNTING_HISTOGRAM, PEPTIDE_COUNTING_VS_SCORE
+			PEPTIDE_OVERLAPING, PROTEIN_COVERAGE, PROTEIN_COVERAGE_DISTRIBUTION, PROTEIN_OCURRENCE_HEATMAP,
+			PEPTIDES_PER_PROTEIN_HEATMAP, PSMS_PER_PROTEIN_HEATMAP, PEPTIDE_OCCURRENCE_HEATMAP,
+			PSMS_PER_PEPTIDE_HEATMAP, PEPTIDE_PRESENCY_HEATMAP, MODIFICATED_PEPTIDE_NUMBER, MODIFICATION_SITES_NUMBER,
+			PEPTIDE_MODIFICATION_DISTRIBUTION, PEPTIDE_MONITORING, MISSEDCLEAVAGE_DISTRIBUTION, FDR, FDR_VS_SCORE,
+			PEPTIDE_MASS_DISTRIBUTION, PEPTIDE_LENGTH_DISTRIBUTION, PEPTIDE_CHARGE_HISTOGRAM, CHR_MAPPING,
+			CHR_PEPTIDES_MAPPING, HUMAN_CHROMOSOME_COVERAGE, CHR16_MAPPING, DELTA_MZ_OVER_MZ, PROTEIN_NAME_CLOUD,
+			PEPTIDE_COUNTING_HISTOGRAM, PEPTIDE_COUNTING_VS_SCORE
 			// ,LABELLED_PEPTIDE_MONITORING
 	};
 	private String currentChartType = PSM_PEP_PROT;
@@ -260,7 +262,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		// }
 		initComponents();
 		// set icon image
-		setIconImage(ImageManager.getImageIcon(ImageManager.PROTEORED_MIAPE_API).getImage());
+		setIconImage(ImageManager.getImageIcon(ImageManager.PACOM_LOGO).getImage());
 		// init CV NAMES of SCORE NAMES
 
 		try {
@@ -269,7 +271,6 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			// load data in this.experimentList
 			jButtonShowTable.setEnabled(false);
 			jButtonExport2Excel.setEnabled(false);
-			jButtonExport2PEX.setEnabled(false);
 			jButtonExport2PRIDE.setEnabled(false);
 
 			// GeneralOptionsDialog generalOptionsDialog = GeneralOptionsDialog
@@ -471,8 +472,6 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 		jButtonExport2Excel.setIcon(ImageManager.getImageIcon(ImageManager.EXCEL_TABLE));
 
-		jButtonExport2PEX.setIcon(ImageManager.getImageIcon(ImageManager.PEX));
-
 		jButtonExport2PRIDE.setIcon(ImageManager.getImageIcon(ImageManager.PRIDE_LOGO));
 	}
 
@@ -527,12 +526,13 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		overlappingMenus.add(EXCLUSIVE_PEPTIDE_NUMBER);
 		overlappingMenus.add(PEPTIDE_REPEATABILITY);
 		overlappingMenus.add(PEPTIDE_PRESENCY_HEATMAP);
-		overlappingMenus.add(PEPTIDE_HEATMAP);
+		overlappingMenus.add(PEPTIDE_OCCURRENCE_HEATMAP);
+		overlappingMenus.add(PSMS_PER_PEPTIDE_HEATMAP);
 		overlappingMenus.add(MENU_SEPARATION); // MENU SEPARATION
 		overlappingMenus.add(PROTEIN_OVERLAPING);
 		overlappingMenus.add(EXCLUSIVE_PROTEIN_NUMBER);
 		overlappingMenus.add(PROTEIN_REPEATABILITY);
-		overlappingMenus.add(PROTEIN_HEATMAP);
+		overlappingMenus.add(PROTEIN_OCURRENCE_HEATMAP);
 		addSubmenus(menuOverlappings, overlappingMenus, radioButtonMenuMap, jMenuChartType);
 
 		// Scores
@@ -600,9 +600,11 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		// heatmaps
 		JMenu menuHeatMaps = new JMenu("Heatmaps");
 		List<String> heatMapsMenus = new ArrayList<String>();
-		heatMapsMenus.add(PROTEIN_HEATMAP);
-		heatMapsMenus.add(PROTEIN_NUMBER_OF_PEPTIDES_HEATMAP);
-		heatMapsMenus.add(PEPTIDE_HEATMAP);
+		heatMapsMenus.add(PROTEIN_OCURRENCE_HEATMAP);
+		heatMapsMenus.add(PEPTIDE_OCCURRENCE_HEATMAP);
+		heatMapsMenus.add(PEPTIDES_PER_PROTEIN_HEATMAP);
+		heatMapsMenus.add(PSMS_PER_PROTEIN_HEATMAP);
+		heatMapsMenus.add(PSMS_PER_PEPTIDE_HEATMAP);
 		heatMapsMenus.add(PEPTIDE_PRESENCY_HEATMAP);
 		addSubmenus(menuHeatMaps, heatMapsMenus, radioButtonMenuMap, jMenuChartType);
 
@@ -880,7 +882,6 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		jButtonShowTable = new javax.swing.JButton();
 		jButtonSaveAsFiltered = new javax.swing.JButton();
 		jButtonExport2PRIDE = new javax.swing.JButton();
-		jButtonExport2PEX = new javax.swing.JButton();
 		jButtonExport2Excel = new javax.swing.JButton();
 		jPanelRigth = new javax.swing.JPanel();
 		jScrollPaneChart = new javax.swing.JScrollPane();
@@ -900,13 +901,11 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		jCheckBoxMenuItemPeptideLenthFilter = new javax.swing.JCheckBoxMenuItem();
 		jCheckBoxMenuItemPeptideSequenceFilter = new javax.swing.JCheckBoxMenuItem();
 		jCheckBoxMenuItemPeptideForMRMFilter = new javax.swing.JCheckBoxMenuItem();
-		jMenuPike = new javax.swing.JMenu();
-		jMenuItemSend2PIKE = new javax.swing.JMenuItem();
 		jMenuOptions = new javax.swing.JMenu();
 		jMenuItemGeneralOptions = new javax.swing.JMenuItem();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		setTitle("MIAPE Extractor Charts");
+		setTitle("Chart creator");
 		getContentPane().setLayout(new java.awt.GridBagLayout());
 
 		jPanelStatus.setBorder(
@@ -941,9 +940,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 								.addComponent(jProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jProgressBarMemoryUsage, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)));
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jProgressBarMemoryUsage, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)));
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
@@ -1078,25 +1077,6 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			}
 		});
 
-		jButtonExport2PEX.setIcon(new javax.swing.ImageIcon(
-				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\pex.png")); // NOI18N
-		// jButtonExport2PEX.setToolTipText(
-		// "<html>Prepare current data for a ProteomeXchange
-		// submission.<br>\nRequired files will be prepared at an output
-		// folder,<br>\nand a Bulk Submission Summary file will be
-		// created<br>\nto use it in the ProteomeXchange submission
-		// tool.</html>");
-		jButtonExport2PEX.setToolTipText(
-				"<html>ProteomeXchange submission not supported anymore.<br>\nWe apologize for the inconveniences.</html>");
-
-		jButtonExport2PEX.setEnabled(false);
-		jButtonExport2PEX.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButtonExport2PEXActionPerformed(evt);
-			}
-		});
-
 		jButtonExport2Excel.setIcon(new javax.swing.ImageIcon(
 				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\excel_table.png")); // NOI18N
 		jButtonExport2Excel.setToolTipText(
@@ -1110,80 +1090,61 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		});
 
 		javax.swing.GroupLayout jPanelInformationLayout = new javax.swing.GroupLayout(jPanelInformation);
-		jPanelInformation.setLayout(jPanelInformationLayout);
-		jPanelInformationLayout.setHorizontalGroup(jPanelInformationLayout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanelInformationLayout.createSequentialGroup().addContainerGap()
-						.addGroup(jPanelInformationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-								.addComponent(jLabelInformation3, javax.swing.GroupLayout.Alignment.TRAILING,
-										javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
-								.addComponent(jLabelInformation2, javax.swing.GroupLayout.Alignment.TRAILING,
-										javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
-								.addComponent(jLabelInformation1, javax.swing.GroupLayout.DEFAULT_SIZE, 262,
-										Short.MAX_VALUE)
-								.addGroup(jPanelInformationLayout.createSequentialGroup()
-										.addGroup(jPanelInformationLayout
-												.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-												.addGroup(jPanelInformationLayout.createSequentialGroup()
-														.addComponent(jButtonSeeAppliedFilters,
-																javax.swing.GroupLayout.PREFERRED_SIZE, 47,
-																javax.swing.GroupLayout.PREFERRED_SIZE)
-														.addPreferredGap(
-																javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-														.addComponent(jButtonDiscardFilteredData,
-																javax.swing.GroupLayout.PREFERRED_SIZE, 47,
-																javax.swing.GroupLayout.PREFERRED_SIZE))
-												.addComponent(jButtonExport2PRIDE, javax.swing.GroupLayout.DEFAULT_SIZE,
-														101, Short.MAX_VALUE))
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addGroup(jPanelInformationLayout
-												.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-												.addGroup(jPanelInformationLayout.createSequentialGroup()
-														.addComponent(jButtonSaveAsFiltered,
-																javax.swing.GroupLayout.PREFERRED_SIZE, 47,
-																javax.swing.GroupLayout.PREFERRED_SIZE)
-														.addPreferredGap(
-																javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-														.addComponent(jButtonShowTable,
-																javax.swing.GroupLayout.PREFERRED_SIZE, 47,
-																javax.swing.GroupLayout.PREFERRED_SIZE)
-														.addPreferredGap(
-																javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-														.addComponent(jButtonExport2Excel,
-																javax.swing.GroupLayout.PREFERRED_SIZE, 46,
-																javax.swing.GroupLayout.PREFERRED_SIZE))
-												.addComponent(jButtonExport2PEX, 0, 0, Short.MAX_VALUE))
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-						.addContainerGap()));
 		jPanelInformationLayout
-				.setVerticalGroup(jPanelInformationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(jPanelInformationLayout.createSequentialGroup()
-								.addComponent(jLabelInformation1, javax.swing.GroupLayout.PREFERRED_SIZE, 21,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jLabelInformation2, javax.swing.GroupLayout.PREFERRED_SIZE, 24,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jLabelInformation3, javax.swing.GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(jPanelInformationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.setHorizontalGroup(
+						jPanelInformationLayout.createParallelGroup(Alignment.LEADING).addGroup(jPanelInformationLayout
+								.createSequentialGroup().addContainerGap().addGroup(jPanelInformationLayout
+										.createParallelGroup(Alignment.LEADING)
+										.addComponent(jLabelInformation3, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE,
+												258, Short.MAX_VALUE)
+										.addComponent(jLabelInformation2, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE,
+												258, Short.MAX_VALUE)
+										.addComponent(jLabelInformation1, GroupLayout.DEFAULT_SIZE, 258,
+												Short.MAX_VALUE)
+										.addGroup(jPanelInformationLayout.createSequentialGroup()
+												.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
+														.addGroup(jPanelInformationLayout.createSequentialGroup()
+																.addComponent(jButtonSeeAppliedFilters,
+																		GroupLayout.PREFERRED_SIZE, 47,
+																		GroupLayout.PREFERRED_SIZE)
+																.addPreferredGap(ComponentPlacement.RELATED)
+																.addComponent(jButtonDiscardFilteredData,
+																		GroupLayout.PREFERRED_SIZE, 47,
+																		GroupLayout.PREFERRED_SIZE))
+														.addComponent(jButtonExport2PRIDE, GroupLayout.DEFAULT_SIZE,
+																100, Short.MAX_VALUE))
+												.addPreferredGap(ComponentPlacement.RELATED)
+												.addComponent(jButtonSaveAsFiltered, GroupLayout.PREFERRED_SIZE, 47,
+														GroupLayout.PREFERRED_SIZE)
+												.addPreferredGap(ComponentPlacement.RELATED)
+												.addComponent(jButtonShowTable, GroupLayout.PREFERRED_SIZE, 47,
+														GroupLayout.PREFERRED_SIZE)
+												.addPreferredGap(ComponentPlacement.RELATED)
+												.addComponent(jButtonExport2Excel, GroupLayout.PREFERRED_SIZE, 46,
+														GroupLayout.PREFERRED_SIZE)))
+								.addContainerGap()));
+		jPanelInformationLayout.setVerticalGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(jPanelInformationLayout.createSequentialGroup()
+						.addComponent(jLabelInformation1, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(jLabelInformation2, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(jLabelInformation3, GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
 								.addComponent(jButtonExport2Excel, 0, 0, Short.MAX_VALUE)
-								.addGroup(jPanelInformationLayout
-										.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-										.addComponent(jButtonSeeAppliedFilters, javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(jButtonDiscardFilteredData, javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-								.addComponent(jButtonSaveAsFiltered, javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(jButtonShowTable, javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(jPanelInformationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-								.addComponent(jButtonExport2PEX, javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(jButtonExport2PRIDE)).addContainerGap()));
+								.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING, false)
+										.addComponent(jButtonSeeAppliedFilters, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+										.addComponent(jButtonDiscardFilteredData, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+								.addComponent(jButtonSaveAsFiltered, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
+								.addComponent(jButtonShowTable, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE))
+						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jButtonExport2PRIDE)
+						.addContainerGap()));
+		jPanelInformation.setLayout(jPanelInformationLayout);
 
 		javax.swing.GroupLayout jPanelLeftLayout = new javax.swing.GroupLayout(jPanelLeft);
 		jPanelLeftLayout.setHorizontalGroup(jPanelLeftLayout.createParallelGroup(Alignment.TRAILING)
@@ -1367,23 +1328,6 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 		jMenuBar1.add(jMenuFilters);
 
-		jMenuPike.setText("PIKE");
-		jMenuPike.setToolTipText("Send protein list to the Protein Information and Knowledge Extractor (PIKE)");
-		jMenuPike.setEnabled(false);
-
-		jMenuItemSend2PIKE.setAccelerator(
-				javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_K, java.awt.event.InputEvent.CTRL_MASK));
-		jMenuItemSend2PIKE.setText("Send proteins to PIKE");
-		jMenuItemSend2PIKE.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jMenuItemSend2PIKEActionPerformed(evt);
-			}
-		});
-		jMenuPike.add(jMenuItemSend2PIKE);
-
-		jMenuBar1.add(jMenuPike);
-
 		jMenuOptions.setText("Options");
 
 		jMenuItemGeneralOptions.setAccelerator(
@@ -1415,10 +1359,6 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 	private void jButtonExport2ExcelActionPerformed(java.awt.event.ActionEvent evt) {
 		exportToTSV();
-	}
-
-	private void jButtonExport2PEXActionPerformed(java.awt.event.ActionEvent evt) {
-		exportToPEX();
 	}
 
 	private void jButtonExport2PRIDEActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1544,17 +1484,6 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		startShowingChart();
 	}
 
-	private void jMenuItemSend2PIKEActionPerformed(java.awt.event.ActionEvent evt) {
-		final Collection<ProteinGroupOccurrence> proteinGroupOccurrences = experimentList
-				.getProteinGroupOccurrenceList().values();
-		List<String> accessions = new ArrayList<String>();
-		for (ProteinGroupOccurrence proteinGroupOccurrence : proteinGroupOccurrences) {
-			accessions.addAll(proteinGroupOccurrence.getAccessions());
-		}
-		Miape2PIKEFrame pikeFrame = new Miape2PIKEFrame(this, accessions);
-		pikeFrame.setVisible(true);
-	}
-
 	private void jCheckBoxMenuItemModificationFilterActionPerformed(java.awt.event.ActionEvent evt) {
 		filterDialog.setModificationFilterEnabled(jCheckBoxMenuItemModificationFilter.isSelected());
 		if (jCheckBoxMenuItemModificationFilter.isSelected()) {
@@ -1568,7 +1497,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 	private void exportToTSV() {
 
-		ExporterDialog exporterDialog = new ExporterDialog(this, toSet(experimentList));
+		ExporterDialog exporterDialog = new ExporterDialog(this, this, toSet(experimentList));
 		exporterDialog.setVisible(true);
 	}
 
@@ -1701,9 +1630,11 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			addOverlapingControls(options, 3, false);
 		} else if (EXCLUSIVE_PROTEIN_NUMBER.equals(chartType) || EXCLUSIVE_PEPTIDE_NUMBER.equals(chartType)) {
 			addOverlapingControls(options, null, true);
-		} else if (PEPTIDE_HEATMAP.equals(chartType) || PROTEIN_HEATMAP.equals(chartType)
-				|| PROTEIN_NUMBER_OF_PEPTIDES_HEATMAP.equals(chartType)) {
-			addHeatMapControls();
+		} else if (PEPTIDES_PER_PROTEIN_HEATMAP.equals(chartType) || PSMS_PER_PEPTIDE_HEATMAP.equals(chartType)
+				|| PSMS_PER_PROTEIN_HEATMAP.equals(chartType)) {
+			addHeatMapControls(false);
+		} else if (PEPTIDE_OCCURRENCE_HEATMAP.equals(chartType) || PROTEIN_OCURRENCE_HEATMAP.equals(chartType)) {
+			addHeatMapControls(true);
 		} else if (MODIFICATION_SITES_NUMBER.equals(chartType) || MODIFICATED_PEPTIDE_NUMBER.equals(chartType)) {
 			addPeptideModificationControls();
 		} else if (PEPTIDE_MODIFICATION_DISTRIBUTION.equals(chartType)) {
@@ -2902,7 +2833,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 	}
 
-	private void addHeatMapControls() {
+	private void addHeatMapControls(boolean occurrenceThreshold) {
 		jPanelAddOptions.removeAll();
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -2916,16 +2847,16 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		panel.add(jPanelAdditional1, c);
 
 		// //////////////// ROW2
-		JPanel jPanelAdditional2 = optionsFactory.getHeatMapThresholdPanel();
+		JPanel jPanelAdditional2 = optionsFactory.getHeatMapThresholdPanel(occurrenceThreshold);
 		c.gridy++;
 		panel.add(jPanelAdditional2, c);
 
-		// //////////////// ROW3
-		if (currentChartType.equals(PROTEIN_NUMBER_OF_PEPTIDES_HEATMAP)) {
-			JCheckBox checkbox = optionsFactory.getIsPSMorPeptideCheckBox();
-			c.gridy++;
-			panel.add(checkbox, c);
-		}
+		// // //////////////// ROW3
+		// if (currentChartType.equals(PEPTIDES_PER_PROTEIN_HEATMAP)) {
+		// JCheckBox checkbox = optionsFactory.getIsPSMorPeptideCheckBox();
+		// c.gridy++;
+		// panel.add(checkbox, c);
+		// }
 
 		JButton jbuttonSave = optionsFactory.getSaveButton();
 		c.gridy++;
@@ -2939,37 +2870,39 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 		double min = Double.MAX_VALUE;
 		double max = Double.MIN_VALUE;
+		double minRow = Double.MAX_VALUE;
+		double maxRow = Double.MIN_VALUE;
 		for (int i = 0; i < dataset.length; i++) {
+			double rowSum = 0;
 			for (int j = 0; j < dataset[i].length; j++) {
 				double d = dataset[i][j];
+				rowSum += d;
 				if (d < min)
 					min = d;
 				if (d > max)
 					max = d;
 			}
+			if (rowSum > maxRow) {
+				maxRow = rowSum;
+			}
+			if (rowSum < minRow) {
+				minRow = rowSum;
+			}
 		}
-		if (min == 0.0)
-			min = 0;
 
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
-		c.anchor = GridBagConstraints.WEST;
+		c.anchor = GridBagConstraints.NORTHWEST;
 		c.insets = new Insets(10, 0, 0, 0);
-		String minString = String.valueOf(min);
-		if (minString.contains(".")) {
-			minString = minString.split("\\.")[0];
-		}
-		String maxString = String.valueOf(max);
-		if (maxString.contains(".")) {
-			maxString = maxString.split("\\.")[0];
-		}
 
-		JLabel label = new JLabel("<html>Parameters:<br>min= " + Integer.valueOf(minString) + "<br>max= "
-				+ Integer.valueOf(maxString) + "<br>" + "Number of items= " + dataset.length + "</html>");
+		JLabel label = new JLabel("<html>Heatmap counts:<br>min cell value= " + Double.valueOf(min).intValue()
+				+ "<br>max cell value= " + Double.valueOf(max).intValue() + "<br>min sum of row cell values= "
+				+ Double.valueOf(minRow).intValue() + "<br>max sum of row cell value= "
+				+ Double.valueOf(maxRow).intValue() + "<br>" + "number of rows in the heatmap= " + dataset.length
+				+ "</html>");
 		label.setToolTipText(
 				"<html>These are the minimum value that corresponds with the 'low color',<br>and the maximum value that corresponds with the 'high color'.<br>"
-						+ "The number of items is the number of proteins or peptides that are showed in the chart, <br>"
-						+ "that is that have an occurrence more than threshold over the identification sets.</html>");
+						+ "The number of items is the number of proteins or peptides that are showed in the chart.</html>");
 		panel.add(label, c);
 		jPanelAddOptions.add(panel);
 
@@ -3053,9 +2986,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				}
 				JLabel labelExperiment = new JLabel(labelString);
 				jPanelAddOptions.add(labelExperiment);
-				String overlapString = "1,2";
+				String overlapString = "A,B";
 				// export just in 1 button
-				JButton jbuttonExportJustIn1 = new JButton("Export just in 1");
+				JButton jbuttonExportJustIn1 = new JButton("Export just in A");
 				jbuttonExportJustIn1.addActionListener(new java.awt.event.ActionListener() {
 					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3064,7 +2997,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				});
 				jPanelAddOptions.add(jbuttonExportJustIn1);
 				// export just in 2 button
-				JButton jbuttonExportJustIn2 = new JButton("Export just in 2");
+				JButton jbuttonExportJustIn2 = new JButton("Export just in B");
 				jbuttonExportJustIn2.addActionListener(new java.awt.event.ActionListener() {
 					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3074,9 +3007,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				jPanelAddOptions.add(jbuttonExportJustIn2);
 
 				if (numberOfSelectedCheckBoxes > 2) {
-					overlapString += ",3";
+					overlapString += ",C";
 					// export just in 3 button
-					JButton jbuttonExportJustIn3 = new JButton("Export just in 3");
+					JButton jbuttonExportJustIn3 = new JButton("Export just in C");
 					jbuttonExportJustIn3.addActionListener(new java.awt.event.ActionListener() {
 						@Override
 						public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3290,7 +3223,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			}
 		}
 
-		ExporterDialog exporterDialog = new ExporterDialog(this, idSets);
+		ExporterDialog exporterDialog = new ExporterDialog(this, this, idSets);
 
 		Filters filter = null;
 		if (currentChartType.equals(PROTEIN_OVERLAPING)) {
@@ -3871,10 +3804,11 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			optionsFactory.enableProteinScoreNameControls(false);
 		}
 		if (PEPTIDE_NUMBER_HISTOGRAM.equals(chartType) || PEPTIDE_OVERLAPING.equals(chartType)
-				|| PEPTIDE_HEATMAP.equals(chartType) || PEPTIDE_SCORE_COMPARISON.equals(chartType)
-				|| PEPTIDE_MONITORING.equals(chartType) || PEPTIDE_REPEATABILITY.equals(chartType)
-				|| PEPTIDE_PRESENCY_HEATMAP.equals(chartType) || PSM_PEP_PROT.equals(chartType)
-				|| EXCLUSIVE_PEPTIDE_NUMBER.equals(chartType) || PROTEIN_NUMBER_OF_PEPTIDES_HEATMAP.equals(chartType))
+				|| PEPTIDE_OCCURRENCE_HEATMAP.equals(chartType) || PSMS_PER_PEPTIDE_HEATMAP.contentEquals(chartType)
+				|| PEPTIDE_SCORE_COMPARISON.equals(chartType) || PEPTIDE_MONITORING.equals(chartType)
+				|| PEPTIDE_REPEATABILITY.equals(chartType) || PEPTIDE_PRESENCY_HEATMAP.equals(chartType)
+				|| PSM_PEP_PROT.equals(chartType) || EXCLUSIVE_PEPTIDE_NUMBER.equals(chartType)
+				|| PEPTIDES_PER_PROTEIN_HEATMAP.equals(chartType))
 			jCheckBoxUniquePeptides.setEnabled(true);
 		else
 			jCheckBoxUniquePeptides.setEnabled(false);
@@ -3997,7 +3931,6 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	private javax.swing.ButtonGroup buttonGroupThresholds;
 	private javax.swing.JButton jButtonDiscardFilteredData;
 	private javax.swing.JButton jButtonExport2Excel;
-	private javax.swing.JButton jButtonExport2PEX;
 	private javax.swing.JButton jButtonExport2PRIDE;
 	private javax.swing.JButton jButtonSaveAsFiltered;
 	private javax.swing.JButton jButtonSeeAppliedFilters;
@@ -4021,9 +3954,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	private javax.swing.JMenu jMenuFilters;
 	private javax.swing.JMenuItem jMenuItemDefineFilters;
 	private javax.swing.JMenuItem jMenuItemGeneralOptions;
-	private javax.swing.JMenuItem jMenuItemSend2PIKE;
 	private javax.swing.JMenu jMenuOptions;
-	private javax.swing.JMenu jMenuPike;
 	private javax.swing.JPanel jPanelAddOptions;
 	private javax.swing.JScrollPane jPanelAdditionalCustomizations;
 	private javax.swing.JPanel jPanelChart;
@@ -4268,7 +4199,6 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	private void enableMenus(boolean b) {
 		jMenuFilters.setEnabled(b);
 		jMenuChartType.setEnabled(b);
-		jMenuPike.setEnabled(b);
 		jMenuOptions.setEnabled(b);
 	}
 

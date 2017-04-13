@@ -27,8 +27,7 @@ import org.proteored.pacom.gui.ImageManager;
 public class AppliedFiltersDialog extends javax.swing.JDialog {
 
 	/** Creates new form AppliedFiltersDialog */
-	public AppliedFiltersDialog(java.awt.Frame parent, boolean modal,
-			List<Filter> list) {
+	public AppliedFiltersDialog(java.awt.Frame parent, boolean modal, List<Filter> list) {
 		super(parent, modal);
 
 		initComponents();
@@ -37,8 +36,7 @@ public class AppliedFiltersDialog extends javax.swing.JDialog {
 		showFiltersInformation(list);
 		RefineryUtilities.centerFrameOnScreen(this);
 		// set icon image
-		this.setIconImage(ImageManager.getImageIcon(
-				ImageManager.PROTEORED_MIAPE_API).getImage());
+		this.setIconImage(ImageManager.getImageIcon(ImageManager.PACOM_LOGO).getImage());
 		this.pack();
 	}
 
@@ -58,8 +56,8 @@ public class AppliedFiltersDialog extends javax.swing.JDialog {
 		} else {
 			plural = " was";
 		}
-		JLabel l1 = new JLabel("<html><b>" + differentFilters.size()
-				+ " filter" + plural + " applied " + plural2 + "</b></html>");
+		JLabel l1 = new JLabel(
+				"<html><b>" + differentFilters.size() + " filter" + plural + " applied " + plural2 + "</b></html>");
 		panel.add(l1, c);
 		c.gridy++;
 		panel.add(new JLabel(""), c);
@@ -103,49 +101,31 @@ public class AppliedFiltersDialog extends javax.swing.JDialog {
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(
-				jPanel1);
+		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 		jPanel1.setLayout(jPanel1Layout);
-		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGap(0, 331,
-				Short.MAX_VALUE));
-		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGap(0, 238,
-				Short.MAX_VALUE));
+		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGap(0, 331, Short.MAX_VALUE));
+		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGap(0, 238, Short.MAX_VALUE));
 
 		jScrollPane1.setViewportView(jPanel1);
 
-		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
-				getContentPane());
+		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGap(0, 357, Short.MAX_VALUE)
-				.addGroup(
-						layout.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-								.addGroup(
-										layout.createSequentialGroup()
-												.addContainerGap()
-												.addComponent(
-														jScrollPane1,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														333, Short.MAX_VALUE)
-												.addContainerGap())));
-		layout.setVerticalGroup(layout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGap(0, 266, Short.MAX_VALUE)
-				.addGroup(
-						layout.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-								.addGroup(
-										layout.createSequentialGroup()
-												.addContainerGap()
-												.addComponent(
-														jScrollPane1,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														240, Short.MAX_VALUE)
-												.addContainerGap())));
+		layout.setHorizontalGroup(
+				layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGap(0, 357, Short.MAX_VALUE)
+						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addGroup(layout.createSequentialGroup()
+										.addContainerGap().addComponent(jScrollPane1,
+												javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
+										.addContainerGap())));
+		layout.setVerticalGroup(
+				layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGap(0, 266, Short.MAX_VALUE)
+						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addGroup(layout.createSequentialGroup()
+										.addContainerGap().addComponent(jScrollPane1,
+												javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
+										.addContainerGap())));
 
 		pack();
 	}// </editor-fold>

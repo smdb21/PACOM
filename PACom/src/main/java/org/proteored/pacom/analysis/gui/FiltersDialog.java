@@ -139,7 +139,7 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 		jTextFieldRegexp.setToolTipText(
 				"<html>Set here a Regular Expression. Examples: <ul><li>.*REVERSED.*</li><li>.*_rev</li></lu></html>");
 		// set icon image
-		setIconImage(ImageManager.getImageIcon(ImageManager.PROTEORED_MIAPE_API).getImage());
+		setIconImage(ImageManager.getImageIcon(ImageManager.PACOM_LOGO).getImage());
 
 	}
 

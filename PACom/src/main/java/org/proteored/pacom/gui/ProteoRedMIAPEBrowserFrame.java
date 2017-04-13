@@ -44,18 +44,15 @@ import org.proteored.pacom.utils.HttpUtilities;
 
 import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 
-public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
-		PropertyChangeListener {
+public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements PropertyChangeListener {
 	private final MainFrame mainFrame;
-	private static org.apache.log4j.Logger log = org.apache.log4j.Logger
-			.getLogger("log4j.logger.org.proteored");
+	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("log4j.logger.org.proteored");
 	private static ProteoRedMIAPEBrowserFrame instance;
 	private final String MIAPE_ID_REGEXP = "MIAPE\\s\\w+\\s(\\d+).*";
 	private final String PROJECT_ID_REGEXP = "(\\d+):\\s(\\w+)";
 
 	public static void main(String[] args) {
-		ProteoRedMIAPEBrowserFrame instance = ProteoRedMIAPEBrowserFrame
-				.getInstance(null);
+		ProteoRedMIAPEBrowserFrame instance = ProteoRedMIAPEBrowserFrame.getInstance(null);
 		instance.setVisible(true);
 	}
 
@@ -65,8 +62,7 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 			while (true) {
 				log.info("Waiting for treeLoaderTask closing");
 				boolean canceled = this.treeLoaderTask.cancel(true);
-				if (canceled
-						|| this.treeLoaderTask.getState() != StateValue.STARTED)
+				if (canceled || this.treeLoaderTask.getState() != StateValue.STARTED)
 					break;
 			}
 
@@ -109,10 +105,8 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 		}
 		initComponents();
 		this.mainFrame = mainFrame;
-		this.miapeAPIWebservice = WebservicesLoaderTask.getInstace()
-				.getMiapeAPIWebservice(true);
-		this.miapeExtractorWebservice = WebservicesLoaderTask.getInstace()
-				.getMiapeExtractorWebservice(true);
+		this.miapeAPIWebservice = WebservicesLoaderTask.getInstace().getMiapeAPIWebservice(true);
+		this.miapeExtractorWebservice = WebservicesLoaderTask.getInstace().getMiapeExtractorWebservice(true);
 		if (mainFrame != null) {
 			this.userName = mainFrame.userName;
 			this.password = mainFrame.password;
@@ -140,31 +134,20 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 
 	private void loadIcons() {
 		// load Icons
-		this.setIconImage(ImageManager.getImageIcon(
-				ImageManager.PROTEORED_MIAPE_API).getImage());
+		this.setIconImage(ImageManager.getImageIcon(ImageManager.PACOM_LOGO).getImage());
 
-		this.jButtonDeleteProjectOrDocument.setIcon(ImageManager
-				.getImageIcon(ImageManager.DELETE));
-		this.jButtonDeleteProjectOrDocument.setPressedIcon(ImageManager
-				.getImageIcon(ImageManager.DELETE_CLICKED));
-		this.jButtonLoadTrees.setIcon(ImageManager
-				.getImageIcon(ImageManager.RELOAD));
-		this.jButtonLoadTrees.setPressedIcon(ImageManager
-				.getImageIcon(ImageManager.RELOAD_CLICKED));
-		this.jButtonStopLoadTree.setIcon(ImageManager
-				.getImageIcon(ImageManager.STOP));
-		this.jButtonStopLoadTree.setPressedIcon(ImageManager
-				.getImageIcon(ImageManager.STOP_CLICKED));
-		this.jButtonClearStatus.setIcon(ImageManager
-				.getImageIcon(ImageManager.CLEAR));
-		this.jButtonClearStatus.setPressedIcon(ImageManager
-				.getImageIcon(ImageManager.CLEAR_CLICKED));
+		this.jButtonDeleteProjectOrDocument.setIcon(ImageManager.getImageIcon(ImageManager.DELETE));
+		this.jButtonDeleteProjectOrDocument.setPressedIcon(ImageManager.getImageIcon(ImageManager.DELETE_CLICKED));
+		this.jButtonLoadTrees.setIcon(ImageManager.getImageIcon(ImageManager.RELOAD));
+		this.jButtonLoadTrees.setPressedIcon(ImageManager.getImageIcon(ImageManager.RELOAD_CLICKED));
+		this.jButtonStopLoadTree.setIcon(ImageManager.getImageIcon(ImageManager.STOP));
+		this.jButtonStopLoadTree.setPressedIcon(ImageManager.getImageIcon(ImageManager.STOP_CLICKED));
+		this.jButtonClearStatus.setIcon(ImageManager.getImageIcon(ImageManager.CLEAR));
+		this.jButtonClearStatus.setPressedIcon(ImageManager.getImageIcon(ImageManager.CLEAR_CLICKED));
 
-		this.jButtonShowReport1.setIcon(ImageManager
-				.getImageIcon(ImageManager.DOC));
+		this.jButtonShowReport1.setIcon(ImageManager.getImageIcon(ImageManager.DOC));
 
-		this.jButtonShowReport2.setIcon(ImageManager
-				.getImageIcon(ImageManager.DOC));
+		this.jButtonShowReport2.setIcon(ImageManager.getImageIcon(ImageManager.DOC));
 
 	}
 
@@ -172,9 +155,8 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 
 		if (this.treeLoaderTask != null)
 			this.treeLoaderTask.cancel(true);
-		this.treeLoaderTask = new TreeLoaderTask(this.jTree_MiapeMS,
-				this.jTree_MiapeMSI, this.jTree_MiapeGE, this.jTree_MiapeGI,
-				this.getUserName(), this.getPassword());
+		this.treeLoaderTask = new TreeLoaderTask(this.jTree_MiapeMS, this.jTree_MiapeMSI, this.jTree_MiapeGE,
+				this.jTree_MiapeGI, this.getUserName(), this.getPassword());
 		this.treeLoaderTask.addPropertyChangeListener(this);
 		this.treeLoaderTask.execute();
 		this.jButtonStopLoadTree.setEnabled(true);
@@ -244,8 +226,7 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 	}
 
 	public void cleanTree() {
-		DefaultMutableTreeNode nodoRaiz = new DefaultMutableTreeNode(
-				"No projects found");
+		DefaultMutableTreeNode nodoRaiz = new DefaultMutableTreeNode("No projects found");
 		DefaultTreeModel modeloArbol = new DefaultTreeModel(nodoRaiz);
 		this.jTree_MiapeMSI.setModel(modeloArbol);
 		this.jTree_MiapeMS.setModel(modeloArbol);
@@ -253,23 +234,20 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 
 	public String getStringFromJTreeSelection(JTree tree) {
 		if (((ExtendedJTree) tree).getSelectionCount() > 0) {
-			final String stringItem = ((ExtendedJTree) tree).getSelectionPath()
-					.getLastPathComponent().toString();
+			final String stringItem = ((ExtendedJTree) tree).getSelectionPath().getLastPathComponent().toString();
 			String REGEX = "(MIAPE\\s\\w+)\\s(\\d+)\\s'(.*)'";
 			Pattern p = Pattern.compile(REGEX);
 			Matcher m;
 
 			m = p.matcher(stringItem);
 			if (m.find()) {
-				return "<html>(ID:" + m.group(2) + ") " + m.group(1) + ": <b>"
-						+ m.group(3) + "</b></html>";
+				return "<html>(ID:" + m.group(2) + ") " + m.group(1) + ": <b>" + m.group(3) + "</b></html>";
 			} else {
 				REGEX = "(\\d+):\\s(.*)";
 				p = Pattern.compile(REGEX);
 				m = p.matcher(stringItem);
 				if (m.find()) {
-					return "<html>(ID:" + m.group(1) + ") Project: <b>"
-							+ m.group(2) + "</b></html>";
+					return "<html>(ID:" + m.group(1) + ") Project: <b>" + m.group(2) + "</b></html>";
 				}
 			}
 			return stringItem;
@@ -350,15 +328,12 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 		jScrollPane5 = new javax.swing.JScrollPane();
 		jTree_MiapeGI = new ExtendedJTree();
 
-		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(
-				jPanel1);
+		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 		jPanel1.setLayout(jPanel1Layout);
-		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGap(0, 100,
-				Short.MAX_VALUE));
-		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGap(0, 100,
-				Short.MAX_VALUE));
+		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGap(0, 100, Short.MAX_VALUE));
+		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGap(0, 100, Short.MAX_VALUE));
 
 		jMenu1.setText("File");
 		jMenuBar1.add(jMenu1);
@@ -402,8 +377,7 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 		jLabelMIAPEMSID.setText("ID");
 
 		jTextFieldMIAPEMSID.setEditable(false);
-		jTextFieldMIAPEMSID
-				.setToolTipText("Identifier of the document in the repository");
+		jTextFieldMIAPEMSID.setToolTipText("Identifier of the document in the repository");
 
 		jLabelProjectMSName.setText("Project Name");
 
@@ -413,22 +387,19 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 		jLabelProjectMSID.setText("Project ID");
 
 		jTextFieldProjectMSID.setEditable(false);
-		jTextFieldProjectMSID
-				.setToolTipText("Identifier of the project in the repository");
+		jTextFieldProjectMSID.setToolTipText("Identifier of the project in the repository");
 
 		jLabelMSITitle.setText("Selected MIAPE MSI document:");
 
 		jLabelMIAPEMSIID.setText("ID");
 
 		jTextFieldMIAPEMSIID.setEditable(false);
-		jTextFieldMIAPEMSIID
-				.setToolTipText("Identifier of the document in the repository");
+		jTextFieldMIAPEMSIID.setToolTipText("Identifier of the document in the repository");
 
 		jLabelProjectMSIID.setText("Project ID");
 
 		jTextFieldProjectMSIID.setEditable(false);
-		jTextFieldProjectMSIID
-				.setToolTipText("Identifier of the project in the repository");
+		jTextFieldProjectMSIID.setToolTipText("Identifier of the project in the repository");
 
 		jLabelVersionMSI.setText("Version");
 
@@ -440,398 +411,211 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 		jTextFieldProjectMSIName.setEditable(false);
 		jTextFieldProjectMSIName.setToolTipText("Project name");
 
-		jButtonShowReport1
-				.setIcon(new javax.swing.ImageIcon(
-						"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\report.png")); // NOI18N
+		jButtonShowReport1.setIcon(new javax.swing.ImageIcon(
+				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\report.png")); // NOI18N
 		jButtonShowReport1.setText("report");
 		jButtonShowReport1.setToolTipText("Show MIAPE report in browser");
-		jButtonShowReport1
-				.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						jButtonShowReport1ActionPerformed(evt);
-					}
-				});
+		jButtonShowReport1.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jButtonShowReport1ActionPerformed(evt);
+			}
+		});
 
-		jButtonShowReport2
-				.setIcon(new javax.swing.ImageIcon(
-						"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\report.png")); // NOI18N
+		jButtonShowReport2.setIcon(new javax.swing.ImageIcon(
+				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\report.png")); // NOI18N
 		jButtonShowReport2.setText("report");
 		jButtonShowReport2.setToolTipText("Show MIAPE report in browser");
-		jButtonShowReport2
-				.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						jButtonShowReport2ActionPerformed(evt);
-					}
-				});
+		jButtonShowReport2.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jButtonShowReport2ActionPerformed(evt);
+			}
+		});
 
-		javax.swing.GroupLayout jPanelInfoLayout = new javax.swing.GroupLayout(
-				jPanelInfo);
+		javax.swing.GroupLayout jPanelInfoLayout = new javax.swing.GroupLayout(jPanelInfo);
 		jPanelInfo.setLayout(jPanelInfoLayout);
-		jPanelInfoLayout
-				.setHorizontalGroup(jPanelInfoLayout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanelInfoLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												jPanelInfoLayout
-														.createParallelGroup(
+		jPanelInfoLayout.setHorizontalGroup(jPanelInfoLayout
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanelInfoLayout.createSequentialGroup().addContainerGap().addGroup(jPanelInfoLayout
+						.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(jLabelMSITitle)
+						.addComponent(jLabelMSTitle).addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+								jPanelInfoLayout.createSequentialGroup().addGroup(jPanelInfoLayout
+										.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+										.addGroup(javax.swing.GroupLayout.Alignment.LEADING,
+												jPanelInfoLayout.createSequentialGroup()
+														.addGroup(jPanelInfoLayout.createParallelGroup(
+																javax.swing.GroupLayout.Alignment.TRAILING)
+																.addComponent(jLabelMIAPEMSIName)
+																.addComponent(jLabelModificationDateMSI))
+														.addPreferredGap(
+																javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+														.addGroup(jPanelInfoLayout.createParallelGroup(
 																javax.swing.GroupLayout.Alignment.LEADING)
-														.addComponent(
-																jLabelMSITitle)
-														.addComponent(
-																jLabelMSTitle)
-														.addGroup(
-																javax.swing.GroupLayout.Alignment.TRAILING,
-																jPanelInfoLayout
-																		.createSequentialGroup()
-																		.addGroup(
-																				jPanelInfoLayout
-																						.createParallelGroup(
-																								javax.swing.GroupLayout.Alignment.TRAILING)
-																						.addGroup(
-																								javax.swing.GroupLayout.Alignment.LEADING,
-																								jPanelInfoLayout
-																										.createSequentialGroup()
-																										.addGroup(
-																												jPanelInfoLayout
-																														.createParallelGroup(
-																																javax.swing.GroupLayout.Alignment.TRAILING)
-																														.addComponent(
-																																jLabelMIAPEMSIName)
-																														.addComponent(
-																																jLabelModificationDateMSI))
-																										.addPreferredGap(
-																												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																										.addGroup(
-																												jPanelInfoLayout
-																														.createParallelGroup(
-																																javax.swing.GroupLayout.Alignment.LEADING)
-																														.addGroup(
-																																jPanelInfoLayout
-																																		.createSequentialGroup()
-																																		.addComponent(
-																																				jTextFieldModificationDateMSI,
-																																				javax.swing.GroupLayout.PREFERRED_SIZE,
-																																				167,
-																																				javax.swing.GroupLayout.PREFERRED_SIZE)
-																																		.addPreferredGap(
-																																				javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																																		.addComponent(
-																																				jLabelVersionMSI)
-																																		.addPreferredGap(
-																																				javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																																		.addComponent(
-																																				jTextFieldVersionMSI,
-																																				javax.swing.GroupLayout.DEFAULT_SIZE,
-																																				51,
-																																				Short.MAX_VALUE))
-																														.addComponent(
-																																jTextFieldMIAPEMSIName,
-																																javax.swing.GroupLayout.DEFAULT_SIZE,
-																																267,
-																																Short.MAX_VALUE)))
-																						.addGroup(
-																								javax.swing.GroupLayout.Alignment.LEADING,
-																								jPanelInfoLayout
-																										.createSequentialGroup()
-																										.addGap(22,
-																												22,
-																												22)
-																										.addGroup(
-																												jPanelInfoLayout
-																														.createParallelGroup(
-																																javax.swing.GroupLayout.Alignment.TRAILING)
-																														.addComponent(
-																																jLabelProjectMSIName)
-																														.addComponent(
-																																jLabelMIAPEMSIID))
-																										.addPreferredGap(
-																												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																										.addGroup(
-																												jPanelInfoLayout
-																														.createParallelGroup(
-																																javax.swing.GroupLayout.Alignment.LEADING)
-																														.addGroup(
-																																jPanelInfoLayout
-																																		.createSequentialGroup()
-																																		.addComponent(
-																																				jTextFieldMIAPEMSIID,
-																																				javax.swing.GroupLayout.PREFERRED_SIZE,
-																																				47,
-																																				javax.swing.GroupLayout.PREFERRED_SIZE)
-																																		.addPreferredGap(
-																																				javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																																		.addComponent(
-																																				jLabelProjectMSIID)
-																																		.addPreferredGap(
-																																				javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																																		.addComponent(
-																																				jTextFieldProjectMSIID,
-																																				javax.swing.GroupLayout.PREFERRED_SIZE,
-																																				48,
-																																				javax.swing.GroupLayout.PREFERRED_SIZE)
-																																		.addPreferredGap(
-																																				javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-																																				26,
-																																				Short.MAX_VALUE)
-																																		.addComponent(
-																																				jButtonShowReport2))
-																														.addComponent(
-																																jTextFieldProjectMSIName,
-																																javax.swing.GroupLayout.DEFAULT_SIZE,
-																																267,
-																																Short.MAX_VALUE)))
-																						.addGroup(
-																								javax.swing.GroupLayout.Alignment.LEADING,
-																								jPanelInfoLayout
-																										.createParallelGroup(
-																												javax.swing.GroupLayout.Alignment.TRAILING,
-																												false)
-																										.addGroup(
-																												javax.swing.GroupLayout.Alignment.LEADING,
-																												jPanelInfoLayout
-																														.createSequentialGroup()
-																														.addComponent(
-																																jLabelModificationDateMS)
-																														.addPreferredGap(
-																																javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																														.addComponent(
-																																jTextFieldModificationDateMS,
-																																javax.swing.GroupLayout.PREFERRED_SIZE,
-																																170,
-																																javax.swing.GroupLayout.PREFERRED_SIZE)
-																														.addPreferredGap(
-																																javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																														.addComponent(
-																																jLabelVersionMS)
-																														.addPreferredGap(
-																																javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																														.addComponent(
-																																jTextFieldVersionMS,
-																																javax.swing.GroupLayout.DEFAULT_SIZE,
-																																48,
-																																Short.MAX_VALUE))
-																										.addGroup(
-																												javax.swing.GroupLayout.Alignment.LEADING,
-																												jPanelInfoLayout
-																														.createSequentialGroup()
-																														.addGap(3,
-																																3,
-																																3)
-																														.addGroup(
-																																jPanelInfoLayout
-																																		.createParallelGroup(
-																																				javax.swing.GroupLayout.Alignment.TRAILING)
-																																		.addComponent(
-																																				jLabelMIAPEMSID)
-																																		.addComponent(
-																																				jLabelProjectMSName)
-																																		.addComponent(
-																																				jLabelMIAPEMSName))
-																														.addPreferredGap(
-																																javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																														.addGroup(
-																																jPanelInfoLayout
-																																		.createParallelGroup(
-																																				javax.swing.GroupLayout.Alignment.LEADING)
-																																		.addGroup(
-																																				jPanelInfoLayout
-																																						.createSequentialGroup()
-																																						.addComponent(
-																																								jTextFieldMIAPEMSID,
-																																								javax.swing.GroupLayout.PREFERRED_SIZE,
-																																								47,
-																																								javax.swing.GroupLayout.PREFERRED_SIZE)
-																																						.addPreferredGap(
-																																								javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																																						.addComponent(
-																																								jLabelProjectMSID)
-																																						.addPreferredGap(
-																																								javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																																						.addComponent(
-																																								jTextFieldProjectMSID,
-																																								javax.swing.GroupLayout.PREFERRED_SIZE,
-																																								48,
-																																								javax.swing.GroupLayout.PREFERRED_SIZE)
-																																						.addPreferredGap(
-																																								javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-																																								26,
-																																								Short.MAX_VALUE)
-																																						.addComponent(
-																																								jButtonShowReport1))
-																																		.addComponent(
-																																				jTextFieldProjectMSName,
-																																				javax.swing.GroupLayout.DEFAULT_SIZE,
-																																				267,
-																																				Short.MAX_VALUE)
-																																		.addComponent(
-																																				jTextFieldMIAPEMSName,
-																																				javax.swing.GroupLayout.DEFAULT_SIZE,
-																																				267,
-																																				Short.MAX_VALUE)))))
-																		.addGap(450,
-																				450,
-																				450)))
-										.addContainerGap()));
-		jPanelInfoLayout
-				.setVerticalGroup(jPanelInfoLayout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanelInfoLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addComponent(jLabelMSTitle)
-										.addGap(7, 7, 7)
-										.addGroup(
-												jPanelInfoLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(
-																jLabelMIAPEMSID)
-														.addComponent(
-																jTextFieldMIAPEMSID,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.PREFERRED_SIZE)
-														.addComponent(
-																jLabelProjectMSID)
-														.addComponent(
-																jTextFieldProjectMSID,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.PREFERRED_SIZE)
-														.addComponent(
-																jButtonShowReport1))
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addGroup(
-												jPanelInfoLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(
-																jLabelProjectMSName)
-														.addComponent(
-																jTextFieldProjectMSName,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addGroup(
-												jPanelInfoLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(
-																jLabelMIAPEMSName)
-														.addComponent(
-																jTextFieldMIAPEMSName,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addGroup(
-												jPanelInfoLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(
-																jLabelModificationDateMS)
-														.addComponent(
-																jTextFieldModificationDateMS,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.PREFERRED_SIZE)
-														.addComponent(
-																jLabelVersionMS)
-														.addComponent(
-																jTextFieldVersionMS,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jLabelMSITitle)
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addGroup(
-												jPanelInfoLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(
+																.addGroup(jPanelInfoLayout.createSequentialGroup()
+																		.addComponent(jTextFieldModificationDateMSI,
+																				javax.swing.GroupLayout.PREFERRED_SIZE,
+																				167,
+																				javax.swing.GroupLayout.PREFERRED_SIZE)
+																		.addPreferredGap(
+																				javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+																		.addComponent(jLabelVersionMSI)
+																		.addPreferredGap(
+																				javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+																		.addComponent(jTextFieldVersionMSI,
+																				javax.swing.GroupLayout.DEFAULT_SIZE,
+																				51, Short.MAX_VALUE))
+																.addComponent(jTextFieldMIAPEMSIName,
+																		javax.swing.GroupLayout.DEFAULT_SIZE, 267,
+																		Short.MAX_VALUE)))
+										.addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelInfoLayout
+												.createSequentialGroup().addGap(22, 22, 22)
+												.addGroup(jPanelInfoLayout
+														.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+														.addComponent(jLabelProjectMSIName)
+														.addComponent(jLabelMIAPEMSIID))
+												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+												.addGroup(jPanelInfoLayout
+														.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+														.addGroup(jPanelInfoLayout.createSequentialGroup().addComponent(
 																jTextFieldMIAPEMSIID,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
+																javax.swing.GroupLayout.PREFERRED_SIZE, 47,
 																javax.swing.GroupLayout.PREFERRED_SIZE)
-														.addComponent(
-																jLabelMIAPEMSIID)
-														.addComponent(
-																jLabelProjectMSIID)
-														.addComponent(
-																jTextFieldProjectMSIID,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
+																.addPreferredGap(
+																		javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+																.addComponent(jLabelProjectMSIID)
+																.addPreferredGap(
+																		javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+																.addComponent(jTextFieldProjectMSIID,
+																		javax.swing.GroupLayout.PREFERRED_SIZE, 48,
+																		javax.swing.GroupLayout.PREFERRED_SIZE)
+																.addPreferredGap(
+																		javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+																		26, Short.MAX_VALUE)
+																.addComponent(jButtonShowReport2))
+														.addComponent(jTextFieldProjectMSIName,
+																javax.swing.GroupLayout.DEFAULT_SIZE, 267,
+																Short.MAX_VALUE)))
+										.addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelInfoLayout
+												.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+												.addGroup(javax.swing.GroupLayout.Alignment.LEADING,
+														jPanelInfoLayout.createSequentialGroup()
+																.addComponent(jLabelModificationDateMS)
+																.addPreferredGap(
+																		javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+														.addComponent(jTextFieldModificationDateMS,
+																javax.swing.GroupLayout.PREFERRED_SIZE, 170,
 																javax.swing.GroupLayout.PREFERRED_SIZE)
-														.addComponent(
-																jButtonShowReport2))
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addGroup(
-												jPanelInfoLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(
-																jLabelProjectMSIName)
-														.addComponent(
-																jTextFieldProjectMSIName,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addGroup(
-												jPanelInfoLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(
-																jLabelMIAPEMSIName)
-														.addComponent(
-																jTextFieldMIAPEMSIName,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addGroup(
-												jPanelInfoLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(
-																jLabelModificationDateMSI)
-														.addComponent(
-																jTextFieldModificationDateMSI,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.PREFERRED_SIZE)
-														.addComponent(
-																jLabelVersionMSI)
-														.addComponent(
-																jTextFieldVersionMSI,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.PREFERRED_SIZE))
-										.addContainerGap(31, Short.MAX_VALUE)));
+														.addPreferredGap(
+																javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+														.addComponent(jLabelVersionMS)
+														.addPreferredGap(
+																javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+														.addComponent(jTextFieldVersionMS,
+																javax.swing.GroupLayout.DEFAULT_SIZE, 48,
+																Short.MAX_VALUE))
+												.addGroup(javax.swing.GroupLayout.Alignment.LEADING,
+														jPanelInfoLayout.createSequentialGroup().addGap(3, 3, 3)
+																.addGroup(jPanelInfoLayout.createParallelGroup(
+																		javax.swing.GroupLayout.Alignment.TRAILING)
+																		.addComponent(jLabelMIAPEMSID)
+																		.addComponent(jLabelProjectMSName)
+																		.addComponent(jLabelMIAPEMSName))
+														.addPreferredGap(
+																javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+														.addGroup(jPanelInfoLayout
+																.createParallelGroup(
+																		javax.swing.GroupLayout.Alignment.LEADING)
+																.addGroup(jPanelInfoLayout.createSequentialGroup()
+																		.addComponent(jTextFieldMIAPEMSID,
+																				javax.swing.GroupLayout.PREFERRED_SIZE,
+																				47,
+																				javax.swing.GroupLayout.PREFERRED_SIZE)
+																		.addPreferredGap(
+																				javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+																		.addComponent(jLabelProjectMSID)
+																		.addPreferredGap(
+																				javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+																		.addComponent(jTextFieldProjectMSID,
+																				javax.swing.GroupLayout.PREFERRED_SIZE,
+																				48,
+																				javax.swing.GroupLayout.PREFERRED_SIZE)
+																		.addPreferredGap(
+																				javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+																				26, Short.MAX_VALUE)
+																		.addComponent(jButtonShowReport1))
+																.addComponent(jTextFieldProjectMSName,
+																		javax.swing.GroupLayout.DEFAULT_SIZE, 267,
+																		Short.MAX_VALUE)
+																.addComponent(jTextFieldMIAPEMSName,
+																		javax.swing.GroupLayout.DEFAULT_SIZE, 267,
+																		Short.MAX_VALUE)))))
+										.addGap(450, 450, 450)))
+						.addContainerGap()));
+		jPanelInfoLayout.setVerticalGroup(jPanelInfoLayout
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanelInfoLayout.createSequentialGroup().addContainerGap().addComponent(jLabelMSTitle)
+						.addGap(7, 7, 7)
+						.addGroup(jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jLabelMIAPEMSID)
+								.addComponent(jTextFieldMIAPEMSID, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addComponent(jLabelProjectMSID)
+								.addComponent(jTextFieldProjectMSID, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addComponent(jButtonShowReport1))
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addGroup(jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jLabelProjectMSName).addComponent(jTextFieldProjectMSName,
+										javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										javax.swing.GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addGroup(jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jLabelMIAPEMSName).addComponent(jTextFieldMIAPEMSName,
+										javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										javax.swing.GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addGroup(jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jLabelModificationDateMS)
+								.addComponent(jTextFieldModificationDateMS, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addComponent(jLabelVersionMS)
+								.addComponent(jTextFieldVersionMS, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jLabelMSITitle)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addGroup(jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jTextFieldMIAPEMSIID, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addComponent(jLabelMIAPEMSIID).addComponent(jLabelProjectMSIID)
+								.addComponent(jTextFieldProjectMSIID, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addComponent(jButtonShowReport2))
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addGroup(jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jLabelProjectMSIName).addComponent(jTextFieldProjectMSIName,
+										javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										javax.swing.GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addGroup(jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jLabelMIAPEMSIName).addComponent(jTextFieldMIAPEMSIName,
+										javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										javax.swing.GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addGroup(jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jLabelModificationDateMSI)
+								.addComponent(jTextFieldModificationDateMSI, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addComponent(jLabelVersionMSI).addComponent(jTextFieldVersionMSI,
+										javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										javax.swing.GroupLayout.PREFERRED_SIZE))
+						.addContainerGap(31, Short.MAX_VALUE)));
 
-		jPanelStatus.setBorder(javax.swing.BorderFactory.createTitledBorder(
-				javax.swing.BorderFactory.createEtchedBorder(), "Status"));
+		jPanelStatus.setBorder(
+				javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Status"));
 
 		jProgressBar_translation.setStringPainted(true);
 
-		jScrollPane3
-				.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		jScrollPane3.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		jScrollPane3.setFont(new java.awt.Font("Dialog", 0, 10));
 
 		jTextAreaStatus.setColumns(20);
@@ -843,84 +627,45 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 		jTextAreaStatus.setWrapStyleWord(true);
 		jScrollPane3.setViewportView(jTextAreaStatus);
 
-		jButtonClearStatus
-				.setIcon(new javax.swing.ImageIcon(
-						"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\clear.png")); // NOI18N
+		jButtonClearStatus.setIcon(new javax.swing.ImageIcon(
+				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\clear.png")); // NOI18N
 		jButtonClearStatus.setText("Clear status");
 		jButtonClearStatus.setToolTipText("Clear the status panel");
-		jButtonClearStatus
-				.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						jButtonClearStatusActionPerformed(evt);
-					}
-				});
+		jButtonClearStatus.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jButtonClearStatusActionPerformed(evt);
+			}
+		});
 
-		javax.swing.GroupLayout jPanelStatusLayout = new javax.swing.GroupLayout(
-				jPanelStatus);
+		javax.swing.GroupLayout jPanelStatusLayout = new javax.swing.GroupLayout(jPanelStatus);
 		jPanelStatus.setLayout(jPanelStatusLayout);
+		jPanelStatusLayout.setHorizontalGroup(jPanelStatusLayout
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanelStatusLayout.createSequentialGroup().addContainerGap()
+						.addGroup(jPanelStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 419,
+										javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addGroup(jPanelStatusLayout.createSequentialGroup().addComponent(jButtonClearStatus)
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(jProgressBar_translation, javax.swing.GroupLayout.DEFAULT_SIZE,
+												305, Short.MAX_VALUE)))
+						.addContainerGap()));
 		jPanelStatusLayout
-				.setHorizontalGroup(jPanelStatusLayout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanelStatusLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												jPanelStatusLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.LEADING)
-														.addComponent(
-																jScrollPane3,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																419,
-																javax.swing.GroupLayout.PREFERRED_SIZE)
-														.addGroup(
-																jPanelStatusLayout
-																		.createSequentialGroup()
-																		.addComponent(
-																				jButtonClearStatus)
-																		.addPreferredGap(
-																				javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																		.addComponent(
-																				jProgressBar_translation,
-																				javax.swing.GroupLayout.DEFAULT_SIZE,
-																				305,
-																				Short.MAX_VALUE)))
-										.addContainerGap()));
-		jPanelStatusLayout
-				.setVerticalGroup(jPanelStatusLayout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								javax.swing.GroupLayout.Alignment.TRAILING,
-								jPanelStatusLayout
-										.createSequentialGroup()
-										.addComponent(
-												jScrollPane3,
+				.setVerticalGroup(jPanelStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelStatusLayout.createSequentialGroup()
+								.addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addGroup(jPanelStatusLayout
+										.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+										.addComponent(jButtonClearStatus).addComponent(jProgressBar_translation,
 												javax.swing.GroupLayout.PREFERRED_SIZE,
 												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addGroup(
-												jPanelStatusLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.TRAILING)
-														.addComponent(
-																jButtonClearStatus)
-														.addComponent(
-																jProgressBar_translation,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.PREFERRED_SIZE))
-										.addContainerGap(
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)));
+												javax.swing.GroupLayout.PREFERRED_SIZE))
+								.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
-		jPanelNumbers.setBorder(javax.swing.BorderFactory.createTitledBorder(
-				javax.swing.BorderFactory.createEtchedBorder(),
-				"Documents loaded"));
+		jPanelNumbers.setBorder(javax.swing.BorderFactory
+				.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Documents loaded"));
 
 		jLabel2.setText("MIAPE MSI docs:");
 
@@ -938,256 +683,128 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 
 		jLabelGIDocumentsLoaded.setText("0");
 
-		javax.swing.GroupLayout jPanelNumbersLayout = new javax.swing.GroupLayout(
-				jPanelNumbers);
+		javax.swing.GroupLayout jPanelNumbersLayout = new javax.swing.GroupLayout(jPanelNumbers);
 		jPanelNumbers.setLayout(jPanelNumbersLayout);
-		jPanelNumbersLayout
-				.setHorizontalGroup(jPanelNumbersLayout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								javax.swing.GroupLayout.Alignment.TRAILING,
-								jPanelNumbersLayout
+		jPanelNumbersLayout.setHorizontalGroup(
+				jPanelNumbersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+						javax.swing.GroupLayout.Alignment.TRAILING,
+						jPanelNumbersLayout.createSequentialGroup().addContainerGap().addGroup(jPanelNumbersLayout
+								.createParallelGroup(
+										javax.swing.GroupLayout.Alignment.TRAILING)
+								.addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelNumbersLayout
 										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												jPanelNumbersLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.TRAILING)
-														.addGroup(
-																javax.swing.GroupLayout.Alignment.LEADING,
-																jPanelNumbersLayout
-																		.createSequentialGroup()
-																		.addGroup(
-																				jPanelNumbersLayout
-																						.createParallelGroup(
-																								javax.swing.GroupLayout.Alignment.LEADING)
-																						.addComponent(
-																								jLabel3)
-																						.addComponent(
-																								jLabel4))
-																		.addPreferredGap(
-																				javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																		.addGroup(
-																				jPanelNumbersLayout
-																						.createParallelGroup(
-																								javax.swing.GroupLayout.Alignment.LEADING)
-																						.addComponent(
-																								jLabelGIDocumentsLoaded,
-																								javax.swing.GroupLayout.DEFAULT_SIZE,
-																								40,
-																								Short.MAX_VALUE)
-																						.addComponent(
-																								jLabelGEDocumentsLoaded,
-																								javax.swing.GroupLayout.DEFAULT_SIZE,
-																								40,
-																								Short.MAX_VALUE)))
-														.addGroup(
-																jPanelNumbersLayout
-																		.createSequentialGroup()
-																		.addGroup(
-																				jPanelNumbersLayout
-																						.createParallelGroup(
-																								javax.swing.GroupLayout.Alignment.LEADING)
-																						.addComponent(
-																								jLabel1)
-																						.addComponent(
-																								jLabel2))
-																		.addGap(4,
-																				4,
-																				4)
-																		.addGroup(
-																				jPanelNumbersLayout
-																						.createParallelGroup(
-																								javax.swing.GroupLayout.Alignment.LEADING,
-																								false)
-																						.addComponent(
-																								jLabelMSIDocumentsLoaded,
-																								javax.swing.GroupLayout.DEFAULT_SIZE,
-																								javax.swing.GroupLayout.DEFAULT_SIZE,
-																								Short.MAX_VALUE)
-																						.addComponent(
-																								jLabelMSDocumentsLoaded,
-																								javax.swing.GroupLayout.DEFAULT_SIZE,
-																								37,
-																								Short.MAX_VALUE))))
-										.addContainerGap()));
-		jPanelNumbersLayout
-				.setVerticalGroup(jPanelNumbersLayout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanelNumbersLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												jPanelNumbersLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(jLabel1)
-														.addComponent(
-																jLabelMSDocumentsLoaded))
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addGroup(
-												jPanelNumbersLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(jLabel2)
-														.addComponent(
-																jLabelMSIDocumentsLoaded))
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addGroup(
-												jPanelNumbersLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(jLabel3)
-														.addComponent(
-																jLabelGEDocumentsLoaded))
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addGroup(
-												jPanelNumbersLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(jLabel4)
-														.addComponent(
-																jLabelGIDocumentsLoaded))
-										.addContainerGap(
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)));
+										.addGroup(jPanelNumbersLayout
+												.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+												.addComponent(jLabel3).addComponent(jLabel4))
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addGroup(jPanelNumbersLayout
+												.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+												.addComponent(jLabelGIDocumentsLoaded,
+														javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+												.addComponent(jLabelGEDocumentsLoaded,
+														javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)))
+								.addGroup(jPanelNumbersLayout.createSequentialGroup()
+										.addGroup(jPanelNumbersLayout
+												.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+												.addComponent(jLabel1).addComponent(jLabel2))
+										.addGap(4, 4, 4)
+										.addGroup(jPanelNumbersLayout
+												.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+												.addComponent(jLabelMSIDocumentsLoaded,
+														javax.swing.GroupLayout.DEFAULT_SIZE,
+														javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+												.addComponent(jLabelMSDocumentsLoaded,
+														javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE))))
+								.addContainerGap()));
+		jPanelNumbersLayout.setVerticalGroup(jPanelNumbersLayout
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanelNumbersLayout.createSequentialGroup().addContainerGap()
+						.addGroup(jPanelNumbersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jLabel1).addComponent(jLabelMSDocumentsLoaded))
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addGroup(jPanelNumbersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jLabel2).addComponent(jLabelMSIDocumentsLoaded))
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addGroup(jPanelNumbersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jLabel3).addComponent(jLabelGEDocumentsLoaded))
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addGroup(jPanelNumbersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jLabel4).addComponent(jLabelGIDocumentsLoaded))
+						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
-		jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(
-				javax.swing.BorderFactory.createEtchedBorder(), "Reload"));
+		jPanel5.setBorder(
+				javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Reload"));
 
-		jButtonLoadTrees
-				.setIcon(new javax.swing.ImageIcon(
-						"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\reload.png")); // NOI18N
+		jButtonLoadTrees.setIcon(new javax.swing.ImageIcon(
+				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\reload.png")); // NOI18N
 		jButtonLoadTrees.setText("Reload MIAPE trees");
-		jButtonLoadTrees
-				.setToolTipText("Clears MIAPE trees and starts downloading again");
+		jButtonLoadTrees.setToolTipText("Clears MIAPE trees and starts downloading again");
 		jButtonLoadTrees.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				jButtonLoadTreesActionPerformed(evt);
 			}
 		});
 
-		jButtonStopLoadTree
-				.setIcon(new javax.swing.ImageIcon(
-						"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\stop.png")); // NOI18N
+		jButtonStopLoadTree.setIcon(new javax.swing.ImageIcon(
+				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\stop.png")); // NOI18N
 		jButtonStopLoadTree.setText("Stop loading MIAPE trees");
 		jButtonStopLoadTree.setToolTipText("Stop loading MIAPE trees");
 		jButtonStopLoadTree.setEnabled(false);
-		jButtonStopLoadTree
-				.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						jButtonStopLoadTreeActionPerformed(evt);
-					}
-				});
+		jButtonStopLoadTree.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jButtonStopLoadTreeActionPerformed(evt);
+			}
+		});
 
-		javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(
-				jPanel5);
+		javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
 		jPanel5.setLayout(jPanel5Layout);
-		jPanel5Layout
-				.setHorizontalGroup(jPanel5Layout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanel5Layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addComponent(jButtonStopLoadTree)
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jButtonLoadTrees)
-										.addContainerGap(108, Short.MAX_VALUE)));
-		jPanel5Layout
-				.setVerticalGroup(jPanel5Layout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanel5Layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												jPanel5Layout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(
-																jButtonStopLoadTree)
-														.addComponent(
-																jButtonLoadTrees))
-										.addContainerGap(
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)));
+		jPanel5Layout.setHorizontalGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel5Layout.createSequentialGroup().addContainerGap().addComponent(jButtonStopLoadTree)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jButtonLoadTrees).addContainerGap(108, Short.MAX_VALUE)));
+		jPanel5Layout.setVerticalGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel5Layout.createSequentialGroup().addContainerGap()
+						.addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jButtonStopLoadTree).addComponent(jButtonLoadTrees))
+						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
-		jPanelDelete.setBorder(javax.swing.BorderFactory.createTitledBorder(
-				javax.swing.BorderFactory.createEtchedBorder(),
-				"Delete from repository"));
+		jPanelDelete.setBorder(javax.swing.BorderFactory
+				.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Delete from repository"));
 
-		jButtonDeleteProjectOrDocument
-				.setIcon(new javax.swing.ImageIcon(
-						"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\delete.png")); // NOI18N
+		jButtonDeleteProjectOrDocument.setIcon(new javax.swing.ImageIcon(
+				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\delete.png")); // NOI18N
 		jButtonDeleteProjectOrDocument.setText("Delete selected item");
 		jButtonDeleteProjectOrDocument.setToolTipText("Delete ");
-		jButtonDeleteProjectOrDocument
-				.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						jButtonDeleteProjectOrDocumentActionPerformed(evt);
-					}
-				});
+		jButtonDeleteProjectOrDocument.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jButtonDeleteProjectOrDocumentActionPerformed(evt);
+			}
+		});
 
 		jLabelProjectOrDocument.setAutoscrolls(true);
-		jLabelProjectOrDocument
-				.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
+		jLabelProjectOrDocument.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
 
-		javax.swing.GroupLayout jPanelDeleteLayout = new javax.swing.GroupLayout(
-				jPanelDelete);
+		javax.swing.GroupLayout jPanelDeleteLayout = new javax.swing.GroupLayout(jPanelDelete);
 		jPanelDelete.setLayout(jPanelDeleteLayout);
+		jPanelDeleteLayout.setHorizontalGroup(jPanelDeleteLayout
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanelDeleteLayout.createSequentialGroup().addContainerGap()
+						.addGroup(jPanelDeleteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addComponent(jLabelProjectOrDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 242,
+										javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addComponent(jButtonDeleteProjectOrDocument))
+						.addContainerGap(38, Short.MAX_VALUE)));
 		jPanelDeleteLayout
-				.setHorizontalGroup(jPanelDeleteLayout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanelDeleteLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												jPanelDeleteLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.LEADING)
-														.addComponent(
-																jLabelProjectOrDocument,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																242,
-																javax.swing.GroupLayout.PREFERRED_SIZE)
-														.addComponent(
-																jButtonDeleteProjectOrDocument))
-										.addContainerGap(38, Short.MAX_VALUE)));
-		jPanelDeleteLayout
-				.setVerticalGroup(jPanelDeleteLayout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								javax.swing.GroupLayout.Alignment.TRAILING,
-								jPanelDeleteLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addComponent(
-												jLabelProjectOrDocument,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
-												22,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-												51, Short.MAX_VALUE)
-										.addComponent(
-												jButtonDeleteProjectOrDocument)
-										.addContainerGap()));
+				.setVerticalGroup(jPanelDeleteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+								jPanelDeleteLayout.createSequentialGroup().addContainerGap()
+										.addComponent(jLabelProjectOrDocument, javax.swing.GroupLayout.PREFERRED_SIZE,
+												22, javax.swing.GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51,
+												Short.MAX_VALUE)
+										.addComponent(jButtonDeleteProjectOrDocument).addContainerGap()));
 
-		jPanel_MS.setBorder(javax.swing.BorderFactory
-				.createTitledBorder("MIAPE MS documents"));
+		jPanel_MS.setBorder(javax.swing.BorderFactory.createTitledBorder("MIAPE MS documents"));
 		jPanel_MS.setToolTipText("MIAPE Mass Spectrometry documents");
 
 		jTree_MiapeMS.setAutoscrolls(true);
@@ -1198,31 +815,21 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 		});
 		jScrollPane2.setViewportView(jTree_MiapeMS);
 
-		javax.swing.GroupLayout jPanel_MSLayout = new javax.swing.GroupLayout(
-				jPanel_MS);
+		javax.swing.GroupLayout jPanel_MSLayout = new javax.swing.GroupLayout(jPanel_MS);
 		jPanel_MS.setLayout(jPanel_MSLayout);
-		jPanel_MSLayout.setHorizontalGroup(jPanel_MSLayout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				jPanel_MSLayout
-						.createSequentialGroup()
-						.addContainerGap()
-						.addComponent(jScrollPane2,
-								javax.swing.GroupLayout.PREFERRED_SIZE, 197,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE,
-								Short.MAX_VALUE)));
-		jPanel_MSLayout.setVerticalGroup(jPanel_MSLayout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				jPanel_MSLayout
-						.createSequentialGroup()
-						.addComponent(jScrollPane2,
-								javax.swing.GroupLayout.DEFAULT_SIZE, 464,
-								Short.MAX_VALUE).addContainerGap()));
+		jPanel_MSLayout
+				.setHorizontalGroup(jPanel_MSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(jPanel_MSLayout.createSequentialGroup().addContainerGap()
+								.addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 197,
+										javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+		jPanel_MSLayout.setVerticalGroup(jPanel_MSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel_MSLayout.createSequentialGroup()
+						.addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
+						.addContainerGap()));
 
-		jPanel_MSI.setBorder(javax.swing.BorderFactory
-				.createTitledBorder("MIAPE MSI documents"));
-		jPanel_MSI
-				.setToolTipText("MIAPE Mass Spectrometry Informatics documents");
+		jPanel_MSI.setBorder(javax.swing.BorderFactory.createTitledBorder("MIAPE MSI documents"));
+		jPanel_MSI.setToolTipText("MIAPE Mass Spectrometry Informatics documents");
 
 		jTree_MiapeMSI.setAutoscrolls(true);
 		jTree_MiapeMSI.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1232,85 +839,47 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 		});
 		jScrollPane1.setViewportView(jTree_MiapeMSI);
 
-		javax.swing.GroupLayout jPanel_MSILayout = new javax.swing.GroupLayout(
-				jPanel_MSI);
+		javax.swing.GroupLayout jPanel_MSILayout = new javax.swing.GroupLayout(jPanel_MSI);
 		jPanel_MSI.setLayout(jPanel_MSILayout);
-		jPanel_MSILayout.setHorizontalGroup(jPanel_MSILayout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(
-						jPanel_MSILayout
-								.createSequentialGroup()
-								.addContainerGap()
-								.addComponent(jScrollPane1,
-										javax.swing.GroupLayout.PREFERRED_SIZE,
-										197,
+		jPanel_MSILayout
+				.setHorizontalGroup(jPanel_MSILayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(jPanel_MSILayout.createSequentialGroup().addContainerGap()
+								.addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 197,
 										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addContainerGap(
-										javax.swing.GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)));
-		jPanel_MSILayout.setVerticalGroup(jPanel_MSILayout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				jPanel_MSILayout
-						.createSequentialGroup()
-						.addComponent(jScrollPane1,
-								javax.swing.GroupLayout.DEFAULT_SIZE, 464,
-								Short.MAX_VALUE).addContainerGap()));
+								.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+		jPanel_MSILayout
+				.setVerticalGroup(jPanel_MSILayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(jPanel_MSILayout.createSequentialGroup()
+								.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
+								.addContainerGap()));
 
-		javax.swing.GroupLayout jPanelMS_MSILayout = new javax.swing.GroupLayout(
-				jPanelMS_MSI);
+		javax.swing.GroupLayout jPanelMS_MSILayout = new javax.swing.GroupLayout(jPanelMS_MSI);
 		jPanelMS_MSI.setLayout(jPanelMS_MSILayout);
 		jPanelMS_MSILayout
-				.setHorizontalGroup(jPanelMS_MSILayout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanelMS_MSILayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addComponent(
-												jPanel_MS,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(
-												jPanel_MSI,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addContainerGap(29, Short.MAX_VALUE)));
-		jPanelMS_MSILayout
-				.setVerticalGroup(jPanelMS_MSILayout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								javax.swing.GroupLayout.Alignment.TRAILING,
-								jPanelMS_MSILayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												jPanelMS_MSILayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.TRAILING)
-														.addComponent(
-																jPanel_MS,
-																javax.swing.GroupLayout.Alignment.LEADING,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																Short.MAX_VALUE)
-														.addComponent(
-																jPanel_MSI,
-																javax.swing.GroupLayout.Alignment.LEADING,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																Short.MAX_VALUE))
-										.addContainerGap()));
+				.setHorizontalGroup(jPanelMS_MSILayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(jPanelMS_MSILayout.createSequentialGroup().addContainerGap()
+								.addComponent(jPanel_MS, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jPanel_MSI, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(29, Short.MAX_VALUE)));
+		jPanelMS_MSILayout.setVerticalGroup(jPanelMS_MSILayout
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelMS_MSILayout.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(jPanelMS_MSILayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+								.addComponent(jPanel_MS, javax.swing.GroupLayout.Alignment.LEADING,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
+								.addComponent(jPanel_MSI, javax.swing.GroupLayout.Alignment.LEADING,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE))
+						.addContainerGap()));
 
 		jTabbedPane1.addTab("MIAPE MS and MSIs", jPanelMS_MSI);
 
-		jPanel_GE.setBorder(javax.swing.BorderFactory
-				.createTitledBorder("MIAPE GE documents"));
+		jPanel_GE.setBorder(javax.swing.BorderFactory.createTitledBorder("MIAPE GE documents"));
 		jPanel_GE.setToolTipText("MIAPE Mass Spectrometry documents");
 
 		jTree_MiapeGE.setAutoscrolls(true);
@@ -1321,30 +890,21 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 		});
 		jScrollPane4.setViewportView(jTree_MiapeGE);
 
-		javax.swing.GroupLayout jPanel_GELayout = new javax.swing.GroupLayout(
-				jPanel_GE);
+		javax.swing.GroupLayout jPanel_GELayout = new javax.swing.GroupLayout(jPanel_GE);
 		jPanel_GE.setLayout(jPanel_GELayout);
-		jPanel_GELayout.setHorizontalGroup(jPanel_GELayout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				jPanel_GELayout
-						.createSequentialGroup()
-						.addContainerGap()
-						.addComponent(jScrollPane4,
-								javax.swing.GroupLayout.PREFERRED_SIZE, 195,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(21, Short.MAX_VALUE)));
-		jPanel_GELayout.setVerticalGroup(jPanel_GELayout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				jPanel_GELayout
-						.createSequentialGroup()
-						.addComponent(jScrollPane4,
-								javax.swing.GroupLayout.DEFAULT_SIZE, 464,
-								Short.MAX_VALUE).addContainerGap()));
+		jPanel_GELayout
+				.setHorizontalGroup(jPanel_GELayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(jPanel_GELayout.createSequentialGroup()
+								.addContainerGap().addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE,
+										195, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addContainerGap(21, Short.MAX_VALUE)));
+		jPanel_GELayout.setVerticalGroup(jPanel_GELayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel_GELayout.createSequentialGroup()
+						.addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
+						.addContainerGap()));
 
-		jPanel_MSI1.setBorder(javax.swing.BorderFactory
-				.createTitledBorder("MIAPE GI documents"));
-		jPanel_MSI1
-				.setToolTipText("MIAPE Mass Spectrometry Informatics documents");
+		jPanel_MSI1.setBorder(javax.swing.BorderFactory.createTitledBorder("MIAPE GI documents"));
+		jPanel_MSI1.setToolTipText("MIAPE Mass Spectrometry Informatics documents");
 
 		jTree_MiapeGI.setAutoscrolls(true);
 		jTree_MiapeGI.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1354,212 +914,109 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 		});
 		jScrollPane5.setViewportView(jTree_MiapeGI);
 
-		javax.swing.GroupLayout jPanel_MSI1Layout = new javax.swing.GroupLayout(
-				jPanel_MSI1);
+		javax.swing.GroupLayout jPanel_MSI1Layout = new javax.swing.GroupLayout(jPanel_MSI1);
 		jPanel_MSI1.setLayout(jPanel_MSI1Layout);
-		jPanel_MSI1Layout.setHorizontalGroup(jPanel_MSI1Layout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(
-						jPanel_MSI1Layout
-								.createSequentialGroup()
-								.addContainerGap()
-								.addComponent(jScrollPane5,
-										javax.swing.GroupLayout.DEFAULT_SIZE,
-										208, Short.MAX_VALUE)));
 		jPanel_MSI1Layout
-				.setVerticalGroup(jPanel_MSI1Layout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanel_MSI1Layout
-										.createSequentialGroup()
-										.addComponent(
-												jScrollPane5,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												464, Short.MAX_VALUE)
-										.addContainerGap()));
+				.setHorizontalGroup(jPanel_MSI1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(jPanel_MSI1Layout.createSequentialGroup().addContainerGap().addComponent(jScrollPane5,
+								javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)));
+		jPanel_MSI1Layout
+				.setVerticalGroup(jPanel_MSI1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(jPanel_MSI1Layout.createSequentialGroup()
+								.addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
+								.addContainerGap()));
 
-		javax.swing.GroupLayout jPanelGE_GILayout = new javax.swing.GroupLayout(
-				jPanelGE_GI);
+		javax.swing.GroupLayout jPanelGE_GILayout = new javax.swing.GroupLayout(jPanelGE_GI);
 		jPanelGE_GI.setLayout(jPanelGE_GILayout);
 		jPanelGE_GILayout
-				.setHorizontalGroup(jPanelGE_GILayout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanelGE_GILayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addComponent(
-												jPanel_GE,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(
-												jPanel_MSI1,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addContainerGap(23, Short.MAX_VALUE)));
-		jPanelGE_GILayout
-				.setVerticalGroup(jPanelGE_GILayout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								javax.swing.GroupLayout.Alignment.TRAILING,
-								jPanelGE_GILayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												jPanelGE_GILayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.TRAILING)
-														.addComponent(
-																jPanel_GE,
-																javax.swing.GroupLayout.Alignment.LEADING,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																Short.MAX_VALUE)
-														.addComponent(
-																jPanel_MSI1,
-																javax.swing.GroupLayout.Alignment.LEADING,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																Short.MAX_VALUE))
-										.addContainerGap()));
+				.setHorizontalGroup(jPanelGE_GILayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(jPanelGE_GILayout.createSequentialGroup().addContainerGap()
+								.addComponent(jPanel_GE, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jPanel_MSI1, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(23, Short.MAX_VALUE)));
+		jPanelGE_GILayout.setVerticalGroup(jPanelGE_GILayout
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelGE_GILayout.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(jPanelGE_GILayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+								.addComponent(jPanel_GE, javax.swing.GroupLayout.Alignment.LEADING,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
+								.addComponent(jPanel_MSI1, javax.swing.GroupLayout.Alignment.LEADING,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE))
+						.addContainerGap()));
 
 		jTabbedPane1.addTab("MIAPE GE and GIs", jPanelGE_GI);
 
-		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
-				getContentPane());
+		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(
-						layout.createSequentialGroup()
-								.addContainerGap()
-								.addGroup(
-										layout.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.LEADING)
-												.addComponent(
-														jTabbedPane1,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														511, Short.MAX_VALUE)
-												.addComponent(
-														jPanel5,
-														javax.swing.GroupLayout.PREFERRED_SIZE,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														javax.swing.GroupLayout.PREFERRED_SIZE))
-								.addPreferredGap(
-										javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addGroup(
-										layout.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.LEADING)
-												.addGroup(
-														layout.createSequentialGroup()
-																.addComponent(
-																		jPanelNumbers,
-																		javax.swing.GroupLayout.PREFERRED_SIZE,
-																		javax.swing.GroupLayout.DEFAULT_SIZE,
-																		javax.swing.GroupLayout.PREFERRED_SIZE)
-																.addPreferredGap(
-																		javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																.addComponent(
-																		jPanelDelete,
-																		javax.swing.GroupLayout.PREFERRED_SIZE,
-																		javax.swing.GroupLayout.DEFAULT_SIZE,
-																		javax.swing.GroupLayout.PREFERRED_SIZE))
-												.addComponent(jPanelInfo, 0,
-														477, Short.MAX_VALUE)
-												.addComponent(
-														jPanelStatus,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														Short.MAX_VALUE))
-								.addContainerGap()));
-		layout.setVerticalGroup(layout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(
-						layout.createSequentialGroup()
-								.addContainerGap()
-								.addGroup(
-										layout.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.LEADING)
-												.addGroup(
-														layout.createSequentialGroup()
-																.addGroup(
-																		layout.createParallelGroup(
-																				javax.swing.GroupLayout.Alignment.LEADING)
-																				.addComponent(
-																						jPanelDelete,
-																						javax.swing.GroupLayout.DEFAULT_SIZE,
-																						javax.swing.GroupLayout.DEFAULT_SIZE,
-																						Short.MAX_VALUE)
-																				.addComponent(
-																						jPanelNumbers,
-																						javax.swing.GroupLayout.PREFERRED_SIZE,
-																						javax.swing.GroupLayout.DEFAULT_SIZE,
-																						javax.swing.GroupLayout.PREFERRED_SIZE))
-																.addPreferredGap(
-																		javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																.addComponent(
-																		jPanelInfo,
-																		javax.swing.GroupLayout.PREFERRED_SIZE,
-																		javax.swing.GroupLayout.DEFAULT_SIZE,
-																		javax.swing.GroupLayout.PREFERRED_SIZE)
-																.addPreferredGap(
-																		javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																.addComponent(
-																		jPanelStatus,
-																		javax.swing.GroupLayout.PREFERRED_SIZE,
-																		javax.swing.GroupLayout.DEFAULT_SIZE,
-																		javax.swing.GroupLayout.PREFERRED_SIZE))
-												.addGroup(
-														layout.createSequentialGroup()
-																.addComponent(
-																		jPanel5,
-																		javax.swing.GroupLayout.PREFERRED_SIZE,
-																		javax.swing.GroupLayout.DEFAULT_SIZE,
-																		javax.swing.GroupLayout.PREFERRED_SIZE)
-																.addGap(18, 18,
-																		18)
-																.addComponent(
-																		jTabbedPane1,
-																		javax.swing.GroupLayout.DEFAULT_SIZE,
-																		555,
-																		Short.MAX_VALUE)))
-								.addContainerGap()));
+		layout.setHorizontalGroup(
+				layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(layout.createSequentialGroup().addContainerGap()
+								.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+										.addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 511,
+												Short.MAX_VALUE)
+								.addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+				.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(layout.createSequentialGroup()
+								.addComponent(jPanelNumbers, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jPanelDelete, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+						.addComponent(jPanelInfo, 0, 477, Short.MAX_VALUE).addComponent(jPanelStatus,
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+								Short.MAX_VALUE)).addContainerGap()));
+		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup().addContainerGap()
+						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addGroup(layout.createSequentialGroup()
+										.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+												.addComponent(jPanelDelete, javax.swing.GroupLayout.DEFAULT_SIZE,
+														javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+										.addComponent(jPanelNumbers, javax.swing.GroupLayout.PREFERRED_SIZE,
+												javax.swing.GroupLayout.DEFAULT_SIZE,
+												javax.swing.GroupLayout.PREFERRED_SIZE))
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jPanelInfo, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jPanelStatus, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+						.addGroup(layout.createSequentialGroup()
+								.addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addGap(18, 18, 18).addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE,
+										555, Short.MAX_VALUE)))
+						.addContainerGap()));
 
 		pack();
-		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit()
-				.getScreenSize();
+		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 		java.awt.Dimension dialogSize = getSize();
-		setLocation((screenSize.width - dialogSize.width) / 2,
-				(screenSize.height - dialogSize.height) / 2);
+		setLocation((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2);
 	}// </editor-fold>
 		// GEN-END:initComponents
 
-	private void jButtonShowReport1ActionPerformed(
-			java.awt.event.ActionEvent evt) {
+	private void jButtonShowReport1ActionPerformed(java.awt.event.ActionEvent evt) {
 		int userID = getUserID();
 		if (userID > 0) {
-			Object[] dialog_options = { "Yes, open browser",
-					"No, close this dialog" };
+			Object[] dialog_options = { "Yes, open browser", "No, close this dialog" };
 
 			String miapeType = getMiapeType1();
 			int miapeID = getMiapeId1();
-			URL directLink = MiapeReportsLinkGenerator.getMiapePublicLink(
-					userID, miapeID, miapeType);
+			URL directLink = MiapeReportsLinkGenerator.getMiapePublicLink(userID, miapeID, miapeType);
 			if (directLink != null) {
 				int selected_option = JOptionPane.showOptionDialog(this,
-						"Click on yes to open a browser to go directly to the MIAPE "
-								+ miapeType + " document report." + "\n",
-						"Show MIAPE " + miapeType + " report",
-						JOptionPane.YES_NO_CANCEL_OPTION,
-						JOptionPane.QUESTION_MESSAGE, null, dialog_options,
-						dialog_options[1]);
+						"Click on yes to open a browser to go directly to the MIAPE " + miapeType + " document report."
+								+ "\n",
+						"Show MIAPE " + miapeType + " report", JOptionPane.YES_NO_CANCEL_OPTION,
+						JOptionPane.QUESTION_MESSAGE, null, dialog_options, dialog_options[1]);
 				if (selected_option == 0) { // Yes
 					HttpUtilities.openURL(directLink.toString());
 				}
@@ -1570,20 +1027,16 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 
 	private int getMiapeId1() {
 		if (this.jTabbedPane1.getSelectedIndex() == 0) {
-			final String stringFromSelection = jTree_MiapeMS
-					.getStringFromSelection(MIAPE_ID_REGEXP);
+			final String stringFromSelection = jTree_MiapeMS.getStringFromSelection(MIAPE_ID_REGEXP);
 			if (stringFromSelection != null && !"".equals(stringFromSelection)) {
-				final int selectedMIAPEMS = Integer
-						.valueOf(stringFromSelection);
+				final int selectedMIAPEMS = Integer.valueOf(stringFromSelection);
 				if (selectedMIAPEMS > 0)
 					return selectedMIAPEMS;
 			}
 		} else {
-			final String stringFromSelection = jTree_MiapeGE
-					.getStringFromSelection(MIAPE_ID_REGEXP);
+			final String stringFromSelection = jTree_MiapeGE.getStringFromSelection(MIAPE_ID_REGEXP);
 			if (stringFromSelection != null && !"".equals(stringFromSelection)) {
-				final int selectedMIAPEGE = Integer
-						.valueOf(stringFromSelection);
+				final int selectedMIAPEGE = Integer.valueOf(stringFromSelection);
 				if (selectedMIAPEGE > 0)
 					return selectedMIAPEGE;
 			}
@@ -1593,20 +1046,16 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 
 	private int getMiapeId2() {
 		if (this.jTabbedPane1.getSelectedIndex() == 0) {
-			final String stringFromSelection = jTree_MiapeMSI
-					.getStringFromSelection(MIAPE_ID_REGEXP);
+			final String stringFromSelection = jTree_MiapeMSI.getStringFromSelection(MIAPE_ID_REGEXP);
 			if (stringFromSelection != null && !"".equals(stringFromSelection)) {
-				final int selectedMIAPEMSI = Integer
-						.valueOf(stringFromSelection);
+				final int selectedMIAPEMSI = Integer.valueOf(stringFromSelection);
 				if (selectedMIAPEMSI > 0)
 					return selectedMIAPEMSI;
 			}
 		} else {
-			final String stringFromSelection = jTree_MiapeGI
-					.getStringFromSelection(MIAPE_ID_REGEXP);
+			final String stringFromSelection = jTree_MiapeGI.getStringFromSelection(MIAPE_ID_REGEXP);
 			if (stringFromSelection != null && !"".equals(stringFromSelection)) {
-				final int selectedMIAPEGI = Integer
-						.valueOf(stringFromSelection);
+				final int selectedMIAPEGI = Integer.valueOf(stringFromSelection);
 				if (selectedMIAPEGI > 0)
 					return selectedMIAPEGI;
 			}
@@ -1641,25 +1090,20 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 		return -1;
 	}
 
-	private void jButtonShowReport2ActionPerformed(
-			java.awt.event.ActionEvent evt) {
+	private void jButtonShowReport2ActionPerformed(java.awt.event.ActionEvent evt) {
 		int userID = getUserID();
 		if (userID > 0) {
-			Object[] dialog_options = { "Yes, open browser",
-					"No, close this dialog" };
+			Object[] dialog_options = { "Yes, open browser", "No, close this dialog" };
 
 			String miapeType = getMiapeType2();
 			int miapeID = getMiapeId2();
-			URL directLink = MiapeReportsLinkGenerator.getMiapePublicLink(
-					userID, miapeID, miapeType);
+			URL directLink = MiapeReportsLinkGenerator.getMiapePublicLink(userID, miapeID, miapeType);
 			if (directLink != null) {
 				int selected_option = JOptionPane.showOptionDialog(this,
-						"Click on yes to open a browser to go directly to the MIAPE "
-								+ miapeType + " document report." + "\n",
-						"Show MIAPE " + miapeType + " report",
-						JOptionPane.YES_NO_CANCEL_OPTION,
-						JOptionPane.QUESTION_MESSAGE, null, dialog_options,
-						dialog_options[1]);
+						"Click on yes to open a browser to go directly to the MIAPE " + miapeType + " document report."
+								+ "\n",
+						"Show MIAPE " + miapeType + " report", JOptionPane.YES_NO_CANCEL_OPTION,
+						JOptionPane.QUESTION_MESSAGE, null, dialog_options, dialog_options[1]);
 				if (selected_option == 0) { // Yes
 					HttpUtilities.openURL(directLink.toString());
 				}
@@ -1673,8 +1117,7 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 		// only if the tree is completely loaded
 		if (loadingTaskIsNotRunning()) {
 			log.info("no tasks running now");
-			final TreePath pathForLocation = this.jTree_MiapeGI
-					.getPathForLocation(evt.getX(), evt.getY());
+			final TreePath pathForLocation = this.jTree_MiapeGI.getPathForLocation(evt.getX(), evt.getY());
 			if (pathForLocation == null)
 				this.jTree_MiapeGI.clearSelection();
 			projectDuplicated = updateSelectionGI();
@@ -1687,8 +1130,7 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 		// only if the tree is completely loaded
 		if (loadingTaskIsNotRunning()) {
 			// Only if a MIAPE document node is selected
-			final TreePath pathForLocation = this.jTree_MiapeGE
-					.getPathForLocation(evt.getX(), evt.getY());
+			final TreePath pathForLocation = this.jTree_MiapeGE.getPathForLocation(evt.getX(), evt.getY());
 			if (pathForLocation == null)
 				this.jTree_MiapeGE.clearSelection();
 			updateSelectionGE();
@@ -1697,8 +1139,7 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 		updateProjectAndDocumentManagement();
 	}
 
-	private void jButtonStopLoadTreeActionPerformed(
-			java.awt.event.ActionEvent evt) {
+	private void jButtonStopLoadTreeActionPerformed(java.awt.event.ActionEvent evt) {
 		if (this.treeLoaderTask != null) {
 			boolean canceled = this.treeLoaderTask.cancel(true);
 			if (canceled) {
@@ -1713,8 +1154,7 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 		fillTrees();
 	}
 
-	private void jButtonDeleteProjectOrDocumentActionPerformed(
-			java.awt.event.ActionEvent evt) {
+	private void jButtonDeleteProjectOrDocumentActionPerformed(java.awt.event.ActionEvent evt) {
 
 		try {
 			deleteItemFromTree();
@@ -1736,40 +1176,36 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 		this.disableControls(true);
 	}
 
-	private void deleteItemFromTree() throws MiapeSecurityException_Exception,
-			MiapeDatabaseException_Exception, RemoteException {
+	private void deleteItemFromTree()
+			throws MiapeSecurityException_Exception, MiapeDatabaseException_Exception, RemoteException {
 		if (isOnlyOneNodeSelected(3)) {
 			int id = getSelectedMIAPEId();
 
 			if (jTree_MiapeMS.isOnlyOneNodeSelected(3)) {
 				if (showDeletionWarn("MS", id) != JOptionPane.YES_OPTION)
 					return;
-				MiapeDeleterTask deleter = new MiapeDeleterTask(
-						miapeAPIWebservice, userName, password, id, "MS");
+				MiapeDeleterTask deleter = new MiapeDeleterTask(miapeAPIWebservice, userName, password, id, "MS");
 				deleter.addPropertyChangeListener(this);
 				deleter.execute();
 
 			} else if (jTree_MiapeMSI.isOnlyOneNodeSelected(3)) {
 				if (showDeletionWarn("MSI", id) != JOptionPane.YES_OPTION)
 					return;
-				MiapeDeleterTask deleter = new MiapeDeleterTask(
-						miapeAPIWebservice, userName, password, id, "MSI");
+				MiapeDeleterTask deleter = new MiapeDeleterTask(miapeAPIWebservice, userName, password, id, "MSI");
 				deleter.addPropertyChangeListener(this);
 				deleter.execute();
 
 			} else if (jTree_MiapeGE.isOnlyOneNodeSelected(3)) {
 				if (showDeletionWarn("GE", id) != JOptionPane.YES_OPTION)
 					return;
-				MiapeDeleterTask deleter = new MiapeDeleterTask(
-						miapeAPIWebservice, userName, password, id, "GE");
+				MiapeDeleterTask deleter = new MiapeDeleterTask(miapeAPIWebservice, userName, password, id, "GE");
 				deleter.addPropertyChangeListener(this);
 				deleter.execute();
 
 			} else if (jTree_MiapeGI.isOnlyOneNodeSelected(3)) {
 				if (showDeletionWarn("GI", id) != JOptionPane.YES_OPTION)
 					return;
-				MiapeDeleterTask deleter = new MiapeDeleterTask(
-						miapeAPIWebservice, userName, password, id, "GI");
+				MiapeDeleterTask deleter = new MiapeDeleterTask(miapeAPIWebservice, userName, password, id, "GI");
 				deleter.addPropertyChangeListener(this);
 				deleter.execute();
 
@@ -1778,8 +1214,7 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 			int id = getSelectedProjectId();
 			if (showDeletionWarn("PROJECT", id) != JOptionPane.YES_OPTION)
 				return;
-			MiapeDeleterTask deleter = new MiapeDeleterTask(miapeAPIWebservice,
-					userName, password, id);
+			MiapeDeleterTask deleter = new MiapeDeleterTask(miapeAPIWebservice, userName, password, id);
 			deleter.addPropertyChangeListener(this);
 			deleter.execute();
 		}
@@ -1788,15 +1223,13 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 
 	private int getSelectedProjectId() {
 		int selectedProject = 0;
-		final String selectedProjectMS = jTree_MiapeMS
-				.getStringFromSelection(PROJECT_ID_REGEXP);
+		final String selectedProjectMS = jTree_MiapeMS.getStringFromSelection(PROJECT_ID_REGEXP);
 		if (selectedProjectMS != null && !"".equals(selectedProjectMS)) {
 			selectedProject = Integer.valueOf(selectedProjectMS);
 			if (selectedProject > 0)
 				return selectedProject;
 		}
-		final String selectedProjectMSI = jTree_MiapeMSI
-				.getStringFromSelection(PROJECT_ID_REGEXP);
+		final String selectedProjectMSI = jTree_MiapeMSI.getStringFromSelection(PROJECT_ID_REGEXP);
 		if (selectedProjectMSI != null && !"".equals(selectedProjectMSI)) {
 			selectedProject = Integer.valueOf(selectedProjectMSI);
 			if (selectedProject > 0)
@@ -1806,15 +1239,13 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 	}
 
 	private int getSelectedMIAPEId() {
-		final String stringFromSelection = jTree_MiapeMS
-				.getStringFromSelection(MIAPE_ID_REGEXP);
+		final String stringFromSelection = jTree_MiapeMS.getStringFromSelection(MIAPE_ID_REGEXP);
 		if (stringFromSelection != null && !"".equals(stringFromSelection)) {
 			final int selectedMIAPEMS = Integer.valueOf(stringFromSelection);
 			if (selectedMIAPEMS > 0)
 				return selectedMIAPEMS;
 		}
-		final String stringFromSelection2 = jTree_MiapeMSI
-				.getStringFromSelection(MIAPE_ID_REGEXP);
+		final String stringFromSelection2 = jTree_MiapeMSI.getStringFromSelection(MIAPE_ID_REGEXP);
 		if (stringFromSelection2 != null && !"".equals(stringFromSelection2)) {
 			final int selectedMIAPEMSI = Integer.valueOf(stringFromSelection2);
 			if (selectedMIAPEMSI > 0)
@@ -1825,29 +1256,24 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 
 	private boolean isOneProjectSelected() {
 		// if there is only one project selected in MS and no in MSI
-		if (jTree_MiapeMS.isOnlyOneNodeSelected(2)
-				&& !jTree_MiapeMSI.isOnlyOneNodeSelected(2))
+		if (jTree_MiapeMS.isOnlyOneNodeSelected(2) && !jTree_MiapeMSI.isOnlyOneNodeSelected(2))
 			return true;
 		// if only one project selected in MSI and no in MS
-		if (!jTree_MiapeMS.isOnlyOneNodeSelected(2)
-				&& jTree_MiapeMSI.isOnlyOneNodeSelected(2))
+		if (!jTree_MiapeMS.isOnlyOneNodeSelected(2) && jTree_MiapeMSI.isOnlyOneNodeSelected(2))
 			return true;
 		// if there is only one selected in MSI and only one in MS and they are
 		// the same
-		if (jTree_MiapeMS.isOnlyOneNodeSelected(2)
-				&& jTree_MiapeMSI.isOnlyOneNodeSelected(2)) {
-			if (jTree_MiapeMS.getStringFromSelection(PROJECT_ID_REGEXP).equals(
-					jTree_MiapeMSI.getStringFromSelection(PROJECT_ID_REGEXP)))
+		if (jTree_MiapeMS.isOnlyOneNodeSelected(2) && jTree_MiapeMSI.isOnlyOneNodeSelected(2)) {
+			if (jTree_MiapeMS.getStringFromSelection(PROJECT_ID_REGEXP)
+					.equals(jTree_MiapeMSI.getStringFromSelection(PROJECT_ID_REGEXP)))
 				return true;
 		}
 		return false;
 	}
 
 	private boolean isOnlyOneNodeSelected(int level) {
-		if ((jTree_MiapeMS.isOnlyOneNodeSelected(level) && !jTree_MiapeMSI
-				.isOnlyOneNodeSelected(level))
-				|| (!jTree_MiapeMS.isOnlyOneNodeSelected(level) && jTree_MiapeMSI
-						.isOnlyOneNodeSelected(level)))
+		if ((jTree_MiapeMS.isOnlyOneNodeSelected(level) && !jTree_MiapeMSI.isOnlyOneNodeSelected(level))
+				|| (!jTree_MiapeMS.isOnlyOneNodeSelected(level) && jTree_MiapeMSI.isOnlyOneNodeSelected(level)))
 			return true;
 		return false;
 	}
@@ -1862,15 +1288,15 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 			cadena = "MIAPE project";
 		}
 
-		return JOptionPane.showConfirmDialog(this,
-				"Are you sure you want to delete the " + cadena + " with ID:"
-						+ idMIAPE + " from the MIAPE repository?\n",
-				"Warning deleting", JOptionPane.YES_NO_CANCEL_OPTION);
+		return JOptionPane
+				.showConfirmDialog(this,
+						"Are you sure you want to delete the " + cadena + " with ID:" + idMIAPE
+								+ " from the MIAPE repository?\n",
+						"Warning deleting", JOptionPane.YES_NO_CANCEL_OPTION);
 
 	}
 
-	private void jButtonClearStatusActionPerformed(
-			java.awt.event.ActionEvent evt) {
+	private void jButtonClearStatusActionPerformed(java.awt.event.ActionEvent evt) {
 		this.jTextAreaStatus.setText("");
 	}
 
@@ -1880,8 +1306,7 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 		// only if the tree is completely loaded
 		// if (loadingTaskIsNotRunning()) {
 		log.info("no tasks running now");
-		final TreePath pathForLocation = this.jTree_MiapeMSI
-				.getPathForLocation(evt.getX(), evt.getY());
+		final TreePath pathForLocation = this.jTree_MiapeMSI.getPathForLocation(evt.getX(), evt.getY());
 		if (pathForLocation == null)
 			this.jTree_MiapeMSI.clearSelection();
 		projectDuplicated = updateSelectionMSI();
@@ -1893,13 +1318,10 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 	private boolean updateSelectionMSI() {
 		boolean projectDuplicated = false;
 		// Only if a MIAPE document node is selected
-		if (!jTree_MiapeMSI.isSelectionEmpty()
-				&& this.jTree_MiapeMSI.isOnlyOneNodeSelected(3)) {
-			final String miapeSelection = jTree_MiapeMSI
-					.getStringFromSelection(MIAPE_ID_REGEXP);
+		if (!jTree_MiapeMSI.isSelectionEmpty() && this.jTree_MiapeMSI.isOnlyOneNodeSelected(3)) {
+			final String miapeSelection = jTree_MiapeMSI.getStringFromSelection(MIAPE_ID_REGEXP);
 
-			if (miapeSelection != null && !"".equals(miapeSelection)
-					&& Integer.valueOf(miapeSelection) > 0) {
+			if (miapeSelection != null && !"".equals(miapeSelection) && Integer.valueOf(miapeSelection) > 0) {
 
 				// if there is other miapeheaderloaderprocess,
 				// cancel it
@@ -1910,10 +1332,8 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 				}
 
 				// this.jProgressBar_translation.setIndeterminate(true);
-				this.miapeHeaderLoaderTask = new MiapeHeaderLoaderTask(
-						Integer.valueOf(miapeSelection), "MSI",
-						this.miapeAPIWebservice, this.miapeExtractorWebservice,
-						this.userName, this.password);
+				this.miapeHeaderLoaderTask = new MiapeHeaderLoaderTask(Integer.valueOf(miapeSelection), "MSI",
+						this.miapeAPIWebservice, this.miapeExtractorWebservice, this.userName, this.password);
 				miapeHeaderLoaderTask.addPropertyChangeListener(this);
 				miapeHeaderLoaderTask.execute();
 
@@ -1922,18 +1342,15 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 				// if a project is selected, select the same project in the
 				// other tree
 			} else {
-				final String projectSelection = jTree_MiapeMSI
-						.getStringFromSelection(PROJECT_ID_REGEXP);
-				if (projectSelection != null && !"".equals(projectSelection)
-						&& Integer.valueOf(projectSelection) > 0
+				final String projectSelection = jTree_MiapeMSI.getStringFromSelection(PROJECT_ID_REGEXP);
+				if (projectSelection != null && !"".equals(projectSelection) && Integer.valueOf(projectSelection) > 0
 						&& jTree_MiapeMSI.isOnlyOneNodeSelected(2)) {
 
 					int intIdProject = Integer.valueOf(projectSelection);
 					if (intIdProject > 0) {
 						String idProject = intIdProject + ":";
 						if (jTree_MiapeMS.scrollToNode(idProject)) {
-							enableProjectAndDocumentManagement(true,
-									getStringFromJTreeSelection(jTree_MiapeMSI));
+							enableProjectAndDocumentManagement(true, getStringFromJTreeSelection(jTree_MiapeMSI));
 							projectDuplicated = true;
 						}
 					}
@@ -1954,13 +1371,10 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 	private boolean updateSelectionGI() {
 		boolean projectDuplicated = false;
 		// Only if a MIAPE document node is selected
-		if (!jTree_MiapeGI.isSelectionEmpty()
-				&& this.jTree_MiapeGI.isOnlyOneNodeSelected(3)) {
-			final String miapeSelection = jTree_MiapeGI
-					.getStringFromSelection(MIAPE_ID_REGEXP);
+		if (!jTree_MiapeGI.isSelectionEmpty() && this.jTree_MiapeGI.isOnlyOneNodeSelected(3)) {
+			final String miapeSelection = jTree_MiapeGI.getStringFromSelection(MIAPE_ID_REGEXP);
 
-			if (miapeSelection != null && !"".equals(miapeSelection)
-					&& Integer.valueOf(miapeSelection) > 0) {
+			if (miapeSelection != null && !"".equals(miapeSelection) && Integer.valueOf(miapeSelection) > 0) {
 
 				// if there is other miapeheaderloaderprocess,
 				// cancel it
@@ -1971,10 +1385,8 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 				}
 
 				// this.jProgressBar_translation.setIndeterminate(true);
-				this.miapeHeaderLoaderTask = new MiapeHeaderLoaderTask(
-						Integer.valueOf(miapeSelection), "GI",
-						this.miapeAPIWebservice, this.miapeExtractorWebservice,
-						this.userName, this.password);
+				this.miapeHeaderLoaderTask = new MiapeHeaderLoaderTask(Integer.valueOf(miapeSelection), "GI",
+						this.miapeAPIWebservice, this.miapeExtractorWebservice, this.userName, this.password);
 				miapeHeaderLoaderTask.addPropertyChangeListener(this);
 				miapeHeaderLoaderTask.execute();
 
@@ -1983,18 +1395,15 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 				// if a project is selected, select the same project in the
 				// other tree
 			} else {
-				final String projectSelection = jTree_MiapeGI
-						.getStringFromSelection(PROJECT_ID_REGEXP);
-				if (projectSelection != null && !"".equals(projectSelection)
-						&& Integer.valueOf(projectSelection) > 0
+				final String projectSelection = jTree_MiapeGI.getStringFromSelection(PROJECT_ID_REGEXP);
+				if (projectSelection != null && !"".equals(projectSelection) && Integer.valueOf(projectSelection) > 0
 						&& jTree_MiapeGI.isOnlyOneNodeSelected(2)) {
 
 					int intIdProject = Integer.valueOf(projectSelection);
 					if (intIdProject > 0) {
 						String idProject = intIdProject + ":";
 						if (jTree_MiapeMS.scrollToNode(idProject)) {
-							enableProjectAndDocumentManagement(true,
-									getStringFromJTreeSelection(jTree_MiapeGI));
+							enableProjectAndDocumentManagement(true, getStringFromJTreeSelection(jTree_MiapeGI));
 							projectDuplicated = true;
 						}
 					}
@@ -2012,8 +1421,7 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 		// only if the tree is completely loaded
 		if (loadingTaskIsNotRunning()) {
 			// Only if a MIAPE document node is selected
-			final TreePath pathForLocation = this.jTree_MiapeMS
-					.getPathForLocation(evt.getX(), evt.getY());
+			final TreePath pathForLocation = this.jTree_MiapeMS.getPathForLocation(evt.getX(), evt.getY());
 			if (pathForLocation == null)
 				this.jTree_MiapeMS.clearSelection();
 			updateSelectionMS();
@@ -2024,24 +1432,18 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 
 	private boolean updateSelectionMS() {
 		boolean projectDuplicated = false;
-		if (!jTree_MiapeMS.isSelectionEmpty()
-				&& this.jTree_MiapeMS.isOnlyOneNodeSelected(3)) {
-			final String stringFromSelection = jTree_MiapeMS
-					.getStringFromSelection(MIAPE_ID_REGEXP);
-			if (!"".equals(stringFromSelection)
-					&& Integer.valueOf(stringFromSelection) > 0) {
+		if (!jTree_MiapeMS.isSelectionEmpty() && this.jTree_MiapeMS.isOnlyOneNodeSelected(3)) {
+			final String stringFromSelection = jTree_MiapeMS.getStringFromSelection(MIAPE_ID_REGEXP);
+			if (!"".equals(stringFromSelection) && Integer.valueOf(stringFromSelection) > 0) {
 				// if there is other miapeheaderloaderprocess,
 				// cancel it
 				if (this.miapeHeaderLoaderTask != null
-						&& this.miapeHeaderLoaderTask.getState().equals(
-								StateValue.STARTED))
+						&& this.miapeHeaderLoaderTask.getState().equals(StateValue.STARTED))
 					this.miapeHeaderLoaderTask.cancel(true);
 
 				// this.jProgressBar_translation.setIndeterminate(true);
-				this.miapeHeaderLoaderTask = new MiapeHeaderLoaderTask(
-						Integer.valueOf(stringFromSelection), "MS",
-						this.miapeAPIWebservice, this.miapeExtractorWebservice,
-						this.userName, this.password);
+				this.miapeHeaderLoaderTask = new MiapeHeaderLoaderTask(Integer.valueOf(stringFromSelection), "MS",
+						this.miapeAPIWebservice, this.miapeExtractorWebservice, this.userName, this.password);
 				this.miapeHeaderLoaderTask.addPropertyChangeListener(this);
 				this.miapeHeaderLoaderTask.execute();
 
@@ -2049,17 +1451,14 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 				// if a project is selected, select the same project in the
 				// other tree
 			} else {
-				final String stringFromSelection2 = jTree_MiapeMS
-						.getStringFromSelection(PROJECT_ID_REGEXP);
-				if (!"".equals(stringFromSelection2)
-						&& Integer.valueOf(stringFromSelection2) > 0
+				final String stringFromSelection2 = jTree_MiapeMS.getStringFromSelection(PROJECT_ID_REGEXP);
+				if (!"".equals(stringFromSelection2) && Integer.valueOf(stringFromSelection2) > 0
 						&& jTree_MiapeMS.isOnlyOneNodeSelected(2)) {
 					int intIdProject = Integer.valueOf(stringFromSelection2);
 					if (intIdProject > 0) {
 						String idProject = intIdProject + ":";
 						if (jTree_MiapeMSI.scrollToNode(idProject)) {
-							enableProjectAndDocumentManagement(true,
-									getStringFromJTreeSelection(jTree_MiapeMS));
+							enableProjectAndDocumentManagement(true, getStringFromJTreeSelection(jTree_MiapeMS));
 							projectDuplicated = true;
 						}
 					}
@@ -2078,24 +1477,18 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 
 	private boolean updateSelectionGE() {
 		boolean projectDuplicated = false;
-		if (!jTree_MiapeGE.isSelectionEmpty()
-				&& this.jTree_MiapeGE.isOnlyOneNodeSelected(3)) {
-			final String stringFromSelection = jTree_MiapeGE
-					.getStringFromSelection(MIAPE_ID_REGEXP);
-			if (!"".equals(stringFromSelection)
-					&& Integer.valueOf(stringFromSelection) > 0) {
+		if (!jTree_MiapeGE.isSelectionEmpty() && this.jTree_MiapeGE.isOnlyOneNodeSelected(3)) {
+			final String stringFromSelection = jTree_MiapeGE.getStringFromSelection(MIAPE_ID_REGEXP);
+			if (!"".equals(stringFromSelection) && Integer.valueOf(stringFromSelection) > 0) {
 				// if there is other miapeheaderloaderprocess,
 				// cancel it
 				if (this.miapeHeaderLoaderTask != null
-						&& this.miapeHeaderLoaderTask.getState().equals(
-								StateValue.STARTED))
+						&& this.miapeHeaderLoaderTask.getState().equals(StateValue.STARTED))
 					this.miapeHeaderLoaderTask.cancel(true);
 
 				// this.jProgressBar_translation.setIndeterminate(true);
-				this.miapeHeaderLoaderTask = new MiapeHeaderLoaderTask(
-						Integer.valueOf(stringFromSelection), "GE",
-						this.miapeAPIWebservice, this.miapeExtractorWebservice,
-						this.userName, this.password);
+				this.miapeHeaderLoaderTask = new MiapeHeaderLoaderTask(Integer.valueOf(stringFromSelection), "GE",
+						this.miapeAPIWebservice, this.miapeExtractorWebservice, this.userName, this.password);
 				this.miapeHeaderLoaderTask.addPropertyChangeListener(this);
 				this.miapeHeaderLoaderTask.execute();
 
@@ -2103,17 +1496,14 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 				// if a project is selected, select the same project in the
 				// other tree
 			} else {
-				final String stringFromSelection2 = jTree_MiapeGE
-						.getStringFromSelection(PROJECT_ID_REGEXP);
-				if (!"".equals(stringFromSelection2)
-						&& Integer.valueOf(stringFromSelection2) > 0
+				final String stringFromSelection2 = jTree_MiapeGE.getStringFromSelection(PROJECT_ID_REGEXP);
+				if (!"".equals(stringFromSelection2) && Integer.valueOf(stringFromSelection2) > 0
 						&& jTree_MiapeGE.isOnlyOneNodeSelected(2)) {
 					int intIdProject = Integer.valueOf(stringFromSelection2);
 					if (intIdProject > 0) {
 						String idProject = intIdProject + ":";
 						if (jTree_MiapeGI.scrollToNode(idProject)) {
-							enableProjectAndDocumentManagement(true,
-									getStringFromJTreeSelection(jTree_MiapeGE));
+							enableProjectAndDocumentManagement(true, getStringFromJTreeSelection(jTree_MiapeGE));
 							projectDuplicated = true;
 						}
 					}
@@ -2136,42 +1526,32 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 
 	private void updateProjectAndDocumentManagement() {
 
-		if (this.jTree_MiapeMS.getSelectionCount()
-				+ this.jTree_MiapeMSI.getSelectionCount() == 1) {
+		if (this.jTree_MiapeMS.getSelectionCount() + this.jTree_MiapeMSI.getSelectionCount() == 1) {
 			String labelText = "";
-			if (this.jTree_MiapeMS.isOnlyOneNodeSelected(3)
-					|| this.jTree_MiapeMS.isOnlyOneNodeSelected(2)) {
+			if (this.jTree_MiapeMS.isOnlyOneNodeSelected(3) || this.jTree_MiapeMS.isOnlyOneNodeSelected(2)) {
 				labelText = getStringFromJTreeSelection(jTree_MiapeMS);
 				enableProjectAndDocumentManagement(true, labelText);
-			} else if (this.jTree_MiapeMSI.isOnlyOneNodeSelected(3)
-					|| this.jTree_MiapeMSI.isOnlyOneNodeSelected(2)) {
+			} else if (this.jTree_MiapeMSI.isOnlyOneNodeSelected(3) || this.jTree_MiapeMSI.isOnlyOneNodeSelected(2)) {
 				labelText = getStringFromJTreeSelection(jTree_MiapeMSI);
 				enableProjectAndDocumentManagement(true, labelText);
 			} else {
 				enableProjectAndDocumentManagement(false, "");
 			}
-		} else if (this.jTree_MiapeMS.isOnlyOneNodeSelected(2)
-				&& this.jTree_MiapeMSI.isOnlyOneNodeSelected(2)) {
-			enableProjectAndDocumentManagement(true,
-					getStringFromJTreeSelection(jTree_MiapeMSI));
-		} else if (this.jTree_MiapeGE.getSelectionCount()
-				+ this.jTree_MiapeGI.getSelectionCount() == 1) {
+		} else if (this.jTree_MiapeMS.isOnlyOneNodeSelected(2) && this.jTree_MiapeMSI.isOnlyOneNodeSelected(2)) {
+			enableProjectAndDocumentManagement(true, getStringFromJTreeSelection(jTree_MiapeMSI));
+		} else if (this.jTree_MiapeGE.getSelectionCount() + this.jTree_MiapeGI.getSelectionCount() == 1) {
 			String labelText = "";
-			if (this.jTree_MiapeGE.isOnlyOneNodeSelected(3)
-					|| this.jTree_MiapeGE.isOnlyOneNodeSelected(2)) {
+			if (this.jTree_MiapeGE.isOnlyOneNodeSelected(3) || this.jTree_MiapeGE.isOnlyOneNodeSelected(2)) {
 				labelText = getStringFromJTreeSelection(jTree_MiapeGE);
 				enableProjectAndDocumentManagement(true, labelText);
-			} else if (this.jTree_MiapeGI.isOnlyOneNodeSelected(3)
-					|| this.jTree_MiapeGI.isOnlyOneNodeSelected(2)) {
+			} else if (this.jTree_MiapeGI.isOnlyOneNodeSelected(3) || this.jTree_MiapeGI.isOnlyOneNodeSelected(2)) {
 				labelText = getStringFromJTreeSelection(jTree_MiapeGI);
 				enableProjectAndDocumentManagement(true, labelText);
 			} else {
 				enableProjectAndDocumentManagement(false, "");
 			}
-		} else if (this.jTree_MiapeGE.isOnlyOneNodeSelected(2)
-				&& this.jTree_MiapeGI.isOnlyOneNodeSelected(2)) {
-			enableProjectAndDocumentManagement(true,
-					getStringFromJTreeSelection(jTree_MiapeGI));
+		} else if (this.jTree_MiapeGE.isOnlyOneNodeSelected(2) && this.jTree_MiapeGI.isOnlyOneNodeSelected(2)) {
+			enableProjectAndDocumentManagement(true, getStringFromJTreeSelection(jTree_MiapeGI));
 		} else {
 			enableProjectAndDocumentManagement(false, "select just one item");
 		}
@@ -2201,22 +1581,17 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 				if (header.getVersion() != null)
 					this.jTextFieldVersionMS.setText(header.getVersion());
 				Date modificationDate = header.getModificationDate();
-				if (modificationDate != null
-						&& modificationDate.toString() != null)
-					this.jTextFieldModificationDateMS.setText(modificationDate
-							.toString());
+				if (modificationDate != null && modificationDate.toString() != null)
+					this.jTextFieldModificationDateMS.setText(modificationDate.toString());
 				if (header.getId() > 0)
-					this.jTextFieldMIAPEMSID.setText(String.valueOf(header
-							.getId()));
+					this.jTextFieldMIAPEMSID.setText(String.valueOf(header.getId()));
 				final Project project = header.getProject();
 				if (project != null) {
-					if (project.getName() != null
-							&& !project.getName().equals("")) {
+					if (project.getName() != null && !project.getName().equals("")) {
 						this.jTextFieldProjectMSName.setText(project.getName());
 					}
 					if (project.getId() > 0)
-						this.jTextFieldProjectMSID.setText(String
-								.valueOf(project.getId()));
+						this.jTextFieldProjectMSID.setText(String.valueOf(project.getId()));
 				}
 				this.jButtonShowReport1.setEnabled(true);
 
@@ -2241,22 +1616,17 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 				if (header.getVersion() != null)
 					this.jTextFieldVersionMS.setText(header.getVersion());
 				Date modificationDate = header.getModificationDate();
-				if (modificationDate != null
-						&& modificationDate.toString() != null)
-					this.jTextFieldModificationDateMS.setText(modificationDate
-							.toString());
+				if (modificationDate != null && modificationDate.toString() != null)
+					this.jTextFieldModificationDateMS.setText(modificationDate.toString());
 				if (header.getId() > 0)
-					this.jTextFieldMIAPEMSID.setText(String.valueOf(header
-							.getId()));
+					this.jTextFieldMIAPEMSID.setText(String.valueOf(header.getId()));
 				final Project project = header.getProject();
 				if (project != null) {
-					if (project.getName() != null
-							&& !project.getName().equals("")) {
+					if (project.getName() != null && !project.getName().equals("")) {
 						this.jTextFieldProjectMSName.setText(project.getName());
 					}
 					if (project.getId() > 0)
-						this.jTextFieldProjectMSID.setText(String
-								.valueOf(project.getId()));
+						this.jTextFieldProjectMSID.setText(String.valueOf(project.getId()));
 				}
 				this.jButtonShowReport1.setEnabled(true);
 
@@ -2280,21 +1650,16 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 				if (header.getVersion() != null)
 					this.jTextFieldVersionMSI.setText(header.getVersion());
 				if (header.getModificationDate().toString() != null)
-					this.jTextFieldModificationDateMSI.setText(header
-							.getModificationDate().toString());
+					this.jTextFieldModificationDateMSI.setText(header.getModificationDate().toString());
 				if (header.getId() > 0)
-					this.jTextFieldMIAPEMSIID.setText(String.valueOf(header
-							.getId()));
+					this.jTextFieldMIAPEMSIID.setText(String.valueOf(header.getId()));
 				final Project project = header.getProject();
 				if (project != null) {
-					if (project.getName() != null
-							&& !project.getName().equals("")) {
-						this.jTextFieldProjectMSIName
-								.setText(project.getName());
+					if (project.getName() != null && !project.getName().equals("")) {
+						this.jTextFieldProjectMSIName.setText(project.getName());
 					}
 					if (project.getId() > 0)
-						this.jTextFieldProjectMSIID.setText(String
-								.valueOf(project.getId()));
+						this.jTextFieldProjectMSIID.setText(String.valueOf(project.getId()));
 				}
 				this.jButtonShowReport2.setEnabled(true);
 				// Change title
@@ -2315,21 +1680,16 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 				if (header.getVersion() != null)
 					this.jTextFieldVersionMSI.setText(header.getVersion());
 				if (header.getModificationDate().toString() != null)
-					this.jTextFieldModificationDateMSI.setText(header
-							.getModificationDate().toString());
+					this.jTextFieldModificationDateMSI.setText(header.getModificationDate().toString());
 				if (header.getId() > 0)
-					this.jTextFieldMIAPEMSIID.setText(String.valueOf(header
-							.getId()));
+					this.jTextFieldMIAPEMSIID.setText(String.valueOf(header.getId()));
 				final Project project = header.getProject();
 				if (project != null) {
-					if (project.getName() != null
-							&& !project.getName().equals("")) {
-						this.jTextFieldProjectMSIName
-								.setText(project.getName());
+					if (project.getName() != null && !project.getName().equals("")) {
+						this.jTextFieldProjectMSIName.setText(project.getName());
 					}
 					if (project.getId() > 0)
-						this.jTextFieldProjectMSIID.setText(String
-								.valueOf(project.getId()));
+						this.jTextFieldProjectMSIID.setText(String.valueOf(project.getId()));
 				}
 				this.jButtonShowReport2.setEnabled(true);
 
@@ -2347,98 +1707,75 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 			int progress = (Integer) evt.getNewValue();
 			jProgressBar_translation.setValue(progress);
 
-		} else if (MiapeExtractionTask.NOTIFICATION.equals(evt
-				.getPropertyName())) {
+		} else if (MiapeExtractionTask.NOTIFICATION.equals(evt.getPropertyName())) {
 			String notificacion = evt.getNewValue().toString();
 			this.appendStatus(notificacion);
-		} else if (TreeLoaderTask.TREE_LOADER_MS_NUMBER.equals(evt
-				.getPropertyName())) {
+		} else if (TreeLoaderTask.TREE_LOADER_MS_NUMBER.equals(evt.getPropertyName())) {
 			Integer numMS = (Integer) evt.getNewValue();
 			this.jLabelMSDocumentsLoaded.setText(String.valueOf(numMS));
 
-		} else if (TreeLoaderTask.TREE_LOADER_STARTS.equals(evt
-				.getPropertyName())) {
+		} else if (TreeLoaderTask.TREE_LOADER_STARTS.equals(evt.getPropertyName())) {
 			this.disableControls(false);
 			this.appendStatus("Loading MIAPE documents...");
-		} else if (TreeLoaderTask.TREE_LOADER_DONE
-				.equals(evt.getPropertyName())) {
+		} else if (TreeLoaderTask.TREE_LOADER_DONE.equals(evt.getPropertyName())) {
 			this.disableControls(true);
 			this.appendStatus("MIAPE documents loaded.");
-		} else if (TreeLoaderTask.TREE_LOADER_MSI_NUMBER.equals(evt
-				.getPropertyName())) {
+		} else if (TreeLoaderTask.TREE_LOADER_MSI_NUMBER.equals(evt.getPropertyName())) {
 			Integer numMSI = (Integer) evt.getNewValue();
 			this.jLabelMSIDocumentsLoaded.setText(String.valueOf(numMSI));
-		} else if (TreeLoaderTask.TREE_LOADER_GE_NUMBER.equals(evt
-				.getPropertyName())) {
+		} else if (TreeLoaderTask.TREE_LOADER_GE_NUMBER.equals(evt.getPropertyName())) {
 			Integer numGE = (Integer) evt.getNewValue();
 			this.jLabelGEDocumentsLoaded.setText(String.valueOf(numGE));
-		} else if (TreeLoaderTask.TREE_LOADER_GI_NUMBER.equals(evt
-				.getPropertyName())) {
+		} else if (TreeLoaderTask.TREE_LOADER_GI_NUMBER.equals(evt.getPropertyName())) {
 			Integer numGI = (Integer) evt.getNewValue();
 			this.jLabelGIDocumentsLoaded.setText(String.valueOf(numGI));
-		} else if (MiapeDeleterTask.DELETING_STARTED.equals(evt
-				.getPropertyName())) {
+		} else if (MiapeDeleterTask.DELETING_STARTED.equals(evt.getPropertyName())) {
 			// this.disableControls(false);
 			String startMessage = (String) evt.getNewValue();
 
 			this.appendStatus(startMessage);
-		} else if (MiapeDeleterTask.DELETING_FINISHED.equals(evt
-				.getPropertyName())) {
+		} else if (MiapeDeleterTask.DELETING_FINISHED.equals(evt.getPropertyName())) {
 			String finishMessage = (String) evt.getNewValue();
 			this.appendStatus(finishMessage);
 			if (finishMessage.contains("Project")) {
-				jTree_MiapeMS.removeNodeStartingBy(MiapeDeleterTask
-						.getMiapeIdentifier(finishMessage) + ":");
-				jTree_MiapeMSI.removeNodeStartingBy(MiapeDeleterTask
-						.getMiapeIdentifier(finishMessage) + ":");
+				jTree_MiapeMS.removeNodeStartingBy(MiapeDeleterTask.getMiapeIdentifier(finishMessage) + ":");
+				jTree_MiapeMSI.removeNodeStartingBy(MiapeDeleterTask.getMiapeIdentifier(finishMessage) + ":");
 			} else if (finishMessage.contains("MSI")) {
-				jTree_MiapeMSI.removeNodeStartingBy("MIAPE MSI "
-						+ MiapeDeleterTask.getMiapeIdentifier(finishMessage));
+				jTree_MiapeMSI.removeNodeStartingBy("MIAPE MSI " + MiapeDeleterTask.getMiapeIdentifier(finishMessage));
 			} else if (finishMessage.contains("MS ")) {
-				jTree_MiapeMS.removeNodeStartingBy("MIAPE MS "
-						+ MiapeDeleterTask.getMiapeIdentifier(finishMessage));
+				jTree_MiapeMS.removeNodeStartingBy("MIAPE MS " + MiapeDeleterTask.getMiapeIdentifier(finishMessage));
 			} else if (finishMessage.contains("GE")) {
-				jTree_MiapeMSI.removeNodeStartingBy("MIAPE GE "
-						+ MiapeDeleterTask.getMiapeIdentifier(finishMessage));
+				jTree_MiapeMSI.removeNodeStartingBy("MIAPE GE " + MiapeDeleterTask.getMiapeIdentifier(finishMessage));
 			} else if (finishMessage.contains("GI")) {
-				jTree_MiapeMSI.removeNodeStartingBy("MIAPE GI "
-						+ MiapeDeleterTask.getMiapeIdentifier(finishMessage));
+				jTree_MiapeMSI.removeNodeStartingBy("MIAPE GI " + MiapeDeleterTask.getMiapeIdentifier(finishMessage));
 			}
 			this.disableControls(true);
 			updateProjectAndDocumentManagement();
-		} else if (MiapeDeleterTask.DELETING_ERROR
-				.equals(evt.getPropertyName())) {
+		} else if (MiapeDeleterTask.DELETING_ERROR.equals(evt.getPropertyName())) {
 			String errorMessage = (String) evt.getNewValue();
 			this.appendStatus(errorMessage);
 			this.disableControls(true);
 			updateProjectAndDocumentManagement();
-		} else if (MiapeHeaderLoaderTask.MIAPE_HEADER_RETRIEVING_STARTS
-				.equals(evt.getPropertyName())) {
+		} else if (MiapeHeaderLoaderTask.MIAPE_HEADER_RETRIEVING_STARTS.equals(evt.getPropertyName())) {
 			this.appendStatus((String) evt.getNewValue());
-		} else if (MiapeHeaderLoaderTask.MIAPE_HEADER_RETRIEVING_FINISH
-				.equals(evt.getPropertyName())) {
+		} else if (MiapeHeaderLoaderTask.MIAPE_HEADER_RETRIEVING_FINISH.equals(evt.getPropertyName())) {
 
-		} else if (MiapeHeaderLoaderTask.MIAPE_HEADER_RETRIEVING_ERROR
-				.equals(evt.getPropertyName())) {
+		} else if (MiapeHeaderLoaderTask.MIAPE_HEADER_RETRIEVING_ERROR.equals(evt.getPropertyName())) {
 			this.appendStatus((String) evt.getNewValue());
-		} else if (MiapeHeaderLoaderTask.MIAPE_HEADER_RETRIEVING_RETURN_MS_HEADER
-				.equals(evt.getPropertyName())) {
+		} else if (MiapeHeaderLoaderTask.MIAPE_HEADER_RETRIEVING_RETURN_MS_HEADER.equals(evt.getPropertyName())) {
 
 			MiapeHeader header = (MiapeHeader) evt.getNewValue();
 			this.showMIAPEMSInformation(header);
 
-		} else if (MiapeHeaderLoaderTask.MIAPE_HEADER_RETRIEVING_RETURN_MSI_HEADER
-				.equals(evt.getPropertyName())) {
+		} else if (MiapeHeaderLoaderTask.MIAPE_HEADER_RETRIEVING_RETURN_MSI_HEADER.equals(evt.getPropertyName())) {
 			MiapeHeader header = (MiapeHeader) evt.getNewValue();
 			this.showMIAPEMSIInformation(header);
-		} else if (MiapeHeaderLoaderTask.MIAPE_HEADER_RETRIEVING_RETURN_GE_HEADER
-				.equals(evt.getPropertyName())) {
+		} else if (MiapeHeaderLoaderTask.MIAPE_HEADER_RETRIEVING_RETURN_GE_HEADER.equals(evt.getPropertyName())) {
 
 			MiapeHeader header = (MiapeHeader) evt.getNewValue();
 			this.showMIAPEGEInformation(header);
 
-		} else if (MiapeHeaderLoaderTask.MIAPE_HEADER_RETRIEVING_RETURN_GI_HEADER
-				.equals(evt.getPropertyName())) {
+		} else if (MiapeHeaderLoaderTask.MIAPE_HEADER_RETRIEVING_RETURN_GI_HEADER.equals(evt.getPropertyName())) {
 			MiapeHeader header = (MiapeHeader) evt.getNewValue();
 			this.showMIAPEGIInformation(header);
 		}
@@ -2456,19 +1793,16 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 	 * @throws MiapeDatabaseException
 	 * @throws RemoteException
 	 */
-	private Project getProject(Integer idProject, String userName,
-			String password) throws MiapeSecurityException_Exception,
-			MiapeDatabaseException_Exception, RemoteException {
+	private Project getProject(Integer idProject, String userName, String password)
+			throws MiapeSecurityException_Exception, MiapeDatabaseException_Exception, RemoteException {
 		JAXBContext jc;
 		try {
-			jc = JAXBContext
-					.newInstance("org.proteored.miapeapi.xml.miapeproject.autogenerated");
+			jc = JAXBContext.newInstance("org.proteored.miapeapi.xml.miapeproject.autogenerated");
 			Project project = null;
-			byte[] projectBytes = this.miapeAPIWebservice.getProjectById(
-					idProject, userName, password);
+			byte[] projectBytes = this.miapeAPIWebservice.getProjectById(idProject, userName, password);
 			ProjectFile projectFile = new ProjectFile(projectBytes);
-			project = new ProjectImpl((MIAPEProject) jc.createUnmarshaller()
-					.unmarshal(projectFile.toFile()), null, null);
+			project = new ProjectImpl((MIAPEProject) jc.createUnmarshaller().unmarshal(projectFile.toFile()), null,
+					null);
 			return project;
 		} catch (JAXBException e) {
 			e.printStackTrace();
@@ -2519,8 +1853,7 @@ public class ProteoRedMIAPEBrowserFrame extends javax.swing.JFrame implements
 
 	private void appendStatus(String text) {
 		this.jTextAreaStatus.append(text + "\n");
-		this.jTextAreaStatus.setCaretPosition(this.jTextAreaStatus.getText()
-				.length() - 1);
+		this.jTextAreaStatus.setCaretPosition(this.jTextAreaStatus.getText().length() - 1);
 	}
 
 	public void setLoadedMSDocumentsNumber(String number) {

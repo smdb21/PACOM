@@ -13,7 +13,8 @@ public class ImageManager {
 	public static final String TRASH_CLICKED = "trash_clicked.png";
 	public static final String TABLE = "table.png";
 	public static final String TABLE_CLICKED = "table_clicked.png";
-	public static final String PROTEORED_MIAPE_API = "APIproteoredSmall.gif";
+	// public static final String PROTEORED_MIAPE_API = "APIproteoredSmall.gif";
+	public static final String PACOM_LOGO = "pacom.png";
 	public static final String CURATED_EXPERIMENT = "curated_experiment.png";
 	public static final String EXPERIMENT = "experiment.png";
 	public static final String REPLICATE = "replicate.png";

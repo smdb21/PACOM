@@ -51,7 +51,7 @@ public class ExporterToPRIDEDialog extends javax.swing.JDialog implements Proper
 			String plural = "";
 			if (numExperiments > 1)
 				plural = "s";
-			String text = "<html>This project contains " + numExperiments + " experiment" + plural + ".<br>"
+			String text = "<html>This project contains " + numExperiments + " dataset" + plural + " (at level 1).<br>"
 					+ numExperiments + " PRIDE XML files will be created";
 			if (numExperiments > 1)
 				text = text + "(one per each experiment)";
@@ -60,7 +60,7 @@ public class ExporterToPRIDEDialog extends javax.swing.JDialog implements Proper
 		}
 		jTextAreaStatus.setFont(new JTextField().getFont());
 		// set icon image
-		setIconImage(ImageManager.getImageIcon(ImageManager.PROTEORED_MIAPE_API).getImage());
+		setIconImage(ImageManager.getImageIcon(ImageManager.PACOM_LOGO).getImage());
 		// set button icons
 		jButtonExport.setIcon(ImageManager.getImageIcon(ImageManager.PRIDE_LOGO));
 		jButtonExport.setPressedIcon(ImageManager.getImageIcon(ImageManager.PRIDE_LOGO_CLICKED));

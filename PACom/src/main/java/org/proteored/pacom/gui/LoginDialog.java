@@ -26,10 +26,8 @@ import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
  * 
  * @author __USER__
  */
-public class LoginDialog extends javax.swing.JDialog implements
-		PropertyChangeListener {
-	private static org.apache.log4j.Logger log = org.apache.log4j.Logger
-			.getLogger("log4j.logger.org.proteored");
+public class LoginDialog extends javax.swing.JDialog implements PropertyChangeListener {
+	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("log4j.logger.org.proteored");
 	private static LoginDialog instance;
 	public final MainFrame mainFrame;
 	// Variables declaration - do not modify
@@ -45,8 +43,7 @@ public class LoginDialog extends javax.swing.JDialog implements
 	private boolean offlineSelected;
 
 	/** Creates new form LoginDialog */
-	private LoginDialog(MainFrame parent, boolean modal,
-			boolean startUnattendedRetriever) {
+	private LoginDialog(MainFrame parent, boolean modal, boolean startUnattendedRetriever) {
 		super(parent, modal);
 		webservicesLoaded = false;
 		loginRequested = false;
@@ -58,10 +55,8 @@ public class LoginDialog extends javax.swing.JDialog implements
 		initComponents();
 		loadIcons();
 		getRootPane().setDefaultButton(jButtonLogin);
-		MiapeAPIWebserviceDelegate miapeAPIWebservice = MainFrame
-				.getMiapeAPIWebservice();
-		MiapeExtractorDelegate miapeExtractorWebservice = MainFrame
-				.getMiapeExtractorWebservice();
+		MiapeAPIWebserviceDelegate miapeAPIWebservice = MainFrame.getMiapeAPIWebservice();
+		MiapeExtractorDelegate miapeExtractorWebservice = MainFrame.getMiapeExtractorWebservice();
 		if (miapeAPIWebservice == null || miapeExtractorWebservice == null) {
 			webserviceInitilizer = WebservicesLoaderTask.getInstace();
 			webserviceInitilizer.addPropertyChangeListener(this);
@@ -77,8 +72,7 @@ public class LoginDialog extends javax.swing.JDialog implements
 
 	}
 
-	public static LoginDialog getInstance(MainFrame parent, boolean modal,
-			boolean startUnattendedRetriever) {
+	public static LoginDialog getInstance(MainFrame parent, boolean modal, boolean startUnattendedRetriever) {
 		if (instance == null)
 			instance = new LoginDialog(parent, modal, startUnattendedRetriever);
 		instance.jButtonLogin.setText("Login");
@@ -86,19 +80,13 @@ public class LoginDialog extends javax.swing.JDialog implements
 	}
 
 	private void loadIcons() {
-		setIconImage(ImageManager
-				.getImageIcon(ImageManager.PROTEORED_MIAPE_API).getImage());
+		setIconImage(ImageManager.getImageIcon(ImageManager.PACOM_LOGO).getImage());
 		jButtonLogin.setIcon(ImageManager.getImageIcon(ImageManager.LOGIN));
-		jButtonLogin.setPressedIcon(ImageManager
-				.getImageIcon(ImageManager.LOGIN_CLICKED));
-		jButtonCreateAccount.setIcon(ImageManager
-				.getImageIcon(ImageManager.ADD_USER));
-		jButtonCreateAccount.setPressedIcon(ImageManager
-				.getImageIcon(ImageManager.ADD_USER_CLICKED));
-		jButtonGoOffline
-				.setIcon(ImageManager.getImageIcon(ImageManager.FINISH));
-		jButtonGoOffline.setPressedIcon(ImageManager
-				.getImageIcon(ImageManager.FINISH_CLICKED));
+		jButtonLogin.setPressedIcon(ImageManager.getImageIcon(ImageManager.LOGIN_CLICKED));
+		jButtonCreateAccount.setIcon(ImageManager.getImageIcon(ImageManager.ADD_USER));
+		jButtonCreateAccount.setPressedIcon(ImageManager.getImageIcon(ImageManager.ADD_USER_CLICKED));
+		jButtonGoOffline.setIcon(ImageManager.getImageIcon(ImageManager.FINISH));
+		jButtonGoOffline.setPressedIcon(ImageManager.getImageIcon(ImageManager.FINISH_CLICKED));
 
 	}
 
@@ -122,8 +110,7 @@ public class LoginDialog extends javax.swing.JDialog implements
 		setTitle("Login to MIAPE services");
 		setResizable(false);
 
-		jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(
-				javax.swing.BorderFactory.createEtchedBorder(),
+		jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(),
 				"User name and password"));
 
 		jLabel1.setText("user name:");
@@ -144,9 +131,8 @@ public class LoginDialog extends javax.swing.JDialog implements
 			}
 		});
 
-		jButtonLogin
-				.setIcon(new javax.swing.ImageIcon(
-						"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\login.png")); // NOI18N
+		jButtonLogin.setIcon(new javax.swing.ImageIcon(
+				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\login.png")); // NOI18N
 		jButtonLogin.setText("login");
 		jButtonLogin.setToolTipText("Login to the ProteoRed MIAPE repository");
 		jButtonLogin.addActionListener(new java.awt.event.ActionListener() {
@@ -156,25 +142,22 @@ public class LoginDialog extends javax.swing.JDialog implements
 			}
 		});
 
-		jButtonCreateAccount
-				.setIcon(new javax.swing.ImageIcon(
-						"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\add_user.png")); // NOI18N
+		jButtonCreateAccount.setIcon(new javax.swing.ImageIcon(
+				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\add_user.png")); // NOI18N
 		jButtonCreateAccount.setText("create account");
 		jButtonCreateAccount.setToolTipText("Go to create user account page.");
-		jButtonCreateAccount
-				.addActionListener(new java.awt.event.ActionListener() {
-					@Override
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						jButtonCreateAccountActionPerformed(evt);
-					}
-				});
+		jButtonCreateAccount.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jButtonCreateAccountActionPerformed(evt);
+			}
+		});
 
-		jButtonGoOffline
-				.setIcon(new javax.swing.ImageIcon(
-						"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\finish.png")); // NOI18N
+		jButtonGoOffline.setIcon(new javax.swing.ImageIcon(
+				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\finish.png")); // NOI18N
 		jButtonGoOffline.setText("Offline mode");
-		jButtonGoOffline
-				.setToolTipText("<html>Offline mode allows the user to inspect your data,<br>\njust in case inspection project was already created beforehand.</html>");
+		jButtonGoOffline.setToolTipText(
+				"<html>Offline mode allows the user to inspect your data,<br>\njust in case inspection project was already created beforehand.</html>");
 		jButtonGoOffline.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -182,109 +165,48 @@ public class LoginDialog extends javax.swing.JDialog implements
 			}
 		});
 
-		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(
-				jPanel1);
+		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 		jPanel1.setLayout(jPanel1Layout);
-		jPanel1Layout
-				.setHorizontalGroup(jPanel1Layout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanel1Layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												jPanel1Layout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.LEADING)
-														.addGroup(
-																jPanel1Layout
-																		.createSequentialGroup()
-																		.addGroup(
-																				jPanel1Layout
-																						.createParallelGroup(
-																								javax.swing.GroupLayout.Alignment.LEADING)
-																						.addComponent(
-																								jLabel1)
-																						.addComponent(
-																								jLabel2))
-																		.addPreferredGap(
-																				javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																		.addGroup(
-																				jPanel1Layout
-																						.createParallelGroup(
-																								javax.swing.GroupLayout.Alignment.LEADING)
-																						.addComponent(
-																								jTextFieldUserName,
-																								javax.swing.GroupLayout.DEFAULT_SIZE,
-																								230,
-																								Short.MAX_VALUE)
-																						.addComponent(
-																								jPasswordField,
-																								javax.swing.GroupLayout.DEFAULT_SIZE,
-																								230,
-																								Short.MAX_VALUE)))
-														.addComponent(
-																jButtonGoOffline,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																293,
-																Short.MAX_VALUE)
-														.addComponent(
-																jButtonLogin,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																293,
-																Short.MAX_VALUE)
-														.addComponent(
-																jButtonCreateAccount,
-																javax.swing.GroupLayout.Alignment.TRAILING,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																293,
-																Short.MAX_VALUE))
-										.addGap(12, 12, 12)));
-		jPanel1Layout
-				.setVerticalGroup(jPanel1Layout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanel1Layout
-										.createSequentialGroup()
-										.addGroup(
-												jPanel1Layout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(jLabel1)
-														.addComponent(
-																jTextFieldUserName,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addGroup(
-												jPanel1Layout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(jLabel2)
-														.addComponent(
-																jPasswordField,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jButtonLogin)
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jButtonCreateAccount)
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jButtonGoOffline)
-										.addContainerGap(
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)));
+		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel1Layout.createSequentialGroup().addContainerGap()
+						.addGroup(jPanel1Layout
+								.createParallelGroup(
+										javax.swing.GroupLayout.Alignment.LEADING)
+								.addGroup(jPanel1Layout.createSequentialGroup()
+										.addGroup(jPanel1Layout
+												.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+												.addComponent(jLabel1).addComponent(jLabel2))
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+										.addComponent(jTextFieldUserName, javax.swing.GroupLayout.DEFAULT_SIZE, 230,
+												Short.MAX_VALUE)
+										.addComponent(jPasswordField, javax.swing.GroupLayout.DEFAULT_SIZE, 230,
+												Short.MAX_VALUE)))
+						.addComponent(jButtonGoOffline, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+						.addComponent(jButtonLogin, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+						.addComponent(jButtonCreateAccount, javax.swing.GroupLayout.Alignment.TRAILING,
+								javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE))
+						.addGap(12, 12, 12)));
+		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel1Layout.createSequentialGroup()
+						.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jLabel1).addComponent(jTextFieldUserName,
+										javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										javax.swing.GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jLabel2).addComponent(jPasswordField,
+										javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										javax.swing.GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jButtonLogin)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jButtonCreateAccount)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jButtonGoOffline)
+						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
-		jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(
-				javax.swing.BorderFactory.createEtchedBorder(), "Status"));
+		jPanel2.setBorder(
+				javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Status"));
 
 		jTextAreaStatus.setColumns(20);
 		jTextAreaStatus.setEditable(false);
@@ -296,75 +218,43 @@ public class LoginDialog extends javax.swing.JDialog implements
 		jTextAreaStatus.setAutoscrolls(true);
 		jScrollPane1.setViewportView(jTextAreaStatus);
 
-		javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(
-				jPanel2);
+		javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
 		jPanel2.setLayout(jPanel2Layout);
-		jPanel2Layout.setHorizontalGroup(jPanel2Layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				jPanel2Layout
-						.createSequentialGroup()
-						.addContainerGap()
-						.addComponent(jScrollPane1,
-								javax.swing.GroupLayout.DEFAULT_SIZE, 293,
-								Short.MAX_VALUE).addContainerGap()));
-		jPanel2Layout.setVerticalGroup(jPanel2Layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				jPanel2Layout
-						.createSequentialGroup()
-						.addComponent(jScrollPane1,
-								javax.swing.GroupLayout.DEFAULT_SIZE, 80,
-								Short.MAX_VALUE).addContainerGap()));
+		jPanel2Layout.setHorizontalGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel2Layout.createSequentialGroup().addContainerGap()
+						.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+						.addContainerGap()));
+		jPanel2Layout.setVerticalGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel2Layout.createSequentialGroup()
+						.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
+						.addContainerGap()));
 
-		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
-				getContentPane());
+		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(
-						javax.swing.GroupLayout.Alignment.TRAILING,
-						layout.createSequentialGroup()
-								.addContainerGap()
-								.addGroup(
-										layout.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.TRAILING)
-												.addComponent(
-														jPanel2,
-														javax.swing.GroupLayout.Alignment.LEADING,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														Short.MAX_VALUE)
-												.addComponent(
-														jPanel1,
-														javax.swing.GroupLayout.Alignment.LEADING,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														Short.MAX_VALUE))
-								.addContainerGap()));
-		layout.setVerticalGroup(layout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(
-						layout.createSequentialGroup()
-								.addContainerGap()
-								.addComponent(jPanel1,
-										javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(
-										javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jPanel2,
-										javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addContainerGap(
-										javax.swing.GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)));
+		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+				javax.swing.GroupLayout.Alignment.TRAILING,
+				layout.createSequentialGroup().addContainerGap()
+						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+								.addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
+								.addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE))
+						.addContainerGap()));
+		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup().addContainerGap()
+						.addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE,
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE,
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+				.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		pack();
-		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit()
-				.getScreenSize();
+		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 		java.awt.Dimension dialogSize = getSize();
-		setLocation((screenSize.width - dialogSize.width) / 2,
-				(screenSize.height - dialogSize.height) / 2);
+		setLocation((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2);
 	}// </editor-fold>
 		// GEN-END:initComponents
 
@@ -389,18 +279,14 @@ public class LoginDialog extends javax.swing.JDialog implements
 		dispose();
 	}
 
-	private void jButtonCreateAccountActionPerformed(
-			java.awt.event.ActionEvent evt) {
+	private void jButtonCreateAccountActionPerformed(java.awt.event.ActionEvent evt) {
 		createAccount();
 	}
 
 	private void createAccount() {
-		final int selectedOption = JOptionPane
-				.showConfirmDialog(
-						this,
-						"<html>A web browser will be opened to go to the create user account<br>Do you want to continue?</html>",
-						"Go to create user account page",
-						JOptionPane.YES_NO_CANCEL_OPTION);
+		final int selectedOption = JOptionPane.showConfirmDialog(this,
+				"<html>A web browser will be opened to go to the create user account<br>Do you want to continue?</html>",
+				"Go to create user account page", JOptionPane.YES_NO_CANCEL_OPTION);
 		if (selectedOption == JOptionPane.YES_OPTION) {
 			HttpUtilities.openURL(CREATE_USER_ACCOUNT_PROTEORED_URL);
 		}
@@ -451,8 +337,7 @@ public class LoginDialog extends javax.swing.JDialog implements
 		}
 
 		// Do it in background
-		loginThread = new LoginTask(userName, password,
-				MainFrame.getMiapeAPIWebservice());
+		loginThread = new LoginTask(userName, password, MainFrame.getMiapeAPIWebservice());
 		loginThread.addPropertyChangeListener(this);
 		loginThread.addPropertyChangeListener(mainFrame);
 		loginThread.execute();
@@ -489,8 +374,7 @@ public class LoginDialog extends javax.swing.JDialog implements
 	public void propertyChange(PropertyChangeEvent evt) {
 		MiapeAPIWebserviceDelegate miapeAPIWebservice;
 		MiapeExtractorDelegate miapeExtractorWebservice;
-		if (WebservicesLoaderTask.WEBSERVICES_LOADED.equals(evt
-				.getPropertyName())) {
+		if (WebservicesLoaderTask.WEBSERVICES_LOADED.equals(evt.getPropertyName())) {
 			log.info("Webservices loaded!");
 			appendStatus("Server connection stablished.");
 			Object[] webservices = (Object[]) evt.getNewValue();
@@ -506,8 +390,7 @@ public class LoginDialog extends javax.swing.JDialog implements
 					e.printStackTrace();
 				}
 
-		} else if (WebservicesLoaderTask.WEBSERVICES_ERROR.equals(evt
-				.getPropertyName())) {
+		} else if (WebservicesLoaderTask.WEBSERVICES_ERROR.equals(evt.getPropertyName())) {
 			String errorMessage = (String) evt.getNewValue();
 			appendStatus("There was a problem in the login: ");
 			appendStatus(errorMessage + "\n");
@@ -516,12 +399,9 @@ public class LoginDialog extends javax.swing.JDialog implements
 			// doenst matters.
 			if (!offlineSelected)
 				// TODO
-				JOptionPane
-						.showMessageDialog(
-								this,
-								"<html>Close the tool and try again later. If you get the same error, please notify it to miape-support@proteored.org</html>",
-								"Error stablishing server connection",
-								JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this,
+						"<html>Close the tool and try again later. If you get the same error, please notify it to miape-support@proteored.org</html>",
+						"Error stablishing server connection", JOptionPane.ERROR_MESSAGE);
 		} else if (LoginTask.LOGIN_STARTED.equals(evt.getPropertyName())) {
 			jButtonLogin.setEnabled(false);
 			appendStatus("Checking user name and password...");
@@ -548,9 +428,7 @@ public class LoginDialog extends javax.swing.JDialog implements
 			// launch miape msi unattended retriever
 			if (startUnattendedRetriever) {
 				UnattendedMiapeMiapeXMLRetriever retriever = new UnattendedMiapeMiapeXMLRetriever(
-						MainFrame.getMiapeAPIWebservice(),
-						MainFrame.getMiapeExtractorWebservice(), userName,
-						password);
+						MainFrame.getMiapeAPIWebservice(), MainFrame.getMiapeExtractorWebservice(), userName, password);
 				retriever.execute();
 			}
 
@@ -562,7 +440,6 @@ public class LoginDialog extends javax.swing.JDialog implements
 
 	private void appendStatus(String text) {
 		jTextAreaStatus.append(text + "\n");
-		jTextAreaStatus
-				.setCaretPosition(jTextAreaStatus.getText().length() - 1);
+		jTextAreaStatus.setCaretPosition(jTextAreaStatus.getText().length() - 1);
 	}
 }

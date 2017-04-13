@@ -132,193 +132,12 @@ public class VennChart {
 		return this.vennData.getUniqueTo3();
 	}
 
-	private Comparator getShareOneProteinComparator() {
-		return new Comparator() {
-			@Override
-			public int compare(Object o1, Object o2) {
-				if (o1 instanceof ProteinGroup && o2 instanceof ProteinGroup)
-					if (shareOneProtein((ProteinGroup) o2, (ProteinGroup) o2))
-						return 0;
-					else
-						return 1;
-				return 0;
-			}
-		};
-	}
-
-	private Comparator getShareBestProteinComparator() {
-		return new Comparator() {
-			@Override
-			public int compare(Object o1, Object o2) {
-				ProteinGroup pg1 = null;
-				ProteinGroup pg2 = null;
-				if (o1 instanceof ProteinGroupOccurrence && o2 instanceof ProteinGroupOccurrence) {
-					pg1 = ((ProteinGroupOccurrence) o1).getFirstOccurrence();
-					pg2 = ((ProteinGroupOccurrence) o2).getFirstOccurrence();
-				}
-				if (o1 instanceof ProteinGroup && o2 instanceof ProteinGroup) {
-					pg1 = (ProteinGroup) o1;
-					pg2 = (ProteinGroup) o2;
-				}
-				if (pg1 != null && pg2 != null) {
-					ExtendedIdentifiedProtein bestProtein1 = pg1.getBestProtein();
-					ExtendedIdentifiedProtein bestProtein2 = pg2.getBestProtein();
-					if (bestProtein1.equals(bestProtein2))
-						return 0;
-					else
-						return 1;
-				}
-
-				return 0;
-			}
-
-		};
-	}
-
-	private Comparator getFirstProteinComparator() {
-		return new Comparator() {
-			@Override
-			public int compare(Object o1, Object o2) {
-				ProteinGroup pg1 = null;
-				ProteinGroup pg2 = null;
-				if (o1 instanceof ProteinGroupOccurrence && o2 instanceof ProteinGroupOccurrence) {
-					pg1 = ((ProteinGroupOccurrence) o1).getFirstOccurrence();
-					pg2 = ((ProteinGroupOccurrence) o2).getFirstOccurrence();
-				}
-				if (o1 instanceof ProteinGroup && o2 instanceof ProteinGroup) {
-					pg1 = (ProteinGroup) o1;
-					pg2 = (ProteinGroup) o2;
-				}
-				if (pg1 != null && pg2 != null)
-					if (pg1.getAccessions().get(0).equals(pg2.getAccessions().get(0)))
-						return 0;
-					else
-						return 1;
-
-				return 0;
-			}
-
-		};
-	}
-
-	private Comparator getShareAllProteinsComparator() {
-		return new Comparator() {
-			@Override
-			public int compare(Object o1, Object o2) {
-				ProteinGroup pg1 = null;
-				ProteinGroup pg2 = null;
-
-				if (o1 instanceof ProteinGroup && o2 instanceof ProteinGroup) {
-					pg1 = (ProteinGroup) o1;
-					pg2 = (ProteinGroup) o2;
-				}
-				if (o1 instanceof ProteinGroupOccurrence && o2 instanceof ProteinGroupOccurrence) {
-					pg1 = ((ProteinGroupOccurrence) o1).getFirstOccurrence();
-					pg2 = ((ProteinGroupOccurrence) o2).getFirstOccurrence();
-				}
-				if (pg1 != null && pg2 != null)
-					if (shareOneProtein(pg1, pg2))
-						return 0;
-					else
-						return 1;
-				return 0;
-			}
-
-		};
-	}
-
 	/**
 	 * @return the panel
 	 */
 	public JPanel getChartPanel() {
 		return chartPanel;
 	}
-
-	// private HashMap<String, T> getPeptideHash(IdentificationSetGrouping
-	// idset1,
-	// Boolean distModPep) {
-	//
-	// HashMap<String, T> ret = new HashMap<String, T>();
-	// if (idset1 != null) {
-	// List<IdentificationOccurrence<ExtendedIdentifiedPeptide>>
-	// identifiedPeptides = idset1
-	// .getPeptideOccurrenceList(distModPep);
-	// for (IdentificationOccurrence<ExtendedIdentifiedPeptide> object :
-	// identifiedPeptides) {
-	// IdentificationOccurrence<ExtendedIdentifiedPeptide> peptideOc =
-	// (IdentificationOccurrence<ExtendedIdentifiedPeptide>) object;
-	// ExtendedIdentifiedPeptide peptide =
-	// peptideOc.getIdentificationItemList().get(0);
-	// if (!ret.containsKey(peptide.getKey(distModPep)))
-	// ret.put(peptide.getKey(distModPep), (T) peptide);
-	// }
-	// }
-	// return ret;
-	//
-	// }
-
-	// private HashMap<String, T> getProteinHash(IdentificationSetGrouping
-	// idset1) {
-	//
-	// HashMap<String, T> ret = new HashMap<String, T>();
-	// if (idset1 != null) {
-	// final List<IdentificationOccurrence<IdentifiedProtein>>
-	// identifiedProteins = idset1
-	// .getProteinOccurrenceList();
-	// for (IdentificationOccurrence<IdentifiedProtein> object :
-	// identifiedProteins) {
-	// IdentificationOccurrence<IdentifiedProtein> proteinOc =
-	// (IdentificationOccurrence<IdentifiedProtein>) object;
-	// IdentifiedProtein protein = proteinOc.getIdentificationItemList().get(0);
-	// if (!ret.containsKey(protein.getAccession()))
-	// ret.put(protein.getAccession(), (T) protein);
-	// }
-	// }
-	// return ret;
-	//
-	// }
-
-	// private URL createChartURL(String title, String label1, Set<String>
-	// list1,
-	// String label2, Set<String> list2, String label3, Set<String> list3)
-	// throws MalformedURLException {
-	// StringBuilder sb = new StringBuilder();
-	// sb.append("http://chart.apis.google.com/chart?chs="
-	// + ChartProperties.DEFAULT_CHART_WIDTH + "x"
-	// + ChartProperties.DEFAULT_CHART_HEIGHT);
-	// sb.append("&chd=t:" + getDataString(list1, list2, list3));
-	// sb.append("&cht=v");
-	// getListString(label1, list1);
-	//
-	// sb.append("&chdl=");
-	// final String listString1 = getListString(label1, list1);
-	// final String listString2 = getListString(label2, list2);
-	// final String listString3 = getListString(label3, list3);
-	// sb.append(listString1);
-	// if (!"".equals(listString1) && !"".equals(listString2))
-	// sb.append("|");
-	//
-	// sb.append(listString2);
-	// if (!"".equals(listString2) && !"".equals(listString3))
-	// sb.append("|");
-	//
-	// sb.append(listString3);
-	//
-	// // sb.append("&chdl=" + label1 + "(" + this.list1.size() + ")|" + label2
-	// // + "("
-	// // + this.list2.size() + ")|" + label3 + "(" + this.list3.size() + ")");
-	// sb.append("&chtt=" + title);
-	// sb.append("&chds=0," + max(list1, list2, list3));
-	// sb.append("&chdlp=b&chma=|10,10");
-	// log.info("URL created=" + sb.toString());
-	// return new URL(sb.toString());
-	// // return new URL(
-	// //
-	// "https://chart.googleapis.com/chart?chs=400x300&chd=t:100,80,60,30,30,30,10"
-	// // +
-	// // "&cht=v&chl=Hello|World|asdf&chtt=Titulo");
-	// // }
-	// }
 
 	private URL createChartURL(String title, String label1, String label2, String label3) throws MalformedURLException {
 		StringBuilder sb = new StringBuilder();
@@ -656,13 +475,13 @@ public class VennChart {
 		int union = this.vennData.getUnion123Keys().size();
 
 		if (name1 != null)
-			sb.append("<br> 1 -> " + name1 + " = " + this.vennData.getSize1() + " ("
+			sb.append("<br> A -> " + name1 + " = " + this.vennData.getSize1() + " ("
 					+ df.format(Double.valueOf(this.vennData.getSize1() * 100.0 / union)) + "% of union)");
 		if (name2 != null)
-			sb.append("<br> 2 -> " + name2 + " = " + this.vennData.getSize2() + " ("
+			sb.append("<br> B -> " + name2 + " = " + this.vennData.getSize2() + " ("
 					+ df.format(Double.valueOf(this.vennData.getSize2() * 100.0 / union)) + "% of union)");
 		if (name3 != null)
-			sb.append("<br> 3 -> " + name3 + " = " + this.vennData.getSize3() + " ("
+			sb.append("<br> C -> " + name3 + " = " + this.vennData.getSize3() + " ("
 					+ df.format(Double.valueOf(this.vennData.getSize3() * 100.0 / union)) + "% of union)");
 		sb.append("<br>");
 		sb.append("<br>Union=" + union + " (100%)");
@@ -670,28 +489,28 @@ public class VennChart {
 		if (name1 != null && name2 != null) {
 			if (!"".equals(sb.toString()))
 				sb.append("<br>");
-			sb.append("Overlap (1,2) = " + intersection12 + " ("
+			sb.append("Overlap (A,B) = " + intersection12 + " ("
 					+ df.format(Double.valueOf(intersection12 * 100.0 / this.vennData.getUnion12().size()))
 					+ "% of union)");
 		}
 		if (name1 != null && name3 != null) {
 			if (!"".equals(sb.toString()))
 				sb.append("<br>");
-			sb.append("Overlap (1,3) = " + intersection13 + " ("
+			sb.append("Overlap (A,C) = " + intersection13 + " ("
 					+ df.format(Double.valueOf(intersection13 * 100.0 / this.vennData.getUnion13().size()))
 					+ "% of union)");
 		}
 		if (name3 != null && name2 != null) {
 			if (!"".equals(sb.toString()))
 				sb.append("<br>");
-			sb.append("Overlap (2,3) = " + intersection23 + " ("
+			sb.append("Overlap (B,C) = " + intersection23 + " ("
 					+ df.format(intersection23 * 100.0 / this.vennData.getUnion23().size()) + "% of union)");
 		}
 
 		if (name1 != null && name2 != null && name3 != null) {
 			if (!"".equals(sb.toString()))
 				sb.append("<br>");
-			sb.append("Overlap (1,2,3) = " + intersection123 + " (" + df.format(intersection123 * 100.0 / union)
+			sb.append("Overlap (A,B,C) = " + intersection123 + " (" + df.format(intersection123 * 100.0 / union)
 					+ "% of union)");
 		}
 		if (name1 != null) {
@@ -701,7 +520,7 @@ public class VennChart {
 			int overlappedTo1 = this.vennData.getIntersection12Keys().size()
 					+ this.vennData.getIntersection13Keys().size() - this.vennData.getIntersection123Keys().size();
 			sb.append(
-					"Just in 1 = " + this.vennData.getUniqueTo1Keys().size() + " (" + df.format(just1) + "% of union) ("
+					"Just in A = " + this.vennData.getUniqueTo1Keys().size() + " (" + df.format(just1) + "% of union) ("
 							+ df.format((overlappedTo1) * 100.0 / this.vennData.getSize1()) + "% overlapped)");
 		}
 		if (name2 != null) {
@@ -711,7 +530,7 @@ public class VennChart {
 			int overlappedTo2 = this.vennData.getIntersection12().size() + this.vennData.getIntersection23().size()
 					- this.vennData.getIntersection123Keys().size();
 			sb.append(
-					"Just in 2 = " + this.vennData.getUniqueTo2Keys().size() + " (" + df.format(just2) + "% of union) ("
+					"Just in B = " + this.vennData.getUniqueTo2Keys().size() + " (" + df.format(just2) + "% of union) ("
 							+ df.format((overlappedTo2) * 100.0 / this.vennData.getSize2()) + "% overlapped)");
 		}
 		if (name3 != null) {
@@ -721,7 +540,7 @@ public class VennChart {
 			int overlappedTo3 = this.vennData.getIntersection13().size() + this.vennData.getIntersection23().size()
 					- this.vennData.getIntersection123Keys().size();
 			sb.append(
-					"Just in 3 = " + this.vennData.getUniqueTo3Keys().size() + " (" + df.format(just3) + "% of union) ("
+					"Just in C = " + this.vennData.getUniqueTo3Keys().size() + " (" + df.format(just3) + "% of union) ("
 							+ df.format((overlappedTo3) * 100.0 / this.vennData.getSize3()) + "% overlapped)");
 		}
 		sb.append("<br><br>");

@@ -1162,11 +1162,21 @@ public class AdditionalOptionsPanelFactory {
 		return colors.toArray();
 	}
 
-	public JPanel getHeatMapThresholdPanel() {
+	public JPanel getHeatMapThresholdPanel(boolean occurrenceThreshold) {
 		JPanel jPanelAdditional2 = new JPanel();
-		JLabel jlabel2 = new JLabel("Do not paint rows with less than (occurrence):");
-		String text = "<html>The number of identification sets that the item occurs <br>"
-				+ "will be compared with this number.</html>";
+
+		String label = "Do not paint rows with less than";
+		if (occurrenceThreshold) {
+			label += " (occurrence):";
+		}
+		JLabel jlabel2 = new JLabel(label);
+		String text = "";
+		if (occurrenceThreshold) {
+			text = "<html>The number of identification sets that the item occurs <br>"
+					+ "will be compared with this number.</html>";
+		} else {
+			text = "<html>The sum of the number of PSMs in the row<br>" + "will be compared with this number.</html>";
+		}
 		jlabel2.setToolTipText(text);
 		if (jTextHeatMapThreshold == null) {
 			jTextHeatMapThreshold = new JTextField("2", 4);
@@ -1377,7 +1387,7 @@ public class AdditionalOptionsPanelFactory {
 		return HeatChart.SCALE_LINEAR;
 	}
 
-	public int getMinOccurrenceThreshold() {
+	public int getHeatMapThreshold() {
 		if (jTextHeatMapThreshold != null) {
 			try {
 				return Integer.valueOf(jTextHeatMapThreshold.getText());
@@ -2389,7 +2399,7 @@ public class AdditionalOptionsPanelFactory {
 			return ProteinGroupComparisonType.BEST_PROTEIN;
 		if (jradioButtonShareOneProtein != null && jradioButtonShareOneProtein.isSelected())
 			return ProteinGroupComparisonType.SHARE_ONE_PROTEIN;
-		return null;
+		return ProteinGroupComparisonType.ALL_PROTEINS;
 	}
 
 	public boolean isFirstProteinPerGroupSelected() {

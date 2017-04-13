@@ -4,35 +4,34 @@
 
 package org.proteored.pacom.analysis.exporters.gui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Frame;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
-import org.proteored.miapeapi.experiment.model.ExtendedIdentifiedPeptide;
 import org.proteored.miapeapi.experiment.model.IdentificationSet;
-import org.proteored.miapeapi.experiment.model.PeptideOccurrence;
-import org.proteored.miapeapi.experiment.model.ProteinGroup;
-import org.proteored.miapeapi.experiment.model.ProteinGroupOccurrence;
 import org.proteored.miapeapi.experiment.model.filters.Filters;
-import org.proteored.miapeapi.experiment.model.grouping.ProteinEvidence;
-import org.proteored.miapeapi.experiment.model.sort.ProteinComparatorKey;
 import org.proteored.miapeapi.experiment.model.sort.ProteinGroupComparisonType;
 import org.proteored.pacom.analysis.exporters.ExporterManager;
+import org.proteored.pacom.analysis.exporters.tasks.JTableLoader;
 import org.proteored.pacom.analysis.exporters.tasks.TSVExporter;
+import org.proteored.pacom.analysis.exporters.util.ExporterUtil;
 import org.proteored.pacom.analysis.gui.ChartManagerFrame;
 import org.proteored.pacom.analysis.gui.TsvFileFilter;
+import org.proteored.pacom.analysis.util.DataLevel;
 import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.gui.MainFrame;
 
@@ -47,22 +46,22 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 	private boolean previousCollapsePeptides;
 	private boolean previousCollapseProteins;
 	private boolean previousIncludeDecoy;
-	private boolean previousIncludeExperimentReplicate;
 	private boolean previousIncludeGene;
 	private boolean previousSearchForProteinSequence;
-	private boolean previousExcludeNonConclusive;
 	private final boolean isFDRApplied;
 	private Filters filter;
 	private Boolean distinguisModifiedPeptides;
 	private final ChartManagerFrame chartManagerFrame;
+	private JLabel lblLevelToExport;
 
-	public ExporterDialog(ChartManagerFrame parent, Collection<IdentificationSet> idSets) {
-		super(parent, true);
+	public ExporterDialog(Frame parentFrame, ChartManagerFrame parent, Collection<IdentificationSet> idSets) {
+		super(parentFrame, true);
 		this.chartManagerFrame = parent;
 		this.distinguisModifiedPeptides = parent.distinguishModifiedPeptides();
 		this.idSets.addAll(idSets);
 
 		initComponents();
+
 		if (!this.idSets.isEmpty() && parent.getFiltersDialog() != null
 				&& parent.getFiltersDialog().isFDRFilterDefined()) {
 			jCheckBoxIncludeDecoy.setEnabled(true);
@@ -90,25 +89,18 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 
 		// if (parent != null && parent.isChr16ChartShowed())
 		// this.jCheckBoxIncludeGeneInfo.setEnabled(true);
-		updateSizesLabels();
+
 		// set icon image
-		setIconImage(ImageManager.getImageIcon(ImageManager.PROTEORED_MIAPE_API).getImage());
+		setIconImage(ImageManager.getImageIcon(ImageManager.PACOM_LOGO).getImage());
 
 		jButtonCancel.setIcon(ImageManager.getImageIcon(ImageManager.STOP));
 		jButtonExport.setIcon(ImageManager.getImageIcon(ImageManager.EXCEL_TABLE));
-		jCheckBoxIncludeNonConclusiveProteins.setSelected(chartManagerFrame.countNonConclusiveProteins());
 		pack();
-
 	}
 
 	public void setFilter(Filters filter) {
 		this.filter = filter;
-		// disable jcheckbox include non conclusive proteins
-		// because it is only usable when not filters are involved, meaning that
-		// the exporter is general, not from overlapping graph
-		this.jCheckBoxIncludeNonConclusiveProteins.setEnabled(false);
-		// update numbers
-		updateSizesLabels();
+
 	}
 
 	private String getNumString(Integer numPeptides, Integer numProteins) {
@@ -129,25 +121,17 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 
 		buttonGroup1 = new javax.swing.ButtonGroup();
 		jFileChooser1 = new JFileChooser(MainFrame.currentFolder);
-		jLabelNumPeptides = new javax.swing.JLabel();
 		jPanel1 = new javax.swing.JPanel();
 		jTextFieldFilePath = new javax.swing.JTextField();
 		jButtonSelect = new javax.swing.JButton();
 		jPanelOptions = new javax.swing.JPanel();
 		jCheckBoxIncludeDecoy = new javax.swing.JCheckBox();
-		jCheckBoxIncludeExperimentReplicateOrigin = new javax.swing.JCheckBox();
 		jCheckBoxSearchForProteinSequence = new javax.swing.JCheckBox();
 		jCheckBoxIncludeGeneInfo = new javax.swing.JCheckBox();
 		jCheckBoxCollapsePeptides = new javax.swing.JCheckBox();
 		jCheckBoxCollapseProteins = new javax.swing.JCheckBox();
 		jRadioButtonExportPeptides = new javax.swing.JRadioButton();
 		jRadioButtonExportProteins = new javax.swing.JRadioButton();
-		jCheckBoxIncludeNonConclusiveProteins = new javax.swing.JCheckBox();
-		jCheckBoxIncludeNonConclusiveProteins.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				updateSizesLabels();
-			}
-		});
 		jPanel2 = new javax.swing.JPanel();
 		jButtonExport = new javax.swing.JButton();
 		jProgressBar1 = new javax.swing.JProgressBar();
@@ -171,12 +155,11 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 		jPanel1.setLayout(jPanel1Layout);
 		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
-						jPanel1Layout.createSequentialGroup().addContainerGap()
-								.addComponent(jTextFieldFilePath, javax.swing.GroupLayout.DEFAULT_SIZE, 352,
-										Short.MAX_VALUE)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jButtonSelect).addContainerGap()));
+				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+						.addContainerGap()
+						.addComponent(jTextFieldFilePath, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jButtonSelect)
+						.addContainerGap()));
 		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(jPanel1Layout.createSequentialGroup()
 						.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -192,16 +175,6 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 		jCheckBoxIncludeDecoy.setToolTipText(
 				"<html>If this options is activated, decoy peptides/proteins <br>will also be included in the exported file.<br>\nThis options only is available if a FDR filter is applied.</html>");
 		jCheckBoxIncludeDecoy.setEnabled(false);
-		jCheckBoxIncludeDecoy.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jCheckBoxIncludeDecoyActionPerformed(evt);
-			}
-		});
-
-		jCheckBoxIncludeExperimentReplicateOrigin.setText("include project tree level names");
-		jCheckBoxIncludeExperimentReplicateOrigin.setToolTipText(
-				"<html>\nAdd columns indicating at which node of the comparison project tree, each identification item belongs\n</html>");
 
 		jCheckBoxSearchForProteinSequence.setText("calculate protein coverages");
 		jCheckBoxSearchForProteinSequence.setToolTipText(
@@ -209,30 +182,18 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 
 		jCheckBoxIncludeGeneInfo.setText("include gene information");
 		jCheckBoxIncludeGeneInfo.setToolTipText(
-				"<html>\nThis option will add some columns containing information<br>\nabout the genes associated with each protein.\n</html>");
+				"<html>\nThis option will retrieve genes associated with the proteins from the UniprotKB.\nDepending on the number of proteins you\n<br>have, it can take several minutes.</html>");
 
 		jCheckBoxCollapsePeptides.setSelected(true);
 		jCheckBoxCollapsePeptides.setText("export just the best peptides");
 		jCheckBoxCollapsePeptides.setToolTipText(
 				"<html>\nIf this option is activated, if the same peptide has been detected\n<br>\nmore than once, it will appear only once in the exported table and\n<br>\nthe score will be the best score of all occurrences.</html>");
 		jCheckBoxCollapsePeptides.setEnabled(false);
-		jCheckBoxCollapsePeptides.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jCheckBoxCollapsePeptidesActionPerformed(evt);
-			}
-		});
 
 		jCheckBoxCollapseProteins.setSelected(true);
 		jCheckBoxCollapseProteins.setText("export just the best proteins");
 		jCheckBoxCollapseProteins.setToolTipText(
 				"<html>\nIf this option is activated, if the same protein has been detected\n<br>\nmore than once, it will appear only once in the exported table and\n<br>\nthe score will be the best score of all occurrences.</html>");
-		jCheckBoxCollapseProteins.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jCheckBoxCollapseProteinsActionPerformed(evt);
-			}
-		});
 
 		buttonGroup1.add(jRadioButtonExportPeptides);
 		jRadioButtonExportPeptides.setText("export peptides");
@@ -256,53 +217,50 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 			}
 		});
 
-		jCheckBoxIncludeNonConclusiveProteins.setText("include NONCONCLUSIVE proteins");
-		jCheckBoxIncludeNonConclusiveProteins.setToolTipText(
-				"<html>\nSelect this checkbox in order to exclude the Non Conclusive proteins<br>\nin the exported data.<br>\nNon conclusive protein is a protein that shares all its matched peptides<br> with either conclusive or indistinguishable proteins.\n</html>");
+		lblLevelToExport = new JLabel("Level to export:");
+
+		dataLevelComboBox = new JComboBox();
+		// data levels
+		for (DataLevel dataLevel : DataLevel.values()) {
+			dataLevelComboBox.addItem(dataLevel);
+		}
 
 		javax.swing.GroupLayout jPanelOptionsLayout = new javax.swing.GroupLayout(jPanelOptions);
-		jPanelOptions.setLayout(jPanelOptionsLayout);
-		jPanelOptionsLayout
-				.setHorizontalGroup(
-						jPanelOptionsLayout
-								.createParallelGroup(
-										javax.swing.GroupLayout.Alignment.LEADING)
-								.addGroup(
-										jPanelOptionsLayout.createSequentialGroup().addContainerGap()
-												.addGroup(
-														jPanelOptionsLayout
-																.createParallelGroup(
-																		javax.swing.GroupLayout.Alignment.LEADING)
-																.addComponent(jCheckBoxIncludeDecoy)
-																.addComponent(jCheckBoxIncludeExperimentReplicateOrigin)
-																.addComponent(jCheckBoxIncludeGeneInfo)
-																.addComponent(jCheckBoxIncludeNonConclusiveProteins)
-																.addComponent(jCheckBoxSearchForProteinSequence))
-												.addGap(21, 21,
-														21)
-						.addGroup(jPanelOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-								.addComponent(jRadioButtonExportPeptides).addComponent(jRadioButtonExportProteins)
-								.addComponent(jCheckBoxCollapseProteins, javax.swing.GroupLayout.PREFERRED_SIZE, 198,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addComponent(jCheckBoxCollapsePeptides)).addContainerGap()));
-		jPanelOptionsLayout.setVerticalGroup(jPanelOptionsLayout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+		jPanelOptionsLayout.setHorizontalGroup(jPanelOptionsLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(jPanelOptionsLayout.createSequentialGroup().addContainerGap().addGroup(jPanelOptionsLayout
+						.createParallelGroup(Alignment.LEADING)
+						.addGroup(jPanelOptionsLayout.createSequentialGroup().addGap(10).addComponent(dataLevelComboBox,
+								GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addGroup(jPanelOptionsLayout.createSequentialGroup()
+								.addGroup(jPanelOptionsLayout.createParallelGroup(Alignment.LEADING)
+										.addComponent(jCheckBoxIncludeDecoy).addComponent(jCheckBoxIncludeGeneInfo)
+										.addComponent(jCheckBoxSearchForProteinSequence).addComponent(lblLevelToExport))
+								.addGap(53)
+								.addGroup(jPanelOptionsLayout.createParallelGroup(Alignment.LEADING)
+										.addComponent(jRadioButtonExportPeptides)
+										.addComponent(jRadioButtonExportProteins)
+										.addComponent(jCheckBoxCollapseProteins, GroupLayout.PREFERRED_SIZE, 198,
+												GroupLayout.PREFERRED_SIZE)
+										.addComponent(jCheckBoxCollapsePeptides))))
+						.addGap(28)));
+		jPanelOptionsLayout.setVerticalGroup(jPanelOptionsLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(jPanelOptionsLayout.createSequentialGroup()
-						.addGroup(jPanelOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+						.addGroup(jPanelOptionsLayout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(jCheckBoxIncludeDecoy).addComponent(jRadioButtonExportProteins))
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(jPanelOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-								.addComponent(jCheckBoxIncludeExperimentReplicateOrigin)
-								.addComponent(jRadioButtonExportPeptides))
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(jPanelOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-								.addComponent(jCheckBoxIncludeGeneInfo).addComponent(jCheckBoxCollapseProteins))
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(jPanelOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-								.addComponent(jCheckBoxIncludeNonConclusiveProteins)
-								.addComponent(jCheckBoxCollapsePeptides))
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jCheckBoxSearchForProteinSequence).addGap(14, 14, 14)));
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(jPanelOptionsLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(jRadioButtonExportPeptides).addComponent(jCheckBoxIncludeGeneInfo))
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(jPanelOptionsLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(jCheckBoxCollapseProteins).addComponent(
+										jCheckBoxSearchForProteinSequence))
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(jPanelOptionsLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(jCheckBoxCollapsePeptides).addComponent(lblLevelToExport))
+						.addPreferredGap(ComponentPlacement.RELATED).addComponent(dataLevelComboBox,
+								GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addGap(27)));
+		jPanelOptions.setLayout(jPanelOptionsLayout);
 
 		jButtonExport.setIcon(new javax.swing.ImageIcon(
 				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\excel_table.png")); // NOI18N
@@ -336,7 +294,8 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 228,
 												Short.MAX_VALUE)
 										.addComponent(jButtonCancel))
-						.addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE))
+								.addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 434,
+										Short.MAX_VALUE))
 						.addContainerGap()));
 		jPanel2Layout.setVerticalGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(jPanel2Layout.createSequentialGroup().addGroup(jPanel2Layout
@@ -351,47 +310,42 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 						.addContainerGap()));
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				javax.swing.GroupLayout.Alignment.TRAILING,
-				layout.createSequentialGroup().addContainerGap()
-						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-								.addComponent(jLabelNumPeptides, javax.swing.GroupLayout.Alignment.LEADING,
-										javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
-								.addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)
-								.addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)
-								.addComponent(jPanelOptions, javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-						.addContainerGap()));
-		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(layout.createSequentialGroup().addContainerGap()
-						.addComponent(jLabelNumPeptides, javax.swing.GroupLayout.PREFERRED_SIZE, 16,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jPanelOptions, javax.swing.GroupLayout.PREFERRED_SIZE, 163,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
-				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-				.addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-						javax.swing.GroupLayout.PREFERRED_SIZE)
-				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-				.addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-						javax.swing.GroupLayout.PREFERRED_SIZE)
-				.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+						.addGroup(layout.createParallelGroup(Alignment.LEADING)
+								.addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
+								.addComponent(jPanelOptions, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE))
+						.addContainerGap()));
+		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout.createSequentialGroup()
+				.addContainerGap()
+				.addComponent(jPanelOptions, GroupLayout.PREFERRED_SIZE, 163, GroupLayout.PREFERRED_SIZE)
+				.addPreferredGap(ComponentPlacement.UNRELATED)
+				.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addGap(23)
+				.addComponent(jPanel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+		getContentPane().setLayout(layout);
 
 		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds((screenSize.width - 498) / 2, (screenSize.height - 419) / 2, 498, 419);
 	}// </editor-fold>
 		// GEN-END:initComponents
 
+	@Override
+	public DataLevel getDataLevel() {
+		Object selectedItem = this.dataLevelComboBox.getSelectedItem();
+		if (selectedItem != null) {
+			return (DataLevel) selectedItem;
+		}
+		return DataLevel.LEVEL0;
+	}
+
 	private void jRadioButtonExportProteinsActionPerformed(java.awt.event.ActionEvent evt) {
 		if (jRadioButtonExportProteins.isSelected()) {
 			jCheckBoxCollapsePeptides.setEnabled(false);
 			jCheckBoxCollapseProteins.setEnabled(true);
-			updateSizesLabels();
 		}
 	}
 
@@ -399,12 +353,7 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 		if (jRadioButtonExportPeptides.isSelected()) {
 			jCheckBoxCollapsePeptides.setEnabled(true);
 			jCheckBoxCollapseProteins.setEnabled(false);
-			updateSizesLabels();
 		}
-	}
-
-	private void jCheckBoxIncludeDecoyActionPerformed(java.awt.event.ActionEvent evt) {
-		updateSizesLabels();
 	}
 
 	private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {
@@ -412,189 +361,18 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 
 	}
 
-	private void jCheckBoxCollapseProteinsActionPerformed(java.awt.event.ActionEvent evt) {
-		updateSizesLabels();
-	}
-
-	private void updateSizesLabels() {
-		if (idSets.isEmpty())
-			return;
-		Integer sizeProteins = null;
-		Set<ProteinComparatorKey> keys = new HashSet<ProteinComparatorKey>();
-
-		if (jRadioButtonExportProteins.isSelected()) {
-			if (jCheckBoxCollapseProteins.isSelected()) {
-				for (IdentificationSet idSet : idSets) {
-					HashMap<String, ProteinGroupOccurrence> proteinGroupOccurrenceList = idSet
-							.getProteinGroupOccurrenceList();
-					for (String proteinGroupKey : proteinGroupOccurrenceList.keySet()) {
-						ProteinGroupOccurrence pg = proteinGroupOccurrenceList.get(proteinGroupKey);
-						if (!isNonConclusiveProteinsIncluded() && pg.getEvidence() == ProteinEvidence.NONCONCLUSIVE) {
-							continue;
-						}
-						if (!jCheckBoxIncludeDecoy.isSelected()) {
-							if (pg.isDecoy()) {
-								continue;
-							}
-						}
-						ProteinComparatorKey pck = pg.getKey(this.chartManagerFrame.getComparisonType());
-
-						if (filter != null) {
-							if (filter.canCheck(pck) && filter.isValid(pck)) {
-								keys.add(pck);
-							}
-						} else {
-							keys.add(pck);
-						}
-					}
-				}
-				// sizeProteins =
-				// idSet.getNumDifferentProteinGroups(isNonConclusiveProteinsIncluded());
-				sizeProteins = keys.size();
-			} else {
-				Set<ProteinComparatorKey> accs = new HashSet<ProteinComparatorKey>();
-
-				for (IdentificationSet idSet : idSets) {
-					// export proteins and no collapse
-					List<ProteinGroup> identifiedProteinGroups = idSet.getIdentifiedProteinGroups();
-					for (ProteinGroup proteinGroup : identifiedProteinGroups) {
-
-						if (!isNonConclusiveProteinsIncluded()
-								&& proteinGroup.getEvidence() == ProteinEvidence.NONCONCLUSIVE) {
-							continue;
-						}
-						if (!jCheckBoxIncludeDecoy.isSelected()) {
-							if (proteinGroup.isDecoy()) {
-								continue;
-							}
-						}
-						ProteinComparatorKey pck = new ProteinComparatorKey(proteinGroup.getAccessions(),
-								chartManagerFrame.getComparisonType());
-
-						if (filter != null) {
-							if (filter.canCheck(pck) && filter.isValid(pck)) {
-								accs.add(pck);
-							}
-						} else {
-							accs.add(pck);
-						}
-					}
-				}
-				// sizeProteins =
-				// idSet.getTotalNumProteinGroups(isNonConclusiveProteinsIncluded());
-				sizeProteins = accs.size();
-			}
-		}
-		// removed because is already taken into account in the loop
-		// if (sizeProteins != null && !jCheckBoxIncludeDecoy.isSelected()) {
-		// if (jCheckBoxCollapseProteins.isSelected()) {
-		// sizeProteins = sizeProteins -
-		// idSet.getNumDifferentProteinGroupsDecoys();
-		// } else {
-		// sizeProteins = sizeProteins - idSet.getNumProteinGroupDecoys();
-		// }
-		// }
-		Set<String> peptideKeys = new HashSet<String>();
-		Integer sizePeptides = null;
-		if (jRadioButtonExportPeptides.isSelected()) {
-			if (jCheckBoxCollapsePeptides.isSelected()) {
-				for (IdentificationSet idSet : idSets) {
-					HashMap<String, PeptideOccurrence> peptideOccurrenceList = idSet
-							.getPeptideOccurrenceList(isDistinguishModifiedPeptides());
-					for (String peptideKey : peptideOccurrenceList.keySet()) {
-						ExtendedIdentifiedPeptide peptide = peptideOccurrenceList.get(peptideKey).getBestPeptide();
-						// if (!isNonConclusiveProteinsIncluded()
-						// && peptide.getRelation() ==
-						// PeptideRelation.NONDISCRIMINATING) {
-						// continue;
-						// }
-						if (!jCheckBoxIncludeDecoy.isSelected()) {
-							if (peptide.isDecoy()) {
-								continue;
-							}
-						}
-						String sequence = peptide.getKey(isDistinguishModifiedPeptides());
-						if (filter != null) {
-
-							// export peptides from the peptides that pass the
-							// filter:
-
-							if (filter.canCheck(sequence) && filter.isValid(sequence)) {
-								peptideKeys.add(sequence);
-							}
-						} else {
-							peptideKeys.add(sequence);
-						}
-					}
-				}
-				sizePeptides = peptideKeys.size();
-				// sizePeptides = idSet.getNumDifferentPeptides(true);
-			} else {
-				int num = 0;
-
-				for (IdentificationSet idSet : idSets) {
-					List<ExtendedIdentifiedPeptide> identifiedPeptides = idSet.getIdentifiedPeptides();
-					for (ExtendedIdentifiedPeptide peptide : identifiedPeptides) {
-						if (!jCheckBoxIncludeDecoy.isSelected()) {
-							if (peptide.isDecoy()) {
-								continue;
-							}
-						}
-						// if (!isNonConclusiveProteinsIncluded()
-						// && peptide.getRelation() ==
-						// PeptideRelation.NONDISCRIMINATING) {
-						// continue;
-						// }
-						if (filter != null) {
-							String sequence = peptide.getKey(isDistinguishModifiedPeptides());
-							if (filter.canCheck(sequence) && filter.isValid(sequence)) {
-								num++;
-							} else {
-								// log.info(sequence + " discarded");
-							}
-						} else {
-							num++;
-						}
-					}
-					log.info(num + "/" + identifiedPeptides.size());
-				}
-
-				// sizePeptides = idSet.getTotalNumPeptides();
-				sizePeptides = num;
-			}
-		}
-		// removed because is already taken into account in the loop
-		// if (sizePeptides != null && !jCheckBoxIncludeDecoy.isSelected()) {
-		// if (jCheckBoxCollapseProteins.isSelected())
-		// sizePeptides = sizePeptides -
-		// idSet.getNumDifferentPeptideDecoys(true);
-		// else
-		// sizePeptides = sizePeptides - idSet.getNumPeptideDecoys();
-		// }
-		jLabelNumPeptides.setText(getNumString(sizePeptides, sizeProteins));
-
-	}
-
-	private void jCheckBoxCollapsePeptidesActionPerformed(java.awt.event.ActionEvent evt) {
-		updateSizesLabels();
-	}
-
 	private void jButtonExportActionPerformed(java.awt.event.ActionEvent evt) {
 		log.info("Export button is pressed");
 		final File file = getFile();
-		setControlStatusToDisabled();
+		setControlStatusEnabled(false);
 		jButtonCancel.setEnabled(true);
 		jProgressBar1.setIndeterminate(true);
-		exporter = new TSVExporter(this, idSets, file, this.filter);
+		exporter = new TSVExporter(this, ExporterUtil.getSelectedIdentificationSets(idSets, getDataLevel()), file,
+				this.filter);
 		exporter.setDistinguisModificatedPeptides(isDistinguishModifiedPeptides());
 		exporter.addPropertyChangeListener(this);
 		exporter.execute();
 
-	}
-
-	@Override
-	public boolean isReplicateAndExperimentOriginIncluded() {
-		return jCheckBoxIncludeExperimentReplicateOrigin.isSelected();
 	}
 
 	@Override
@@ -657,26 +435,6 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 
 	}
 
-	/**
-	 * @param args
-	 *            the command line arguments
-	 */
-	public static void main(String args[]) {
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				ExporterDialog dialog = new ExporterDialog(null, null);
-				dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-					@Override
-					public void windowClosing(java.awt.event.WindowEvent e) {
-						System.exit(0);
-					}
-				});
-				dialog.setVisible(true);
-			}
-		});
-	}
-
 	// GEN-BEGIN:variables
 	// Variables declaration - do not modify
 	private javax.swing.ButtonGroup buttonGroup1;
@@ -686,12 +444,9 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 	private javax.swing.JCheckBox jCheckBoxCollapsePeptides;
 	private javax.swing.JCheckBox jCheckBoxCollapseProteins;
 	private javax.swing.JCheckBox jCheckBoxIncludeDecoy;
-	private javax.swing.JCheckBox jCheckBoxIncludeExperimentReplicateOrigin;
 	private javax.swing.JCheckBox jCheckBoxIncludeGeneInfo;
-	private javax.swing.JCheckBox jCheckBoxIncludeNonConclusiveProteins;
 	private javax.swing.JCheckBox jCheckBoxSearchForProteinSequence;
 	private javax.swing.JFileChooser jFileChooser1;
-	private javax.swing.JLabel jLabelNumPeptides;
 	private javax.swing.JPanel jPanel1;
 	private javax.swing.JPanel jPanel2;
 	public javax.swing.JPanel jPanelOptions;
@@ -699,6 +454,8 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 	private javax.swing.JRadioButton jRadioButtonExportPeptides;
 	private javax.swing.JRadioButton jRadioButtonExportProteins;
 	private javax.swing.JTextField jTextFieldFilePath;
+	private JComboBox dataLevelComboBox;
+	private boolean controlsDisabled = false;
 
 	// End of variables declaration//GEN-END:variables
 
@@ -739,43 +496,54 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 			jProgressBar1.setStringPainted(true);
 		} else if (TSVExporter.DATA_EXPORTING_SORTING_DONE.equals(evt.getPropertyName())) {
 			jProgressBar1.setIndeterminate(false);
+		} else if (evt.getPropertyName().equals(JTableLoader.PROTEIN_SEQUENCE_RETRIEVAL)) {
+			jProgressBar1.setString("Retrieving protein sequences from uniprotKB...");
+			jProgressBar1.setIndeterminate(true);
+			jProgressBar1.setValue(0);
+			jProgressBar1.setStringPainted(true);
+		} else if (evt.getPropertyName().equals(JTableLoader.PROTEIN_SEQUENCE_RETRIEVAL_DONE)) {
+			jProgressBar1.setString("Protein sequences retrieved");
+			jProgressBar1.setIndeterminate(false);
+			jProgressBar1.setStringPainted(true);
+		} else if (evt.getPropertyName().equals(JTableLoader.MESSAGE)) {
+			jProgressBar1.setString(evt.getNewValue().toString());
 		}
 	}
 
 	private void setControlStatusToPrevious() {
-		jCheckBoxCollapsePeptides.setEnabled(previousCollapsePeptides);
-		jCheckBoxCollapseProteins.setEnabled(previousCollapseProteins);
-		jCheckBoxIncludeDecoy.setEnabled(previousIncludeDecoy);
-		jCheckBoxIncludeExperimentReplicateOrigin.setEnabled(previousIncludeExperimentReplicate);
-		jCheckBoxIncludeGeneInfo.setEnabled(previousIncludeGene);
-		jCheckBoxSearchForProteinSequence.setEnabled(previousSearchForProteinSequence);
-		jButtonExport.setEnabled(true);
-		jRadioButtonExportPeptides.setEnabled(true);
-		jRadioButtonExportProteins.setEnabled(true);
-		jCheckBoxIncludeNonConclusiveProteins.setEnabled(previousExcludeNonConclusive);
-
+		if (!controlsDisabled) {
+			jCheckBoxCollapsePeptides.setEnabled(previousCollapsePeptides);
+			jCheckBoxCollapseProteins.setEnabled(previousCollapseProteins);
+			jCheckBoxIncludeDecoy.setEnabled(previousIncludeDecoy);
+			jCheckBoxIncludeGeneInfo.setEnabled(previousIncludeGene);
+			jCheckBoxSearchForProteinSequence.setEnabled(previousSearchForProteinSequence);
+			jButtonExport.setEnabled(true);
+			jRadioButtonExportPeptides.setEnabled(true);
+			jRadioButtonExportProteins.setEnabled(true);
+		}
 	}
 
-	private void setControlStatusToDisabled() {
+	public void setControlsDisabled() {
+		this.controlsDisabled = true;
+	}
+
+	public void setControlStatusEnabled(boolean b) {
 		previousCollapsePeptides = jCheckBoxCollapsePeptides.isEnabled();
 		previousCollapseProteins = jCheckBoxCollapseProteins.isEnabled();
 		previousIncludeDecoy = jCheckBoxIncludeDecoy.isEnabled();
-		previousIncludeExperimentReplicate = jCheckBoxIncludeExperimentReplicateOrigin.isEnabled();
 		previousIncludeGene = jCheckBoxIncludeGeneInfo.isEnabled();
 		previousSearchForProteinSequence = jCheckBoxSearchForProteinSequence.isEnabled();
-		previousExcludeNonConclusive = jCheckBoxIncludeNonConclusiveProteins.isEnabled();
 
-		jCheckBoxCollapsePeptides.setEnabled(false);
-		jCheckBoxCollapseProteins.setEnabled(false);
-		jCheckBoxIncludeDecoy.setEnabled(false);
-		jCheckBoxIncludeExperimentReplicateOrigin.setEnabled(false);
-		jCheckBoxIncludeGeneInfo.setEnabled(false);
-		jCheckBoxSearchForProteinSequence.setEnabled(false);
-		jRadioButtonExportProteins.setEnabled(false);
-		jRadioButtonExportPeptides.setEnabled(false);
-		jCheckBoxIncludeNonConclusiveProteins.setEnabled(false);
-		jButtonExport.setEnabled(false);
-
+		jCheckBoxCollapsePeptides.setEnabled(b);
+		jCheckBoxCollapseProteins.setEnabled(b);
+		jCheckBoxIncludeDecoy.setEnabled(b);
+		jCheckBoxIncludeGeneInfo.setEnabled(b);
+		jCheckBoxSearchForProteinSequence.setEnabled(b);
+		jRadioButtonExportProteins.setEnabled(b);
+		jRadioButtonExportPeptides.setEnabled(b);
+		jButtonExport.setEnabled(b);
+		lblLevelToExport.setEnabled(b);
+		dataLevelComboBox.setEnabled(b);
 	}
 
 	@Override
@@ -786,11 +554,6 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 	@Override
 	public boolean showBestProteins() {
 		return jCheckBoxCollapseProteins.isSelected();
-	}
-
-	@Override
-	public boolean isNonConclusiveProteinsIncluded() {
-		return jCheckBoxIncludeNonConclusiveProteins.isSelected();
 	}
 
 	@Override
@@ -822,6 +585,21 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 	@Override
 	public ProteinGroupComparisonType getComparisonType() {
 		return this.chartManagerFrame.getComparisonType();
+	}
+
+	public void setExporterParameters(ExporterManager exporterManager) {
+		jCheckBoxIncludeDecoy.setSelected(exporterManager.isDecoyHitsIncluded());
+		jCheckBoxIncludeGeneInfo.setSelected(exporterManager.isGeneInfoIncluded());
+		dataLevelComboBox.setSelectedItem(exporterManager.getDataLevel());
+		jCheckBoxCollapsePeptides.setSelected(exporterManager.showBestPeptides());
+		jCheckBoxCollapseProteins.setSelected(exporterManager.showBestProteins());
+		jRadioButtonExportPeptides.setSelected(exporterManager.showPeptides());
+		jRadioButtonExportProteins.setSelected(exporterManager.showBestProteins());
+		jCheckBoxSearchForProteinSequence.setSelected(exporterManager.retrieveProteinSequences());
+	}
+
+	public void enableExportButton(boolean b) {
+		jButtonExport.setEnabled(b);
 	}
 
 }

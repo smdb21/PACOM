@@ -266,8 +266,7 @@ public class ReplicateAdapter implements Adapter<Replicate> {
 		}
 		if (!accessionsToLookUp.isEmpty()) {
 			log.info("Trying to recover protein descriptions for " + accessionsToLookUp.size() + " proteins");
-			File uniprotReleasesFolder = FileManager.getUniprotFolder();
-			UniprotProteinLocalRetriever upr = new UniprotProteinLocalRetriever(uniprotReleasesFolder, true);
+			UniprotProteinLocalRetriever upr = FileManager.getUniprotProteinLocalRetriever();
 			final Map<String, Entry> annotatedProteins = upr.getAnnotatedProteins(null, accessionsToLookUp);
 			for (IdentifiedProteinSet proteinSet : ret.getIdentifiedProteinSets()) {
 				for (String proteinAcc : proteinSet.getIdentifiedProteins().keySet()) {

@@ -42,9 +42,9 @@ public class ScrollableJTable extends JPanel {
 	private Comparator comp;
 
 	public ScrollableJTable(JTable jtable, int wide) {
-		if (jtable != null)
+		if (jtable != null) {
 			this.table = jtable;
-
+		}
 		this.table.setModel(new MyDefaultTableModel());
 
 		// Set renderer for painting different background colors
@@ -107,8 +107,7 @@ public class ScrollableJTable extends JPanel {
 						JTable target = (JTable) e.getSource();
 						int row = target.getSelectedRow();
 						if (target.getRowSorter() != null)
-							row = target.getRowSorter().convertRowIndexToModel(
-									row);
+							row = target.getRowSorter().convertRowIndexToModel(row);
 						int column = target.getSelectedColumn();
 						log.info("Row=" + row + " Column=" + column);
 						if (e.getClickCount() == 2) {
@@ -116,22 +115,16 @@ public class ScrollableJTable extends JPanel {
 							int ensgIDIndex = -1;
 							try {
 								proteinACCIndex = target.getColumnModel()
-										.getColumnIndex(
-												ExportedColumns.PROTEIN_ACC
-														.toString());
+										.getColumnIndex(ExportedColumns.PROTEIN_ACC.toString());
 							} catch (IllegalArgumentException ex) {
 							}
 							try {
 								ensgIDIndex = target.getColumnModel()
-										.getColumnIndex(
-												ExportedColumns.ENSG_ID
-														.toString());
+										.getColumnIndex(ExportedColumns.ENSG_ID.toString());
 							} catch (IllegalArgumentException ex) {
 							}
-							if (column == proteinACCIndex
-									|| column == ensgIDIndex) {
-								String value = target.getModel()
-										.getValueAt(row, column).toString();
+							if (column == proteinACCIndex || column == ensgIDIndex) {
+								String value = target.getModel().getValueAt(row, column).toString();
 								openBrowser(value);
 
 							}
@@ -155,19 +148,12 @@ public class ScrollableJTable extends JPanel {
 				}
 			}
 			if (numValid > 0) {
-				final int selectedOption = JOptionPane
-						.showConfirmDialog(
-								this,
-								"<html>The cell contains "
-										+ numValid
-										+ " different accessions.<br>"
-										+ "If you want to open "
-										+ split.length
-										+ " browser windows, click on Yes.<br>"
-										+ "If you want just to open the first accession, that is, '"
-										+ split[0] + "', click on No.</html>",
-								"More than one accession in the cell",
-								JOptionPane.YES_NO_CANCEL_OPTION);
+				final int selectedOption = JOptionPane.showConfirmDialog(this,
+						"<html>The cell contains " + numValid + " different accessions.<br>" + "If you want to open "
+								+ split.length + " browser windows, click on Yes.<br>"
+								+ "If you want just to open the first accession, that is, '" + split[0]
+								+ "', click on No.</html>",
+						"More than one accession in the cell", JOptionPane.YES_NO_CANCEL_OPTION);
 
 				if (selectedOption == JOptionPane.YES_OPTION) {
 					for (String singleProteinACC : split) {
@@ -182,13 +168,10 @@ public class ScrollableJTable extends JPanel {
 				}
 			}
 		} else {
-			final int selectedOption = JOptionPane
-					.showConfirmDialog(
-							this,
-							"<html>The cell contains a recognized accession.<br>"
-									+ "If you want to open a browser window, click on Yes.</html>",
-							"More than one accession in the cell",
-							JOptionPane.YES_NO_CANCEL_OPTION);
+			final int selectedOption = JOptionPane.showConfirmDialog(this,
+					"<html>The cell contains a recognized accession.<br>"
+							+ "If you want to open a browser window, click on Yes.</html>",
+					"More than one accession in the cell", JOptionPane.YES_NO_CANCEL_OPTION);
 
 			if (selectedOption == JOptionPane.YES_OPTION) {
 				String urlText = getURL(proteinACC);
@@ -259,8 +242,7 @@ public class ScrollableJTable extends JPanel {
 			// if (columnFilter != null)
 			// filters.add(columnFilter);
 			// }
-			final RowFilter<Object, Object> paginatorFilter = getColumnFilter(
-					columnName, regexp);
+			final RowFilter<Object, Object> paginatorFilter = getColumnFilter(columnName, regexp);
 			// if (paginatorFilter != null)
 			// filters.add(paginatorFilter);
 
@@ -275,8 +257,7 @@ public class ScrollableJTable extends JPanel {
 		}
 	}
 
-	private RowFilter<Object, Object> getColumnFilter(final String columnName,
-			final String regexp) {
+	private RowFilter<Object, Object> getColumnFilter(final String columnName, final String regexp) {
 		if (regexp != null && !"".equals(regexp)) {
 			int columnIndex = getColumnIndex(columnName);
 			if (columnIndex >= 0)
@@ -292,10 +273,8 @@ public class ScrollableJTable extends JPanel {
 				@Override
 				public int compare(Object obj1, Object obj2) {
 					try {
-						Number n1 = NumberFormat.getInstance().parse(
-								obj1.toString());
-						Number n2 = NumberFormat.getInstance().parse(
-								obj2.toString());
+						Number n1 = NumberFormat.getInstance().parse(obj1.toString());
+						Number n2 = NumberFormat.getInstance().parse(obj2.toString());
 						Double d1 = getDouble(obj1);
 						Double d2 = getDouble(obj2);
 						return d1.compareTo(d2);
@@ -311,13 +290,11 @@ public class ScrollableJTable extends JPanel {
 								return compare(n3, n4);
 							return n1.compareTo(n2);
 
-						} else if (obj1 instanceof String
-								&& obj2 instanceof Double) {
+						} else if (obj1 instanceof String && obj2 instanceof Double) {
 							String n1 = (String) obj1;
 							String n2 = String.valueOf(obj2);
 							return n1.compareTo(n2);
-						} else if (obj2 instanceof String
-								&& obj1 instanceof Double) {
+						} else if (obj2 instanceof String && obj1 instanceof Double) {
 							String n2 = (String) obj2;
 							String n1 = String.valueOf(obj1);
 							return n1.compareTo(n2);
@@ -347,8 +324,7 @@ public class ScrollableJTable extends JPanel {
 								for (String string2 : split2) {
 									doubles.add(getDouble(string2));
 								}
-								return String
-										.valueOf(getMaxFromDoubles(doubles));
+								return String.valueOf(getMaxFromDoubles(doubles));
 							} catch (NumberFormatException e2) {
 							} catch (ParseException e3) {
 
@@ -360,8 +336,7 @@ public class ScrollableJTable extends JPanel {
 				}
 
 				private Double getDouble(Object value) throws ParseException {
-					Number n1 = NumberFormat.getInstance().parse(
-							value.toString());
+					Number n1 = NumberFormat.getInstance().parse(value.toString());
 					return n1.doubleValue();
 				}
 

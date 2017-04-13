@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JTable;
@@ -18,6 +19,7 @@ import javax.swing.table.TableModel;
 import org.apache.log4j.Logger;
 import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
 import org.proteored.miapeapi.experiment.model.ExtendedIdentifiedPeptide;
+import org.proteored.miapeapi.experiment.model.ExtendedIdentifiedProtein;
 import org.proteored.miapeapi.experiment.model.IdentificationSet;
 import org.proteored.miapeapi.experiment.model.PeptideOccurrence;
 import org.proteored.miapeapi.experiment.model.ProteinGroup;
@@ -25,41 +27,43 @@ import org.proteored.miapeapi.experiment.model.ProteinGroupOccurrence;
 import org.proteored.miapeapi.experiment.model.sort.SorterUtil;
 import org.proteored.pacom.analysis.exporters.Exporter;
 import org.proteored.pacom.analysis.exporters.ExporterManager;
+import org.proteored.pacom.analysis.exporters.gui.MyIdentificationTable;
 import org.proteored.pacom.analysis.exporters.util.ExportedColumns;
 import org.proteored.pacom.analysis.exporters.util.ExporterUtil;
+import org.proteored.pacom.analysis.util.FileManager;
+
+import edu.scripps.yates.annotations.uniprot.UniprotProteinLocalRetriever;
+import edu.scripps.yates.annotations.uniprot.xml.Entry;
+import edu.scripps.yates.utilities.fasta.FastaParser;
 
 public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JTable> {
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
 
 	private JTable table;
-	private final boolean includeReplicateAndExperimentOrigin;
 	private final boolean includeDecoyHits;
 	private final boolean includePeptides;
 	private final boolean retrieveProteinSequences;
 	private final boolean includeGeneInfo;
 	private final boolean collapsePeptides;
 	private final boolean collapseProteins;
-	private final boolean excludeNonConclusiveProteins;
 	private final Set<IdentificationSet> idSets = new HashSet<IdentificationSet>();
 	private String error;
 
 	private final boolean isFDRApplied;
+	private static boolean running = false;
 
 	public JTableLoader(ExporterManager manager, Collection<IdentificationSet> idSets, JTable table2) {
 
-		if (table2 != null)
-			this.table = table2;
-		else
+		if (table2 == null) {
 			throw new IllegalMiapeArgumentException("Table is null!!");
-
-		this.includeReplicateAndExperimentOrigin = manager.isReplicateAndExperimentOriginIncluded();
+		}
+		this.table = table2;
 		this.includeDecoyHits = manager.isDecoyHitsIncluded();
 		this.includePeptides = manager.showPeptides();
 		this.includeGeneInfo = manager.isGeneInfoIncluded();
 		this.collapsePeptides = manager.showBestPeptides();
 		this.collapseProteins = manager.showBestProteins();
 		this.retrieveProteinSequences = manager.retrieveProteinSequences();
-		this.excludeNonConclusiveProteins = !manager.isNonConclusiveProteinsIncluded();
 		this.isFDRApplied = manager.isFDRApplied();
 		this.idSets.addAll(idSets);
 
@@ -73,21 +77,63 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 
 	@Override
 	public JTable export() {
+		synchronized (this) {
+			if (running) {
+				log.info("TableLoader already running. Cancelling this thread.");
+				return this.table;
+			}
+			running = true;
+		}
 		if (this.idSets.isEmpty()) {
 			return this.table;
 		}
+
+		if (this.retrieveProteinSequences || includeGeneInfo) {
+			firePropertyChange(PROTEIN_SEQUENCE_RETRIEVAL, null, null);
+
+			Set<String> uniprotAccs = new HashSet<String>();
+			for (IdentificationSet identificationSet : idSets) {
+				List<ExtendedIdentifiedProtein> identifiedProteins = identificationSet.getIdentifiedProteins();
+				for (ExtendedIdentifiedProtein protein : identifiedProteins) {
+					String uniProtACC = FastaParser.getUniProtACC(protein.getAccession());
+					if (uniProtACC != null) {
+						uniprotAccs.add(uniProtACC);
+					}
+				}
+			}
+			// get all sequences at once first
+			if (!uniprotAccs.isEmpty()) {
+				try {
+					firePropertyChange(MESSAGE, null, "Retrieving protein sequences from " + uniprotAccs.size()
+							+ " different proteins in UniprotKB");
+					UniprotProteinLocalRetriever upr = FileManager.getUniprotProteinLocalRetriever();
+					upr.setCacheEnabled(true);
+					Map<String, Entry> annotatedProteins = upr.getAnnotatedProteins(null, uniprotAccs);
+				} finally {
+					firePropertyChange(PROTEIN_SEQUENCE_RETRIEVAL_DONE, null, null);
+				}
+				// and just keep that in the cache
+			}
+		}
+
 		log.info("Starting JTable exporting");
 		try {
-			((DefaultTableModel) this.table.getModel()).getDataVector().removeAllElements();
+			// ((DefaultTableModel)
+			// this.table.getModel()).getDataVector().removeAllElements();
+			((MyIdentificationTable) this.table).clearData();
 
-			List<String> columnsStringList = ExportedColumns.getColumnsStringForTable(
-					this.includeReplicateAndExperimentOrigin, this.includePeptides, this.includeGeneInfo,
-					this.isFDRApplied, this.idSets);
+			List<String> columnsStringList = ExportedColumns.getColumnsStringForTable(this.includePeptides,
+					this.includeGeneInfo, this.isFDRApplied, this.idSets);
 
-			addColumns(columnsStringList);
+			addColumnsInTable(columnsStringList);
 			int progress = 0;
 			if (this.includePeptides) {
 				if (this.collapsePeptides) {
+					int total = 0;
+					progress = 0;
+					for (IdentificationSet idSet : idSets) {
+						total += idSet.getPeptideOccurrenceList(true).size();
+					}
 					for (IdentificationSet idSet : idSets) {
 						final HashMap<String, PeptideOccurrence> peptideOccurrenceHashMap = idSet
 								.getPeptideOccurrenceList(true);
@@ -104,21 +150,17 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 						firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
 						Iterator<PeptideOccurrence> iterator = peptideOccurrenceList.iterator();
 
-						int total = peptideOccurrenceHashMap.size();
 						int i = 1;
 						while (iterator.hasNext()) {
 							PeptideOccurrence peptideOccurrence = iterator.next();
 							Thread.sleep(1);
 							boolean isdecoy = peptideOccurrence.isDecoy();
-							if (isdecoy)
-								System.out.println("HOLA");
+
 							boolean pass = true;
-							if (excludeNonConclusiveProteins && ExporterUtil.isNonConclusivePeptide(peptideOccurrence))
-								pass = false;
+
 							if (pass && (includeDecoyHits || (!includeDecoyHits && !isdecoy))) {
 								final List<String> lineStringList = ExporterUtil
-										.getInstance(idSets, includeReplicateAndExperimentOrigin, includePeptides,
-												includeGeneInfo, retrieveProteinSequences, excludeNonConclusiveProteins)
+										.getInstance(idSets, includePeptides, includeGeneInfo, retrieveProteinSequences)
 										.getPeptideInfoList(peptideOccurrence, columnsStringList, i++, idSet);
 								addNewRow(lineStringList);
 							}
@@ -140,6 +182,11 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 						}
 					}
 				} else {
+					int total = 0;
+					progress = 0;
+					for (IdentificationSet idSet : idSets) {
+						total += idSet.getIdentifiedPeptides().size();
+					}
 					for (IdentificationSet idSet : idSets) {
 						final List<ExtendedIdentifiedPeptide> identifiedPeptides = idSet.getIdentifiedPeptides();
 						// sort if there is a FDR Filter activated that tells us
@@ -150,21 +197,17 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 						SorterUtil.sortPeptidesByBestPeptideScore(identifiedPeptides, true);
 						firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
 
-						int total = identifiedPeptides.size();
 						int i = 1;
 						for (ExtendedIdentifiedPeptide peptide : identifiedPeptides) {
 							Thread.sleep(1);
 							boolean isdecoy = peptide.isDecoy();
 							boolean pass = true;
-							if (excludeNonConclusiveProteins && ExporterUtil.isNonConclusivePeptide(peptide))
-								pass = false;
 							if (pass && (includeDecoyHits || (!includeDecoyHits && !isdecoy))) {
 								PeptideOccurrence peptideOccurrence = new PeptideOccurrence(
 										peptide.getModificationString());
 								peptideOccurrence.addOccurrence(peptide);
 								final List<String> lineStringList = ExporterUtil
-										.getInstance(idSets, includeReplicateAndExperimentOrigin, includePeptides,
-												includeGeneInfo, retrieveProteinSequences, excludeNonConclusiveProteins)
+										.getInstance(idSets, includePeptides, includeGeneInfo, retrieveProteinSequences)
 										.getPeptideInfoList(peptideOccurrence, columnsStringList, i++, idSet);
 
 								// log.info(lineString);
@@ -188,6 +231,13 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 			} else {
 				// JUST PROTEINS
 				if (this.collapseProteins) {
+					int i = 1;
+					int total = 0;
+					progress = 0;
+					for (IdentificationSet idSet : idSets) {
+						total += idSet.getProteinGroupOccurrenceList().size();
+					}
+					firePropertyChange(DATA_EXPORTING_STARTING, null, total);
 					for (IdentificationSet idSet : idSets) {
 						final Collection<ProteinGroupOccurrence> proteinOccurrenceSet = idSet
 								.getProteinGroupOccurrenceList().values();
@@ -197,7 +247,7 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 						}
 						// sort if there is a FDR Filter activated that tells us
 						// which is the score sort
-						firePropertyChange(DATA_EXPORTING_STARTING, null, proteinOccurrenceList.size());
+
 						firePropertyChange(DATA_EXPORTING_SORTING, null, proteinOccurrenceList.size());
 						try {
 							SorterUtil.sortProteinGroupOcurrencesByBestPeptideScore(proteinOccurrenceList);
@@ -207,8 +257,6 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 						firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
 						Iterator<ProteinGroupOccurrence> iterator = proteinOccurrenceList.iterator();
 
-						int total = proteinOccurrenceList.size();
-						int i = 1;
 						while (iterator.hasNext()) {
 							if (i % 10 == 0)
 								log.info(i + " / " + total);
@@ -217,16 +265,10 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 
 							boolean isdecoy = proteinGroupOccurrence.isDecoy();
 							boolean pass = true;
-							if (excludeNonConclusiveProteins
-									&& ExporterUtil.isNonConclusiveProtein(proteinGroupOccurrence)) {
-								pass = false;
-								// log.info("Non conclusive protein skipped");
-							}
 							if (pass && (includeDecoyHits || (!includeDecoyHits && !isdecoy))) {
 
 								final List<String> lineStringList = ExporterUtil
-										.getInstance(idSets, includeReplicateAndExperimentOrigin, includePeptides,
-												includeGeneInfo, retrieveProteinSequences, excludeNonConclusiveProteins)
+										.getInstance(idSets, includePeptides, includeGeneInfo, retrieveProteinSequences)
 										.getProteinInfoList(proteinGroupOccurrence, columnsStringList, i++, idSet);
 
 								// System.out.println(peptideString);
@@ -247,6 +289,11 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 						}
 					}
 				} else {
+					int total = 0;
+					progress = 0;
+					for (IdentificationSet idSet : idSets) {
+						total += idSet.getIdentifiedProteinGroups().size();
+					}
 					for (IdentificationSet idSet : idSets) {
 						final List<ProteinGroup> proteinGroups = idSet.getIdentifiedProteinGroups();
 						// sort if there is a FDR Filter activated that tells us
@@ -257,20 +304,16 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 						SorterUtil.sortProteinGroupsByBestPeptideScore(proteinGroups);
 						firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
 
-						int total = proteinGroups.size();
 						int i = 1;
 						for (ProteinGroup proteinGroup : proteinGroups) {
 							Thread.sleep(1);
 							boolean isdecoy = proteinGroup.isDecoy();
 							boolean pass = true;
-							if (excludeNonConclusiveProteins && ExporterUtil.isNonConclusiveProtein(proteinGroup))
-								pass = false;
 							if (pass && (includeDecoyHits || (!includeDecoyHits && !isdecoy))) {
 								ProteinGroupOccurrence proteinGroupOccurrence = new ProteinGroupOccurrence();
 								proteinGroupOccurrence.addOccurrence(proteinGroup);
 								final List<String> lineStringList = ExporterUtil
-										.getInstance(idSets, includeReplicateAndExperimentOrigin, includePeptides,
-												includeGeneInfo, retrieveProteinSequences, excludeNonConclusiveProteins)
+										.getInstance(idSets, includePeptides, includeGeneInfo, retrieveProteinSequences)
 										.getProteinInfoList(proteinGroupOccurrence, columnsStringList, i++, idSet);
 
 								// System.out.println(peptideString);
@@ -297,7 +340,7 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 				e.printStackTrace();
 				error = e.getMessage();
 			} else {
-				log.info("Table Loading stoped");
+				log.info("Table Loading stopped");
 			}
 		} finally {
 			this.table.repaint();
@@ -308,7 +351,7 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 		return table;
 	}
 
-	private void addColumns(List<String> columnsStringList) {
+	private void addColumnsInTable(List<String> columnsStringList) {
 		DefaultTableModel defaultModel = getTableModel();
 		log.info("Adding colums " + columnsStringList.size() + " columns");
 		if (columnsStringList != null) {
@@ -331,20 +374,24 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 
 	private void addNewRow(List<String> lineStringList) {
 		DefaultTableModel defaultModel = getTableModel();
-
-		defaultModel.addRow(lineStringList.toArray());
-
+		try {
+			defaultModel.addRow(lineStringList.toArray());
+		} catch (IndexOutOfBoundsException e) {
+			e.printStackTrace();
+			log.error(lineStringList);
+		}
 		// this.table.repaint();
 
 	}
 
 	private DefaultTableModel getTableModel() {
-		if (this.table == null)
+		if (this.table == null) {
 			return null;
-
+		}
 		TableModel model = this.table.getModel();
-		if (model == null)
+		if (model == null) {
 			model = new DefaultTableModel();
+		}
 		final DefaultTableModel defaultModel = (DefaultTableModel) model;
 		return defaultModel;
 	}
@@ -357,7 +404,9 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 
 	@Override
 	protected void done() {
-
+		synchronized (this) {
+			running = false;
+		}
 		if (!this.isCancelled())
 			firePropertyChange(DATA_EXPORTING_DONE, null, this.table.getRowCount());
 		else {

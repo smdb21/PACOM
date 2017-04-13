@@ -103,12 +103,16 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				ret = showOverlappingChart(IdentificationItemEnum.PEPTIDE);
 			} else if (ChartManagerFrame.PROTEIN_OVERLAPING.equals(chartType)) {
 				ret = showOverlappingChart(IdentificationItemEnum.PROTEIN);
-			} else if (ChartManagerFrame.PEPTIDE_HEATMAP.equals(chartType)) {
-				ret = showPeptideOccurrenceHeatMapChart();
-			} else if (ChartManagerFrame.PROTEIN_HEATMAP.equals(chartType)) {
+			} else if (ChartManagerFrame.PEPTIDE_OCCURRENCE_HEATMAP.equals(chartType)) {
+				ret = showPeptideOccurrenceHeatMapChart(false);
+			} else if (ChartManagerFrame.PSMS_PER_PEPTIDE_HEATMAP.equals(chartType)) {
+				ret = showPeptideOccurrenceHeatMapChart(true);
+			} else if (ChartManagerFrame.PROTEIN_OCURRENCE_HEATMAP.equals(chartType)) {
 				ret = showProteinOccurrenceHeatMapChart();
-			} else if (ChartManagerFrame.PROTEIN_NUMBER_OF_PEPTIDES_HEATMAP.equals(chartType)) {
-				ret = showPeptidesPerProteinHeatMapChart();
+			} else if (ChartManagerFrame.PEPTIDES_PER_PROTEIN_HEATMAP.equals(chartType)) {
+				ret = showPeptidesPerProteinHeatMapChart(false);
+			} else if (ChartManagerFrame.PSMS_PER_PROTEIN_HEATMAP.equals(chartType)) {
+				ret = showPeptidesPerProteinHeatMapChart(true);
 			} else if (ChartManagerFrame.MODIFICATED_PEPTIDE_NUMBER.equals(chartType)) {
 				ret = showModificatedPeptidesBarChart();
 			} else if (ChartManagerFrame.MODIFICATION_SITES_NUMBER.equals(chartType)) {
@@ -2055,11 +2059,11 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	 *            only applicable when plotItem is a protein
 	 * @return
 	 */
-	private Object showPeptideOccurrenceHeatMapChart() {
+	private Object showPeptideOccurrenceHeatMapChart(boolean isPSMs) {
 		parent.setInformation1(parent.getCurrentChartType() + " / " + IdentificationItemEnum.PEPTIDE);
 
 		double colorScale = optionsFactory.getColorScale();
-		int minOccurrenceThreshold = optionsFactory.getMinOccurrenceThreshold();
+		int minThreshold = optionsFactory.getHeatMapThreshold();
 		List<String> peptideSequenceOrder = parent.getPeptideSequencesFromPeptideSequenceFilter();
 
 		//
@@ -2076,16 +2080,22 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		final Color highColor = optionsFactory.getHighColorScale();
 		final Color lowColor = optionsFactory.getLowColorScale();
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
-		if (minOccurrenceThreshold > idSets.size())
-			throw new IllegalMiapeArgumentException(
-					"The occurrence threshold cannot be higher than the maximum number of identification sets ("
-							+ idSets.size() + ")");
+		// if (!isPSMs && minThreshold > idSets.size())
+		// throw new IllegalMiapeArgumentException(
+		// "The occurrence threshold cannot be higher than the maximum number of
+		// identification sets ("
+		// + idSets.size() + ")");
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 			List<String> rowList = new ArrayList<String>();
 			List<String> columnList = new ArrayList<String>();
-
-			double[][] dataset = DatasetFactory.createPeptideOccurrenceHeapMapDataSet(experimentList, idSets, rowList,
-					columnList, peptideSequenceOrder, parent.distinguishModifiedPeptides(), minOccurrenceThreshold);
+			double[][] dataset = null;
+			if (isPSMs) {
+				dataset = DatasetFactory.createPSMsPerPeptidesHeapMapDataSet(experimentList, idSets, rowList,
+						columnList, peptideSequenceOrder, parent.distinguishModifiedPeptides(), minThreshold);
+			} else {
+				dataset = DatasetFactory.createPeptideOccurrenceHeapMapDataSet(experimentList, idSets, rowList,
+						columnList, peptideSequenceOrder, parent.distinguishModifiedPeptides(), minThreshold);
+			}
 			parent.addMinMaxHeatMapValues(dataset);
 
 			HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList, columnList,
@@ -2098,7 +2108,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			List<String> columnList = new ArrayList<String>();
 
 			double[][] dataset = DatasetFactory.createPeptideOccurrenceHeapMapDataSet(experimentList, idSets, rowList,
-					columnList, peptideSequenceOrder, parent.distinguishModifiedPeptides(), minOccurrenceThreshold);
+					columnList, peptideSequenceOrder, parent.distinguishModifiedPeptides(), minThreshold);
 			parent.addMinMaxHeatMapValues(dataset);
 
 			HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList, columnList,
@@ -2111,7 +2121,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			List<String> columnList = new ArrayList<String>();
 
 			double[][] dataset = DatasetFactory.createPeptideOccurrenceHeapMapDataSet(experimentList, idSets, rowList,
-					columnList, peptideSequenceOrder, parent.distinguishModifiedPeptides(), minOccurrenceThreshold);
+					columnList, peptideSequenceOrder, parent.distinguishModifiedPeptides(), minThreshold);
 			parent.addMinMaxHeatMapValues(dataset);
 
 			HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList, columnList,
@@ -2126,7 +2136,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				List<String> columnList = new ArrayList<String>();
 				idSets = getIdentificationSets(experiment.getName(), null, false);
 				double[][] dataset = DatasetFactory.createPeptideOccurrenceHeapMapDataSet(experiment, idSets, rowList,
-						columnList, peptideSequenceOrder, parent.distinguishModifiedPeptides(), minOccurrenceThreshold);
+						columnList, peptideSequenceOrder, parent.distinguishModifiedPeptides(), minThreshold);
 				HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList, columnList,
 						colorScale);
 				chart.setHighValueColor(highColor);
@@ -2151,7 +2161,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		parent.setInformation1(parent.getCurrentChartType() + " / " + IdentificationItemEnum.PROTEIN);
 
 		double colorScale = optionsFactory.getColorScale();
-		int minOccurrenceThreshold = optionsFactory.getMinOccurrenceThreshold();
+		int minOccurrenceThreshold = optionsFactory.getHeatMapThreshold();
 		List<String> proteinACCOrder = parent.getProteinAccsFromACCFilter();
 
 		//
@@ -2240,12 +2250,11 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	 *            only applicable when plotItem is a protein
 	 * @return
 	 */
-	private Object showPeptidesPerProteinHeatMapChart() {
+	private Object showPeptidesPerProteinHeatMapChart(boolean isPSMs) {
 		parent.setInformation1(parent.getCurrentChartType());
 
 		double colorScale = optionsFactory.getColorScale();
-		int minOccurrenceThreshold = optionsFactory.getMinOccurrenceThreshold();
-		boolean isPSM = optionsFactory.isPSMs();
+		int minThreshold = optionsFactory.getHeatMapThreshold();
 		//
 		// double[][] dataset =
 		// DatasetFactory.createHeapMapDataSet(experimentList, rowList,
@@ -2261,21 +2270,25 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		final Color lowColor = optionsFactory.getLowColorScale();
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
 		List<String> proteinACCOrder = parent.getProteinAccsFromACCFilter();
-		if (minOccurrenceThreshold > idSets.size())
-			throw new IllegalMiapeArgumentException(
-					"The occurrence threshold cannot be higher than the maximum number of identification sets ("
-							+ idSets.size() + ")");
+		// if (minOccurrenceThreshold > idSets.size())
+		// throw new IllegalMiapeArgumentException(
+		// "The occurrence threshold cannot be higher than the maximum number of
+		// identification sets ("
+		// + idSets.size() + ")");
+		String title = "Peptides per protein heatmap";
+		if (isPSMs) {
+			title = "PSMs per protein heatmap";
+		}
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 			List<String> rowList = new ArrayList<String>();
 			List<String> columnList = new ArrayList<String>();
 
 			double[][] dataset = DatasetFactory.createPeptidesPerProteinHeapMapDataSet(experimentList, idSets, rowList,
-					columnList, proteinACCOrder, parent.distinguishModifiedPeptides(), minOccurrenceThreshold,
-					countNonConclusiveProteins, isPSM);
+					columnList, proteinACCOrder, parent.distinguishModifiedPeptides(), minThreshold,
+					countNonConclusiveProteins, isPSMs);
 			parent.addMinMaxHeatMapValues(dataset);
 
-			HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList, columnList,
-					colorScale);
+			HeatMapChart chart = new HeatMapChart(title, dataset, rowList, columnList, colorScale);
 			chart.setHighValueColor(highColor);
 			chart.setLowValueColor(lowColor);
 			return chart.getjPanel();
@@ -2284,12 +2297,11 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			List<String> columnList = new ArrayList<String>();
 
 			double[][] dataset = DatasetFactory.createPeptidesPerProteinHeapMapDataSet(experimentList, idSets, rowList,
-					columnList, proteinACCOrder, parent.distinguishModifiedPeptides(), minOccurrenceThreshold,
-					countNonConclusiveProteins, isPSM);
+					columnList, proteinACCOrder, parent.distinguishModifiedPeptides(), minThreshold,
+					countNonConclusiveProteins, isPSMs);
 			parent.addMinMaxHeatMapValues(dataset);
 
-			HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList, columnList,
-					colorScale);
+			HeatMapChart chart = new HeatMapChart(title, dataset, rowList, columnList, colorScale);
 			chart.setHighValueColor(highColor);
 			chart.setLowValueColor(lowColor);
 			return chart.getjPanel();
@@ -2298,12 +2310,11 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			List<String> columnList = new ArrayList<String>();
 
 			double[][] dataset = DatasetFactory.createPeptidesPerProteinHeapMapDataSet(experimentList, idSets, rowList,
-					columnList, proteinACCOrder, parent.distinguishModifiedPeptides(), minOccurrenceThreshold,
-					countNonConclusiveProteins, isPSM);
+					columnList, proteinACCOrder, parent.distinguishModifiedPeptides(), minThreshold,
+					countNonConclusiveProteins, isPSMs);
 			parent.addMinMaxHeatMapValues(dataset);
 
-			HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList, columnList,
-					colorScale);
+			HeatMapChart chart = new HeatMapChart(title, dataset, rowList, columnList, colorScale);
 			chart.setHighValueColor(highColor);
 			chart.setLowValueColor(lowColor);
 			return chart.getjPanel();
@@ -2314,11 +2325,10 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				List<String> columnList = new ArrayList<String>();
 				idSets = getIdentificationSets(experiment.getName(), null, false);
 				double[][] dataset = DatasetFactory.createPeptidesPerProteinHeapMapDataSet(experiment, idSets, rowList,
-						columnList, proteinACCOrder, parent.distinguishModifiedPeptides(), minOccurrenceThreshold,
-						countNonConclusiveProteins, isPSM);
+						columnList, proteinACCOrder, parent.distinguishModifiedPeptides(), minThreshold,
+						countNonConclusiveProteins, isPSMs);
 
-				HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList, columnList,
-						colorScale);
+				HeatMapChart chart = new HeatMapChart(title, dataset, rowList, columnList, colorScale);
 				chart.setHighValueColor(highColor);
 				chart.setLowValueColor(lowColor);
 				chartList.add(chart.getjPanel());

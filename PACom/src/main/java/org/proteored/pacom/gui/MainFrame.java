@@ -113,7 +113,7 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 		}
 
 		// set icon image
-		setIconImage(ImageManager.getImageIcon(ImageManager.PROTEORED_MIAPE_API).getImage());
+		setIconImage(ImageManager.getImageIcon(ImageManager.PACOM_LOGO).getImage());
 
 		try {
 			// do background tasks for resources loading

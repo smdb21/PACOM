@@ -70,7 +70,7 @@ public class ManualIdentificationSetCreatorDialog extends javax.swing.JDialog im
 
 	private void loadIcons() {
 		// set icon image
-		setIconImage(ImageManager.getImageIcon(ImageManager.PROTEORED_MIAPE_API).getImage());
+		setIconImage(ImageManager.getImageIcon(ImageManager.PACOM_LOGO).getImage());
 		jButtonClose.setIcon(ImageManager.getImageIcon(ImageManager.FINISH));
 		jButtonClose.setPressedIcon(ImageManager.getImageIcon(ImageManager.FINISH_CLICKED));
 

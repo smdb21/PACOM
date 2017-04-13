@@ -28,6 +28,8 @@ import org.proteored.pacom.analysis.conf.jaxb.CPExperiment;
 import org.proteored.pacom.analysis.conf.jaxb.CPExperimentList;
 import org.proteored.pacom.analysis.conf.jaxb.CPMSI;
 
+import edu.scripps.yates.annotations.uniprot.UniprotProteinLocalRetriever;
+
 public class FileManager {
 	private static final Logger log = Logger.getLogger("log4j.logger.org.proteored");
 
@@ -51,6 +53,8 @@ public class FileManager {
 	private static final String MIAPE_GI_PREFIX = MIAPE_PREFIX + "GI_";
 
 	private static final String UNIPROT_FOLDER = "uniprot";
+
+	private static UniprotProteinLocalRetriever upr;
 
 	/**
 	 * Gets the folder (creating it if doesn't exist) APP_FOLDER/user_data/
@@ -930,6 +934,14 @@ public class FileManager {
 				return null;
 		}
 		return ret;
+	}
+
+	public static UniprotProteinLocalRetriever getUniprotProteinLocalRetriever() {
+		if (upr == null) {
+			File uniprotReleasesFolder = FileManager.getUniprotFolder();
+			upr = new UniprotProteinLocalRetriever(uniprotReleasesFolder, true);
+		}
+		return upr;
 	}
 
 }

@@ -4,6 +4,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableModel;
 
 import org.apache.log4j.Logger;
 import org.proteored.pacom.analysis.exporters.util.ExportedColumns;
@@ -22,7 +23,7 @@ public class MyIdentificationTable extends JTable {
 				// columnModel.getColumn(index).getModelIndex();
 				String columnName = (String) columnModel.getColumn(index).getHeaderValue();
 				String tip = getToolTipTextForColumn(columnName);
-				// log.info("Tip  = " + tip);
+				// log.info("Tip = " + tip);
 				if (tip != null)
 					return tip;
 				else
@@ -39,5 +40,15 @@ public class MyIdentificationTable extends JTable {
 			}
 		}
 		return null;
+	}
+
+	public void clearData() {
+		log.info("Clearing data of the table");
+		TableModel model = getModel();
+		if (model instanceof MyDefaultTableModel) {
+			((MyDefaultTableModel) model).setRowCount(0);
+			((MyDefaultTableModel) model).setColumnCount(0);
+		}
+
 	}
 }
