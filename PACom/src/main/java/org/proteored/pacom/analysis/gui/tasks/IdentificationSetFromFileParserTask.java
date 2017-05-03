@@ -1,15 +1,16 @@
 package org.proteored.pacom.analysis.gui.tasks;
 
-import java.io.DataInputStream;
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JFileChooser;
@@ -18,9 +19,12 @@ import javax.swing.SwingWorker;
 
 import org.proteored.miapeapi.cv.Accession;
 import org.proteored.miapeapi.cv.ControlVocabularyManager;
+import org.proteored.miapeapi.cv.ControlVocabularyTerm;
+import org.proteored.miapeapi.cv.msi.PeptideModificationName;
 import org.proteored.miapeapi.cv.msi.Score;
 import org.proteored.miapeapi.factories.msi.MiapeMSIDocumentBuilder;
 import org.proteored.miapeapi.factories.msi.MiapeMSIDocumentFactory;
+import org.proteored.miapeapi.factories.msi.PeptideModificationBuilder;
 import org.proteored.miapeapi.interfaces.msi.IdentifiedPeptide;
 import org.proteored.miapeapi.interfaces.msi.IdentifiedProtein;
 import org.proteored.miapeapi.interfaces.msi.IdentifiedProteinSet;
@@ -30,24 +34,85 @@ import org.proteored.pacom.analysis.exporters.tasks.IdentifiedPeptideImpl;
 import org.proteored.pacom.analysis.exporters.tasks.IdentifiedProteinImpl;
 import org.proteored.pacom.gui.MainFrame;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
+import org.springframework.core.io.ClassPathResource;
 
 import com.compomics.dbtoolkit.io.implementations.FASTADBLoader;
 import com.compomics.util.protein.Enzyme;
 import com.compomics.util.protein.Protein;
 
+import edu.scripps.yates.utilities.fasta.FastaParser;
+import uk.ac.ebi.pridemod.PrideModController;
+import uk.ac.ebi.pridemod.slimmod.model.SlimModCollection;
+
 public class IdentificationSetFromFileParserTask extends SwingWorker<Void, String> {
 	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("log4j.logger.org.proteored");
 	public static final String PARSER_STARTS = "PARSER_STARTS";
 	public static final String PARSER_ERROR = "PARSER_ERROR";
-
 	public static final String PARSER_FINISHED = "PARSER_FINISHED";
+	private static final ClassPathResource resource = new ClassPathResource("modification_mappings.xml");
+	/*
+	 * HEADERS
+	 */
+	public static final String ACC = "ACC";
+	public static final String SEQ = "SEQ";
+	public static final String PSMID = "PSMID";
+	public static final String CHARGE = "Z";
+	public static final String MZ = "MZ";
+	public static final String RT = "RT";
+
+	public static String getHeaderNames() {
+		StringBuilder sb = new StringBuilder();
+		List<String> headerNames = getHeaderNamesList();
+		for (String headerName : headerNames) {
+			if (!"".equals(sb.toString())) {
+				sb.append(", ");
+			}
+			sb.append(headerName);
+		}
+		return sb.toString();
+	}
+
+	private static List<String> getHeaderNamesList() {
+		List<String> headerNames = new ArrayList<String>();
+		headerNames.add(CHARGE);
+		headerNames.add(MZ);
+		headerNames.add(SEQ);
+		headerNames.add(ACC);
+		headerNames.add(PSMID);
+		Collections.sort(headerNames);
+		return headerNames;
+	}
+
+	/*
+	 * END HEADERS
+	 */
 	private static final String[] SEPARATORS = { ",", ";", "\t" };
 	private final File file;
 	private final String separator;
 	private final String idSetName;
+	private SlimModCollection preferredModifications;
 	private static JFileChooser fileChooser;
 	private static FASTADBLoader fastaLoader;
 
+	/**
+	 * This parser reads a separated values file, in which the first line
+	 * (excepting any comment started by #) contains predefined table HEADERS
+	 * such as:
+	 * <ul>
+	 * <li>PSMID</li>
+	 * <li>ACC</li>
+	 * <li>SEQ</li>
+	 * <li>CHARGE</li>
+	 * <li>M/Z</li>
+	 * </ul>
+	 * <br>
+	 * And any other column will be considered as a new score with the name of
+	 * the header as the name of the score
+	 * 
+	 * @param selectedFile
+	 * @param idSetName
+	 * @param separator
+	 */
 	public IdentificationSetFromFileParserTask(File selectedFile, String idSetName, String separator) {
 		file = selectedFile;
 		this.separator = separator;
@@ -57,24 +122,23 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 	@Override
 	protected Void doInBackground() throws Exception {
 		try {
-			// decimal separator
-			DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance();
-			DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
-			char sep = symbols.getDecimalSeparator();
+			Map<String, Integer> indexesByHeaders = new HashMap<String, Integer>();
+			Map<String, Integer> indexesByScoreNames = new HashMap<String, Integer>();
 
 			firePropertyChange(PARSER_STARTS, null, null);
-			DataInputStream dis = new DataInputStream(new FileInputStream(file));
+			BufferedReader dis = new BufferedReader(new FileReader(file));
 			String line = "";
 			log.info("Parsing file " + file.getAbsolutePath());
 			HashMap<String, IdentifiedProtein> proteins = new HashMap<String, IdentifiedProtein>();
-			List<IdentifiedPeptide> peptides = new ArrayList<IdentifiedPeptide>();
+			Map<String, IdentifiedPeptide> peptides = new HashMap<String, IdentifiedPeptide>();
 			String previousProteinACC = null;
-			String scoreName = null;
+			// String scoreName = null;
 			int numLine = 0;
 			while ((line = dis.readLine()) != null) {
 				numLine++;
+				// COMMENTS STARTING BY #
 				if (line.trim().startsWith("#")) {
-					scoreName = getScoreName(line);
+					// scoreName = getScoreName(line);
 					continue;
 				}
 				String[] split;
@@ -85,74 +149,138 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 					split[0] = line;
 				}
 				if (split.length > 0) {
-					String preliminarProteinAcc = split[0].trim();
-					if ("".equals(preliminarProteinAcc))
-						preliminarProteinAcc = previousProteinACC;
-					if (preliminarProteinAcc.startsWith("\"") && preliminarProteinAcc.endsWith("\"")) {
-						preliminarProteinAcc = preliminarProteinAcc.substring(1, preliminarProteinAcc.length() - 1);
-					}
-					previousProteinACC = preliminarProteinAcc;
-
-					// PEPTIDE SEQUENCE
-					String seq = null;
-					if (split.length > 1) {
-						seq = split[1].trim();
-					}
-					// Parse peptide sequence
-					seq = parseSequence(seq);
-					IdentifiedPeptideImpl peptide = null;
-					if (seq != null) {
-						peptide = new IdentifiedPeptideImpl(seq);
-						peptides.add(peptide);
+					if (indexesByHeaders.isEmpty()) {
+						parseHeader(split, indexesByHeaders, indexesByScoreNames);
+						if (!indexesByHeaders.containsKey(ACC)) {
+							String message = "ACC column for protein accessions is missing in input file '"
+									+ file.getAbsolutePath() + "'";
+							firePropertyChange(PARSER_ERROR, null, message);
+							throw new IllegalArgumentException(message);
+						}
+						if (!indexesByHeaders.containsKey(SEQ)) {
+							String message = "SEQ column for peptide sequences is missing in input file '"
+									+ file.getAbsolutePath() + "'";
+							firePropertyChange(PARSER_ERROR, null, message);
+							throw new IllegalArgumentException(message);
+						}
 					} else {
-						log.warn("Peptide is null in line " + numLine + ": " + line);
-					}
-
-					// PEPTIDE SCORE
-					if (split.length > 2) {
-						try {
-							if (scoreName == null) {
-								scoreName = getScoreName("");
-							}
-							String trim = split[2].trim();
-
-							trim = trim.replace(",", ".");
-							Double score = Double.valueOf(trim);
-							PeptideScore peptideScore = MiapeMSIDocumentFactory
-									.createPeptideScoreBuilder(scoreName, score.toString()).build();
-							peptide.addScore(peptideScore);
-						} catch (Exception e) {
-							log.info(e.getMessage());
+						int accIndex = indexesByHeaders.get(ACC);
+						String preliminarProteinAcc = split[accIndex].trim();
+						if ("".equals(preliminarProteinAcc)) {
+							preliminarProteinAcc = previousProteinACC;
 						}
-					}
-
-					// Protein NAME
-					String proteinDescription = null;
-					if (split.length > 3) {
-						try {
-							proteinDescription = split[3].trim();
-						} catch (Exception e) {
-							log.info(e.getMessage());
+						if (preliminarProteinAcc.startsWith("\"") && preliminarProteinAcc.endsWith("\"")) {
+							preliminarProteinAcc = preliminarProteinAcc.substring(1, preliminarProteinAcc.length() - 1);
 						}
-					}
+						previousProteinACC = preliminarProteinAcc;
 
-					// if more than one accession is present, get the list
-					List<String> accessions = splitAccessions(preliminarProteinAcc);
-					for (String proteinAcc : accessions) {
+						// PEPTIDE SEQUENCE
+						int seqIndex = indexesByHeaders.get(SEQ);
+						String rawSeq = FastaParser.getSequenceInBetween(split[seqIndex].trim());
+						String seq = FastaParser.cleanSequence(rawSeq);
+						// seq = parseSequence(seq);
 
-						if (proteins.containsKey(proteinAcc)) {
-							final IdentifiedProteinImpl protein = (IdentifiedProteinImpl) proteins.get(proteinAcc);
-							if (peptide != null) {
-								protein.addPeptide(peptide);
-								peptide.addProtein(protein);
+						// PSMID
+						String psmID = String.valueOf(peptides.size() + 1);
+						if (indexesByHeaders.containsKey(PSMID)) {
+							psmID = split[indexesByHeaders.get(PSMID)];
+						}
+						// create or get the peptide (PSM)
+						IdentifiedPeptideImpl peptide = null;
+						if (!peptides.containsKey(psmID)) {
+							peptide = new IdentifiedPeptideImpl(seq);
+							peptides.put(psmID, peptide);
+							if (FastaParser.somethingExtrangeInSequence(rawSeq)) {
+								Map<Integer, Double> pTMsByPosition = FastaParser.getPTMsFromSequence(rawSeq);
+								for (Integer position : pTMsByPosition.keySet()) {
+									String aa = String.valueOf(peptide.getSequence().charAt(position - 1));
+									double deltaMass = pTMsByPosition.get(position);
+									PeptideModificationBuilder ptmBuilder = MiapeMSIDocumentFactory
+											.createPeptideModificationBuilder(
+													getModificationNameFromResidueAndMass(aa, deltaMass))
+											.monoDelta(deltaMass).position(position).residues(aa);
+									peptide.addModification(ptmBuilder.build());
+								}
 							}
+
 						} else {
-							IdentifiedProteinImpl protein = new IdentifiedProteinImpl(proteinAcc, proteinDescription);
-							if (peptide != null) {
-								protein.addPeptide(peptide);
-								peptide.addProtein(protein);
+							peptide = (IdentifiedPeptideImpl) peptides.get(psmID);
+						}
+
+						// CHARGE
+						Integer charge = null;
+						if (indexesByHeaders.containsKey(CHARGE)) {
+							try {
+								charge = Integer.valueOf(split[indexesByHeaders.get(CHARGE)]);
+							} catch (NumberFormatException e) {
+								log.warn("Error parsing charge state from column " + (indexesByHeaders.get(CHARGE) + 1)
+										+ " in file '" + file.getAbsolutePath() + "'");
+								log.warn(e.getMessage());
 							}
-							proteins.put(proteinAcc, protein);
+						}
+						peptide.setCharge(String.valueOf(charge));
+
+						// precursor MZ
+						Double mz = null;
+						if (indexesByHeaders.containsKey(MZ)) {
+							try {
+								mz = Double.valueOf(split[indexesByHeaders.get(MZ)]);
+							} catch (NumberFormatException e) {
+								log.warn("Error parsing precursor M/Z from column " + (indexesByHeaders.get(MZ) + 1)
+										+ " in file '" + file.getAbsolutePath() + "'");
+								log.warn(e.getMessage());
+							}
+						}
+						peptide.setPrecursorMZ(mz);
+
+						// RT
+						Double rt = null;
+						if (indexesByHeaders.containsKey(RT)) {
+							try {
+								rt = Double.valueOf(split[indexesByHeaders.get(RT)]);
+							} catch (NumberFormatException e) {
+								log.warn("Error parsing retention time rom column " + (indexesByHeaders.get(RT) + 1)
+										+ " in file '" + file.getAbsolutePath() + "'");
+								log.warn(e.getMessage());
+							}
+						}
+						peptide.setRetentionTime(rt);
+
+						// PEPTIDE SCORES
+						for (String scoreName : indexesByScoreNames.keySet()) {
+							String scoreString = split[indexesByScoreNames.get(scoreName)].trim();
+							Double score = null;
+							try {
+								score = Double.valueOf(scoreString);
+								PeptideScore peptideScore = MiapeMSIDocumentFactory
+										.createPeptideScoreBuilder(scoreName, score.toString()).build();
+								peptide.addScore(peptideScore);
+							} catch (NumberFormatException e) {
+								log.warn("Error parsing score value for column "
+										+ (indexesByScoreNames.get(scoreName) + 1) + " in file '"
+										+ file.getAbsolutePath() + "'");
+								log.warn(e.getMessage());
+							}
+						}
+
+						// if more than one accession is present, get the list
+						List<String> accessions = splitAccessions(preliminarProteinAcc);
+						for (String proteinAcc : accessions) {
+
+							if (proteins.containsKey(proteinAcc)) {
+								final IdentifiedProteinImpl protein = (IdentifiedProteinImpl) proteins.get(proteinAcc);
+								if (peptide != null) {
+									protein.addPeptide(peptide);
+									peptide.addProtein(protein);
+								}
+							} else {
+								IdentifiedProteinImpl protein = new IdentifiedProteinImpl(proteinAcc, null);
+								if (peptide != null) {
+									protein.addPeptide(peptide);
+									peptide.addProtein(protein);
+								}
+								proteins.put(proteinAcc, protein);
+							}
 						}
 					}
 				}
@@ -165,16 +293,17 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 						"No proteins or peptides have been captured. Check the separator and try again");
 				return null;
 			}
-			// If there is no relationship between peptides and proteins, look
-			// in the fasta file
-			if (!relationBetweenPeptidesAndProteins(peptides, proteins)) {
-				addRelationShips(peptides, proteins);
-			}
+
+			checkRelationBetweenPeptidesAndProteins(peptides, proteins);
 
 			log.info("End parsing. Now building MIAPE MSI.");
+			log.info(
+					peptides.size() + " PSMs and " + proteins.size() + " proteins from file " + file.getAbsolutePath());
 			final MiapeMSIDocumentBuilder builder = MiapeMSIDocumentFactory.createMiapeDocumentMSIBuilder(null,
 					idSetName, null);
-			builder.identifiedPeptides(peptides);
+			List<IdentifiedPeptide> peptideList = new ArrayList<IdentifiedPeptide>();
+			peptideList.addAll(peptides.values());
+			builder.identifiedPeptides(peptideList);
 			Set<IdentifiedProteinSet> proteinSets = new HashSet<IdentifiedProteinSet>();
 			IdentifiedProteinSet proteinSet = MiapeMSIDocumentFactory.createIdentifiedProteinSetBuilder("Protein set")
 					.identifiedProteins(proteins).build();
@@ -187,6 +316,94 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 			firePropertyChange(PARSER_ERROR, null, e.getMessage());
 		}
 		return null;
+	}
+
+	private SlimModCollection getModificationMapping() {
+		if (preferredModifications == null) {
+			URL url;
+			try {
+				url = resource.getURL();
+				preferredModifications = PrideModController.parseSlimModCollection(url);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return preferredModifications;
+	}
+
+	private String getModificationNameFromResidueAndMass(String aa, double deltaMass) {
+		try {
+			// try first with the PRIDE mapping
+			SlimModCollection modificationMapping = getModificationMapping();
+
+			SlimModCollection slimMods = modificationMapping.getbyDelta(deltaMass, 0.03);
+			if (slimMods != null && !slimMods.isEmpty()) {
+				return slimMods.get(0).getPsiModDesc();
+			}
+			// TODO add more modifications!
+			// read from a file?
+			ControlVocabularyManager cvManager = OntologyLoaderTask.getCvManager();
+			if (aa.equals("C") && compareWithError(deltaMass, 57.022)) {
+
+				final ControlVocabularyTerm cvTerm = cvManager.getCVTermByAccession(
+						new Accession(PeptideModificationName.UNIMOD4), PeptideModificationName.getInstance(cvManager));
+				if (cvTerm != null)
+					return cvTerm.getPreferredName();
+				else
+					return "Carbamidomethyl";
+			}
+			if (aa.equals("E") && compareWithError(deltaMass, -18.0106)) {
+				final ControlVocabularyTerm cvTerm = cvManager.getCVTermByAccession(
+						new Accession(PeptideModificationName.UNIMOD27),
+						PeptideModificationName.getInstance(cvManager));
+				if (cvTerm != null)
+					return cvTerm.getPreferredName();
+				else
+					return "Glu->pyro-Glu";
+			}
+			final ControlVocabularyTerm pepModifDetailsTerm = PeptideModificationName.getPepModifDetailsTerm(cvManager);
+			if (pepModifDetailsTerm != null)
+				return pepModifDetailsTerm.getPreferredName();
+		} catch (Exception e) {
+
+		}
+		return "peptide modification details";
+	}
+
+	private boolean compareWithError(double num1, double num2) {
+		double tolerance = 0.001;
+		if (num1 > num2)
+			if (num1 - num2 < tolerance)
+				return true;
+		if (num2 > num1)
+			if (num2 - num1 < tolerance)
+				return true;
+		if (num1 == num2)
+			return true;
+		return false;
+	}
+
+	private void parseHeader(String[] splittedLine, Map<String, Integer> indexesByHeaders,
+			Map<String, Integer> indexesByScoreNames) {
+		int index = 0;
+		for (String element : splittedLine) {
+			element = element.trim();
+			if (element.equalsIgnoreCase(ACC)) {
+				indexesByHeaders.put(ACC, index);
+			} else if (element.equalsIgnoreCase(PSMID)) {
+				indexesByHeaders.put(PSMID, index);
+			} else if (element.equalsIgnoreCase(SEQ)) {
+				indexesByHeaders.put(SEQ, index);
+			} else if (element.equalsIgnoreCase(MZ)) {
+				indexesByHeaders.put(MZ, index);
+			} else if (element.equalsIgnoreCase(CHARGE)) {
+				indexesByHeaders.put(CHARGE, index);
+			} else {
+				indexesByScoreNames.put(element, index);
+			}
+			index++;
+		}
+
 	}
 
 	private void addRelationShips(List<IdentifiedPeptide> peptides, HashMap<String, IdentifiedProtein> proteinMap)
@@ -281,19 +498,38 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 
 	}
 
-	private boolean relationBetweenPeptidesAndProteins(List<IdentifiedPeptide> peptides,
+	/**
+	 * Throws exception if some protein has no peptides or if some peptide has
+	 * no proteins
+	 * 
+	 * @param peptides
+	 * @param proteins
+	 * @return
+	 */
+	private void checkRelationBetweenPeptidesAndProteins(Map<String, IdentifiedPeptide> peptides,
 			HashMap<String, IdentifiedProtein> proteins) {
-		for (IdentifiedPeptide identifiedPeptide : peptides) {
-			if (identifiedPeptide.getIdentifiedProteins() != null
-					&& !identifiedPeptide.getIdentifiedProteins().isEmpty())
-				return true;
+		for (String psmID : peptides.keySet()) {
+			IdentifiedPeptide identifiedPeptide = peptides.get(psmID);
+			if (identifiedPeptide.getIdentifiedProteins() == null
+					|| identifiedPeptide.getIdentifiedProteins().isEmpty()) {
+				String message = "Peptide " + identifiedPeptide.getSequence() + " with ID " + psmID
+						+ " has no linked to any protein";
+				log.warn(message);
+				firePropertyChange(PARSER_ERROR, null, message);
+				throw new IllegalArgumentException(message);
+
+			}
+
 		}
 		for (IdentifiedProtein identifiedProtein : proteins.values()) {
-			if (identifiedProtein.getIdentifiedPeptides() != null
-					&& !identifiedProtein.getIdentifiedPeptides().isEmpty())
-				return true;
+			if (identifiedProtein.getIdentifiedPeptides() == null
+					|| identifiedProtein.getIdentifiedPeptides().isEmpty()) {
+				String message = "Protein " + identifiedProtein.getAccession() + " has no linked to any peptide";
+				log.warn(message);
+				firePropertyChange(PARSER_ERROR, null, message);
+				throw new IllegalArgumentException(message);
+			}
 		}
-		return false;
 	}
 
 	private String getScoreName(String firstLine) {
