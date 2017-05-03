@@ -4,7 +4,13 @@
 
 package org.proteored.pacom.gui;
 
+import java.awt.Cursor;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -15,9 +21,14 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 
+import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingWorker.StateValue;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -46,15 +57,6 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 	public int userID;
 	// by default
 	public static String miapetool_access_script = "http://www.proteored.org/acceso.asp?pmArea=8";
-
-	public String WELCOME_MESSAGE = "<html>Options:"
-			+ "<ul><li>Import datasets ('<b>Import data </b>' menu). Login is required.</li>"
-			+ "<li>Inspect your data ('<b>Data inspection</b>' menu). Login is not required for already created inspection projects.</li>"
-			+ "<li>Browse over the MIAPE projects in the ProteoRed MIAPE repository ('<b>MIAPE repository browser</b>' menu). Login is required.</li></ul>"
-
-			+ "If you don't have an account, you can click on '<b>create account</b>' button on login dialog.</html>";
-	public String WELCOME_MESSAGE_LOCAL = "<html>Options:" + "<ul><li>Import datasets ('<b>Import data</b>' menu).</li>"
-			+ "<li>Inspect your data ('<b>Data inspection</b>' menu).</li></ul></html>";
 
 	private static final String URL_MIAPE_EXTRACTOR_TUTORIAL = "http://legacy.proteored.org/miape/MIAPE%20Extractor%20Tutorial.pdf";
 	private static final String URL_MIAPE_EXTRACTOR_BATCH_TUTORIAL = "http://legacy.proteored.org/miape/Batch%20MIAPE%20Extraction_Tutorial.pdf";
@@ -132,8 +134,6 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 			initializeProperties();
 			initComponents();
 
-			writeWelcomeMessage();
-
 			// load ontologies
 			loadOntologies();
 
@@ -193,7 +193,7 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 		StringBuilder sb = new StringBuilder();
 		sb.append("<html>Error initializating the tool: <b>" + message
 				+ "</b><br/>Try to restart and if the problem persist, contact to 'miape_support@proteored.org'</html>");
-				// this.jLabelInit.setText(sb.toString());
+		// this.jLabelInit.setText(sb.toString());
 
 		// cancel tasks
 		if (ontologyLoader != null)
@@ -203,14 +203,6 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 
 		// show error message
 		JOptionPane.showMessageDialog(this, sb.toString(), "Error loading", JOptionPane.ERROR_MESSAGE);
-	}
-
-	private void writeWelcomeMessage() {
-		if (localWorkflow) {
-			jLabelInit.setText(WELCOME_MESSAGE_LOCAL);
-		} else {
-			jLabelInit.setText(WELCOME_MESSAGE);
-		}
 	}
 
 	@Override
@@ -272,7 +264,6 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 	private void initComponents() {
 
 		jPanel1 = new javax.swing.JPanel();
-		jLabelInit = new javax.swing.JLabel();
 		jMenuBar1 = new javax.swing.JMenuBar();
 		jMenu1 = new javax.swing.JMenu();
 		jMenuItemLogin = new javax.swing.JMenuItem();
@@ -293,23 +284,6 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("PACOM - Proteomics Assay COMparator");
 		setResizable(false);
-
-		jLabelInit.setFont(new Font("Dialog", Font.PLAIN, 18));
-		jLabelInit.setText("Welcome text");
-		jLabelInit.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-
-		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-		jPanel1Layout
-				.setHorizontalGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-						.addGroup(jPanel1Layout.createSequentialGroup().addContainerGap()
-								.addComponent(jLabelInit, GroupLayout.DEFAULT_SIZE, 814, Short.MAX_VALUE)
-								.addContainerGap()));
-		jPanel1Layout
-				.setVerticalGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-						.addGroup(jPanel1Layout.createSequentialGroup().addContainerGap()
-								.addComponent(jLabelInit, GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
-								.addContainerGap()));
-		jPanel1.setLayout(jPanel1Layout);
 
 		if (!localWorkflow) {
 			jMenu1.setText("Login");
@@ -460,12 +434,79 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup().addContainerGap()
-						.addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addContainerGap()));
+						.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, 800, GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup().addContainerGap()
-						.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, 186, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(184, Short.MAX_VALUE)));
+						.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, 300, GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+		jPanel1.setLayout(new GridBagLayout());
+		JLabel jLabelInit = new javax.swing.JLabel("Import data");
+		jLabelInit.setHorizontalAlignment(SwingConstants.LEFT);
+		jLabelInit.setFont(new Font("Dialog", Font.PLAIN, 18));
+		jLabelInit.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.FIRST_LINE_START;
+		c.insets = new Insets(10, 10, 10, 10);
+		c.gridx = 0;
+		c.gridy = 0;
+		c.gridwidth = 1;
+		jPanel1.add(jLabelInit, c);
+		JLabel jLabelInit2 = new javax.swing.JLabel("Data Inspection");
+		jLabelInit2.setHorizontalAlignment(SwingConstants.LEFT);
+		jLabelInit2.setFont(new Font("Dialog", Font.PLAIN, 18));
+		jLabelInit2.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+		c.fill = GridBagConstraints.FIRST_LINE_START;
+		c.insets = new Insets(10, 10, 10, 10);
+		c.gridx = 1;
+		c.gridy = 0;
+		c.gridwidth = 1;
+		jPanel1.add(jLabelInit2, c);
+		GridBagConstraints c2 = new GridBagConstraints();
+		c2.fill = GridBagConstraints.HORIZONTAL;
+		c.insets = new Insets(10, 10, 10, 10);
+		c2.gridx = 0;
+		c2.gridy = 1;
+		c2.gridwidth = 1;
+		JButton loadButton = new JButton();
+		loadButton.setIcon(ImageManager.getImageIcon(ImageManager.LOAD_LOGO_128));
+		loadButton.setPressedIcon(ImageManager.getImageIcon(ImageManager.LOAD_LOGO_128_CLICKED));
+		loadButton.setRolloverIcon(ImageManager.getImageIcon(ImageManager.LOAD_LOGO_128_HOVER));
+
+		loadButton.setFocusable(false);
+		loadButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				startDataImport();
+
+			}
+		});
+		loadButton.setToolTipText("Import data");
+		loadButton.setBorder(BorderFactory.createEmptyBorder());
+		loadButton.setContentAreaFilled(false);
+		loadButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		jPanel1.add(loadButton, c2);
+		GridBagConstraints c3 = new GridBagConstraints();
+		c3.fill = GridBagConstraints.HORIZONTAL;
+		c.insets = new Insets(10, 10, 10, 10);
+		c3.gridx = 1;
+		c3.gridy = 1;
+		c3.gridwidth = 1;
+		JButton inspectButton = new JButton();
+		inspectButton.setIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_128));
+		inspectButton.setPressedIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_128_CLICKED));
+		inspectButton.setRolloverIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_128_HOVER));
+		inspectButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		inspectButton.setFocusable(false);
+		inspectButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				startProjectComparison();
+
+			}
+		});
+		inspectButton.setToolTipText("Data inspection");
+		inspectButton.setBorder(BorderFactory.createEmptyBorder());
+		inspectButton.setContentAreaFilled(false);
+		jPanel1.add(inspectButton, c3);
 		getContentPane().setLayout(layout);
 
 		pack();
@@ -473,7 +514,15 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 		java.awt.Dimension dialogSize = getSize();
 		setLocation((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2);
 	}// </editor-fold>
-		// GEN-END:initComponents
+
+	private void startDataImport() {
+		setVisible(false);
+		MiapeExtractionFrame standard2MIAPEDialog = MiapeExtractionFrame.getInstance(this, true);
+		standard2MIAPEDialog.setVisible(true);
+
+	}
+
+	// GEN-END:initComponents
 
 	private void jMenuItemMIAPEExtractionBatchTutorialActionPerformed(java.awt.event.ActionEvent evt) {
 		showMiapeExtractionBatchTutorial();
@@ -535,10 +584,15 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 	}
 
 	private void jMenuItemStartProjectComparisonActionPerformed(java.awt.event.ActionEvent evt) {
+		startProjectComparison();
+	}
+
+	private void startProjectComparison() {
+		setVisible(false);
 		miape2experimentListDialog = Miape2ExperimentListDialog.getInstance(this);
 		if (miape2experimentListDialog.isCorrectlyInitialized())
 			miape2experimentListDialog.setVisible(true);
-		setVisible(false);
+
 	}
 
 	private void exit(java.awt.event.ActionEvent evt) {
@@ -547,15 +601,18 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 
 	private void jMenuItemBrowseMIAPEsActionPerformed(java.awt.event.ActionEvent evt) {
 
+		showBrowseData();
+	}
+
+	private void showBrowseData() {
 		ProteoRedMIAPEBrowserFrame miape2StandardDialog = ProteoRedMIAPEBrowserFrame.getInstance(this);
 		miape2StandardDialog.setVisible(true);
 		setVisible(false);
+
 	}
 
 	private void jMenuItemStandard2MIAPEActionPerformed(java.awt.event.ActionEvent evt) {
-
-		MiapeExtractionFrame standard2MIAPEDialog = MiapeExtractionFrame.getInstance(this, true);
-		standard2MIAPEDialog.setVisible(true);
+		startDataImport();
 
 	}
 
@@ -634,6 +691,7 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 	private javax.swing.JMenuItem jMenuItemStandard2MIAPE;
 	private javax.swing.JMenuItem jMenuItemStartProjectComparison;
 	private javax.swing.JPanel jPanel1;
+	private JPanel panel;
 
 	// End of variables declaration//GEN-END:variables
 

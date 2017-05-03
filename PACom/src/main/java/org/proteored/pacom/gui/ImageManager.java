@@ -15,6 +15,13 @@ public class ImageManager {
 	public static final String TABLE_CLICKED = "table_clicked.png";
 	// public static final String PROTEORED_MIAPE_API = "APIproteoredSmall.gif";
 	public static final String PACOM_LOGO = "pacom.png";
+	public static final String PACOM_LOGO_128 = "pacom_128.png";
+	public static final String PACOM_LOGO_128_CLICKED = "pacom_128_clicked.png";
+	public static final String PACOM_LOGO_128_HOVER = "pacom_128_hover.png";
+	public static final String LOAD_LOGO_128 = "load_128.png";
+	public static final String LOAD_LOGO_128_CLICKED = "load_128_clicked.png";
+	public static final String LOAD_LOGO_128_HOVER = "load_128_hover.png";
+
 	public static final String CURATED_EXPERIMENT = "curated_experiment.png";
 	public static final String EXPERIMENT = "experiment.png";
 	public static final String REPLICATE = "replicate.png";
