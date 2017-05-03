@@ -1,6 +1,7 @@
 /target/
 .classpath
 .settings
+.project
 logs
-
 user_data
+/bin/
