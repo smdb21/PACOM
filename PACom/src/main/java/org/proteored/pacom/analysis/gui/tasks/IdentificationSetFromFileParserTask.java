@@ -176,7 +176,7 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 
 						// PEPTIDE SEQUENCE
 						int seqIndex = indexesByHeaders.get(SEQ);
-						String rawSeq = FastaParser.getSequenceInBetween(split[seqIndex].trim());
+						String rawSeq = split[seqIndex].trim();
 						String seq = FastaParser.cleanSequence(rawSeq);
 						// seq = parseSequence(seq);
 
