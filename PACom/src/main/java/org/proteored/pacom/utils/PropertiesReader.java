@@ -6,6 +6,8 @@ import java.util.Properties;
 
 public class PropertiesReader {
 	private static final String PACOM_PROPERTIES_FILE = "pacom.properties";
+	// public static final String ENSEMBL_UNIPROT_MAPPING_FILE =
+	// "ensembl_uniprot_mapping_file";
 	public static final String ENSEMBL_UNIPROT_MAPPING_FILE = "ensembl_uniprot_mapping_file";
 	public static final String UNIPROT_TREMBL_HUMAN_CHR16_FILE = "uniprot_trembl_human_chr16_FileName";
 	public static final String UNIPROT_SPROT_HUMAN_CHR16_FILE = "uniprot_sprot_human_chr16_FileName";

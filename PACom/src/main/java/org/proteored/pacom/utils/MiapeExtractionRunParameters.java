@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import org.proteored.miapeapi.interfaces.ms.MiapeMSDocument;
+import org.proteored.miapeapi.text.tsv.msi.TableTextFileSeparator;
 
 public interface MiapeExtractionRunParameters {
 
@@ -30,6 +31,10 @@ public interface MiapeExtractionRunParameters {
 	public boolean isMzMLSelected();
 
 	public boolean isMzIdentMLSelected();
+
+	public boolean isTSVSelected();
+
+	public String getTSVSelectFileName();
 
 	public String getMzIdentMLFileName();
 
@@ -62,4 +67,6 @@ public interface MiapeExtractionRunParameters {
 	public boolean isDTASelectPlusMGFSelected();
 
 	public boolean isLocalProcessing();
+
+	public TableTextFileSeparator getSeparator();
 }

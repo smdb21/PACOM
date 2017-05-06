@@ -24,6 +24,7 @@ import org.proteored.miapeapi.factories.ms.MiapeMSDocumentFactory;
 import org.proteored.miapeapi.interfaces.ms.MiapeMSDocument;
 import org.proteored.miapeapi.interfaces.ms.ResultingData;
 import org.proteored.miapeapi.interfaces.xml.MiapeXmlFile;
+import org.proteored.miapeapi.text.tsv.msi.TableTextFileSeparator;
 import org.proteored.miapeapi.webservice.clients.miapeapi.MiapeAPIWebserviceDelegate;
 import org.proteored.miapeapi.webservice.clients.miapeapi.MiapeDatabaseException_Exception;
 import org.proteored.miapeapi.webservice.clients.miapeapi.MiapeSecurityException_Exception;
@@ -267,6 +268,8 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 		} else if (miapeExtractorInputParameters.isDTASelectSelected()
 				|| miapeExtractorInputParameters.isDTASelectPlusMGFSelected()) {
 			extractMIAPEfromDTASelectFile(tinnyMiapeMS);
+		} else if (miapeExtractorInputParameters.isTSVSelected()) {
+			extractMIAPEfromTSVFile(tinnyMiapeMS, miapeExtractorInputParameters.getSeparator());
 		} else if (miapeExtractorInputParameters.isPRIDESelected()) {
 			if (miapeExtractorInputParameters.isMIAPEMSChecked() && miapeExtractorInputParameters.isMIAPEMSIChecked()) {
 				extractMIAPEfromPrideFile("MS_MSI");
@@ -715,6 +718,65 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 			} else {
 				throw new MethodNotSupportedException(
 						"Extract MIAPE MSI from DTASelect is not supported by webservice");
+			}
+
+		}
+		checkOutput();
+
+	}
+
+	private void extractMIAPEfromTSVFile(MiapeXmlFile<MiapeMSDocument> miapeMsXML,
+			TableTextFileSeparator tableTextFileSeparator) throws IOException, MethodNotSupportedException {
+
+		taskStatus = UPLOADING;
+		String tsvSelectFile = miapeExtractorInputParameters.getTSVSelectFileName();
+		if (!miapeExtractorInputParameters.isLocalProcessing()) {
+			tsvSelectFile = uploadFile(tsvSelectFile);
+		}
+
+		taskStatus = CONVERTING;
+
+		String[] identifiers = new String[2];
+
+		if (miapeMsXML != null) {
+			firePropertyChange(NOTIFICATION, null, "Extracting data from TSV file + metadata...");
+			MiapeXmlFile<MiapeMSDocument> miapeMSWithResultingData = addResultingData(miapeMsXML,
+					miapeExtractorInputParameters.getProjectName());
+			// log.info(miapeMsXML);
+			if (miapeExtractorInputParameters.isLocalProcessing()) {
+				identifiers = miapeLocalExtractor.storeMiapeMSMSIFromTSV(tsvSelectFile,
+						miapeExtractorInputParameters.getSeparator(), miapeMSWithResultingData.toBytes(), userName,
+						password, miapeExtractorInputParameters.getProjectName());
+			} else {
+				try {
+					Thread.sleep(1L);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				throw new MethodNotSupportedException(
+						"Extract MIAPE MSI from DTASelect is not supported by webservice");
+			}
+			if (identifiers[1] != null && !"".equals(identifiers[1]))
+				id_msi = identifiers[1];
+			if (identifiers[0] != null && !"".equals(identifiers[0]))
+				id_ms = identifiers[0];
+
+		} else {
+			firePropertyChange(NOTIFICATION, null, "Extracting data from TSV file...");
+
+			int idMS = -1;
+			Integer associatedMiapeMSID = miapeExtractorInputParameters.getAssociatedMiapeMS();
+			if (associatedMiapeMSID != null)
+				idMS = associatedMiapeMSID;
+
+			if (miapeExtractorInputParameters.isLocalProcessing()) {
+				identifiers = miapeLocalExtractor.storeMiapeMSIFromTSV(tsvSelectFile, tableTextFileSeparator, idMS,
+						userName, password, miapeExtractorInputParameters.getProjectName());
+				id_msi = identifiers[1];
+				id_ms = identifiers[0];
+
+			} else {
+				throw new MethodNotSupportedException("Extract MIAPE MSI from TSV is not supported by webservice");
 			}
 
 		}

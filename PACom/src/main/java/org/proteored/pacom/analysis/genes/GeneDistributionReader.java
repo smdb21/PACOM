@@ -35,26 +35,24 @@ import com.compomics.dbtoolkit.io.implementations.FASTADBLoader;
 import com.compomics.util.protein.Header;
 import com.compomics.util.protein.Protein;
 
+import edu.scripps.yates.utilities.fasta.FastaParser;
+
 public class GeneDistributionReader {
-	public static final String[] chromosomeNames = { "1", "2", "3", "4", "5",
-			"6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17",
-			"18", "19", "20", "21", "22", "MT", "X", "Y" };
+	public static final String[] chromosomeNames = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
+			"13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "MT", "X", "Y" };
 	// private static final String chromosomeFileName = "nextprot_chromosome_";
 	private static final String distributionFileName = "repartoCH16.tsv";
 	private final InputStream uniprotEnsemblMapInputStream;
-	private static final String uniprot_sprot_human_chr16_FileName = PropertiesReader
-			.getProperties().getProperty(
-					PropertiesReader.UNIPROT_SPROT_HUMAN_CHR16_FILE);
-	private static final String uniprot_trembl_human_chr16_FileName = PropertiesReader
-			.getProperties().getProperty(
-					PropertiesReader.UNIPROT_TREMBL_HUMAN_CHR16_FILE);
+	private static final String uniprot_sprot_human_chr16_FileName = PropertiesReader.getProperties()
+			.getProperty(PropertiesReader.UNIPROT_SPROT_HUMAN_CHR16_FILE);
+	private static final String uniprot_trembl_human_chr16_FileName = PropertiesReader.getProperties()
+			.getProperty(PropertiesReader.UNIPROT_TREMBL_HUMAN_CHR16_FILE);
 	// private static final String ensg2uniprotFileName =
 	// "Chr16_EnsG2Uniprot.tsv";
 	// private static final String ensg2uniprotChr16FileName =
 	// "genePepUniprotChr16Mapping.tsv";
-	private static final String ensg2uniprotFileName = PropertiesReader
-			.getProperties().getProperty(
-					PropertiesReader.ENSEMBL_UNIPROT_MAPPING_FILE);
+	private static final String ensg2uniprotFileName = PropertiesReader.getProperties()
+			.getProperty(PropertiesReader.ENSEMBL_UNIPROT_MAPPING_FILE);
 	// private static final String geneProteinMappingFileName =
 	// "GeneXTransXPep_Ensemblv65.tsv";
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
@@ -67,10 +65,8 @@ public class GeneDistributionReader {
 	 * @param uniprotEnsemblMapFile
 	 * @throws FileNotFoundException
 	 */
-	private GeneDistributionReader(File uniprotEnsemblMapFile)
-			throws FileNotFoundException {
-		uniprotEnsemblMapInputStream = new FileInputStream(
-				uniprotEnsemblMapFile);
+	private GeneDistributionReader(File uniprotEnsemblMapFile) throws FileNotFoundException {
+		uniprotEnsemblMapInputStream = new FileInputStream(uniprotEnsemblMapFile);
 	}
 
 	/**
@@ -80,8 +76,7 @@ public class GeneDistributionReader {
 	 */
 	private GeneDistributionReader() {
 		ClassLoader cl = this.getClass().getClassLoader();
-		uniprotEnsemblMapInputStream = cl
-				.getResourceAsStream(ensg2uniprotFileName);
+		uniprotEnsemblMapInputStream = cl.getResourceAsStream(ensg2uniprotFileName);
 
 	}
 
@@ -92,8 +87,7 @@ public class GeneDistributionReader {
 		return instance;
 	}
 
-	public static GeneDistributionReader getInstance(File uniprotEnsemblMapFile)
-			throws FileNotFoundException {
+	public static GeneDistributionReader getInstance(File uniprotEnsemblMapFile) throws FileNotFoundException {
 		if (instance == null) {
 			instance = new GeneDistributionReader(uniprotEnsemblMapFile);
 		}
@@ -116,8 +110,7 @@ public class GeneDistributionReader {
 		List<String> ret = new ArrayList<String>();
 
 		ClassLoader cl = this.getClass().getClassLoader();
-		final InputStream fstream = cl
-				.getResourceAsStream(distributionFileName);
+		final InputStream fstream = cl.getResourceAsStream(distributionFileName);
 		if (fstream != null) {
 
 			// FileInputStream fstream = new FileInputStream(resource.);
@@ -163,8 +156,7 @@ public class GeneDistributionReader {
 		HashMap<String, ENSGInfo> ret = new HashMap<String, ENSGInfo>();
 		ClassLoader cl = this.getClass().getClassLoader();
 		try {
-			final InputStream fstream = cl
-					.getResourceAsStream(distributionFileName);
+			final InputStream fstream = cl.getResourceAsStream(distributionFileName);
 
 			if (fstream != null) {
 
@@ -172,8 +164,7 @@ public class GeneDistributionReader {
 				// Get the object of DataInputStream
 				DataInputStream in = new DataInputStream(fstream);
 				try {
-					BufferedReader br = new BufferedReader(
-							new InputStreamReader(in));
+					BufferedReader br = new BufferedReader(new InputStreamReader(in));
 					String strLine;
 					int numLines = 0;
 					while ((strLine = br.readLine()) != null) {
@@ -202,8 +193,7 @@ public class GeneDistributionReader {
 
 								if (split.length == 21) {
 									researcher = new Researcher(split[0]);
-									known = split[1].equalsIgnoreCase("known") ? ENSGInfo.KNOWN
-											: ENSGInfo.UNKNOWN;
+									known = split[1].equalsIgnoreCase("known") ? ENSGInfo.KNOWN : ENSGInfo.UNKNOWN;
 									ensG_ID = split[2];
 									external_gene_id = split[3];
 									description = split[4];
@@ -212,20 +202,14 @@ public class GeneDistributionReader {
 									transcriptCount = Integer.valueOf(split[8]);
 									geneBiotype = split[9];
 									status = split[10];
-									uniprot = split[11].equals("1") ? true
-											: false;
-									uniprot_protEvidence = split[12]
-											.equals("1") ? true : false;
-									gpmdb = split[13].equals("1") ? true
-											: false;
-									gpmdb_lt_minus_5 = split[14].equals("1") ? true
-											: false;
-									gpmdb_lt_minus_2 = split[15].equals("1") ? true
-											: false;
+									uniprot = split[11].equals("1") ? true : false;
+									uniprot_protEvidence = split[12].equals("1") ? true : false;
+									gpmdb = split[13].equals("1") ? true : false;
+									gpmdb_lt_minus_5 = split[14].equals("1") ? true : false;
+									gpmdb_lt_minus_2 = split[15].equals("1") ? true : false;
 									loge = Double.valueOf(split[16]);
 									hpa = split[17].equals("1") ? true : false;
-									nappa = split[18].equals("1") ? true
-											: false;
+									nappa = split[18].equals("1") ? true : false;
 									researcher.setGroupID(split[20]);
 
 									ENSGInfo gene = new ENSGInfo();
@@ -265,8 +249,7 @@ public class GeneDistributionReader {
 					in.close();
 				}
 			} else {
-				throw new IllegalMiapeArgumentException(distributionFileName
-						+ " not found");
+				throw new IllegalMiapeArgumentException(distributionFileName + " not found");
 			}
 		} catch (FileNotFoundException e) {
 			log.info(e.getMessage());
@@ -299,7 +282,9 @@ public class GeneDistributionReader {
 
 		proteinGeneMapping = new HashMap<String, List<ENSGInfo>>();
 		proteinGeneMappingByChromosome = new HashMap<String, HashMap<String, List<ENSGInfo>>>();
-		HashMap<String, ENSGInfo> assignedGenes = getGeneInfoFromProteoRedDistribution();
+		// HashMap<String, ENSGInfo> assignedGenes =
+		// getGeneInfoFromProteoRedDistribution();
+		HashMap<String, ENSGInfo> assignedGenes = new HashMap<String, ENSGInfo>();
 		// log.info("Num assigned genes = " + assignedGenes.size());
 		// log.info("Mapping ENSG Ids to Uniprot IDS");
 		mapGenesToUniprot(assignedGenes);
@@ -309,7 +294,8 @@ public class GeneDistributionReader {
 		// Add information from TREMBL and SWISSPROT FILES
 		// addChr16InfoFromOtherFiles(assignedGenes, chrName);
 		// log.info(proteinGeneMapping.size() + " proteins mapped to a Gene");
-		// log.info("Getting Gene information from other chromosomes (nextprot files)");
+		// log.info("Getting Gene information from other chromosomes (nextprot
+		// files)");
 		// ADD information from other chromosomes from NextProt mapping
 
 		// addOtherChromosomesInfo(chrName);
@@ -318,8 +304,7 @@ public class GeneDistributionReader {
 		return proteinGeneMapping;
 	}
 
-	private HashMap<String, List<ENSGInfo>> getChromosomeProteinGeneMapping(
-			String chrName) {
+	private HashMap<String, List<ENSGInfo>> getChromosomeProteinGeneMapping(String chrName) {
 		// if (this.proteinGeneMapping != null) {
 		if (proteinGeneMappingByChromosome != null) {
 			return proteinGeneMappingByChromosome.get(chrName);
@@ -368,11 +353,9 @@ public class GeneDistributionReader {
 
 			if (uniprotEnsemblMapInputStream != null) {
 				// Get the object of DataInputStream
-				DataInputStream in = new DataInputStream(
-						uniprotEnsemblMapInputStream);
+				DataInputStream in = new DataInputStream(uniprotEnsemblMapInputStream);
 				try {
-					BufferedReader br = new BufferedReader(
-							new InputStreamReader(in));
+					BufferedReader br = new BufferedReader(new InputStreamReader(in));
 					String strLine;
 					int numLines = 0;
 					while ((strLine = br.readLine()) != null) {
@@ -382,40 +365,53 @@ public class GeneDistributionReader {
 								final String[] split = strLine.split(",");
 
 								String ensG_ID = "";
+								String ensP_ID = "";
+								// String ensT_ID = "";
 								String acc = "";
+								String acc_trembl = "";
 								String chr = "";
-								String pe = "";
-								String score = "";
-								boolean missing = false;
-								boolean anchor = false;
-								if (split[1].equals("1"))
-									anchor = true;
-								acc = split[0];
-								ensG_ID = split[2];
-								chr = split[3];
-								if (split.length > 4)
-									pe = split[4];
-								if (split.length > 5)
-									missing = split[5].equals("1") ? true
-											: false;
+								// String pe = "";
+								// String score = "";
+								// boolean missing = false;
+								// boolean anchor = false;
+								// if (split[1].equals("1")) {
+								// anchor = true;
+								// }
+								ensG_ID = split[0];
+								// ensT_ID = split[1];
+								acc = split[2];
+								acc_trembl = split[3];
+								chr = split[4];
+								ensP_ID = split[5];
+								// if (split.length > 4)
+								// pe = split[4];
+								// if (split.length > 5)
+								// missing = split[5].equals("1") ? true :
+								// false;
 								if (ensG_ID != null) {
 									ENSGInfo geneInfo = null;
 									if (genes.containsKey(ensG_ID)) {
 										geneInfo = genes.get(ensG_ID);
 									} else {
 										geneInfo = new ENSGInfo();
-										geneInfo.setAssigned(false);
 										genes.put(ensG_ID, geneInfo);
 									}
-									geneInfo.setMissing(missing);
-									if (!"".equals(acc))
+									// geneInfo.setMissing(missing);
+									if (!"".equals(acc)) {
 										geneInfo.addProteinACC(acc);
-
-									if (!"".equals(chr))
-										geneInfo.setChrName(chr);
-									if (!"".equals(pe)) {
-										geneInfo.setProteinEvidence(pe);
 									}
+									if (!"".equals(acc_trembl)) {
+										geneInfo.addProteinACC(acc_trembl);
+									}
+									if (!"".equals(ensP_ID)) {
+										geneInfo.addENSP(ensP_ID);
+									}
+									if (!"".equals(chr)) {
+										geneInfo.setChrName(chr);
+									}
+									// if (!"".equals(pe)) {
+									// geneInfo.setProteinEvidence(pe);
+									// }
 
 								}
 							} else {
@@ -423,49 +419,37 @@ public class GeneDistributionReader {
 							}
 						}
 					}
-					log.info("Num genes=" + genes.size() + " in "
-							+ ensg2uniprotFileName + " file");
+					log.info("Num genes=" + genes.size() + " in " + ensg2uniprotFileName + " file");
 					if (genes != null && !genes.isEmpty()) {
 						for (ENSGInfo gene : genes.values()) {
-							final List<String> proteinACCList = gene
-									.getProteinACC();
+							final List<String> proteinACCList = gene.getProteinACC();
 							if (proteinACCList != null) {
 								for (String proteinACC : proteinACCList) {
-									if (!proteinGeneMapping
-											.containsKey(proteinACC)) {
+									if (!proteinGeneMapping.containsKey(proteinACC)) {
 										List<ENSGInfo> geneList = new ArrayList<ENSGInfo>();
 										geneList.add(gene);
-										proteinGeneMapping.put(proteinACC,
-												geneList);
+										proteinGeneMapping.put(proteinACC, geneList);
 									} else {
-										proteinGeneMapping.get(proteinACC).add(
-												gene);
+										proteinGeneMapping.get(proteinACC).add(gene);
 									}
 									// By chromosome
 									String chrName = gene.getChrName();
 									if (chrName != null) {
-										if (!proteinGeneMappingByChromosome
-												.containsKey(chrName)) {
+										if (!proteinGeneMappingByChromosome.containsKey(chrName)) {
 											HashMap<String, List<ENSGInfo>> proteinGeneMappingChr = new HashMap<String, List<ENSGInfo>>();
 											List<ENSGInfo> geneList = new ArrayList<ENSGInfo>();
 											geneList.add(gene);
-											proteinGeneMappingChr.put(
-													proteinACC, geneList);
-											proteinGeneMappingByChromosome.put(
-													chrName,
-													proteinGeneMappingChr);
+											proteinGeneMappingChr.put(proteinACC, geneList);
+											proteinGeneMappingByChromosome.put(chrName, proteinGeneMappingChr);
 										} else {
 											HashMap<String, List<ENSGInfo>> proteinGeneMappingChr = proteinGeneMappingByChromosome
 													.get(chrName);
-											if (!proteinGeneMappingChr
-													.containsKey(proteinACC)) {
+											if (!proteinGeneMappingChr.containsKey(proteinACC)) {
 												List<ENSGInfo> geneList = new ArrayList<ENSGInfo>();
 												geneList.add(gene);
-												proteinGeneMappingChr.put(
-														proteinACC, geneList);
+												proteinGeneMappingChr.put(proteinACC, geneList);
 											} else {
-												proteinGeneMappingChr.get(
-														proteinACC).add(gene);
+												proteinGeneMappingChr.get(proteinACC).add(gene);
 											}
 										}
 									}
@@ -475,13 +459,11 @@ public class GeneDistributionReader {
 					}
 				} finally {
 					in.close();
-					log.info(proteinGeneMapping.size()
-							+ " proteins mapped to some gene after reading from "
+					log.info(proteinGeneMapping.size() + " proteins mapped to some gene after reading from "
 							+ ensg2uniprotFileName);
 				}
 			} else {
-				throw new IllegalMiapeArgumentException(ensg2uniprotFileName
-						+ " not found");
+				throw new IllegalMiapeArgumentException(ensg2uniprotFileName + " not found");
 			}
 		} catch (FileNotFoundException e) {
 			log.info(e.getMessage());
@@ -590,8 +572,7 @@ public class GeneDistributionReader {
 	 * @param assignedGenes
 	 * @param chrName
 	 */
-	private void addChr16InfoFromOtherFiles(
-			HashMap<String, ENSGInfo> assignedGenes, String chrName) {
+	private void addChr16InfoFromOtherFiles(HashMap<String, ENSGInfo> assignedGenes, String chrName) {
 
 		if (chrName != null && !"16".equals(chrName))
 			return;
@@ -610,8 +591,7 @@ public class GeneDistributionReader {
 				try {
 					fastaLoader.load(fastaFile.getAbsolutePath());
 
-					final long countNumberOfEntries = fastaLoader
-							.countNumberOfEntries();
+					final long countNumberOfEntries = fastaLoader.countNumberOfEntries();
 					for (int i = 0; i < countNumberOfEntries; i++) {
 						final Protein nextProtein = fastaLoader.nextProtein();
 						if (nextProtein == null)
@@ -620,8 +600,7 @@ public class GeneDistributionReader {
 						String uniprotACC = header.getAccession();
 
 						IdentifierParser.setRemove_acc_version(true);
-						String canonicalUniprotACC = IdentifierParser
-								.parseACC(uniprotACC);
+						String canonicalUniprotACC = IdentifierParser.parseACC(uniprotACC);
 
 						// if the uniprotACC whitout isoform "-2" is already
 						// seen in the proteinMapping, add a new entry mapping
@@ -657,29 +636,21 @@ public class GeneDistributionReader {
 							}
 
 							if (proteinGeneMapping.containsKey(uniprotACC)) {
-								final List<ENSGInfo> geneList = proteinGeneMapping
-										.get(uniprotACC);
+								final List<ENSGInfo> geneList = proteinGeneMapping.get(uniprotACC);
 								boolean found = false;
 								for (ENSGInfo ensgInfo2 : geneList) {
-									if (ensgInfo2.getEnsG_ID().equals(
-											ensgInfo.getEnsG_ID()))
+									if (ensgInfo2.getEnsG_ID().equals(ensgInfo.getEnsG_ID()))
 										found = true;
 								}
 								if (!found) {
-									System.out.println(uniprotACC + ": " + ENSG
-											+ ","
-											+ geneList.get(0).getEnsG_ID());
-									proteinGeneMapping.get(uniprotACC).add(
-											ensgInfo);
+									System.out.println(uniprotACC + ": " + ENSG + "," + geneList.get(0).getEnsG_ID());
+									proteinGeneMapping.get(uniprotACC).add(ensgInfo);
 								}
-							} else if (proteinGeneMapping
-									.containsKey(canonicalUniprotACC)) {
-								final List<ENSGInfo> canonicalGeneList = proteinGeneMapping
-										.get(canonicalUniprotACC);
+							} else if (proteinGeneMapping.containsKey(canonicalUniprotACC)) {
+								final List<ENSGInfo> canonicalGeneList = proteinGeneMapping.get(canonicalUniprotACC);
 								boolean found = false;
 								for (ENSGInfo ensgInfo2 : canonicalGeneList) {
-									if (ensgInfo2.getEnsG_ID().equals(
-											ensgInfo.getEnsG_ID()))
+									if (ensgInfo2.getEnsG_ID().equals(ensgInfo.getEnsG_ID()))
 										found = true;
 								}
 								if (!found) { // the isoform comes from a
@@ -687,11 +658,9 @@ public class GeneDistributionReader {
 												// canonical form:
 									List<ENSGInfo> geneList2 = new ArrayList<ENSGInfo>();
 									geneList2.add(ensgInfo);
-									proteinGeneMapping.put(uniprotACC,
-											geneList2);
+									proteinGeneMapping.put(uniprotACC, geneList2);
 								} else {
-									proteinGeneMapping.put(uniprotACC,
-											canonicalGeneList);
+									proteinGeneMapping.put(uniprotACC, canonicalGeneList);
 								}
 							} else {
 								List<ENSGInfo> geneList2 = new ArrayList<ENSGInfo>();
@@ -700,9 +669,8 @@ public class GeneDistributionReader {
 							}
 						}
 					}
-					log.info(proteinGeneMapping.size()
-							+ " proteins mapped to some gene after reading from "
-							+ fileName);
+					log.info(
+							proteinGeneMapping.size() + " proteins mapped to some gene after reading from " + fileName);
 					// log.info(numSeqInDB + " " + countNumberOfEntries +
 					// " proteins readed in "
 					// + fileName);
@@ -761,14 +729,13 @@ public class GeneDistributionReader {
 	}
 
 	public static void main(String args[]) {
-		final HashMap<String, List<ENSGInfo>> proteinGeneMapping = GeneDistributionReader
-				.getInstance().getProteinGeneMapping(null);
+		final HashMap<String, List<ENSGInfo>> proteinGeneMapping = GeneDistributionReader.getInstance()
+				.getProteinGeneMapping(null);
 		System.out.println(proteinGeneMapping.size());
 
 	}
 
-	public Set<ENSGInfo> getGenesFromProteinGroup(
-			ProteinGroupOccurrence proteinGroupOccurrence, String chrName) {
+	public Set<ENSGInfo> getGenesFromProteinGroup(ProteinGroupOccurrence proteinGroupOccurrence, String chrName) {
 		List<ENSGInfo> ret = new ArrayList<ENSGInfo>();
 		HashMap<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(chrName);
 
@@ -788,8 +755,7 @@ public class GeneDistributionReader {
 		return set;
 	}
 
-	public boolean isProteinGroupFromChromosome(
-			ProteinGroupOccurrence proteinGroupOccurrence, String chrName) {
+	public boolean isProteinGroupFromChromosome(ProteinGroupOccurrence proteinGroupOccurrence, String chrName) {
 		HashMap<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(chrName);
 
 		List<String> accessions = proteinGroupOccurrence.getAccessions();
@@ -801,8 +767,7 @@ public class GeneDistributionReader {
 		return false;
 	}
 
-	public Set<ENSGInfo> getGenesFromProtein(ExtendedIdentifiedProtein protein,
-			String chrName) {
+	public Set<ENSGInfo> getGenesFromProtein(ExtendedIdentifiedProtein protein, String chrName) {
 		Set<ENSGInfo> ret = new HashSet<ENSGInfo>();
 		HashMap<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(chrName);
 
@@ -820,8 +785,7 @@ public class GeneDistributionReader {
 		return ret;
 	}
 
-	public Collection<ENSGInfo> getGenesFromProteinGroup(
-			List<ProteinGroup> identifiedProteinGroups) {
+	public Collection<ENSGInfo> getGenesFromProteinGroup(List<ProteinGroup> identifiedProteinGroups) {
 		HashMap<String, ENSGInfo> ret = new HashMap<String, ENSGInfo>();
 		HashMap<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(null);
 
@@ -829,16 +793,19 @@ public class GeneDistributionReader {
 			if (pGroup.getEvidence() != ProteinEvidence.NONCONCLUSIVE) {
 				List<String> accessions = pGroup.getAccessions();
 				for (String acc : accessions) {
-					if (proteinGeneMapping2.containsKey(acc)) {
-						List<ENSGInfo> list = proteinGeneMapping2.get(acc);
-						for (ENSGInfo ensgInfo : list) {
-							if (ensgInfo.getEnsG_ID() != null) {
-								if (!ret.containsKey(ensgInfo.getEnsG_ID()))
-									ret.put(ensgInfo.getEnsG_ID(), ensgInfo);
+					String uniprotAcc = FastaParser.getUniProtACC(acc);
+					if (uniprotAcc != null) {
+						String key = uniprotAcc;
+						if (proteinGeneMapping2.containsKey(key)) {
+							List<ENSGInfo> list = proteinGeneMapping2.get(key);
+							for (ENSGInfo ensgInfo : list) {
+								if (ensgInfo.getEnsG_ID() != null) {
+									if (!ret.containsKey(ensgInfo.getEnsG_ID()))
+										ret.put(ensgInfo.getEnsG_ID(), ensgInfo);
 
+								}
 							}
 						}
-
 					}
 				}
 			}
@@ -848,8 +815,7 @@ public class GeneDistributionReader {
 
 	}
 
-	public Collection<ENSGInfo> getFirstGenesFromProteinGroup(
-			List<ProteinGroup> identifiedProteinGroups) {
+	public Collection<ENSGInfo> getFirstGenesFromProteinGroup(List<ProteinGroup> identifiedProteinGroups) {
 		HashMap<String, ENSGInfo> ret = new HashMap<String, ENSGInfo>();
 		HashMap<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(null);
 
@@ -874,8 +840,7 @@ public class GeneDistributionReader {
 
 	}
 
-	public Set<String> getChromosomesFromProteinGroup(
-			ProteinGroupOccurrence proteinGroupOccurrence) {
+	public Set<String> getChromosomesFromProteinGroup(ProteinGroupOccurrence proteinGroupOccurrence) {
 		Set<String> ret = new HashSet<String>();
 		HashMap<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(null);
 
@@ -892,8 +857,7 @@ public class GeneDistributionReader {
 		return ret;
 	}
 
-	public Set<String> getChromosomesFromProtein(
-			ExtendedIdentifiedProtein protein) {
+	public Set<String> getChromosomesFromProtein(ExtendedIdentifiedProtein protein) {
 		Set<String> ret = new HashSet<String>();
 		HashMap<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(null);
 
@@ -918,8 +882,8 @@ public class GeneDistributionReader {
 	 * @param idSet
 	 * @return
 	 */
-	public List<HashMap<String, List<String>>> getGeneAndProteinDistributionByChromosome(
-			IdentificationSet idSet, String chrName) {
+	public List<HashMap<String, List<String>>> getGeneAndProteinDistributionByChromosome(IdentificationSet idSet,
+			String chrName) {
 		List<HashMap<String, List<String>>> ret = new ArrayList<HashMap<String, List<String>>>();
 
 		HashMap<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(chrName);
@@ -927,24 +891,19 @@ public class GeneDistributionReader {
 		HashMap<String, List<String>> geneDistribution = new HashMap<String, List<String>>();
 		// Chromosomename-ProteinACCs
 		HashMap<String, List<String>> proteinDistribution = new HashMap<String, List<String>>();
-		Collection<ProteinGroupOccurrence> proteinOccurrenceList = idSet
-				.getProteinGroupOccurrenceList().values();
+		Collection<ProteinGroupOccurrence> proteinOccurrenceList = idSet.getProteinGroupOccurrenceList().values();
 		for (ProteinGroupOccurrence proteinGroupOccurrence : proteinOccurrenceList) {
 			if (proteinGroupOccurrence.getEvidence() != ProteinEvidence.NONCONCLUSIVE) {
-				final List<String> accessions = proteinGroupOccurrence
-						.getAccessions();
+				final List<String> accessions = proteinGroupOccurrence.getAccessions();
 				for (String proteinACC : accessions) {
 					if (proteinGeneMapping2.containsKey(proteinACC)) {
-						Set<ENSGInfo> geneList = this.getGenesFromProteinGroup(
-								proteinGroupOccurrence, chrName);
+						Set<ENSGInfo> geneList = this.getGenesFromProteinGroup(proteinGroupOccurrence, chrName);
 						for (ENSGInfo ensgInfo : geneList) {
 							String chromosomeName = ensgInfo.getChrName();
 							if (geneDistribution.containsKey(chromosomeName)) {
-								List<String> ensGID = geneDistribution
-										.get(chromosomeName);
+								List<String> ensGID = geneDistribution.get(chromosomeName);
 								if (!ensGID.contains(ensgInfo.getEnsG_ID()))
-									geneDistribution.get(chromosomeName).add(
-											ensgInfo.getEnsG_ID());
+									geneDistribution.get(chromosomeName).add(ensgInfo.getEnsG_ID());
 							} else {
 								List<String> ensGIDs = new ArrayList<String>();
 								ensGIDs.add(ensgInfo.getEnsG_ID());
@@ -954,11 +913,9 @@ public class GeneDistributionReader {
 						Set<String> chromosomes = getChromosomesFromProteinGroup(proteinGroupOccurrence);
 						for (String chromosomeName : chromosomes) {
 							if (proteinDistribution.containsKey(chromosomeName)) {
-								List<String> accs = proteinDistribution
-										.get(chromosomeName);
+								List<String> accs = proteinDistribution.get(chromosomeName);
 								if (!accs.contains(proteinACC)) {
-									proteinDistribution.get(chromosomeName)
-											.add(proteinACC);
+									proteinDistribution.get(chromosomeName).add(proteinACC);
 								}
 							} else {
 								List<String> list = new ArrayList<String>();
@@ -982,16 +939,13 @@ public class GeneDistributionReader {
 	 * @return a has map with key=chromosome name and value=list of
 	 *         {@link ENSGInfo}
 	 */
-	public HashMap<String, List<ENSGInfo>> getGeneDistributionByChromosome(
-			String chrName) {
+	public HashMap<String, List<ENSGInfo>> getGeneDistributionByChromosome(String chrName) {
 		if (chrName == null || "".equals(chrName))
-			throw new IllegalMiapeArgumentException(
-					"Chromosome name cannot be null");
+			throw new IllegalMiapeArgumentException("Chromosome name cannot be null");
 
 		HashMap<String, List<ENSGInfo>> ret = new HashMap<String, List<ENSGInfo>>();
 
-		HashMap<String, List<ENSGInfo>> genes = proteinGeneMappingByChromosome
-				.get(chrName);
+		HashMap<String, List<ENSGInfo>> genes = proteinGeneMappingByChromosome.get(chrName);
 		for (List<ENSGInfo> engInfos : genes.values()) {
 			for (ENSGInfo ensgInfo : engInfos) {
 				if (ensgInfo.getEnsG_ID() != null)
@@ -1013,23 +967,18 @@ public class GeneDistributionReader {
 		return ret;
 	}
 
-	public List<String> getProteinsInAChromosome(IdentificationSet idSet,
-			String chrName) {
+	public List<String> getProteinsInAChromosome(IdentificationSet idSet, String chrName) {
 
-		return getGeneAndProteinDistributionByChromosome(idSet, chrName).get(0)
-				.get(chrName);
+		return getGeneAndProteinDistributionByChromosome(idSet, chrName).get(0).get(chrName);
 	}
 
-	public List<String> getENSGIDInAChromosome(IdentificationSet idSet,
-			String chrName) {
+	public List<String> getENSGIDInAChromosome(IdentificationSet idSet, String chrName) {
 
-		return getGeneAndProteinDistributionByChromosome(idSet, chrName).get(1)
-				.get(chrName);
+		return getGeneAndProteinDistributionByChromosome(idSet, chrName).get(1).get(chrName);
 	}
 
 	public Collection<ENSGInfo> getENSGIDInAChromosome(String chrName) {
-		Collection<ENSGInfo> values = getGeneDistributionByChromosome(chrName)
-				.get(chrName);
+		Collection<ENSGInfo> values = getGeneDistributionByChromosome(chrName).get(chrName);
 		return values;
 	}
 }

@@ -6,7 +6,10 @@ package org.proteored.pacom.gui;
 
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -21,19 +24,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingWorker.StateValue;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.TitledBorder;
 
 import org.proteored.miapeapi.cv.ControlVocabularyManager;
@@ -43,6 +48,8 @@ import org.proteored.miapeapi.factories.MiapeDocumentFactory;
 import org.proteored.miapeapi.factories.ms.MiapeMSDocumentFactory;
 import org.proteored.miapeapi.interfaces.MiapeDate;
 import org.proteored.miapeapi.interfaces.ms.MiapeMSDocument;
+import org.proteored.miapeapi.text.tsv.msi.TableTextFileColumn;
+import org.proteored.miapeapi.text.tsv.msi.TableTextFileSeparator;
 import org.proteored.miapeapi.xml.ms.MIAPEMSXmlFile;
 import org.proteored.miapeapi.xml.ms.MiapeMSDocumentImpl;
 import org.proteored.miapeapi.xml.ms.MiapeMSXmlFactory;
@@ -60,8 +67,6 @@ import org.proteored.pacom.utils.MiapeExtractionParametersUtil;
 import org.proteored.pacom.utils.MiapeExtractionResult;
 import org.proteored.pacom.utils.MiapeExtractionRunParameters;
 
-import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
-
 /**
  *
  * @author __USER__
@@ -76,6 +81,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	private static final String NOT_APPLICABLE = "not applicable";
 	private static final String PRIDE_FILE_LABEL = "PRIDE xml file:";
 	private static final String XTANDEM_FILE_LABEL = "X!Tandem xml file:";
+	private static final String TSV_FILE_LABEL = "TSV text file:";
 	private static final String DTASELECT_FILE_LABEL = "DTASelect file:";
 	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
@@ -133,10 +139,6 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 
 		// super(parent, modal);
 		initComponents();
-		try {
-			UIManager.setLookAndFeel(new WindowsLookAndFeel());
-		} catch (UnsupportedLookAndFeelException ex) {
-		}
 
 		if (parent != null) {
 			ftpPath = MainFrame.ftpPath;
@@ -157,7 +159,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_PRIDEXML);
 
 		// set icon image
-		setIconImage(ImageManager.getImageIcon(ImageManager.PACOM_LOGO).getImage());
+		setIconImage(ImageManager.getImageIcon(ImageManager.LOAD_LOGO_128).getImage());
 		jButtonSubmit.setIcon(ImageManager.getImageIcon(ImageManager.ADD));
 		jButtonSubmit.setPressedIcon(ImageManager.getImageIcon(ImageManager.ADD_CLICKED));
 		jButtonClearStatus.setIcon(ImageManager.getImageIcon(ImageManager.CLEAR));
@@ -329,26 +331,23 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 						.addGroup(jPanel4Layout.createParallelGroup(Alignment.LEADING)
 								.addComponent(panel, GroupLayout.PREFERRED_SIZE, 149, Short.MAX_VALUE)
 								.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE))));
-		jPanel4Layout.setVerticalGroup(jPanel4Layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanel4Layout.createSequentialGroup()
-						.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(panel, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(60, Short.MAX_VALUE)));
+		jPanel4Layout.setVerticalGroup(jPanel4Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel4Layout
+				.createSequentialGroup()
+				.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addPreferredGap(ComponentPlacement.RELATED)
+				.addComponent(panel, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+				.addContainerGap(60, Short.MAX_VALUE)));
 		jRadioButtonMzIdentML = new javax.swing.JRadioButton();
 		jRadioButtonMzIdentML.setSelected(true);
 
 		buttonGroupInputFileFormat.add(jRadioButtonMzIdentML);
 		jRadioButtonMzIdentML.setText("mzIdentML");
-		jRadioButtonMzIdentML.setToolTipText(
-				"<html>Extract MIAPE MSI information from a mzIdentML file.<br>\nIf a metadata template is used, a MIAPE MS will be also created.</html>");
+		jRadioButtonMzIdentML.setToolTipText("<html>Import a dataset from a mzIdentML stadard data file.</html>");
 		jRadioButtonPRIDE = new javax.swing.JRadioButton();
 
 		buttonGroupInputFileFormat.add(jRadioButtonPRIDE);
 		jRadioButtonPRIDE.setText("PRIDE XML");
-		jRadioButtonPRIDE.setToolTipText(
-				"<html>Extract MIAPE MS and/or MSI information from a PRIDE XML file.<br>\nIf a metadata template is used, its information will be added to the resulting MIAPE MS document.</html>");
+		jRadioButtonPRIDE.setToolTipText("<html>Import a dataset from a PRIDE XML file.</html>");
 		jRadioButtonPRIDE.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -359,44 +358,86 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 
 		buttonGroupInputFileFormat.add(jRadioButtonXTandem);
 		jRadioButtonXTandem.setText("XTandem XML");
-		jRadioButtonXTandem.setToolTipText(
-				"<html>Extract MIAPE MSI information from a XTandem XML result file.<br>\nIf a metadata template is used, a MIAPE MS will be also created.</html>");
+		jRadioButtonXTandem.setToolTipText("<html>Import a dataset from a X!Tandem output files.</html>");
 		jRadioButtonXTandem.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jRadioButtonXTandemActionPerformed(evt);
+				jRadioButtonXTandemActionPerformed();
 			}
 		});
 		jRadioButtonDTASelect = new javax.swing.JRadioButton();
 
 		buttonGroupInputFileFormat.add(jRadioButtonDTASelect);
 		jRadioButtonDTASelect.setText("DTASelect");
-		jRadioButtonDTASelect.setToolTipText(
-				"<html>Extract MIAPE MSI information from a DTASelect result file.<br>\nIf a metadata template is used, a MIAPE MS will be also created.</html>");
+		jRadioButtonDTASelect.setToolTipText("<html>Import a dataset from a DTASelect output text file.</html>");
 		jRadioButtonDTASelect.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jRadioButtonDTASelectActionPerformed(evt);
+				jRadioButtonDTASelectActionPerformed();
 			}
 		});
+
+		jRatioButtonTabseparatedTextFile = new JRadioButton();
+		jRatioButtonTabseparatedTextFile.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				jRatioButtonTabseparatedTextFileActionPerformed();
+
+			}
+		});
+		buttonGroupInputFileFormat.add(jRatioButtonTabseparatedTextFile);
+		jRatioButtonTabseparatedTextFile
+				.setToolTipText("<html>Import a dataset from a Tab-separated text file.</html>");
+		jRatioButtonTabseparatedTextFile.setText("Table text file");
+
+		jComboBoxTableSeparators = new JComboBox();
+		jComboBoxTableSeparators.setToolTipText("Separator used in the table of the text file");
+		jComboBoxTableSeparators.setEnabled(false);
+		jComboBoxTableSeparators.setModel(new DefaultComboBoxModel(TableTextFileSeparator.values()));
+
+		jButtonHelpSeparators = new JButton();
+		jButtonHelpSeparators.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showTableTextFileHelp();
+			}
+		});
+		jButtonHelpSeparators.setBorder(BorderFactory.createEmptyBorder());
+		jButtonHelpSeparators.setContentAreaFilled(false);
+		jButtonHelpSeparators.setIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON));
+		jButtonHelpSeparators.setPressedIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON_CLICKED));
+		jButtonHelpSeparators.setRolloverIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON_HOVER));
+		jButtonHelpSeparators.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
-		gl_panel_1.setHorizontalGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_1.createSequentialGroup().addContainerGap()
-						.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING).addComponent(jRadioButtonMzIdentML)
-								.addComponent(jRadioButtonPRIDE).addComponent(jRadioButtonDTASelect)
-								.addComponent(jRadioButtonXTandem))
-						.addContainerGap(75, Short.MAX_VALUE)));
+		gl_panel_1.setHorizontalGroup(gl_panel_1.createParallelGroup(Alignment.LEADING).addGroup(gl_panel_1
+				.createSequentialGroup().addContainerGap()
+				.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING).addComponent(jRadioButtonMzIdentML)
+						.addComponent(jRadioButtonPRIDE).addComponent(jRadioButtonDTASelect)
+						.addComponent(jRadioButtonXTandem)
+						.addGroup(gl_panel_1.createSequentialGroup().addComponent(jRatioButtonTabseparatedTextFile)
+								.addPreferredGap(ComponentPlacement.RELATED).addComponent(jComboBoxTableSeparators,
+										GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE)
+								.addGap(6).addComponent(jButtonHelpSeparators, GroupLayout.PREFERRED_SIZE, 16,
+										GroupLayout.PREFERRED_SIZE)))
+				.addContainerGap()));
 		gl_panel_1.setVerticalGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_1.createSequentialGroup().addContainerGap().addComponent(jRadioButtonMzIdentML)
-						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonPRIDE)
-						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonDTASelect)
-						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonXTandem)
+				.addGroup(gl_panel_1.createSequentialGroup().addContainerGap()
+						.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING)
+								.addGroup(gl_panel_1.createSequentialGroup().addGap(100).addComponent(
+										jButtonHelpSeparators, GroupLayout.PREFERRED_SIZE, 16, Short.MAX_VALUE))
+								.addGroup(gl_panel_1.createSequentialGroup().addComponent(jRadioButtonMzIdentML)
+										.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonPRIDE)
+										.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonDTASelect)
+										.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonXTandem)
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
+												.addComponent(jRatioButtonTabseparatedTextFile).addComponent(
+														jComboBoxTableSeparators, GroupLayout.PREFERRED_SIZE,
+														GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
 						.addContainerGap()));
 		panel_1.setLayout(gl_panel_1);
 		jRadioButtonMzIdentML.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jRadioButtonMzIdentMLActionPerformed(evt);
+				jRadioButtonMzIdentMLActionPerformed();
 			}
 		});
 		jRadioButtonMzIdentMLMGF = new javax.swing.JRadioButton();
@@ -506,11 +547,9 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		jPanel8Layout.setHorizontalGroup(jPanel8Layout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(Alignment.LEADING, jPanel8Layout.createSequentialGroup().addContainerGap()
 						.addComponent(jCheckBoxLocalProcessinInParallel).addContainerGap(82, Short.MAX_VALUE)));
-		jPanel8Layout
-				.setVerticalGroup(jPanel8Layout.createParallelGroup(Alignment.LEADING)
-						.addGroup(jPanel8Layout.createSequentialGroup().addContainerGap()
-								.addComponent(jCheckBoxLocalProcessinInParallel)
-								.addContainerGap(173, Short.MAX_VALUE)));
+		jPanel8Layout.setVerticalGroup(jPanel8Layout.createParallelGroup(Alignment.LEADING)
+				.addGroup(jPanel8Layout.createSequentialGroup().addContainerGap()
+						.addComponent(jCheckBoxLocalProcessinInParallel).addContainerGap(173, Short.MAX_VALUE)));
 		jPanel8.setLayout(jPanel8Layout);
 
 		inputFileLabel1.setText("not applicable:");
@@ -563,9 +602,9 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 						.addGroup(jPanel5Layout.createParallelGroup(Alignment.TRAILING, false)
 								.addComponent(jLabelMiapeMSMetadata, Alignment.LEADING, GroupLayout.DEFAULT_SIZE,
 										GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(jComboBoxMetadata, Alignment.LEADING, 0, 263, Short.MAX_VALUE))
-				.addPreferredGap(ComponentPlacement.RELATED).addComponent(jButtonEditMetadata)
-				.addContainerGap(340, Short.MAX_VALUE)));
+								.addComponent(jComboBoxMetadata, Alignment.LEADING, 0, 263, Short.MAX_VALUE))
+						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jButtonEditMetadata)
+						.addContainerGap(340, Short.MAX_VALUE)));
 		jPanel5Layout.setVerticalGroup(jPanel5Layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(jPanel5Layout.createSequentialGroup().addContainerGap()
 						.addGroup(jPanel5Layout.createParallelGroup(Alignment.BASELINE)
@@ -581,9 +620,8 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 
 		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel1Layout
-				.createSequentialGroup().addContainerGap()
-				.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-						.addGroup(jPanel1Layout.createSequentialGroup()
+				.createSequentialGroup().addContainerGap().addGroup(jPanel1Layout
+						.createParallelGroup(Alignment.LEADING).addGroup(jPanel1Layout.createSequentialGroup()
 								.addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, 238, GroupLayout.PREFERRED_SIZE)
 								.addPreferredGap(ComponentPlacement.RELATED)
 								.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING, false)
@@ -610,21 +648,21 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 								.addComponent(jTextFieldInputFile, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 										GroupLayout.PREFERRED_SIZE)
 								.addComponent(jButtonInputFile))
-				.addPreferredGap(ComponentPlacement.RELATED)
-				.addGroup(jPanel1Layout.createParallelGroup(Alignment.BASELINE).addComponent(inputFileLabel2)
-						.addComponent(jTextFieldInputFile2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addComponent(jButtonInputFile2))
-				.addPreferredGap(ComponentPlacement.RELATED)
-				.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-						.addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE)
-						.addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 308, Short.MAX_VALUE)
-						.addGroup(jPanel1Layout.createSequentialGroup()
-								.addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED).addComponent(jPanel8,
-										GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-				.addContainerGap()));
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(jPanel1Layout.createParallelGroup(Alignment.BASELINE).addComponent(inputFileLabel2)
+								.addComponent(jTextFieldInputFile2, GroupLayout.PREFERRED_SIZE,
+										GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(jButtonInputFile2))
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
+								.addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE)
+								.addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 308, Short.MAX_VALUE)
+								.addGroup(jPanel1Layout.createSequentialGroup()
+										.addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.RELATED).addComponent(jPanel8,
+												GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+						.addContainerGap()));
 		jPanel1.setLayout(jPanel1Layout);
 
 		jPanel2.setBorder(new TitledBorder(null, "Select (or create) a project name", TitledBorder.LEADING,
@@ -648,11 +686,10 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
 		jPanel2.setLayout(jPanel2Layout);
 		jPanel2Layout.setHorizontalGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
-						jPanel2Layout.createSequentialGroup().addContainerGap()
-								.addComponent(jTextFieldProjectName, javax.swing.GroupLayout.DEFAULT_SIZE, 667,
-										Short.MAX_VALUE)
-								.addGap(18, 18, 18).addComponent(jButtonProject).addContainerGap()));
+				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+						.addContainerGap()
+						.addComponent(jTextFieldProjectName, javax.swing.GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE)
+						.addGap(18, 18, 18).addComponent(jButtonProject).addContainerGap()));
 		jPanel2Layout.setVerticalGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(jPanel2Layout.createSequentialGroup()
 						.addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -692,19 +729,17 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 
 		javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
 		jPanel3.setLayout(jPanel3Layout);
-		jPanel3Layout
-				.setHorizontalGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(jPanel3Layout.createSequentialGroup().addContainerGap()
-								.addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-										.addComponent(jProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 788,
-												Short.MAX_VALUE)
+		jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel3Layout.createSequentialGroup().addContainerGap()
+						.addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addComponent(jProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
 								.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
 								.addGroup(
 										jPanel3Layout.createSequentialGroup().addComponent(jButtonClearStatus)
 												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
 														578, Short.MAX_VALUE)
 												.addComponent(jButtonSubmit)))
-								.addContainerGap()));
+						.addContainerGap()));
 		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(jPanel3Layout.createSequentialGroup()
 						.addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE,
@@ -719,32 +754,22 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 										Short.MAX_VALUE))));
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-		layout.setHorizontalGroup(
-				layout.createParallelGroup(Alignment.LEADING)
-						.addGroup(
-								layout.createSequentialGroup().addContainerGap()
-										.addGroup(
-												layout.createParallelGroup(Alignment.LEADING)
-														.addGroup(layout.createSequentialGroup()
-																.addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, 874,
-																		Short.MAX_VALUE)
-																.addContainerGap())
-										.addGroup(
-												layout.createSequentialGroup()
-														.addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, 874,
-																Short.MAX_VALUE)
-														.addContainerGap()).addComponent(jPanel1, Alignment.TRAILING,
-																GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-																Short.MAX_VALUE))));
-		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup().addContainerGap()
-						.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(jPanel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE).addContainerGap()));
+		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout.createSequentialGroup()
+				.addContainerGap()
+				.addGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout.createSequentialGroup()
+						.addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, 874, Short.MAX_VALUE).addContainerGap())
+						.addGroup(layout.createSequentialGroup()
+								.addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, 874, Short.MAX_VALUE)
+								.addContainerGap())
+						.addComponent(jPanel1, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+								Short.MAX_VALUE))));
+		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout.createSequentialGroup()
+				.addContainerGap()
+				.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addPreferredGap(ComponentPlacement.RELATED)
+				.addComponent(jPanel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addPreferredGap(ComponentPlacement.RELATED)
+				.addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE).addContainerGap()));
 		getContentPane().setLayout(layout);
 
 		pack();
@@ -752,6 +777,49 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		java.awt.Dimension dialogSize = getSize();
 		setLocation((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2);
 	}// </editor-fold>
+
+	private void showTableTextFileHelp() {
+		HelpDialog helpDialog = new HelpDialog(this, "Text table format", getTextTableFormatText1());
+		helpDialog.setVisible(true);
+	}
+
+	public static String getTextTableFormatText1() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(
+				"<html>PACOM supports text files containing a table with different predifined columns, separated by a symbol (select one in the combo-box).<br>");
+		sb.append(
+				"These files <b>MUST</b> contain a header in which the following <b>header names</b> are allowed at the first row:");
+		sb.append("<ul>");
+		for (TableTextFileColumn columnName : TableTextFileColumn.values()) {
+			sb.append(getHeaderString(columnName));
+		}
+		sb.append("</ul>");
+		sb.append(
+				"Any other header name different than any in that list will be recognized as a <b>new score</b>, and values in that column should be real numbers.<br>");
+		sb.append("Lines starting by '<b>#</b>' will be <b>ignored</b>.");
+		return sb.toString();
+	}
+
+	private static String getHeaderString(TableTextFileColumn column) {
+		String mandatory = column.isMandatory() ? " (mandatory)" : " (optional)";
+		return "<li><b>" + column.getHeaderName() + "</b>" + mandatory + ": " + column.getHeaderExplanation() + "</li>";
+	}
+
+	protected void jRatioButtonTabseparatedTextFileActionPerformed() {
+		jComboBoxMetadata.setEnabled(false);
+		jButtonEditMetadata.setEnabled(false);
+		jComboBoxTableSeparators.setEnabled(jRatioButtonTabseparatedTextFile.isSelected());
+
+		// the same as for mzIdentML
+		jRadioButtonMzIdentMLActionPerformed();
+
+		disablePrimaryInputTextFile();
+		enableSecondaryInputTextFile(TSV_FILE_LABEL);
+
+		// reset combo box, deleting current mzml if exists
+		FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_MZML);
+
+	}
 
 	private void jCheckBoxMSItemStateChanged(java.awt.event.ItemEvent evt) {
 		if (!jCheckBoxMS.isSelected()) {
@@ -886,12 +954,12 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 
 	}
 
-	private void jRadioButtonXTandemActionPerformed(java.awt.event.ActionEvent evt) {
+	private void jRadioButtonXTandemActionPerformed() {
 		jComboBoxMetadata.setEnabled(false);
 		jButtonEditMetadata.setEnabled(false);
 
 		// the same as for mzIdentML
-		jRadioButtonMzIdentMLActionPerformed(evt);
+		jRadioButtonMzIdentMLActionPerformed();
 
 		disablePrimaryInputTextFile();
 		enableSecondaryInputTextFile(XTANDEM_FILE_LABEL);
@@ -901,7 +969,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 
 	}
 
-	private void jRadioButtonDTASelectActionPerformed(java.awt.event.ActionEvent evt) {
+	private void jRadioButtonDTASelectActionPerformed() {
 		jComboBoxMetadata.setEnabled(false);
 		jButtonEditMetadata.setEnabled(false);
 		// disable and not select MIAPE MS
@@ -911,7 +979,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 
 		jCheckBoxMSI.setSelected(true);
 		// the same as for mzIdentML
-		jRadioButtonMzIdentMLActionPerformed(evt);
+		jRadioButtonMzIdentMLActionPerformed();
 
 		disablePrimaryInputTextFile();
 		enableSecondaryInputTextFile(DTASELECT_FILE_LABEL);
@@ -929,7 +997,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		return mainFrame;
 	}
 
-	private void jRadioButtonMzIdentMLActionPerformed(java.awt.event.ActionEvent evt) {
+	private void jRadioButtonMzIdentMLActionPerformed() {
 		jComboBoxMetadata.setEnabled(false);
 		jButtonEditMetadata.setEnabled(false);
 
@@ -1195,7 +1263,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 					}
 				} else {
 					final int option = JOptionPane.showConfirmDialog(this,
-							"<html>Metadata requested by MIAPE MS guidelines is not usually present in the<br>"
+							"<html>Some metadata is not usually present in the<br>"
 									+ "input files (spectrometer details, data processing, etc...).<br><br>"
 									+ "You can select one preconfigured metadata information in the dropdown list.<br><br>"
 									+ "Do you want to continue without complete metadata? (YES)<br>"
@@ -1217,7 +1285,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 				String metadataString = MetadataLoader.getMetadataString(selectedItem);
 				final int option = JOptionPane
 						.showConfirmDialog(this,
-								"<html>You have selected the following metadata to add to the MIAPE MS document.<br>Are you sure you want to continue?:<br><br>"
+								"<html>You have selected the following metadata to add to the dataset.<br>Are you sure you want to continue?:<br><br>"
 										+ metadataString + "</html>",
 								"Metadata confirmation", JOptionPane.YES_NO_OPTION);
 				if (option == JOptionPane.YES_OPTION) {
@@ -1364,6 +1432,9 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 										// LoadProjectsThread is already loading
 										// or not
 	private final Map<Integer, String> loadedProjects = new HashMap<Integer, String>();
+	private JRadioButton jRatioButtonTabseparatedTextFile;
+	private JComboBox jComboBoxTableSeparators;
+	private JButton jButtonHelpSeparators;
 
 	// public int selectedInstrumentNumber;
 
@@ -1756,5 +1827,23 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	@Override
 	public boolean isDTASelectPlusMGFSelected() {
 		return jRadioButtonDTASelectMGF.isSelected();
+	}
+
+	@Override
+	public boolean isTSVSelected() {
+		return jRatioButtonTabseparatedTextFile.isSelected();
+	}
+
+	@Override
+	public String getTSVSelectFileName() {
+		if (isTSVSelected()) {
+			return jRatioButtonTabseparatedTextFile.getText();
+		}
+		return null;
+	}
+
+	@Override
+	public TableTextFileSeparator getSeparator() {
+		return (TableTextFileSeparator) this.jComboBoxTableSeparators.getSelectedItem();
 	}
 }

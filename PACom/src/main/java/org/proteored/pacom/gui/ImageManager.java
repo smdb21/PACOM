@@ -21,7 +21,9 @@ public class ImageManager {
 	public static final String LOAD_LOGO_128 = "load_128.png";
 	public static final String LOAD_LOGO_128_CLICKED = "load_128_clicked.png";
 	public static final String LOAD_LOGO_128_HOVER = "load_128_hover.png";
-
+	public static final String BATCH_LOAD_LOGO_128 = "pacom_batch_import_128.png";
+	public static final String BATCH_LOAD_LOGO_128_CLICKED = "pacom_batch_import_128_clicked.png";
+	public static final String BATCH_LOAD_LOGO_128_HOVER = "pacom_batch_import_128_hover.png";
 	public static final String CURATED_EXPERIMENT = "curated_experiment.png";
 	public static final String EXPERIMENT = "experiment.png";
 	public static final String REPLICATE = "replicate.png";
@@ -57,6 +59,12 @@ public class ImageManager {
 	public static final String PRIDE = "pride_logo_muypeq.jpg";
 	public static final String SEARCH = "search.png";
 	public static final String RAW = "raw.png";
+	public static final String HELP_ICON = "icon-help.png";
+	public static final String HELP_ICON_HOVER = "icon-help_hover.png";
+	public static final String HELP_ICON_CLICKED = "icon-help_clicked.png";
+	public static final String HELP_ICON_64 = "icon-help_64.png";
+	public static final String HELP_ICON_64_HOVER = "icon-help_64_hover.png";
+	public static final String HELP_ICON_64_CLICKED = "icon-help_64_clicked.png";
 
 	public static ImageIcon getImageIcon(String name) {
 		final URL resource = cl.getResource(name);

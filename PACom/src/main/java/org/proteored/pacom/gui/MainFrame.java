@@ -74,6 +74,11 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 	private Miape2ExperimentListDialog miape2experimentListDialog;
 	private static Boolean unattendedRetrieverEnabled;
 	private MiapeExtractionBatchFrame miapeExtractionBatchFrame;
+	private final static String dataInspectionTooltip = "<html><br><ul><li>Inspect your data creating your own inspection projects.</li><li>Compare complex experiments in an intuitive way.</li><li>Get a lot of charts representing qualitative data from your experiments.</li><li>Filter data applying several filters (FDR, score thresholds, etc...)</li><li>Export your data into PRIDE XML format</li></ul><br></html>";
+	private final static String dataImportToolTip = "<html><br>Extract and import datasets from input data files such as:<br><ul><li>mzIdentML</li><li>mzML</li><li>PRIDE XML</li><li>X!Tandem output XML</li> <li>DTASelect output</li><li>Separated values tables</li></ul><br></html>";
+	private final static String batchDataImportToolTip = "<html><br>Batch data import from datasets files such as: <ul> <li>mzIdentML</li> <li>mzML</li> <li>PRIDE XML</li> <li>X!Tandem output XML</li> <li>DTASelect output</li> <li>Separated values tables</li> </ul>Using a batch data import file you can import multiple datasets.<br><br></html>";
+
+	public static final boolean parallelProcessingOnExtraction = true;
 
 	private final boolean checkUpdates = false;
 	public static boolean localWorkflow = false;
@@ -313,14 +318,13 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 
 		jMenuBar1.add(jMenu1);
 
-		jMenu2.setText("Import data");
-		jMenu2.setToolTipText("Import MIAPE information");
+		jMenu2.setText("Data Import");
+		jMenu2.setToolTipText(dataImportToolTip);
 
 		jMenuItemStandard2MIAPE.setAccelerator(
 				javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.ALT_MASK));
-		jMenuItemStandard2MIAPE.setText("Import data");
-		jMenuItemStandard2MIAPE.setToolTipText(
-				"<html>\nExtract and import datasets from input data files such as:<br>\n<ul>\n<li>mzIdentML</li>\n<li>mzML</li>\n<li>PRIDE XML</li>\n<li>X!Tandem output XML</li>\n</ul>\n</html>");
+		jMenuItemStandard2MIAPE.setText("Go to Data Import");
+		jMenuItemStandard2MIAPE.setToolTipText(dataImportToolTip);
 		jMenuItemStandard2MIAPE.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -331,9 +335,8 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 
 		jMenuItemBatchMiapeExtraction.setAccelerator(
 				javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.ALT_MASK));
-		jMenuItemBatchMiapeExtraction.setText("Batch import data");
-		jMenuItemBatchMiapeExtraction.setToolTipText(
-				"<html> Batch import data from proteomics data files such as:<br> <ul> <li>mzIdentML</li> <li>mzML</li> <li>PRIDE XML</li> <li>X!Tandem output XML</li> </ul><br>\nUsing a batch miape extraction file, you can create multiple MIAPE documents in batch mode.</html>");
+		jMenuItemBatchMiapeExtraction.setText("Go to Batch Data Import");
+		jMenuItemBatchMiapeExtraction.setToolTipText(batchDataImportToolTip);
 		jMenuItemBatchMiapeExtraction.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -348,9 +351,8 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 
 		jMenuItemStartProjectComparison.setAccelerator(
 				javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.ALT_MASK));
-		jMenuItemStartProjectComparison.setText("Data inspection project");
-		jMenuItemStartProjectComparison.setToolTipText(
-				"<html>\n<ul>\n<li>Inspect your data creating your own inspection projects.</li>\n<li>Compare complex experiments in an intuitive way.</li>\n<li>Get a lot of charts representing qualitative data from your experiments.</li>\n<li>Filter data applying several filters (FDR, score thresholds, etc...)</li>\n<li>Prepare your data for a <a href=\"http://www.proteomexchange.org\">ProteomeXchange</a> submission</li>\n</ul>\n</html>");
+		jMenuItemStartProjectComparison.setText("Go to Data Inspection");
+		jMenuItemStartProjectComparison.setToolTipText(dataInspectionTooltip);
 		jMenuItemStartProjectComparison.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -452,7 +454,7 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 		c.gridy = 0;
 		c.gridwidth = 1;
 		jPanel1.add(jLabelInit, c);
-		JLabel jLabelInit2 = new javax.swing.JLabel("Data Inspection");
+		JLabel jLabelInit2 = new javax.swing.JLabel("Batch import data");
 		jLabelInit2.setHorizontalAlignment(SwingConstants.LEFT);
 		jLabelInit2.setFont(new Font("Dialog", Font.PLAIN, 18));
 		jLabelInit2.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -462,12 +464,21 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 		c.gridy = 0;
 		c.gridwidth = 1;
 		jPanel1.add(jLabelInit2, c);
-		GridBagConstraints c2 = new GridBagConstraints();
-		c2.fill = GridBagConstraints.HORIZONTAL;
+		JLabel jLabelInit3 = new javax.swing.JLabel("Data Inspection");
+		jLabelInit3.setHorizontalAlignment(SwingConstants.LEFT);
+		jLabelInit3.setFont(new Font("Dialog", Font.PLAIN, 18));
+		jLabelInit3.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+		c.fill = GridBagConstraints.FIRST_LINE_START;
 		c.insets = new Insets(10, 10, 10, 10);
-		c2.gridx = 0;
-		c2.gridy = 1;
-		c2.gridwidth = 1;
+		c.gridx = 2;
+		c.gridy = 0;
+		c.gridwidth = 1;
+		jPanel1.add(jLabelInit3, c);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.insets = new Insets(10, 10, 10, 10);
+		c.gridx = 0;
+		c.gridy = 1;
+		c.gridwidth = 1;
 		JButton loadButton = new JButton();
 		loadButton.setIcon(ImageManager.getImageIcon(ImageManager.LOAD_LOGO_128));
 		loadButton.setPressedIcon(ImageManager.getImageIcon(ImageManager.LOAD_LOGO_128_CLICKED));
@@ -480,17 +491,40 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 
 			}
 		});
-		loadButton.setToolTipText("Import data");
+		loadButton.setToolTipText(dataImportToolTip);
 		loadButton.setBorder(BorderFactory.createEmptyBorder());
 		loadButton.setContentAreaFilled(false);
 		loadButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		jPanel1.add(loadButton, c2);
-		GridBagConstraints c3 = new GridBagConstraints();
-		c3.fill = GridBagConstraints.HORIZONTAL;
+		jPanel1.add(loadButton, c);
+		//
+		c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 10, 10, 10);
-		c3.gridx = 1;
-		c3.gridy = 1;
-		c3.gridwidth = 1;
+		c.gridx = 1;
+		c.gridy = 1;
+		c.gridwidth = 1;
+		JButton batchLoadButton = new JButton();
+		batchLoadButton.setIcon(ImageManager.getImageIcon(ImageManager.BATCH_LOAD_LOGO_128));
+		batchLoadButton.setPressedIcon(ImageManager.getImageIcon(ImageManager.BATCH_LOAD_LOGO_128_CLICKED));
+		batchLoadButton.setRolloverIcon(ImageManager.getImageIcon(ImageManager.BATCH_LOAD_LOGO_128_HOVER));
+
+		batchLoadButton.setFocusable(false);
+		batchLoadButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showBatchMiapeExtractionFrame();
+
+			}
+		});
+		batchLoadButton.setToolTipText(batchDataImportToolTip);
+		batchLoadButton.setBorder(BorderFactory.createEmptyBorder());
+		batchLoadButton.setContentAreaFilled(false);
+		batchLoadButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		jPanel1.add(batchLoadButton, c);
+		//
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.insets = new Insets(10, 10, 10, 10);
+		c.gridx = 2;
+		c.gridy = 1;
+		c.gridwidth = 1;
 		JButton inspectButton = new JButton();
 		inspectButton.setIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_128));
 		inspectButton.setPressedIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_128_CLICKED));
@@ -500,13 +534,12 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 		inspectButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				startProjectComparison();
-
 			}
 		});
-		inspectButton.setToolTipText("Data inspection");
+		inspectButton.setToolTipText(dataInspectionTooltip);
 		inspectButton.setBorder(BorderFactory.createEmptyBorder());
 		inspectButton.setContentAreaFilled(false);
-		jPanel1.add(inspectButton, c3);
+		jPanel1.add(inspectButton, c);
 		getContentPane().setLayout(layout);
 
 		pack();
@@ -549,9 +582,10 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 	}
 
 	private void showBatchMiapeExtractionFrame() {
+		setVisible(false);
 		miapeExtractionBatchFrame = MiapeExtractionBatchFrame.getInstace(this);
 		miapeExtractionBatchFrame.setVisible(true);
-		setVisible(false);
+
 	}
 
 	private void jMenuItemShowQueriesActionPerformed(java.awt.event.ActionEvent evt) {

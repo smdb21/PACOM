@@ -36,26 +36,30 @@ public class MiapeExtractionParametersUtil {
 			// else if (params.isMIAPEMSIChecked())
 			// miape_extraction = "MSI";
 		} else if (params.isXTandemSelected()) {
-			ret = ret + "X!Tandem out XML ("
+			ret = ret + "X!Tandem XML ("
 					+ FilenameUtils.getName(new File(params.getXTandemFileName()).getAbsolutePath()) + ")";
 			// miape_extraction = "MSI";
 		} else if (params.isXTandemPlusMGFSelected()) {
 			ret = ret + "MGF (" + FilenameUtils.getName(new File(params.getMgfFileName()).getAbsolutePath())
-					+ ") + <br> X!Tandem out XML ("
+					+ ") + <br> X!Tandem XML ("
 					+ FilenameUtils.getName(new File(params.getXTandemFileName()).getAbsolutePath()) + ")";
 			// miape_extraction = "MSI";
 		} else if (params.isDTASelectSelected()) {
-			ret = ret + "DTASelect-filter txt ("
+			ret = ret + "DTASelect (" + FilenameUtils.getName(new File(params.getDtaSelectFileName()).getAbsolutePath())
+					+ ")";
+			// miape_extraction = "MSI";
+		} else if (params.isTSVSelected()) {
+			ret = ret + "Text Table ("
 					+ FilenameUtils.getName(new File(params.getDtaSelectFileName()).getAbsolutePath()) + ")";
 			// miape_extraction = "MSI";
 		} else if (params.isDTASelectPlusMGFSelected()) {
 			ret = ret + "MGF (" + FilenameUtils.getName(new File(params.getMgfFileName()).getAbsolutePath())
-					+ ") + <br> DTASelect-filter txt ("
+					+ ") + <br> DTASelect ("
 					+ FilenameUtils.getName(new File(params.getDtaSelectFileName()).getAbsolutePath()) + ")";
 			// miape_extraction = "MSI";
 		}
 
-		ret = "Dataset extraction from " + ret;
+		ret = "Dataset from " + ret;
 		if (params.getMiapeMSMetadata() != null) {
 			ret += " + <br> template (" + params.getTemplateName() + ")";
 		}

@@ -11,6 +11,7 @@ import org.proteored.miapeapi.factories.MiapeDocumentFactory;
 import org.proteored.miapeapi.factories.ms.MiapeMSDocumentFactory;
 import org.proteored.miapeapi.interfaces.MiapeDate;
 import org.proteored.miapeapi.interfaces.ms.MiapeMSDocument;
+import org.proteored.miapeapi.text.tsv.msi.TableTextFileSeparator;
 import org.proteored.miapeapi.xml.ms.MiapeMSDocumentImpl;
 import org.proteored.miapeapi.xml.ms.merge.MiapeMSMerger;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
@@ -45,6 +46,9 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 	private String dtaSelectFileName;
 	private boolean DTASelectPlusMGFSelected;
 	private boolean DTASelectSelected;
+	private boolean tSVSelected;
+	private String tSVFileName;
+	private TableTextFileSeparator separator;
 
 	@Override
 	public boolean isFastParsing() {
@@ -467,6 +471,33 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 	 */
 	public void setDTASelectSelected(boolean dTASelectSelected) {
 		DTASelectSelected = dTASelectSelected;
+	}
+
+	@Override
+	public boolean isTSVSelected() {
+		return tSVSelected;
+	}
+
+	@Override
+	public String getTSVSelectFileName() {
+		return tSVFileName;
+	}
+
+	public void setTSVSelected(boolean tSVSelected) {
+		this.tSVSelected = tSVSelected;
+	}
+
+	public void setTSVFileName(String tSVFileName) {
+		this.tSVFileName = tSVFileName;
+	}
+
+	@Override
+	public TableTextFileSeparator getSeparator() {
+		return separator;
+	}
+
+	public void setSeparator(TableTextFileSeparator separator) {
+		this.separator = separator;
 	}
 
 }

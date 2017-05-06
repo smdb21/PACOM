@@ -6,6 +6,7 @@ package org.proteored.pacom.gui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -21,15 +22,19 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.swing.BorderFactory;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingWorker.StateValue;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.TitledBorder;
 
 import org.jfree.ui.RefineryUtilities;
 import org.proteored.miapeapi.cv.ControlVocabularyManager;
@@ -44,8 +49,6 @@ import org.proteored.pacom.gui.tasks.OntologyLoaderWaiter;
 import org.proteored.pacom.utils.HttpUtilities;
 import org.proteored.pacom.utils.MiapeExtractionBatchManager;
 import org.proteored.pacom.utils.MiapeExtractionResult;
-
-import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 
 /**
  *
@@ -76,10 +79,8 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 	 * @param mainFrame
 	 */
 	private MiapeExtractionBatchFrame(MainFrame mainFrame) {
-		try {
-			UIManager.setLookAndFeel(new WindowsLookAndFeel());
-		} catch (UnsupportedLookAndFeelException e) {
-		}
+		setResizable(false);
+		this.setIconImage(ImageManager.getImageIcon(ImageManager.BATCH_LOAD_LOGO_128).getImage());
 		initComponents();
 		parentFrame = mainFrame;
 		// WebservicesLoaderTask loader = WebservicesLoaderTask.getInstace();
@@ -119,16 +120,12 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 		jTextFieldBatchFile = new javax.swing.JTextField();
 		jButtonSelectBatchFile = new javax.swing.JButton();
 		jPanel3 = new javax.swing.JPanel();
-		jButtonStart = new javax.swing.JButton();
-		jButtonCancel = new javax.swing.JButton();
 		jScrollPane1 = new javax.swing.JScrollPane();
-		jTextAreaStatus = new javax.swing.JTextArea();
-		jButtonRestartFailedTasks = new javax.swing.JButton();
 		jScrollPaneJobQueue = new javax.swing.JScrollPane();
 		jPanelJobQueue = new javax.swing.JPanel();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		setTitle("Batch data import");
+		setTitle("Batch Data Import");
 
 		jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(),
 				"Batch file"));
@@ -146,80 +143,39 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 		jPanel1.setLayout(jPanel1Layout);
 		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
-						jPanel1Layout.createSequentialGroup().addContainerGap()
-								.addComponent(jTextFieldBatchFile, javax.swing.GroupLayout.DEFAULT_SIZE, 985,
-										Short.MAX_VALUE)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jButtonSelectBatchFile).addContainerGap()));
+				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+						.addContainerGap()
+						.addComponent(jTextFieldBatchFile, javax.swing.GroupLayout.DEFAULT_SIZE, 985, Short.MAX_VALUE)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jButtonSelectBatchFile).addContainerGap()));
 		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(jPanel1Layout.createSequentialGroup()
 						.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
 								.addComponent(jButtonSelectBatchFile).addComponent(jTextFieldBatchFile,
-										javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.PREFERRED_SIZE))
+										javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
 						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-		jButtonStart.setText("Start batch import");
-		jButtonStart.setEnabled(false);
-		jButtonStart.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButtonStartActionPerformed(evt);
-			}
-		});
-
-		jButtonCancel.setText("Cancel all");
-		jButtonCancel.setEnabled(false);
-		jButtonCancel.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButtonCancelActionPerformed(evt);
-			}
-		});
-
 		jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+		javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+		jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING).addComponent(jScrollPane1,
+				Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 1208, Short.MAX_VALUE));
+		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING).addComponent(jScrollPane1,
+				GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE));
+		jTextAreaStatus = new javax.swing.JTextArea();
+		jScrollPane1.setViewportView(jTextAreaStatus);
 
 		jTextAreaStatus.setColumns(20);
 		jTextAreaStatus.setLineWrap(true);
 		jTextAreaStatus.setRows(5);
 		jTextAreaStatus.setWrapStyleWord(true);
-		jScrollPane1.setViewportView(jTextAreaStatus);
-
-		jButtonRestartFailedTasks.setText("Restart failed tasks");
-		jButtonRestartFailedTasks.setEnabled(false);
-		jButtonRestartFailedTasks.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButtonRestartFailedTasksActionPerformed(evt);
-			}
-		});
-
-		javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
 		jPanel3.setLayout(jPanel3Layout);
-		jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanel3Layout.createSequentialGroup().addContainerGap()
-						.addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-								.addComponent(jButtonRestartFailedTasks, javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(jButtonCancel, javax.swing.GroupLayout.DEFAULT_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addComponent(jButtonStart,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE))
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 913, Short.MAX_VALUE)));
-		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanel3Layout.createSequentialGroup().addContainerGap().addComponent(jButtonStart)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jButtonCancel)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jButtonRestartFailedTasks).addContainerGap(18, Short.MAX_VALUE))
-				.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE));
 
 		jScrollPaneJobQueue.setBorder(javax.swing.BorderFactory
 				.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Job queue"));
-		jScrollPaneJobQueue.setAutoscrolls(true);
 
 		javax.swing.GroupLayout jPanelJobQueueLayout = new javax.swing.GroupLayout(jPanelJobQueue);
 		jPanelJobQueue.setLayout(jPanelJobQueueLayout);
@@ -230,35 +186,146 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 
 		jScrollPaneJobQueue.setViewportView(jPanelJobQueue);
 
+		JPanel jPanelImage = new JPanel();
+		jPanelImage.setBorder(new TitledBorder(null, "Controls", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				javax.swing.GroupLayout.Alignment.TRAILING,
-				layout.createSequentialGroup().addContainerGap()
-						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-								.addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)
-								.addComponent(jScrollPaneJobQueue, javax.swing.GroupLayout.Alignment.LEADING,
-										javax.swing.GroupLayout.DEFAULT_SIZE, 1091, Short.MAX_VALUE)
-								.addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE))
-						.addContainerGap()));
-		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup().addContainerGap()
-						.addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jScrollPaneJobQueue, javax.swing.GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout.createSequentialGroup()
+				.addContainerGap()
+				.addGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(jPanel3, 0, 0, Short.MAX_VALUE)
+						.addComponent(jPanel1, 0, 0, Short.MAX_VALUE)
+						.addGroup(layout.createSequentialGroup()
+								.addComponent(jPanelImage, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addComponent(jScrollPaneJobQueue, GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)))
 				.addContainerGap()));
+		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout.createSequentialGroup()
+				.addContainerGap()
+				.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addPreferredGap(ComponentPlacement.RELATED)
+				.addGroup(layout.createParallelGroup(Alignment.LEADING)
+						.addComponent(jScrollPaneJobQueue, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
+						.addComponent(jPanelImage, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE))
+				.addPreferredGap(ComponentPlacement.UNRELATED)
+				.addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addContainerGap()));
+		GridBagLayout gbl_jPanelImage = new GridBagLayout();
+		gbl_jPanelImage.columnWidths = new int[] { 0, 0 };
+		gbl_jPanelImage.rowHeights = new int[] { 0, 0, 0, 0, 0 };
+		gbl_jPanelImage.columnWeights = new double[] { 0.0, Double.MIN_VALUE };
+		gbl_jPanelImage.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		jPanelImage.setLayout(gbl_jPanelImage);
+		jButtonStart = new javax.swing.JButton();
+		GridBagConstraints gbc_jButtonStart = new GridBagConstraints();
+		gbc_jButtonStart.fill = GridBagConstraints.HORIZONTAL;
+		gbc_jButtonStart.insets = new Insets(0, 0, 5, 0);
+		gbc_jButtonStart.gridx = 0;
+		gbc_jButtonStart.gridy = 0;
+		jPanelImage.add(jButtonStart, gbc_jButtonStart);
+
+		jButtonStart.setText("Start batch import");
+		jButtonStart.setEnabled(false);
+		jButtonRestartFailedTasks = new javax.swing.JButton();
+		GridBagConstraints gbc_jButtonRestartFailedTasks = new GridBagConstraints();
+		gbc_jButtonRestartFailedTasks.fill = GridBagConstraints.HORIZONTAL;
+		gbc_jButtonRestartFailedTasks.insets = new Insets(0, 0, 5, 0);
+		gbc_jButtonRestartFailedTasks.gridx = 0;
+		gbc_jButtonRestartFailedTasks.gridy = 1;
+		jPanelImage.add(jButtonRestartFailedTasks, gbc_jButtonRestartFailedTasks);
+
+		jButtonRestartFailedTasks.setText("Restart failed tasks");
+		jButtonRestartFailedTasks.setEnabled(false);
+		jButtonCancel = new javax.swing.JButton();
+		GridBagConstraints gbc_jButtonCancel = new GridBagConstraints();
+		gbc_jButtonCancel.fill = GridBagConstraints.HORIZONTAL;
+		gbc_jButtonCancel.insets = new Insets(0, 0, 5, 0);
+		gbc_jButtonCancel.gridx = 0;
+		gbc_jButtonCancel.gridy = 2;
+		jPanelImage.add(jButtonCancel, gbc_jButtonCancel);
+
+		jButtonCancel.setText("Cancel all");
+		jButtonCancel.setEnabled(false);
+
+		JButton jButtonHelp = new JButton("");
+		GridBagConstraints gbc_jButtonHelp = new GridBagConstraints();
+		gbc_jButtonHelp.insets = new Insets(50, 0, 0, 0);
+		gbc_jButtonHelp.gridx = 0;
+		gbc_jButtonHelp.gridy = 3;
+		jPanelImage.add(jButtonHelp, gbc_jButtonHelp);
+		jButtonHelp.setBorder(BorderFactory.createEmptyBorder());
+		jButtonHelp.setContentAreaFilled(false);
+		jButtonHelp.setIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON_64));
+		jButtonHelp.setPressedIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON_64_CLICKED));
+		jButtonHelp.setRolloverIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON_64_HOVER));
+		jButtonHelp.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		jButtonHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showHelp();
+			}
+		});
+		jButtonCancel.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jButtonCancelActionPerformed(evt);
+			}
+		});
+		jButtonRestartFailedTasks.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jButtonRestartFailedTasksActionPerformed(evt);
+			}
+		});
+		jButtonStart.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jButtonStartActionPerformed(evt);
+			}
+		});
+		getContentPane().setLayout(layout);
 
 		pack();
 	}// </editor-fold>
-		// GEN-END:initComponents
+
+	protected void showHelp() {
+		HelpDialog help = new HelpDialog(this, "Batch import file format", getBatchImportFileFormatHelpText());
+		help.setVisible(true);
+	}
+
+	private String getBatchImportFileFormatHelpText() {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("<html>");
+		sb.append(
+				"In order to import multiple input files as different datasets in PACOM you need to use an <b>Batch Import text file</b>.<br>");
+		sb.append(
+				"This file is composed by multiple blocks, each one corresponding to one <b>data import job</b>.<br>");
+		sb.append("<ul><li>Each block starts with '<b>" + MiapeExtractionBatchManager.START_MIAPE_EXTRACTION
+				+ "</b>' followed by a <b>job number</b>, and ends with '<b>"
+				+ MiapeExtractionBatchManager.END_MIAPE_EXTRACTION + "</b>'.</li></ul>");
+		sb.append("In each block you need to specify the following items (each one in one line):");
+		sb.append("<ul>");
+		sb.append("<li>(Mandatory) One '<b>" + MiapeExtractionBatchManager.MIAPE_PROJECT
+				+ "</b>' element followed by a name of the project. It is just a way of organizing the data into the system,<br>so it will appear under that folder when creating the inspection project.</li>");
+		sb.append("<li>(Mandatory) One input type element (<b>" + MiapeExtractionBatchManager.getInputTypesString()
+				+ "</b>) followed by the full path to the input file.</li>");
+		sb.append("<li>(Optional) One '<b>" + MiapeExtractionBatchManager.METADATA
+				+ "</b>' element followed by the name of a MS metadata template previously generated (in single Data Import option).</li>");
+		sb.append("<li>(Optional) One '<b>" + MiapeExtractionBatchManager.MS_JOB_REF
+				+ "</b>' element followed by the job number of a previous job in which a MS dataset has been generated, that is, using<br>'<b>"
+				+ MiapeExtractionBatchManager.MGF + "</b>' or '<b>" + MiapeExtractionBatchManager.MZML
+				+ "</b>' input data files alone. This will link the MS dataset to the identification dataset specified in the same job.</li>");
+
+		sb.append("</ul>");
+		sb.append("Each item in the block is specified in a <b>new line</b><br>");
+		sb.append(
+				"Once you have your Batch Import text file, you can load it here and it will be validated. If everything is ok, you will see a dataset import job in the <b>job queue</b>.<br>");
+		sb.append(
+				"After that, you can start all jobs sequencially by clicking on 'Start batch import' button, or you can start individual jobs in the job queue.");
+		sb.append("</html>");
+		return sb.toString();
+	}
+
+	// GEN-END:initComponents
 
 	private void jButtonRestartFailedTasksActionPerformed(java.awt.event.ActionEvent evt) {
 		if (!miapeExtractorBatchManager.getRunningJobs().isEmpty())
@@ -420,6 +487,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 
 		// Progress bar
 		JProgressBar bar = new JProgressBar();
+		// bar.setSize(50, bar.getHeight());
 		bar.setToolTipText("progress from task " + miapeExtractionTask.getRunIdentifier());
 		bar.setStringPainted(true);
 		bar.setString("");

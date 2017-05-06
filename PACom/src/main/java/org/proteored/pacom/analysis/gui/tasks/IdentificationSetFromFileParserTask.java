@@ -29,9 +29,9 @@ import org.proteored.miapeapi.interfaces.msi.IdentifiedPeptide;
 import org.proteored.miapeapi.interfaces.msi.IdentifiedProtein;
 import org.proteored.miapeapi.interfaces.msi.IdentifiedProteinSet;
 import org.proteored.miapeapi.interfaces.msi.PeptideScore;
+import org.proteored.miapeapi.text.tsv.msi.IdentifiedPeptideImplFromTSV;
+import org.proteored.miapeapi.text.tsv.msi.IdentifiedProteinImplFromTSV;
 import org.proteored.miapeapi.util.UniprotId2AccMapping;
-import org.proteored.pacom.analysis.exporters.tasks.IdentifiedPeptideImpl;
-import org.proteored.pacom.analysis.exporters.tasks.IdentifiedProteinImpl;
 import org.proteored.pacom.gui.MainFrame;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 import org.springframework.core.io.ClassPathResource;
@@ -186,9 +186,9 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 							psmID = split[indexesByHeaders.get(PSMID)];
 						}
 						// create or get the peptide (PSM)
-						IdentifiedPeptideImpl peptide = null;
+						IdentifiedPeptideImplFromTSV peptide = null;
 						if (!peptides.containsKey(psmID)) {
-							peptide = new IdentifiedPeptideImpl(seq);
+							peptide = new IdentifiedPeptideImplFromTSV(seq);
 							peptides.put(psmID, peptide);
 							if (FastaParser.somethingExtrangeInSequence(rawSeq)) {
 								Map<Integer, Double> pTMsByPosition = FastaParser.getPTMsFromSequence(rawSeq);
@@ -204,7 +204,7 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 							}
 
 						} else {
-							peptide = (IdentifiedPeptideImpl) peptides.get(psmID);
+							peptide = (IdentifiedPeptideImplFromTSV) peptides.get(psmID);
 						}
 
 						// CHARGE
@@ -268,13 +268,13 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 						for (String proteinAcc : accessions) {
 
 							if (proteins.containsKey(proteinAcc)) {
-								final IdentifiedProteinImpl protein = (IdentifiedProteinImpl) proteins.get(proteinAcc);
+								final IdentifiedProteinImplFromTSV protein = (IdentifiedProteinImplFromTSV) proteins.get(proteinAcc);
 								if (peptide != null) {
 									protein.addPeptide(peptide);
 									peptide.addProtein(protein);
 								}
 							} else {
-								IdentifiedProteinImpl protein = new IdentifiedProteinImpl(proteinAcc, null);
+								IdentifiedProteinImplFromTSV protein = new IdentifiedProteinImplFromTSV(proteinAcc, null);
 								if (peptide != null) {
 									protein.addPeptide(peptide);
 									peptide.addProtein(protein);
@@ -472,11 +472,11 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 			log.info(peptideToProteinsMap.size() + " peptides mapped");
 			for (String peptideSeq : peptideToProteinsMap.keySet()) {
 				if (peptideMap.containsKey(peptideSeq)) {
-					final IdentifiedPeptideImpl identifiedPeptide = (IdentifiedPeptideImpl) peptideMap.get(peptideSeq);
+					final IdentifiedPeptideImplFromTSV identifiedPeptide = (IdentifiedPeptideImplFromTSV) peptideMap.get(peptideSeq);
 					final List<String> proteinAccs = peptideToProteinsMap.get(peptideSeq);
 					for (String proteinAcc : proteinAccs) {
 						if (proteinMap.containsKey(proteinAcc)) {
-							final IdentifiedProteinImpl identifiedProtein = (IdentifiedProteinImpl) proteinMap
+							final IdentifiedProteinImplFromTSV identifiedProtein = (IdentifiedProteinImplFromTSV) proteinMap
 									.get(proteinAcc);
 							identifiedPeptide.addProtein(identifiedProtein);
 							identifiedProtein.addPeptide(identifiedPeptide);
@@ -486,7 +486,7 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 							// Create the protein if the peptide has been mapped
 							// with it
 							log.info("Adding new protein: " + proteinAcc + " that supports peptide " + peptideSeq);
-							IdentifiedProteinImpl identifiedProtein = new IdentifiedProteinImpl(proteinAcc);
+							IdentifiedProteinImplFromTSV identifiedProtein = new IdentifiedProteinImplFromTSV(proteinAcc);
 							identifiedPeptide.addProtein(identifiedProtein);
 							identifiedProtein.addPeptide(identifiedPeptide);
 							proteinMap.put(proteinAcc, identifiedProtein);

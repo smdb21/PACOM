@@ -20,6 +20,8 @@ import org.proteored.miapeapi.interfaces.ms.MiapeMSDocument;
 import org.proteored.miapeapi.interfaces.ms.ResultingData;
 import org.proteored.miapeapi.interfaces.msi.MiapeMSIDocument;
 import org.proteored.miapeapi.interfaces.xml.MiapeXmlFile;
+import org.proteored.miapeapi.text.tsv.MiapeTSVFile;
+import org.proteored.miapeapi.text.tsv.msi.TableTextFileSeparator;
 import org.proteored.miapeapi.webservice.clients.miapeapi.MiapeAPIWebserviceDelegate;
 import org.proteored.miapeapi.webservice.clients.miapeapi.MiapeDatabaseException_Exception;
 import org.proteored.miapeapi.xml.SchemaValidator;
@@ -1834,6 +1836,108 @@ public class MiapeLocalExtractor {
 	}
 
 	/**
+	 * Extracts MIAPE MSI information from a TSV results file and stores it in a
+	 * MIAPE MSI documents in the repository.
+	 *
+	 * @param tsvURI
+	 * @param idMiapeMS
+	 *            if it is > 0, identifier of an already existing MIAPE MS
+	 *            document that you want to associate with the new MIAPE MSI.
+	 * @param userName
+	 * @param password
+	 * @param projectName
+	 *            name of the project in which the MIAPE MSI document will be
+	 *            created. If the project already exists in the database (and
+	 *            the userName has access to it) the document will be created
+	 *            there. If the project doesn't exist, it will be created as a
+	 *            new project.
+	 * @return an array with two elements: the first (index=0) is the ID of the
+	 *         MIAPE MS (if applicable) the second (index=1) is the ID of the
+	 *         MIAPE MSI (if applicable). If something is wrong, the first
+	 *         element is an explanatory string from the error.
+	 */
+	public String[] storeMiapeMSIFromTSV(String tsvURI, TableTextFileSeparator separator, int idMiapeMS,
+			String userName, String password, String projectName) {
+		String[] identifiers = new String[2];
+		int id_msi = -1;
+		MiapeMSIDocument msiDocument = null;
+		File inputTSVFile = null;
+		StringBuilder sb = new StringBuilder();
+		log.info("createFile");
+
+		try {
+			inputTSVFile = new File(tsvURI);
+			if (!storeInRepository) {
+				inputTSVFile = FileManager.saveLocalFile(inputTSVFile, projectName);
+				LocalFilesIndex.getInstance().indexFileByProjectName(projectName, inputTSVFile);
+			}
+			// Dont Validate file because we don't have the schema
+			// if (schemaValidation)
+			// SchemaValidator.validateXMLFile(mzIdentMLFile,
+			// SchemaValidator.mzIdentML);
+
+			log.info("create MIAPE MSI from TSV file");
+			MiapeTSVFile xmlFile = new MiapeTSVFile(inputTSVFile, separator);
+			msiDocument = org.proteored.miapeapi.text.tsv.msi.MSIMiapeFactory.getFactory().toDocument(xmlFile, null,
+					getControlVocabularyManager(), userName, password, projectName);
+			((org.proteored.miapeapi.text.tsv.msi.MiapeMsiDocumentImpl) msiDocument)
+					.setAttachedFileURL(inputTSVFile.getAbsolutePath());
+
+			if (idMiapeMS > 0) {
+				((org.proteored.miapeapi.text.tsv.msi.MiapeMsiDocumentImpl) msiDocument)
+						.setReferencedMSDocument(Integer.valueOf(idMiapeMS));
+			}
+			log.info("MIAPE created");
+			log.info("MIAPE created");
+			log.info("Storing document MSI");
+			log.info("Converting document to xml");
+			if (!storeInRepository) {
+				if (idMiapeMS > 0)
+					identifiers[0] = String.valueOf(idMiapeMS);
+				else {
+					identifiers[0] = "";
+				}
+				id_msi = LocalFilesIndex.getInstance().getFreeIndex();
+				msiDocument.setId(id_msi);
+				final MiapeXmlFile<MiapeMSIDocument> msiDocumentXML = msiDocument.toXml();
+				saveLocally(id_msi, msiDocumentXML, projectName, "MSI", FilenameUtils.getBaseName(tsvURI));
+				LocalFilesIndex.getInstance().indexFileByMiapeID(id_msi, inputTSVFile);
+				return identifiers;
+			} else {
+				log.info("Converting document to bytes");
+				final byte[] msiBytes = msiDocument.toXml().toBytes();
+				log.info("Sending bytes to webservice");
+				swingWorker.firePropertyChange(MiapeExtractionTask.NOTIFICATION, null,
+						"Storing MIAPE in the ProteoRed MIAPE repository\n");
+				swingWorker.firePropertyChange(MiapeExtractionTask.NOTIFICATION, null,
+						"Waiting for server response...\n");
+				swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_SENDING_MIAPE_TO_SERVER, null, idJob);
+
+				id_msi = miapeAPIWebservice.storeMiapeMSI(userName, password, msiBytes);
+				log.info("MIAPE MSI stored ID=" + id_msi);
+				swingWorker.firePropertyChange(MiapeExtractionTask.NOTIFICATION, null,
+						"MIAPE MSI stored ID=" + id_msi + "\n");
+				if (id_msi > 0) {
+					if (idMiapeMS > 0)
+						identifiers[0] = String.valueOf(idMiapeMS);
+					else {
+						identifiers[0] = "";
+					}
+					identifiers[1] = String.valueOf(id_msi);
+					return identifiers;
+				}
+			}
+		} catch (Exception e) {
+			log.error(e);
+			sb.append(e.getMessage());
+			e.printStackTrace();
+		}
+		identifiers[0] = new StringBuilder().append("error:").append(sb.toString()).toString();
+		return identifiers;
+
+	}
+
+	/**
 	 * Stores a MIAPE MSI document from a XTandem XML results file and a MIAPE
 	 * MS document from an array of bytes
 	 *
@@ -1895,12 +1999,14 @@ public class MiapeLocalExtractor {
 
 			msiDocument = org.proteored.miapeapi.xml.xtandem.msi.MSIMiapeFactory.getFactory().toDocument(xmlFile, null,
 					getControlVocabularyManager(), userName, password, projectName);
-			((MiapeMsiDocumentImpl) msiDocument).setAttachedFileURL(inputXTandemXMLFile.getAbsolutePath());
+			((org.proteored.miapeapi.xml.xtandem.msi.MiapeMsiDocumentImpl) msiDocument)
+					.setAttachedFileURL(inputXTandemXMLFile.getAbsolutePath());
 
 			if (id_ms > 0) {
 				identifiers[0] = String.valueOf(id_ms);
 				log.info("Associating the MIAPE MSI document to the previously created MIAPE MS document");
-				((MiapeMsiDocumentImpl) msiDocument).setReferencedMSDocument(Integer.valueOf(id_ms));
+				((org.proteored.miapeapi.xml.xtandem.msi.MiapeMsiDocumentImpl) msiDocument)
+						.setReferencedMSDocument(Integer.valueOf(id_ms));
 			}
 			log.info("MIAPE created");
 			log.info("Storing document MSI");
@@ -2182,4 +2288,97 @@ public class MiapeLocalExtractor {
 		return identifiers;
 	}
 
+	public String[] storeMiapeMSMSIFromTSV(String tsvFileURL, TableTextFileSeparator separator, byte[] miapeMSXMLBytes,
+			String userName, String password, String projectName) {
+		int id_ms = -1;
+		int id_msi = -1;
+		StringBuilder sb = new StringBuilder();
+		String[] identifiers = new String[2];
+		MiapeMSIDocument msiDocument = null;
+		File tsvFile = null;
+
+		try {
+			if (miapeMSXMLBytes != null) {
+				if (!storeInRepository) {
+					MiapeXmlFile msDocumentXML = new MIAPEMSXmlFile(miapeMSXMLBytes);
+					id_ms = LocalFilesIndex.getInstance().getFreeIndex();
+					saveLocally(id_ms, msDocumentXML, projectName, "MS", null);
+				} else {
+					log.info("Storing MIAPE MS document from received MIAPE MS XML file");
+					swingWorker.firePropertyChange(MiapeExtractionTask.NOTIFICATION, null,
+							"Storing MIAPE MS in the ProteoRed MIAPE repository\n");
+					swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_SENDING_MIAPE_TO_SERVER, null,
+							idJob);
+
+					id_ms = miapeAPIWebservice.storeMiapeMS(userName, password, miapeMSXMLBytes);
+					log.info("MIAPE MS stored ID:  " + id_ms);
+					swingWorker.firePropertyChange(MiapeExtractionTask.NOTIFICATION, null,
+							"MIAPE MS stored ID:  " + id_ms + "\n");
+				}
+			}
+
+			log.info("create MIAPE MSI from TSV text file");
+			// copy dtaselect file to a temp file
+			tsvFile = new File(tsvFileURL);
+
+			if (!storeInRepository) {
+				tsvFile = FileManager.saveLocalFile(tsvFile, projectName);
+				LocalFilesIndex.getInstance().indexFileByProjectName(projectName, tsvFile);
+			}
+
+			MiapeTSVFile tsvMIAPEFile = new MiapeTSVFile(tsvFile, separator);
+
+			msiDocument = org.proteored.miapeapi.text.tsv.msi.MSIMiapeFactory.getFactory().toDocument(
+					tsvMIAPEFile, null, getControlVocabularyManager(), userName, password, projectName);
+			((org.proteored.miapeapi.text.tsv.msi.MiapeMsiDocumentImpl) msiDocument)
+					.setAttachedFileURL(tsvFile.getAbsolutePath());
+
+			if (id_ms > 0) {
+				identifiers[0] = String.valueOf(id_ms);
+				log.info("Associating the MIAPE MSI document to the previously created MIAPE MS document");
+				((MiapeMsiDocumentImpl) msiDocument).setReferencedMSDocument(Integer.valueOf(id_ms));
+			}
+			log.info("MIAPE created");
+			log.info("Storing document MSI");
+			log.info("Converting document to xml");
+
+			if (!storeInRepository) {
+				id_msi = LocalFilesIndex.getInstance().getFreeIndex();
+				msiDocument.setId(id_msi);
+				MiapeXmlFile<MiapeMSIDocument> msiDocumentXML = msiDocument.toXml();
+				saveLocally(id_msi, msiDocumentXML, projectName, "MSI", FilenameUtils.getBaseName(tsvFileURL));
+				identifiers[1] = String.valueOf(id_msi);
+				LocalFilesIndex.getInstance().indexFileByMiapeID(id_msi, tsvFile);
+			} else {
+				log.info("Converting document to bytes");
+				final byte[] msiBytes = msiDocument.toXml().toBytes();
+				log.info("Sending bytes to webservice");
+				swingWorker.firePropertyChange(MiapeExtractionTask.NOTIFICATION, null,
+						"Storing MIAPE in the ProteoRed MIAPE repository\n");
+				swingWorker.firePropertyChange(MiapeExtractionTask.NOTIFICATION, null,
+						"Waiting for server response...\n");
+				swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_SENDING_MIAPE_TO_SERVER, null, idJob);
+
+				id_msi = miapeAPIWebservice.storeMiapeMSI(userName, password, msiBytes);
+				log.info("MIAPE MSI stored ID:" + id_msi);
+				swingWorker.firePropertyChange(MiapeExtractionTask.NOTIFICATION, null,
+						"MIAPE MSI stored ID:" + id_msi + "\n");
+
+				if (id_ms > 0) {
+					identifiers[0] = String.valueOf(id_ms);
+				} else {
+					identifiers[0] = "";
+				}
+				if (id_msi > 0)
+					identifiers[1] = String.valueOf(id_msi);
+			}
+			return identifiers;
+		} catch (Exception e) {
+			log.error(e);
+			sb.append(e.getMessage());
+			e.printStackTrace();
+		}
+		identifiers[0] = "error: " + sb.toString();
+		return identifiers;
+	}
 }

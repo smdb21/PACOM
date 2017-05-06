@@ -30,25 +30,25 @@ import org.proteored.pacom.gui.tasks.MiapeExtractionTask;
 
 public class MiapeExtractionBatchManager implements PropertyChangeListener {
 	private static final Logger log = Logger.getLogger("log4j.logger.org.proteored");
-	private static final String START_MIAPE_EXTRACTION = "START_MIAPE_EXTRACTION";
-	private static final String MZIDENTML = "MZIDENTML";
-	private static final String MGF = "MGF";
-	private static final String MZML = "MZML";
-	private static final String PRIDE = "PRIDE";
-	private static final String XTANDEM = "XTANDEM";
-	private static final String DTASELECT = "DTASELECT";
-	private static final String END_MIAPE_EXTRACTION = "END_MIAPE_EXTRACTION";
-	private static final String METADATA = "METADATA";
-	private static final String MIAPE_PROJECT = "MIAPE_PROJECT";
-	private static final String LOCAL_PROCESSING = "LOCAL";
-	private static final String FAST_PARSING = "FAST_PARSING";
-	private static final String MS_OUTPUT = "MS_OUTPUT";
-	private static final String MSI_OUTPUT = "MSI_OUTPUT";
-	private static final String MS_MSI_OUTPUT = "MS_MSI_OUTPUT";
-	private static final String MS_JOB_REF = "MS_JOB_REF";
-	private static final String MS_ID_REF = "MS_ID_REF";
+	public static final String START_MIAPE_EXTRACTION = "START";
+	public static final String MZIDENTML = "MZIDENTML";
+	public static final String MGF = "MGF";
+	public static final String MZML = "MZML";
+	public static final String PRIDE = "PRIDE";
+	public static final String XTANDEM = "XTANDEM";
+	public static final String DTASELECT = "DTASELECT";
+	public static final String TEXT_DATA_TABLE = "TEXT_TABLE";
+	public static final String END_MIAPE_EXTRACTION = "END";
+	public static final String METADATA = "METADATA";
+	public static final String MIAPE_PROJECT = "PROJECT";
+	public static final String LOCAL_PROCESSING = "LOCAL";
+	public static final String FAST_PARSING = "FAST_PARSING";
+	public static final String MS_OUTPUT = "MS_OUTPUT";
+	public static final String MSI_OUTPUT = "MSI_OUTPUT";
+	public static final String MS_MSI_OUTPUT = "MS_MSI_OUTPUT";
+	public static final String MS_JOB_REF = "MS_JOB_REF";
+	public static final String MS_ID_REF = "MS_ID_REF";
 	private static final Integer NUM_RETRIES = 2;
-	private static final String LOCAL_PROCESSING_IN_PARALLEL = "MULTI_CORE_LOCAL_PROCESSING";
 
 	private final List<Integer> miapeExtractionQueueOrder = new ArrayList<Integer>();
 	private final HashMap<Integer, MiapeExtractionTask> miapeExtractionTasks = new HashMap<Integer, MiapeExtractionTask>();
@@ -92,7 +92,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 
 	private void parseInputBatchFile() {
 		int numLine = 0;
-		boolean localProcessingInParallel = false;
+
 		try {
 			final InputStream fstream = new FileInputStream(inputBatchFile);
 			if (fstream != null) {
@@ -110,16 +110,12 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 
 					numLine++;
 					if (strLine.startsWith(START_MIAPE_EXTRACTION)) {
-						localProcessingInParallel = false;
 
 						params = new MiapeExtractionRunParametersImpl();
 
 						String[] split = strLine.split("\t");
 
 						params.setId(Integer.valueOf(split[1]));
-					} else if (strLine.startsWith(LOCAL_PROCESSING_IN_PARALLEL)) {
-						localProcessingInParallel = true;
-
 					} else if (strLine.startsWith(MZIDENTML)) {
 						String[] split = strLine.split("\t");
 						params.setMzIdentMLFileName(split[1]);
@@ -169,6 +165,14 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 							throw new IllegalMiapeArgumentException("File not found: " + params.getDtaSelectFileName());
 						params.addInputFile(inputFile);
 						params.setMIAPEMSIChecked(true);
+					} else if (strLine.startsWith(TEXT_DATA_TABLE)) {
+						String[] split = strLine.split("\t");
+						params.setTSVFileName(split[1]);
+						File inputFile = new File(params.getTSVSelectFileName());
+						if (!inputFile.exists() || !inputFile.isFile())
+							throw new IllegalMiapeArgumentException("File not found: " + params.getTSVSelectFileName());
+						params.addInputFile(inputFile);
+						params.setMIAPEMSIChecked(true);
 					} else if (strLine.startsWith(MIAPE_PROJECT)) {
 						String[] split = strLine.split("\t");
 						params.setProjectName(split[1]);
@@ -203,7 +207,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 						params.consolidate();
 						MiapeExtractionTask task = new MiapeExtractionTask(params.getId(), params,
 								miapeExtractorWebservice, miapeAPIWebservice, MainFrame.userName, MainFrame.password,
-								localProcessingInParallel);
+								MainFrame.parallelProcessingOnExtraction);
 						addTaskToQueue(task);
 					} else if (strLine.startsWith(MS_JOB_REF)) {
 						String[] split = strLine.split("\t");
@@ -538,5 +542,9 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 
 	public HashSet<Integer> getRunningJobs() {
 		return runningJobs;
+	}
+
+	public static String getInputTypesString() {
+		return MZIDENTML + ", " + MZML + ", " + DTASELECT + ", " + XTANDEM + ", " + PRIDE + ", " + MGF;
 	}
 }
