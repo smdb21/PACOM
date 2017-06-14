@@ -7,6 +7,7 @@ package org.proteored.pacom.gui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -15,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -554,7 +556,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 								}
 							}
 						} else {
-							URL directLink = obtainedResults.get(runIdentifier).getDirectLinkToMIAPEMS();
+							File directLink = obtainedResults.get(runIdentifier).getDirectLinkToMIAPEMS();
 							if (directLink != null) {
 
 								Object[] dialog_options = { "Yes, open data file", "No, close this dialog" };
@@ -602,7 +604,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 								}
 							}
 						} else {
-							URL directLink = obtainedResults.get(runIdentifier).getDirectLinkToMIAPEMSI();
+							File directLink = obtainedResults.get(runIdentifier).getDirectLinkToMIAPEMSI();
 							if (directLink != null) {
 								Object[] dialog_options = { "Yes, open data file", "No, close this dialog" };
 								int selected_option = JOptionPane.showOptionDialog(MiapeExtractionBatchFrame.this,
@@ -610,7 +612,14 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 										JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 										dialog_options, dialog_options[1]);
 								if (selected_option == 0) { // Yes
-									HttpUtilities.openURL(directLink.toString());
+									Desktop desktop = Desktop.getDesktop();
+
+									try {
+										desktop.open(directLink);
+									} catch (IOException e1) {
+										e1.printStackTrace();
+									}
+
 								}
 							}
 						}

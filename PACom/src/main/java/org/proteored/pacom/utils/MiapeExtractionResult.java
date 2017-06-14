@@ -1,14 +1,14 @@
 package org.proteored.pacom.utils;
 
-import java.net.URL;
+import java.io.File;
 
 public class MiapeExtractionResult {
 	private final int miapeExtractionTaskIdentifier;
 	private Integer miapeMS_Identifier;
 	private Integer miapeMSI_Identifier;
 	private String directLinkText;
-	private URL directLinkToMIAPEMS;
-	private URL directLinkToMIAPEMSI;
+	private File directLinkToMIAPEMS;
+	private File directLinkToMIAPEMSI;
 	private String errorMessage;
 	private long milliseconds;
 
@@ -45,19 +45,19 @@ public class MiapeExtractionResult {
 		this.directLinkText = directLinkText;
 	}
 
-	public URL getDirectLinkToMIAPEMS() {
+	public File getDirectLinkToMIAPEMS() {
 		return directLinkToMIAPEMS;
 	}
 
-	public void setDirectLinkToMIAPEMS(URL directLinkToMIAPEMS) {
+	public void setDirectLinkToMIAPEMS(File directLinkToMIAPEMS) {
 		this.directLinkToMIAPEMS = directLinkToMIAPEMS;
 	}
 
-	public URL getDirectLinkToMIAPEMSI() {
+	public File getDirectLinkToMIAPEMSI() {
 		return directLinkToMIAPEMSI;
 	}
 
-	public void setDirectLinkToMIAPEMSI(URL directLinkToMIAPEMSI) {
+	public void setDirectLinkToMIAPEMSI(File directLinkToMIAPEMSI) {
 		this.directLinkToMIAPEMSI = directLinkToMIAPEMSI;
 	}
 

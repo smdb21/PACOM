@@ -6,6 +6,7 @@ package org.proteored.pacom.gui;
 
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -14,7 +15,7 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.net.URL;
+import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -62,7 +63,6 @@ import org.proteored.pacom.gui.tasks.MIAPEMSChecker;
 import org.proteored.pacom.gui.tasks.MiapeExtractionTask;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 import org.proteored.pacom.gui.tasks.OntologyLoaderWaiter;
-import org.proteored.pacom.utils.HttpUtilities;
 import org.proteored.pacom.utils.MiapeExtractionParametersUtil;
 import org.proteored.pacom.utils.MiapeExtractionResult;
 import org.proteored.pacom.utils.MiapeExtractionRunParameters;
@@ -1740,21 +1740,37 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	 * @param msiURL
 	 * @param directLinks
 	 */
-	private void showOpenBrowserDialog(URL msURL, URL msiURL, String directLinks) {
+	private void showOpenBrowserDialog(File msURL, File msiURL, String directLinks) {
 		String plural = "";
 		if (msURL != null && msiURL != null)
 			plural = "(s)";
 
 		Object[] dialog_options = { "Yes, open browser", "No, close this dialog" };
 		int selected_option = JOptionPane.showOptionDialog(this,
-				directLinks + "\n" + "\nClick on yes to open a browser to go directly to the document" + plural + "\n",
-				"MIAPE document" + plural + " created", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
-				null, dialog_options, dialog_options[1]);
-		if (selected_option == 0) { // Yes
-			if (msURL != null)
-				HttpUtilities.openURL(msURL.toString());
-			if (msiURL != null)
-				HttpUtilities.openURL(msiURL.toString());
+				directLinks + "\n"
+						+ "\nClick on yes to open the system explorer to go directly to the imported dataset file"
+						+ plural + "\n",
+				"Dataset" + plural + " imported", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+				dialog_options, dialog_options[1]);
+		if (selected_option == JOptionPane.YES_OPTION) { // Yes
+			Desktop desktop = Desktop.getDesktop();
+			if (msURL != null) {
+
+				try {
+					desktop.open(msURL.getParentFile());
+				} catch (IOException e) {
+					appendStatus(e.getMessage());
+				}
+				// HttpUtilities.openURL(msURL.toString());
+			}
+			if (msiURL != null) {
+				try {
+					desktop.open(msiURL.getParentFile());
+				} catch (IOException e) {
+					appendStatus(e.getMessage());
+				}
+				// HttpUtilities.openURL(msiURL.toString());
+			}
 		}
 	}
 
@@ -1837,7 +1853,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	@Override
 	public String getTSVSelectFileName() {
 		if (isTSVSelected()) {
-			return jRatioButtonTabseparatedTextFile.getText();
+			return jTextFieldInputFile2.getText();
 		}
 		return null;
 	}

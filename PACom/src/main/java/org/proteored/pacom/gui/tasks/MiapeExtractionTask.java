@@ -1006,17 +1006,17 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 				if ((id_msi != null && !id_msi.startsWith("error")) || (id_ms != null && !id_ms.startsWith("error"))) {
 					firePropertyChange(NOTIFICATION, null, "Dataset(s) successfully imported");
 				}
-				String msiUrl = null;
-				String msUrl = null;
+				File msiUrl = null;
+				File msUrl = null;
 				if (id_ms != null && !id_ms.startsWith("error")) {
 					if (Integer.valueOf(id_ms) > 0) {
 						firePropertyChange(MIAPE_MS_CREATED_DONE, null, id_ms);
 						if (storeInRepository) {
-							msUrl = MainFrame.miapetool_access_script + "&pmMIAPEType=MS&pmIDMIAPE=" + id_ms;
+							// msUrl = MainFrame.miapetool_access_script +
+							// "&pmMIAPEType=MS&pmIDMIAPE=" + id_ms;
 						} else {
 							msUrl = new File(FileManager.getMiapeLocalDataPath(getParameters().getProjectName())
-									+ FileManager.getMiapeMSILocalFileName(Integer.valueOf(id_ms), null)).toURI()
-											.toString();
+									+ FileManager.getMiapeMSILocalFileName(Integer.valueOf(id_ms), null));
 						}
 					}
 				}
@@ -1024,11 +1024,11 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 					if (Integer.valueOf(id_msi) > 0) {
 						firePropertyChange(MIAPE_MSI_CREATED_DONE, null, id_msi);
 						if (storeInRepository) {
-							msiUrl = MainFrame.miapetool_access_script + "&pmMIAPETYPE=MSI&pmIDMIAPE=" + id_msi;
+							// msiUrl = MainFrame.miapetool_access_script +
+							// "&pmMIAPETYPE=MSI&pmIDMIAPE=" + id_msi;
 						} else {
 							msiUrl = new File(FileManager.getMiapeLocalDataPath(getParameters().getProjectName())
-									+ FileManager.getMiapeMSILocalFileName(Integer.valueOf(id_msi), null)).toURI()
-											.toString();
+									+ FileManager.getMiapeMSILocalFileName(Integer.valueOf(id_msi), null));
 						}
 					}
 				}
@@ -1058,9 +1058,9 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 				if (msUrl != null || msiUrl != null) {
 					MiapeExtractionResult result = new MiapeExtractionResult(identifier);
 					if (msUrl != null)
-						result.setDirectLinkToMIAPEMS(new URL(msUrl));
+						result.setDirectLinkToMIAPEMS(msUrl);
 					if (msiUrl != null)
-						result.setDirectLinkToMIAPEMSI(new URL(msiUrl));
+						result.setDirectLinkToMIAPEMSI(msiUrl);
 					result.setDirectLinkText(directLinksText);
 					if (id_ms != null && !id_ms.startsWith("error"))
 						result.setMiapeMS_Identifier(Integer.valueOf(id_ms));
@@ -1071,13 +1071,8 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 				}
 
 			} else {
-				if (id_msi != null) {
-					firePropertyChange(NOTIFICATION, null,
-							id_msi + "\n" + "If you need help contact support at miape_support@proteored.org");
-				} else {
-
-				}
-
+				firePropertyChange(MIAPE_CREATION_ERROR, null,
+						new MiapeExtractionResult(identifier, "Error: Internal error."));
 			}
 
 		} catch (Exception e) {

@@ -1798,6 +1798,7 @@ public class MiapeLocalExtractor {
 				id_msi = LocalFilesIndex.getInstance().getFreeIndex();
 				msiDocument.setId(id_msi);
 				final MiapeXmlFile<MiapeMSIDocument> msiDocumentXML = msiDocument.toXml();
+				identifiers[1] = String.valueOf(id_msi);
 				saveLocally(id_msi, msiDocumentXML, projectName, "MSI", FilenameUtils.getBaseName(xTandemXMLURI));
 				LocalFilesIndex.getInstance().indexFileByMiapeID(id_msi, inputXTandemXMLFile);
 				return identifiers;
@@ -1900,6 +1901,7 @@ public class MiapeLocalExtractor {
 				id_msi = LocalFilesIndex.getInstance().getFreeIndex();
 				msiDocument.setId(id_msi);
 				final MiapeXmlFile<MiapeMSIDocument> msiDocumentXML = msiDocument.toXml();
+				identifiers[1] = String.valueOf(id_msi);
 				saveLocally(id_msi, msiDocumentXML, projectName, "MSI", FilenameUtils.getBaseName(tsvURI));
 				LocalFilesIndex.getInstance().indexFileByMiapeID(id_msi, inputTSVFile);
 				return identifiers;
@@ -2328,8 +2330,8 @@ public class MiapeLocalExtractor {
 
 			MiapeTSVFile tsvMIAPEFile = new MiapeTSVFile(tsvFile, separator);
 
-			msiDocument = org.proteored.miapeapi.text.tsv.msi.MSIMiapeFactory.getFactory().toDocument(
-					tsvMIAPEFile, null, getControlVocabularyManager(), userName, password, projectName);
+			msiDocument = org.proteored.miapeapi.text.tsv.msi.MSIMiapeFactory.getFactory().toDocument(tsvMIAPEFile,
+					null, getControlVocabularyManager(), userName, password, projectName);
 			((org.proteored.miapeapi.text.tsv.msi.MiapeMsiDocumentImpl) msiDocument)
 					.setAttachedFileURL(tsvFile.getAbsolutePath());
 
