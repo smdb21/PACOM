@@ -394,6 +394,7 @@ public class GeneDistributionReader {
 										geneInfo = genes.get(ensG_ID);
 									} else {
 										geneInfo = new ENSGInfo();
+										geneInfo.setEnsG_ID(ensG_ID);
 										genes.put(ensG_ID, geneInfo);
 									}
 									// geneInfo.setMissing(missing);
