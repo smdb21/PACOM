@@ -460,7 +460,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 						.addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
 						.addContainerGap()));
 
-		jTabbedPane.addTab("External protein lists", jPanel11);
+		// jTabbedPane.addTab("External protein lists", jPanel11);
 
 		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 		jPanel1.setLayout(jPanel1Layout);
