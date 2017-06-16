@@ -21,12 +21,12 @@ public class MiapeExtractorSoftware implements Software {
 
 	@Override
 	public String getName() {
-		return "ProteoRed MIAPE Extractor tool";
+		return "PACOM";
 	}
 
 	@Override
 	public String getManufacturer() {
-		return "ProteoRed inhouse tool";
+		return "ProteoRed + TSRI";
 	}
 
 	@Override
