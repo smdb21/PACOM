@@ -53,8 +53,6 @@ public class ExporterToPRIDEDialog extends javax.swing.JDialog implements Proper
 				plural = "s";
 			String text = "<html>This project contains " + numExperiments + " dataset" + plural + " (at level 1).<br>"
 					+ numExperiments + " PRIDE XML files will be created";
-			if (numExperiments > 1)
-				text = text + "(one per each experiment)";
 			text = text + ".<br>Select the output folder and click on 'export' button.</html>";
 			jLabelInformation.setText(text);
 		}
@@ -125,7 +123,8 @@ public class ExporterToPRIDEDialog extends javax.swing.JDialog implements Proper
 		jCheckBoxIncludeSpectra.setSelected(true);
 		jCheckBoxIncludeSpectra.setText("include spectra");
 		jCheckBoxIncludeSpectra.setToolTipText(
-				"<html>\nIf this option is not selected, spectra will not be added to the generated PRIDE XML file.\n</html>");
+				"<html>\nSelect this option to include spectra in the generated PRIDE XML file.<br>Note that the spectra will only be included if the identification datasets <br>"
+						+ "were imported with their corresponding MS datasets (usually including a MGF file)</html>");
 		jCheckBoxIncludeSpectra.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -165,16 +164,19 @@ public class ExporterToPRIDEDialog extends javax.swing.JDialog implements Proper
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 										.addComponent(jTextFieldFolder, javax.swing.GroupLayout.PREFERRED_SIZE, 355,
 												javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jButtonSelectFolder))
-						.addGroup(jPanel2Layout.createSequentialGroup()
-								.addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-										.addComponent(jCheckBoxIncludeSpectra)
-										.addComponent(jCheckBoxExcludeNotMatchedSpectra))
-								.addGap(141, 141, 141)
-								.addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-										.addComponent(jCheckBoxExcludeNonConclusiveProteins)
-										.addComponent(jCheckBoxCompress))))
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(jButtonSelectFolder))
+								.addGroup(jPanel2Layout.createSequentialGroup()
+										.addGroup(
+												jPanel2Layout
+														.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+														.addComponent(jCheckBoxIncludeSpectra)
+														.addComponent(jCheckBoxExcludeNotMatchedSpectra))
+										.addGap(141, 141, 141)
+										.addGroup(jPanel2Layout
+												.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+												.addComponent(jCheckBoxExcludeNonConclusiveProteins)
+												.addComponent(jCheckBoxCompress))))
 						.addContainerGap(27, Short.MAX_VALUE)));
 		jPanel2Layout.setVerticalGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(jPanel2Layout.createSequentialGroup()
@@ -182,8 +184,8 @@ public class ExporterToPRIDEDialog extends javax.swing.JDialog implements Proper
 								.addComponent(jCheckBoxIncludeSpectra).addComponent(jCheckBoxCompress))
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-								.addComponent(jCheckBoxExcludeNotMatchedSpectra)
-								.addComponent(jCheckBoxExcludeNonConclusiveProteins))
+								.addComponent(jCheckBoxExcludeNotMatchedSpectra).addComponent(
+										jCheckBoxExcludeNonConclusiveProteins))
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
 						.addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
 								.addComponent(jLabel1)
@@ -228,9 +230,9 @@ public class ExporterToPRIDEDialog extends javax.swing.JDialog implements Proper
 								.addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
 										.addComponent(jProgressBar, javax.swing.GroupLayout.Alignment.LEADING,
 												javax.swing.GroupLayout.DEFAULT_SIZE, 526, Short.MAX_VALUE)
-								.addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING,
-										javax.swing.GroupLayout.DEFAULT_SIZE, 526, Short.MAX_VALUE))
-						.addContainerGap()));
+										.addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING,
+												javax.swing.GroupLayout.DEFAULT_SIZE, 526, Short.MAX_VALUE))
+								.addContainerGap()));
 		jPanel3Layout
 				.setVerticalGroup(
 						jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -240,7 +242,7 @@ public class ExporterToPRIDEDialog extends javax.swing.JDialog implements Proper
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 										.addComponent(jProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE,
 												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addContainerGap()));
+										.addContainerGap()));
 
 		jButtonCancel.setText("Cancel");
 		jButtonCancel.setEnabled(false);
@@ -254,24 +256,24 @@ public class ExporterToPRIDEDialog extends javax.swing.JDialog implements Proper
 		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 		jPanel1.setLayout(jPanel1Layout);
 		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
-						jPanel1Layout.createSequentialGroup().addContainerGap()
-								.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-										.addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+								.addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
 								.addGroup(javax.swing.GroupLayout.Alignment.LEADING,
 										jPanel1Layout.createSequentialGroup().addComponent(jButtonExport)
 												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
 														352, Short.MAX_VALUE)
 												.addComponent(jButtonCancel))
-										.addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
 								.addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING,
 										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
 										Short.MAX_VALUE))
-								.addContainerGap()));
+						.addContainerGap()));
 		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(jPanel1Layout.createSequentialGroup().addContainerGap()
 						.addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE,
@@ -424,7 +426,7 @@ public class ExporterToPRIDEDialog extends javax.swing.JDialog implements Proper
 			jButtonExport.setEnabled(false);
 			String experimentName = (String) evt.getNewValue();
 			if (experimentName != null) {
-				appendStatus("Creating PRIDE XML file for experiment: " + experimentName + "...");
+				appendStatus("Creating PRIDE XML file for dataset: '" + experimentName + "'...");
 				jProgressBar.setString(getProgressString());
 			}
 		} else if (evt.getPropertyName().equals(PRIDEExporterTask.SINGLE_PRIDE_EXPORTED)) {
