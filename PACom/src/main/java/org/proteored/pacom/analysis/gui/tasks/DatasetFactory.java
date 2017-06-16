@@ -2922,7 +2922,7 @@ public class DatasetFactory {
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		int totalNum = 0;
 		for (IdentificationSet idSet : idSets) {
-
+			boolean totalShown = false;
 			Collection<ProteinGroupOccurrence> proteinGroupOccurrences = idSet.getProteinGroupOccurrenceList().values();
 
 			for (String chromosomeName : GeneDistributionReader.chromosomeNames) {
@@ -2980,16 +2980,21 @@ public class DatasetFactory {
 				if (justPercentage) {
 					final double percentage = numGenes * 100.0 / numTotalGenes;
 					dataset.addValue(percentage, "Gene coverage (%)" + label, "Chr" + chromosomeName);
-					if (showTotal && spiderPlot)
-						dataset.addValue(100, "Total genes (100%)" + label, "Chr" + chromosomeName);
+					if (showTotal && spiderPlot && !totalShown) {
+						dataset.addValue(100, "Total genes (100%)", "Chr" + chromosomeName);
+					}
 				} else {
 					dataset.addValue(numGenes, "Detected genes" + label, "Chr" + chromosomeName);
-					if (showTotal)
-						dataset.addValue(numTotalGenes, "Total chromosome genes" + label, "Chr" + chromosomeName);
+					if (showTotal && !totalShown) {
+						dataset.addValue(numTotalGenes, "Total chromosome genes", "Chr" + chromosomeName);
+					}
 				}
 
 				totalNum += numGenes;
 
+			}
+			if (showTotal) {
+				totalShown = true;
 			}
 		}
 		if (totalNum == 0)
