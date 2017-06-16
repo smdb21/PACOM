@@ -2939,8 +2939,8 @@ public class DatasetFactory {
 				HashMap<String, List<ENSGInfo>> proteinGeneMapping = GeneDistributionReader.getInstance()
 						.getProteinGeneMapping(chromosomeName);
 				for (ProteinGroupOccurrence proteinGroupOccurrence : proteinGroupOccurrences) {
-					if (proteinGroupOccurrence.getEvidence() == ProteinEvidence.NONCONCLUSIVE
-							&& !countNonConclusiveProteins)
+					if (!countNonConclusiveProteins
+							&& proteinGroupOccurrence.getEvidence() == ProteinEvidence.NONCONCLUSIVE)
 						continue;
 					if (!takeGeneFromFirstProteinSelected) {
 						Iterator<String> iterator = proteinGroupOccurrence.getAccessions().iterator();
@@ -2949,8 +2949,9 @@ public class DatasetFactory {
 							if (proteinGeneMapping.containsKey(acc)) {
 								List<ENSGInfo> list = proteinGeneMapping.get(acc);
 								for (ENSGInfo ensgInfo : list) {
-									if (!genes.contains(ensgInfo))
+									if (!genes.contains(ensgInfo)) {
 										genes.add(ensgInfo);
+									}
 								}
 							}
 						}
@@ -2959,8 +2960,9 @@ public class DatasetFactory {
 						if (proteinGeneMapping.containsKey(acc)) {
 							List<ENSGInfo> list = proteinGeneMapping.get(acc);
 							for (ENSGInfo ensgInfo : list) {
-								if (!genes.contains(ensgInfo))
+								if (!genes.contains(ensgInfo)) {
 									genes.add(ensgInfo);
+								}
 							}
 						}
 
