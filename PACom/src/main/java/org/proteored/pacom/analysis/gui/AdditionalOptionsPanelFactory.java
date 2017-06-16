@@ -2476,7 +2476,9 @@ public class AdditionalOptionsPanelFactory {
 
 	public JCheckBox getTakeGeneFromFirstProteinCheckbox() {
 		if (jCheckBoxTakeGeneFromFirstProtein == null) {
-			jCheckBoxTakeGeneFromFirstProtein = new JCheckBox("take just gene from first in group");
+			jCheckBoxTakeGeneFromFirstProtein = new JCheckBox("one gene per protein group");
+			jCheckBoxTakeGeneFromFirstProtein.setToolTipText("<html>Protein groups may be mapped to multiple genes.<br>"
+					+ "If this option is selected, only one gene per protein group will be used in the chart.</html>");
 			jCheckBoxTakeGeneFromFirstProtein.setSelected(true);
 			controlList.add(jCheckBoxTakeGeneFromFirstProtein);
 			jCheckBoxTakeGeneFromFirstProtein.addItemListener(new java.awt.event.ItemListener() {
