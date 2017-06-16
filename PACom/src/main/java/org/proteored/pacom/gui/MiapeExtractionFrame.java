@@ -923,8 +923,8 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		enableSecondaryInputTextFile(MZIDENTML_FILE_LABEL);
 
 		// set mzIdentML file to the secondary input file label
-		String mzMLPlusmzIdentMLMessage = "<html>With this option, you will be able to create:<br><ul><li>a MIAPE MS document from the mzML file, and</li> <li>a MIAPE MSI document from the mzIdentML file</li></ul>"
-				+ "If the mzIdentML file comes from a MASCOT search, later you will be able to<br>create a complete PRIDE XML file from both MIAPE MS and MSI documents<br>(option 'export MIAPE to PRIDE XML')</html>";
+		String mzMLPlusmzIdentMLMessage = "<html>With this option, you will be able to import:<br><ul><li>a MS dataset from the mzML file, and</li> <li>a identification dataset from the mzIdentML file</li></ul>"
+				+ "If the mzIdentML file comes from a MASCOT search, later you will be able to<br>create a complete PRIDE XML file from both MS and identification datasets<br>(option 'export to PRIDE XML')</html>";
 		// show mzML + mzIdentML warnning
 		JOptionPane.showMessageDialog(this, mzMLPlusmzIdentMLMessage, "mzML + mzIdentML",
 				JOptionPane.INFORMATION_MESSAGE);
@@ -1039,7 +1039,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		// reset combo box, deleting current mzml if exists
 		FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_MZML);
 
-		String PRIDEMessage = "<html>With this option, you can also optionally import the Mass Spectrometry data and metadata<br>"
+		String PRIDEMessage = "<html>With this option, you can also optionally import the MS dataset together with the MS metadata<br>"
 				+ "from the PRIDE XML file in order to keep it linked with the PSMs and be able to create<br>"
 				+ "a new PRIDE XML potentially aggregating more datasets in a single file.</html>";
 		// show mzML + mzIdentML warning
@@ -1060,11 +1060,11 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		enablePrimaryInputTextFile(MGF_FILE_LABEL);
 		enableSecondaryInputTextFile(MZIDENTML_FILE_LABEL);
 
-		String mgfPlusmzIdentMLMessage = "<html>With this option, you will be able to create <ul><li>a MIAPE MS document from the mgf file. "
+		String mgfPlusmzIdentMLMessage = "<html>With this option, you will be able to create <ul><li>a MS dataset from the mgf file. "
 				+ "(Some minimal information about the spectrometer<br>will be asked to you before to start the process).</li>"
-				+ "<li>a MIAPE MSI document from the mzIdentML file.</li></ul>"
+				+ "<li>an identification dataset from the mzIdentML file.</li></ul>"
 				+ "If the mzIdentML file comes from a MASCOT search that comes from the mgf file, "
-				+ "later you will be able to create<br>a complete PRIDE XML file from both MIAPE MS and MSI documents (option MIAPE to Standard)</html>";
+				+ "later you will be able to create<br>a complete PRIDE XML file from both MS and identification documents.</html>";
 		// show mzML + mzIdentML warning
 		JOptionPane.showMessageDialog(this, mgfPlusmzIdentMLMessage, "mgf + mzIdentML",
 				JOptionPane.INFORMATION_MESSAGE);
@@ -1089,11 +1089,11 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		enablePrimaryInputTextFile(MGF_FILE_LABEL);
 		enableSecondaryInputTextFile(XTANDEM_FILE_LABEL);
 
-		String mgfPlusXTandemMessage = "<html>With this option, you will be able to create <ul><li>a MIAPE MS document from the mgf file. "
+		String mgfPlusXTandemMessage = "<html>With this option, you will be able to create <ul><li>a MS dataset from the mgf file. "
 				+ "(Some minimal information about the spectrometer<br>will be asked to you before to start the process).</li>"
-				+ "<li>a MIAPE MSI document from the XTandem XML file.</li></ul>"
+				+ "<li>an identification dataset from the XTandem XML file.</li></ul>"
 				+ "If the XTandem XML file comes from a search using the mgf file, "
-				+ "later you will be able to create<br>a complete PRIDE XML file from both MIAPE MS and MSI documents (option MIAPE to Standard)</html>";
+				+ "later you will be able to create<br>a complete PRIDE XML file from both MS and identification datasets</html>";
 		// show mzML + mzIdentML warning
 		JOptionPane.showMessageDialog(this, mgfPlusXTandemMessage, "mgf + XTandem XML",
 				JOptionPane.INFORMATION_MESSAGE);
@@ -1118,11 +1118,11 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		enablePrimaryInputTextFile(MGF_FILE_LABEL);
 		enableSecondaryInputTextFile(DTASELECT_FILE_LABEL);
 
-		String mgfPlusDTASelectMessage = "<html>With this option, you will be able to create <ul><li>a MIAPE MS document from the mgf file. "
+		String mgfPlusDTASelectMessage = "<html>With this option, you will be able to create <ul><li>a MS dataset from the mgf file. "
 				+ "(Some minimal information about the spectrometer<br>will be asked to you before to start the process).</li>"
-				+ "<li>a MIAPE MSI document from the DTASelect file.</li></ul>"
+				+ "<li>an identification dataset from the DTASelect file.</li></ul>"
 				+ "If the DTASelect file comes from a search using the mgf file, "
-				+ "later you will be able to create<br>a complete PRIDE XML file from both MIAPE MS and MSI documents (option MIAPE to Standard)</html>";
+				+ "later you will be able to create<br>a complete PRIDE XML file from both MS and identification datasets.</html>";
 		// show mzML + mzIdentML warning
 		JOptionPane.showMessageDialog(this, mgfPlusDTASelectMessage, "mgf + DTASelect",
 				JOptionPane.INFORMATION_MESSAGE);
