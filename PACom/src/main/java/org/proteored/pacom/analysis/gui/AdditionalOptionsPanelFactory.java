@@ -233,8 +233,9 @@ public class AdditionalOptionsPanelFactory {
 		jComboBoxPlotOrientation.addItemListener(new java.awt.event.ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED)
+				if (e.getStateChange() == ItemEvent.SELECTED) {
 					frame.startShowingChart();
+				}
 
 			}
 		});
@@ -1044,7 +1045,9 @@ public class AdditionalOptionsPanelFactory {
 			jComboBoxColorScale.addItemListener(new java.awt.event.ItemListener() {
 				@Override
 				public void itemStateChanged(ItemEvent e) {
-					frame.startShowingChart();
+					if (e.getStateChange() == ItemEvent.SELECTED) {
+						frame.startShowingChart();
+					}
 				}
 			});
 			controlList.add(jComboBoxColorScale);
@@ -1060,7 +1063,9 @@ public class AdditionalOptionsPanelFactory {
 			jComboBoxHighColorScale.addItemListener(new java.awt.event.ItemListener() {
 				@Override
 				public void itemStateChanged(ItemEvent e) {
-					frame.startShowingChart();
+					if (e.getStateChange() == ItemEvent.SELECTED) {
+						frame.startShowingChart();
+					}
 				}
 			});
 		}
@@ -1070,7 +1075,9 @@ public class AdditionalOptionsPanelFactory {
 			jComboBoxLowColorScale.addItemListener(new java.awt.event.ItemListener() {
 				@Override
 				public void itemStateChanged(ItemEvent e) {
-					frame.startShowingChart();
+					if (e.getStateChange() == ItemEvent.SELECTED) {
+						frame.startShowingChart();
+					}
 				}
 			});
 		}
@@ -1312,8 +1319,9 @@ public class AdditionalOptionsPanelFactory {
 		jComboBoxMOverZ.addItemListener(new java.awt.event.ItemListener() {
 			@Override
 			public void itemStateChanged(java.awt.event.ItemEvent evt) {
-				if (evt.getStateChange() == ItemEvent.SELECTED)
+				if (evt.getStateChange() == ItemEvent.SELECTED) {
 					frame.startShowingChart();
+				}
 			}
 		});
 		jPanelAdditional3.setLayout(new BorderLayout());
@@ -1766,8 +1774,9 @@ public class AdditionalOptionsPanelFactory {
 		jComboBoxModificationA.addItemListener(new java.awt.event.ItemListener() {
 			@Override
 			public void itemStateChanged(java.awt.event.ItemEvent evt) {
-				if (evt.getStateChange() == ItemEvent.SELECTED)
+				if (evt.getStateChange() == ItemEvent.SELECTED) {
 					frame.startShowingChart();
+				}
 			}
 		});
 
@@ -1784,8 +1793,9 @@ public class AdditionalOptionsPanelFactory {
 		jComboBoxModificationB.addItemListener(new java.awt.event.ItemListener() {
 			@Override
 			public void itemStateChanged(java.awt.event.ItemEvent evt) {
-				if (evt.getStateChange() == ItemEvent.SELECTED)
+				if (evt.getStateChange() == ItemEvent.SELECTED) {
 					frame.startShowingChart();
+				}
 			}
 		});
 		jPanel.setLayout(new GridBagLayout());
