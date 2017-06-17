@@ -26,6 +26,7 @@ public class LoadProjectsTask extends SwingWorker<Void, Void> {
 	private final boolean localProjects;
 	private final static HashMap<Integer, String> cachedLocalProjects = new HashMap<Integer, String>();
 	private final static HashMap<Integer, Map<Integer, String>> cachedRemoteProjects = new HashMap<Integer, Map<Integer, String>>();
+	public final static String PROJECT_LOADED_DONE = "project loaded done";
 
 	public LoadProjectsTask(MiapeExtractionFrame standard2miapeDialog, boolean localProjects, int userID,
 			String userName, String password) {
@@ -51,6 +52,7 @@ public class LoadProjectsTask extends SwingWorker<Void, Void> {
 
 	@Override
 	protected void done() {
+		firePropertyChange(PROJECT_LOADED_DONE, null, null);
 		if (isCancelled())
 			log.info("Project loading cancelled");
 		if (isDone())
