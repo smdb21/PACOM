@@ -24,6 +24,8 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
 import org.proteored.miapeapi.experiment.VennData;
+import org.proteored.miapeapi.experiment.VennDataForPeptides;
+import org.proteored.miapeapi.experiment.VennDataForProteins;
 import org.proteored.miapeapi.experiment.model.ExtendedIdentifiedPeptide;
 import org.proteored.miapeapi.experiment.model.ExtendedIdentifiedProtein;
 import org.proteored.miapeapi.experiment.model.IdentificationItemEnum;
@@ -1328,8 +1330,13 @@ public class DatasetFactory {
 				}
 		}
 
-		if (!someValueIsMoreThanZero)
+		if (!someValueIsMoreThanZero) {
 			throw new IllegalMiapeArgumentException("There is not data to show");
+		}
+		if (rowList.isEmpty() || columnList.isEmpty()) {
+			throw new IllegalMiapeArgumentException(
+					"There is not data to show. Check the occurrence filter and write a lower value.");
+		}
 		double[][] ret = new double[rowList.size()][columnList.size()];
 		for (int row = 0; row < rowList.size(); row++) {
 			for (int column = 0; column < columnList.size(); column++) {
@@ -3477,7 +3484,7 @@ public class DatasetFactory {
 	}
 
 	/**
-	 * Gets two datasets, the fisrt is the normal and then second is the
+	 * Gets two datasets, the first is the normal and then second is the
 	 * accumulative (if accumulativeTrend is true)
 	 *
 	 * @param idSets
@@ -3486,10 +3493,8 @@ public class DatasetFactory {
 	 * @param proteinGroupComparisonType
 	 * @return
 	 */
-	public static List<DefaultCategoryDataset> createExclusiveNumberIdentificationCategoryDataSet(
-			List<IdentificationSet> idSets, IdentificationItemEnum itemType, Boolean distModPeptides,
-			ProteinGroupComparisonType proteinGroupComparisonType, boolean accumulativeTrend,
-			Boolean countNonConclusiveProteins) {
+	public static List<DefaultCategoryDataset> createExclusiveNumberIdentificationCategoryDataSetForPeptides(
+			List<IdentificationSet> idSets, Boolean distModPeptides, boolean accumulativeTrend) {
 		// create the dataset...
 
 		List<DefaultCategoryDataset> datasets = new ArrayList<DefaultCategoryDataset>();
@@ -3497,7 +3502,89 @@ public class DatasetFactory {
 		DefaultCategoryDataset accumulativeDataSet = new DefaultCategoryDataset();
 
 		try {
-			HashMap<String, Set<ProteinComparatorKey>> hashMapKeys = getHashMapKeys(idSets, itemType, distModPeptides,
+			HashMap<String, Set<String>> hashMapKeys = getHashMapKeysForPeptides(idSets, distModPeptides);
+
+			VennData globalVenn = null;
+			Collection<Object> union = null;
+
+			for (int i = 0; i < idSets.size(); i++) {
+				IdentificationSet idSet = idSets.get(i);
+				String idSetName = idSet.getFullName();
+				Set<String> keys = hashMapKeys.get(idSet.getFullName());
+
+				if (accumulativeTrend) {
+					globalVenn = new VennDataForPeptides(keys, union, null);
+					union = globalVenn.getUnion12();
+					int num = 0;
+					for (Object obj : union) {
+						String key = (String) obj;
+
+						num++;
+					}
+					accumulativeDataSet.addValue(num, "Accumulative # peptides", idSetName);
+				}
+
+				int numExclusive = 0;
+				Collection<Object> unique = null;
+				// Look into the other datasets to see how many elements are
+				// unique/exclusive to the isSet
+				boolean moreThanOne = false;
+				for (int j = 0; j < idSets.size(); j++) {
+					if (j == i)
+						continue;
+					IdentificationSet idSet2 = idSets.get(j);
+
+					moreThanOne = true;
+					final String idSetName2 = idSet2.getFullName();
+					log.info("Comparing " + idSet.getFullName() + " with " + idSetName2);
+					Set<String> keys2 = hashMapKeys.get(idSet2.getFullName());
+					VennData venn = null;
+					if (unique == null) {
+						venn = new VennDataForPeptides(keys, keys2, null);
+					} else {
+						venn = new VennDataForPeptides(unique, keys2, null);
+					}
+					unique = venn.getUniqueTo1();
+					log.info(unique.size() + " remaining exclusive");
+
+				}
+				if (unique != null)
+					defaultDataSet.setValue(unique.size(), "# peptides", idSetName);
+				if (!moreThanOne)
+					defaultDataSet.setValue(keys.size(), "# peptides", idSetName);
+			}
+			// }
+		} catch (IllegalMiapeArgumentException ex) {
+
+		}
+		datasets.add(defaultDataSet);
+		if (accumulativeTrend)
+			datasets.add(accumulativeDataSet);
+
+		return datasets;
+	}
+
+	/**
+	 * Gets two datasets, the first is the normal and then second is the
+	 * accumulative (if accumulativeTrend is true)
+	 *
+	 * @param idSets
+	 * @param itemType
+	 * @param distModPeptides
+	 * @param proteinGroupComparisonType
+	 * @return
+	 */
+	public static List<DefaultCategoryDataset> createExclusiveNumberIdentificationCategoryDataSetForProteins(
+			List<IdentificationSet> idSets, ProteinGroupComparisonType proteinGroupComparisonType,
+			boolean accumulativeTrend, Boolean countNonConclusiveProteins) {
+		// create the dataset...
+
+		List<DefaultCategoryDataset> datasets = new ArrayList<DefaultCategoryDataset>();
+		DefaultCategoryDataset defaultDataSet = new DefaultCategoryDataset();
+		DefaultCategoryDataset accumulativeDataSet = new DefaultCategoryDataset();
+
+		try {
+			HashMap<String, Set<ProteinComparatorKey>> hashMapKeys = getHashMapKeysForProteins(idSets,
 					proteinGroupComparisonType);
 
 			VennData globalVenn = null;
@@ -3509,7 +3596,7 @@ public class DatasetFactory {
 				Set<ProteinComparatorKey> keys = hashMapKeys.get(idSet.getFullName());
 
 				if (accumulativeTrend) {
-					globalVenn = new VennData(keys, union, null, proteinGroupComparisonType,
+					globalVenn = new VennDataForProteins(keys, union, null, proteinGroupComparisonType,
 							countNonConclusiveProteins);
 					union = globalVenn.getUnion12();
 					int num = 0;
@@ -3540,9 +3627,9 @@ public class DatasetFactory {
 					Set<ProteinComparatorKey> keys2 = hashMapKeys.get(idSet2.getFullName());
 					VennData venn = null;
 					if (unique == null) {
-						venn = new VennData(keys, keys2, null, null, countNonConclusiveProteins);
+						venn = new VennDataForProteins(keys, keys2, null, null, countNonConclusiveProteins);
 					} else {
-						venn = new VennData(unique, keys2, null, null, countNonConclusiveProteins);
+						venn = new VennDataForProteins(unique, keys2, null, null, countNonConclusiveProteins);
 					}
 					unique = venn.getUniqueTo1();
 					log.info(unique.size() + " remaining exclusive");
@@ -3564,34 +3651,28 @@ public class DatasetFactory {
 		return datasets;
 	}
 
-	private static HashMap<String, Set<ProteinComparatorKey>> getHashMapKeys(List<IdentificationSet> idSets,
-			IdentificationItemEnum itemType, Boolean distModPeptides,
+	private static HashMap<String, Set<String>> getHashMapKeysForPeptides(List<IdentificationSet> idSets,
+			Boolean distModPeptides) {
+		HashMap<String, Set<String>> ret = new HashMap<String, Set<String>>();
+		for (IdentificationSet identificationSet : idSets) {
+			final Set<String> peptideKeySet = identificationSet.getPeptideOccurrenceList(distModPeptides).keySet();
+			ret.put(identificationSet.getFullName(), peptideKeySet);
+		}
+
+		return ret;
+	}
+
+	private static HashMap<String, Set<ProteinComparatorKey>> getHashMapKeysForProteins(List<IdentificationSet> idSets,
 			ProteinGroupComparisonType proteinGroupComparisonType) {
 		HashMap<String, Set<ProteinComparatorKey>> ret = new HashMap<String, Set<ProteinComparatorKey>>();
-		if (IdentificationItemEnum.PROTEIN.equals(itemType)) {
-			for (IdentificationSet identificationSet : idSets) {
-				final Set<ProteinComparatorKey> proteinAccSet = new HashSet<ProteinComparatorKey>();
-				for (Object object : identificationSet.getProteinGroupOccurrenceList().values()) {
-					ProteinGroupOccurrence pgo = (ProteinGroupOccurrence) object;
-					// if (pgo.getEvidence() != ProteinEvidence.NONCONCLUSIVE)
-					proteinAccSet.add(pgo.getKey(proteinGroupComparisonType));
-				}
-				ret.put(identificationSet.getFullName(), proteinAccSet);
+		for (IdentificationSet identificationSet : idSets) {
+			final Set<ProteinComparatorKey> proteinAccSet = new HashSet<ProteinComparatorKey>();
+			for (Object object : identificationSet.getProteinGroupOccurrenceList().values()) {
+				ProteinGroupOccurrence pgo = (ProteinGroupOccurrence) object;
+				// if (pgo.getEvidence() != ProteinEvidence.NONCONCLUSIVE)
+				proteinAccSet.add(pgo.getKey(proteinGroupComparisonType));
 			}
-		} else if (IdentificationItemEnum.PEPTIDE.equals(itemType)) {
-			for (IdentificationSet identificationSet : idSets) {
-				final Set<String> peptideKeySet = identificationSet.getPeptideOccurrenceList(distModPeptides).keySet();
-				final String fullName = identificationSet.getFullName();
-				Set<ProteinComparatorKey> proteinComparatorKeySet = new HashSet<ProteinComparatorKey>();
-				for (String peptideKey : peptideKeySet) {
-					ProteinComparatorKey pck = new ProteinComparatorKey(peptideKey,
-							ProteinGroupComparisonType.BEST_PROTEIN);
-					proteinComparatorKeySet.add(pck);
-				}
-				ret.put(identificationSet.getFullName(), proteinComparatorKeySet);
-				log.info(ret.size() + "-> " + fullName + ": " + proteinComparatorKeySet.size() + " - "
-						+ peptideKeySet.size());
-			}
+			ret.put(identificationSet.getFullName(), proteinAccSet);
 		}
 		return ret;
 	}
@@ -3599,11 +3680,17 @@ public class DatasetFactory {
 	public static HistogramDataset createPeptideRTHistogramDataSet(List<IdentificationSet> idSets, int bins,
 			HistogramType histogramType, boolean inMinutes) {
 		HistogramDataset dataset = new HistogramDataset();
-
+		boolean someValidData = false;
 		for (IdentificationSet idSet : idSets) {
 			double[] values = getPeptideRT(idSet, inMinutes);
-			if (values != null && values.length > 0)
+			if (values != null && values.length > 0) {
+				someValidData = true;
 				dataset.addSeries(idSet.getFullName(), values, bins);
+			}
+		}
+		if (!someValidData) {
+			throw new IllegalMiapeArgumentException(
+					"There is no data to display. Be sure that your imported datasets contain RT information.");
 		}
 		dataset.setType(histogramType);
 		return dataset;
@@ -3632,6 +3719,9 @@ public class DatasetFactory {
 				}
 				i++;
 			}
+		}
+		if (!validData) {
+			return null;
 		}
 		return ret;
 	}
@@ -3665,7 +3755,7 @@ public class DatasetFactory {
 
 		HashMap<String, PeptideOccurrence> peptideOccurrences1 = idSet1.getPeptideChargeOccurrenceList(true);
 		HashMap<String, PeptideOccurrence> peptideOccurrences2 = idSet2.getPeptideChargeOccurrenceList(true);
-
+		boolean someValidData = false;
 		for (PeptideOccurrence occurrence2 : peptideOccurrences2.values()) {
 
 			if (peptideOccurrences1.containsKey(occurrence2.getKey())) {
@@ -3677,6 +3767,7 @@ public class DatasetFactory {
 						if (pep.getRetentionTimeInSeconds() != null) {
 							try {
 								rt1.add(Double.valueOf(pep.getRetentionTimeInSeconds()));
+								someValidData = true;
 							} catch (NumberFormatException e) {
 
 							}
@@ -3720,7 +3811,10 @@ public class DatasetFactory {
 				}
 			}
 		}
-
+		if (!someValidData) {
+			throw new IllegalMiapeArgumentException(
+					"There is no data to display. Be sure that your imported datasets contain RT information.");
+		}
 		List<XYSeries> ret = new ArrayList<XYSeries>();
 		ret.add(normalSeries);
 		return ret;
@@ -3728,7 +3822,7 @@ public class DatasetFactory {
 
 	public static CategoryDataset createSinglePeptideRTMonitoringCategoryDataSet(List<IdentificationSet> idSets,
 			List<String> sequences, Boolean showInMinutes) {
-
+		boolean someValidData = false;
 		// create the dataset...
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		try {
@@ -3743,6 +3837,7 @@ public class DatasetFactory {
 							if (peptide.getRetentionTimeInSeconds() != null) {
 								try {
 									double rt = Double.valueOf(peptide.getRetentionTimeInSeconds());
+									someValidData = true;
 									rts.add(rt);
 								} catch (NumberFormatException e) {
 
@@ -3764,6 +3859,10 @@ public class DatasetFactory {
 
 		} catch (IllegalMiapeArgumentException ex) {
 
+		}
+		if (!someValidData) {
+			throw new IllegalMiapeArgumentException(
+					"No data to display. Be sure that the imported datasets contain RT information.");
 		}
 		return dataset;
 	}
@@ -3945,7 +4044,7 @@ public class DatasetFactory {
 	private static double[] getRatioHistogram(IdentificationSet idSet1, IdentificationSet idSet2,
 			ProteinGroupComparisonType proteinGroupComparisonType, Boolean countNonConclusiveProteins) {
 
-		VennData venn = new VennData(idSet1.getProteinGroupOccurrenceList().values(),
+		VennData venn = new VennDataForProteins(idSet1.getProteinGroupOccurrenceList().values(),
 				idSet2.getProteinGroupOccurrenceList().values(), null, proteinGroupComparisonType,
 				countNonConclusiveProteins);
 		final Collection<Object> intersection = venn.getIntersection12();
@@ -3989,7 +4088,7 @@ public class DatasetFactory {
 		XYSeries serie = new XYSeries(idSet1.getName() + " vs " + idSet2.getName());
 		xySeriesCollection.addSeries(serie);
 
-		VennData venn = new VennData(idSet1.getProteinGroupOccurrenceList().values(),
+		VennData venn = new VennDataForProteins(idSet1.getProteinGroupOccurrenceList().values(),
 				idSet2.getProteinGroupOccurrenceList().values(), null, proteinGroupComparisonType,
 				countNonConclusiveProteins);
 		final Collection<Object> intersection = venn.getIntersection12();
