@@ -3332,9 +3332,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 			JLabel labelExperiment = new JLabel("Export buttons:");
 			jPanelAddOptions.add(labelExperiment);
-			String overlapString = "1,2";
+			String overlapString = "A,B";
 			// export just in 1 button
-			JButton jbuttonExportJustIn1 = new JButton("Export just in 1");
+			JButton jbuttonExportJustIn1 = new JButton("Export just in A");
 			jbuttonExportJustIn1.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3343,7 +3343,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			});
 			jPanelAddOptions.add(jbuttonExportJustIn1);
 			// export just in 2 button
-			JButton jbuttonExportJustIn2 = new JButton("Export just in 2");
+			JButton jbuttonExportJustIn2 = new JButton("Export just in B");
 			jbuttonExportJustIn2.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3352,9 +3352,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			});
 			jPanelAddOptions.add(jbuttonExportJustIn2);
 			if (numberOfSelectedCheckBoxes > 2) {
-				overlapString += ",3";
+				overlapString += ",C";
 				// export just in 3 button
-				JButton jbuttonExportJustIn3 = new JButton("Export just in 3");
+				JButton jbuttonExportJustIn3 = new JButton("Export just in C");
 				jbuttonExportJustIn3.addActionListener(new java.awt.event.ActionListener() {
 					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3419,13 +3419,13 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 					saveOverlappingImage();
 				}
 			});
-			String overlapString = "1,2";
+			String overlapString = "A,B";
 			jPanelAddOptions.add(jbuttonSave);
 			jPanelAddOptions.add(optionsFactory.getJLabelIntersectionsText());
 			JLabel labelExperiment = new JLabel("Export buttons:");
 			jPanelAddOptions.add(labelExperiment);
 			// export just in 1 button
-			JButton jbuttonExportJustIn1 = new JButton("Export just in 1");
+			JButton jbuttonExportJustIn1 = new JButton("Export just in A");
 			jbuttonExportJustIn1.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3434,7 +3434,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			});
 			jPanelAddOptions.add(jbuttonExportJustIn1);
 			// export just in 2 button
-			JButton jbuttonExportJustIn2 = new JButton("Export just in 2");
+			JButton jbuttonExportJustIn2 = new JButton("Export just in B");
 			jbuttonExportJustIn2.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3443,9 +3443,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			});
 			jPanelAddOptions.add(jbuttonExportJustIn2);
 			if (numberOfSelectedCheckBoxes > 2) {
-				overlapString += ",3";
+				overlapString += ",C";
 				// export just in 3 button
-				JButton jbuttonExportJustIn3 = new JButton("Export just in 3");
+				JButton jbuttonExportJustIn3 = new JButton("Export just in C");
 				jbuttonExportJustIn3.addActionListener(new java.awt.event.ActionListener() {
 					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {

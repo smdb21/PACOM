@@ -122,6 +122,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	private boolean extractionStarted = false;
 	private int currentUserID;
 	private boolean listenToItemEvents;
+	private boolean showProjectTable;
 
 	public static MiapeExtractionFrame getInstance(MainFrame mainFrame2, boolean b) {
 		if (instance == null) {
@@ -207,6 +208,8 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 				loadProjectsThread.addPropertyChangeListener(this);
 				loadProjectsThread.execute();
 			}
+		} else {
+			showLoadedProjectTable();
 		}
 
 	}
@@ -597,14 +600,17 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		});
 
 		javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-		jPanel5Layout.setHorizontalGroup(jPanel5Layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanel5Layout.createSequentialGroup().addContainerGap()
-						.addGroup(jPanel5Layout.createParallelGroup(Alignment.TRAILING, false)
-								.addComponent(jLabelMiapeMSMetadata, Alignment.LEADING, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(jComboBoxMetadata, Alignment.LEADING, 0, 263, Short.MAX_VALUE))
-						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jButtonEditMetadata)
-						.addContainerGap(340, Short.MAX_VALUE)));
+		jPanel5Layout.setHorizontalGroup(jPanel5Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel5Layout
+				.createSequentialGroup().addContainerGap()
+				.addGroup(jPanel5Layout.createParallelGroup(Alignment.TRAILING, false)
+						.addComponent(jLabelMiapeMSMetadata, Alignment.LEADING, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addGroup(Alignment.LEADING,
+								jPanel5Layout.createSequentialGroup()
+										.addComponent(jComboBoxMetadata, GroupLayout.PREFERRED_SIZE, 263,
+												GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.RELATED).addComponent(jButtonEditMetadata)))
+				.addContainerGap(340, Short.MAX_VALUE)));
 		jPanel5Layout.setVerticalGroup(jPanel5Layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(jPanel5Layout.createSequentialGroup().addContainerGap()
 						.addGroup(jPanel5Layout.createParallelGroup(Alignment.BASELINE)
@@ -612,7 +618,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 										GroupLayout.PREFERRED_SIZE)
 								.addComponent(jButtonEditMetadata))
 						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(jLabelMiapeMSMetadata, GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
+						.addComponent(jLabelMiapeMSMetadata, GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
 						.addContainerGap()));
 		jPanel5.setLayout(jPanel5Layout);
 
@@ -1335,15 +1341,9 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 
 	private void jButtonProjectActionPerformed(java.awt.event.ActionEvent evt) {
 		appendStatus("Opening project table");
+		showProjectTable = true;
 		loadProjects(true, false);
-		Map<Integer, String> miapeProjects = getLoadedProjects();
-		// this.appendStatus(miapeProjects.size() + " projects retrieved\n");
-		if (miapeProjects != null && !miapeProjects.isEmpty()) {
-			additionalDataForm = new TFrmInputTable(this, true, TFrmInputTable.PROJECT_MODE, miapeProjects);
-			additionalDataForm.setVisible(true);
-		} else {
-			appendStatus("There is no projects to show");
-		}
+
 	}
 
 	private void jButtonInputFileActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1526,6 +1526,23 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 			jProgressBar.setIndeterminate(true);
 			appendStatus("Starting process...");
 
+		} else if (LoadProjectsTask.PROJECT_LOADED_DONE.equals(evt.getPropertyName())) {
+			showLoadedProjectTable();
+		}
+	}
+
+	private void showLoadedProjectTable() {
+		if (showProjectTable) {
+			Map<Integer, String> miapeProjects = getLoadedProjects();
+			// this.appendStatus(miapeProjects.size() + " projects
+			// retrieved\n");
+			if (miapeProjects != null && !miapeProjects.isEmpty()) {
+				additionalDataForm = new TFrmInputTable(this, true, TFrmInputTable.PROJECT_MODE, miapeProjects);
+				additionalDataForm.setVisible(true);
+			} else {
+				appendStatus("There is no projects to show");
+			}
+			showProjectTable = false;
 		}
 	}
 

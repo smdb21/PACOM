@@ -146,7 +146,7 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 							peptideOccurrenceList.add(peptideOccurrence);
 						}
 
-						SorterUtil.sortPeptideOcurrencesByBestPeptideScore(peptideOccurrenceList);
+						// SorterUtil.sortPeptideOcurrencesByBestPeptideScore(peptideOccurrenceList);
 						firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
 						Iterator<PeptideOccurrence> iterator = peptideOccurrenceList.iterator();
 
