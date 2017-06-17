@@ -682,9 +682,14 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		boolean distModPeptides = parent.distinguishModifiedPeptides();
 		List<IdentificationSet> idSets = getIdentificationSets(null, checkBoxControls, false);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
-			final List<DefaultCategoryDataset> datasets = DatasetFactory
-					.createExclusiveNumberIdentificationCategoryDataSet(idSets, plotItem, distModPeptides,
-							proteinGroupComparisonType, showAccumulativeTrend, countNonConclusiveProteins);
+			List<DefaultCategoryDataset> datasets = null;
+			if (IdentificationItemEnum.PEPTIDE == plotItem) {
+				datasets = DatasetFactory.createExclusiveNumberIdentificationCategoryDataSetForPeptides(idSets,
+						distModPeptides, showAccumulativeTrend);
+			} else {
+				datasets = DatasetFactory.createExclusiveNumberIdentificationCategoryDataSetForProteins(idSets,
+						proteinGroupComparisonType, showAccumulativeTrend, countNonConclusiveProteins);
+			}
 			if (showAccumulativeTrend) {
 				CombinedChart chart = new CombinedChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, yAxisLabelAccumulative,
@@ -698,10 +703,14 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			}
 
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			final List<DefaultCategoryDataset> datasets = DatasetFactory
-					.createExclusiveNumberIdentificationCategoryDataSet(idSets, plotItem, distModPeptides,
-							proteinGroupComparisonType, showAccumulativeTrend, countNonConclusiveProteins);
-
+			List<DefaultCategoryDataset> datasets = null;
+			if (IdentificationItemEnum.PEPTIDE == plotItem) {
+				datasets = DatasetFactory.createExclusiveNumberIdentificationCategoryDataSetForPeptides(idSets,
+						distModPeptides, showAccumulativeTrend);
+			} else {
+				datasets = DatasetFactory.createExclusiveNumberIdentificationCategoryDataSetForProteins(idSets,
+						proteinGroupComparisonType, showAccumulativeTrend, countNonConclusiveProteins);
+			}
 			if (showAccumulativeTrend) {
 				CombinedChart chart = new CombinedChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, yAxisLabelAccumulative,
@@ -714,9 +723,14 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			final List<DefaultCategoryDataset> datasets = DatasetFactory
-					.createExclusiveNumberIdentificationCategoryDataSet(idSets, plotItem, distModPeptides,
-							proteinGroupComparisonType, showAccumulativeTrend, countNonConclusiveProteins);
+			List<DefaultCategoryDataset> datasets = null;
+			if (IdentificationItemEnum.PEPTIDE == plotItem) {
+				datasets = DatasetFactory.createExclusiveNumberIdentificationCategoryDataSetForPeptides(idSets,
+						distModPeptides, showAccumulativeTrend);
+			} else {
+				datasets = DatasetFactory.createExclusiveNumberIdentificationCategoryDataSetForProteins(idSets,
+						proteinGroupComparisonType, showAccumulativeTrend, countNonConclusiveProteins);
+			}
 			if (showAccumulativeTrend) {
 				CombinedChart chart = new CombinedChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, yAxisLabelAccumulative,
@@ -733,10 +747,14 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 			for (Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), checkBoxControls, false);
-
-				final List<DefaultCategoryDataset> datasets = DatasetFactory
-						.createExclusiveNumberIdentificationCategoryDataSet(idSets, plotItem, distModPeptides,
-								proteinGroupComparisonType, showAccumulativeTrend, countNonConclusiveProteins);
+				List<DefaultCategoryDataset> datasets = null;
+				if (IdentificationItemEnum.PEPTIDE == plotItem) {
+					datasets = DatasetFactory.createExclusiveNumberIdentificationCategoryDataSetForPeptides(idSets,
+							distModPeptides, showAccumulativeTrend);
+				} else {
+					datasets = DatasetFactory.createExclusiveNumberIdentificationCategoryDataSetForProteins(idSets,
+							proteinGroupComparisonType, showAccumulativeTrend, countNonConclusiveProteins);
+				}
 				if (showAccumulativeTrend) {
 					CombinedChart chart = new CombinedChart(
 							parent.getChartTitle(chartType) + ": " + experiment.getName(),
