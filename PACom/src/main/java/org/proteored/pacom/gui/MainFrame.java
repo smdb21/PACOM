@@ -318,12 +318,12 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 
 		jMenuBar1.add(jMenu1);
 
-		jMenu2.setText("Data Import");
+		jMenu2.setText("Import data");
 		jMenu2.setToolTipText(dataImportToolTip);
 
 		jMenuItemStandard2MIAPE.setAccelerator(
 				javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.ALT_MASK));
-		jMenuItemStandard2MIAPE.setText("Go to Data Import");
+		jMenuItemStandard2MIAPE.setText("Go to Import data");
 		jMenuItemStandard2MIAPE.setToolTipText(dataImportToolTip);
 		jMenuItemStandard2MIAPE.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -335,7 +335,7 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 
 		jMenuItemBatchMiapeExtraction.setAccelerator(
 				javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.ALT_MASK));
-		jMenuItemBatchMiapeExtraction.setText("Go to Batch Data Import");
+		jMenuItemBatchMiapeExtraction.setText("Go to Batch Import data");
 		jMenuItemBatchMiapeExtraction.setToolTipText(batchDataImportToolTip);
 		jMenuItemBatchMiapeExtraction.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -420,7 +420,7 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 
 		jMenuItemMIAPEExtractionBatchTutorial.setAccelerator(
 				javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.ALT_MASK));
-		jMenuItemMIAPEExtractionBatchTutorial.setText("Batch data import Tutorial");
+		jMenuItemMIAPEExtractionBatchTutorial.setText("Batch Import data Tutorial");
 		jMenuItemMIAPEExtractionBatchTutorial.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
