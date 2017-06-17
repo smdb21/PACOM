@@ -8,7 +8,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -25,11 +24,11 @@ import javax.swing.JPanel;
 import org.apache.log4j.Logger;
 import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
 import org.proteored.miapeapi.experiment.VennData;
-import org.proteored.miapeapi.experiment.model.ExtendedIdentifiedProtein;
+import org.proteored.miapeapi.experiment.VennDataForPeptides;
+import org.proteored.miapeapi.experiment.VennDataForProteins;
 import org.proteored.miapeapi.experiment.model.IdentificationItemEnum;
 import org.proteored.miapeapi.experiment.model.IdentificationSet;
 import org.proteored.miapeapi.experiment.model.ProteinGroup;
-import org.proteored.miapeapi.experiment.model.ProteinGroupOccurrence;
 import org.proteored.miapeapi.experiment.model.sort.ProteinGroupComparisonType;
 import org.proteored.pacom.analysis.util.ImageUtils;
 
@@ -82,7 +81,7 @@ public class VennChart {
 				proteinGroupOccurrenceList2 = idset2.getProteinGroupOccurrenceList().values();
 			if (idset3 != null)
 				proteinGroupOccurrenceList3 = idset3.getProteinGroupOccurrenceList().values();
-			this.vennData = new VennData(proteinGroupOccurrenceList1, proteinGroupOccurrenceList2,
+			this.vennData = new VennDataForProteins(proteinGroupOccurrenceList1, proteinGroupOccurrenceList2,
 					proteinGroupOccurrenceList3, proteinGroupComparisonType, countNonConclusiveProteins);
 			URL url;
 			try {
@@ -105,7 +104,7 @@ public class VennChart {
 			if (idset3 != null) // distModPep);
 				pepList3 = idset3.getPeptideOccurrenceList(distModPep).values();// getPeptideHash(idset3,
 			// distModPep);
-			this.vennData = new VennData(pepList1, pepList2, pepList3, null, countNonConclusiveProteins);
+			this.vennData = new VennDataForPeptides(pepList1, pepList2, pepList3);
 			URL url;
 			try {
 				// url = createChartURL(title, label1, list1, label2, list2,
