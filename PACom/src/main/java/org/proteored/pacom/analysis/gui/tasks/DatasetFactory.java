@@ -3889,19 +3889,32 @@ public class DatasetFactory {
 		matrix1.add(columns);
 		for (IdentificationSet idSet : idSets) {
 			Set<Spectrometer> spectrometers = idSet.getSpectrometers();
-			for (Spectrometer spectrometer : spectrometers) {
-				List<String> cols = new ArrayList<String>();
+			List<String> cols = new ArrayList<String>();
+			if (spectrometers.isEmpty()) {
 				cols.add(parseString(idSet.getFullName()));
 
-				cols.add(parseString(spectrometer.getName()));
-				cols.add(parseString(spectrometer.getModel()));
-				cols.add(parseString(spectrometer.getVersion()));
-				cols.add(parseString(spectrometer.getManufacturer()));
-				cols.add(parseString(spectrometer.getCustomizations()));
-				cols.add(parseString(spectrometer.getParameters()));
-				cols.add(parseString(spectrometer.getUri()));
-
+				cols.add("-");
+				cols.add("-");
+				cols.add("-");
+				cols.add("-");
+				cols.add("-");
+				cols.add("-");
+				cols.add("-");
 				matrix1.add(cols);
+			} else {
+				for (Spectrometer spectrometer : spectrometers) {
+					cols.add(parseString(idSet.getFullName()));
+
+					cols.add(parseString(spectrometer.getName()));
+					cols.add(parseString(spectrometer.getModel()));
+					cols.add(parseString(spectrometer.getVersion()));
+					cols.add(parseString(spectrometer.getManufacturer()));
+					cols.add(parseString(spectrometer.getCustomizations()));
+					cols.add(parseString(spectrometer.getParameters()));
+					cols.add(parseString(spectrometer.getUri()));
+
+					matrix1.add(cols);
+				}
 			}
 		}
 		return transpose(matrix1);
@@ -3949,36 +3962,57 @@ public class DatasetFactory {
 		matrix1.add(columns);
 		for (IdentificationSet idSet : idSets) {
 			Set<InputParameter> inputParameters = idSet.getInputParameters();
-			for (InputParameter inputParameter : inputParameters) {
+			if (inputParameters.isEmpty()) {
 				List<String> cols = new ArrayList<String>();
-				cols.add(parseString(idSet.getFullName()));
-				if (inputParameter.getSoftware() != null) {
-					cols.add(parseString(inputParameter.getSoftware().getName(), ExporterUtil.VALUE_SEPARATOR,
-							inputParameter.getSoftware().getManufacturer() + ExporterUtil.VALUE_SEPARATOR
-									+ inputParameter.getSoftware().getVersion()));
-				} else {
-					cols.add(null);
-				}
-				cols.add(parseString(parseDatabases(inputParameter.getDatabases())));
-				cols.add(parseString(inputParameter.getSearchType()));
-				cols.add(parseString(inputParameter.getPrecursorMassTolerance(), ExporterUtil.VALUE_SEPARATOR,
-						inputParameter.getPrecursorMassToleranceUnit()));
-				cols.add(parseString(inputParameter.getFragmentMassTolerance(), " ",
-						inputParameter.getFragmentMassToleranceUnit()));
-
-				cols.add(parseString(parseString(inputParameter.getPmfMassTolerance(), ExporterUtil.VALUE_SEPARATOR,
-						inputParameter.getPmfMassToleranceUnit())));
-				cols.add(parseString(inputParameter.getMisscleavages()));
-				cols.add(parseString(inputParameter.getCleavageName()));
-				cols.add(parseString(inputParameter.getCleavageRules()));
-				cols.add(parseString(inputParameter.getAdditionalCleavages()));
-				cols.add(parseString(inputParameter.getAaModif()));
-				cols.add(parseString(inputParameter.getMinScore()));
-				cols.add(parseString(inputParameter.getNumEntries()));
-				cols.add(parseString(inputParameter.getScoringAlgorithm()));
-				cols.add(parseString(inputParameter.getTaxonomy()));
-
+				cols.add(idSet.getFullName());
+				cols.add("-");
+				cols.add("-");
+				cols.add("-");
+				cols.add("-");
+				cols.add("-");
+				cols.add("-");
+				cols.add("-");
+				cols.add("-");
+				cols.add("-");
+				cols.add("-");
+				cols.add("-");
+				cols.add("-");
+				cols.add("-");
+				cols.add("-");
+				cols.add("-");
 				matrix1.add(cols);
+			} else {
+				for (InputParameter inputParameter : inputParameters) {
+					List<String> cols = new ArrayList<String>();
+					cols.add(parseString(idSet.getFullName()));
+					if (inputParameter.getSoftware() != null) {
+						cols.add(parseString(inputParameter.getSoftware().getName(), ExporterUtil.VALUE_SEPARATOR,
+								inputParameter.getSoftware().getManufacturer() + ExporterUtil.VALUE_SEPARATOR
+										+ inputParameter.getSoftware().getVersion()));
+					} else {
+						cols.add(null);
+					}
+					cols.add(parseString(parseDatabases(inputParameter.getDatabases())));
+					cols.add(parseString(inputParameter.getSearchType()));
+					cols.add(parseString(inputParameter.getPrecursorMassTolerance(), ExporterUtil.VALUE_SEPARATOR,
+							inputParameter.getPrecursorMassToleranceUnit()));
+					cols.add(parseString(inputParameter.getFragmentMassTolerance(), " ",
+							inputParameter.getFragmentMassToleranceUnit()));
+
+					cols.add(parseString(parseString(inputParameter.getPmfMassTolerance(), ExporterUtil.VALUE_SEPARATOR,
+							inputParameter.getPmfMassToleranceUnit())));
+					cols.add(parseString(inputParameter.getMisscleavages()));
+					cols.add(parseString(inputParameter.getCleavageName()));
+					cols.add(parseString(inputParameter.getCleavageRules()));
+					cols.add(parseString(inputParameter.getAdditionalCleavages()));
+					cols.add(parseString(inputParameter.getAaModif()));
+					cols.add(parseString(inputParameter.getMinScore()));
+					cols.add(parseString(inputParameter.getNumEntries()));
+					cols.add(parseString(inputParameter.getScoringAlgorithm()));
+					cols.add(parseString(inputParameter.getTaxonomy()));
+
+					matrix1.add(cols);
+				}
 			}
 		}
 
@@ -4013,9 +4047,11 @@ public class DatasetFactory {
 
 	private static String parseString(String string1) {
 		StringBuilder sb = new StringBuilder();
-		if (string1 != null)
+		if (string1 != null) {
 			sb.append(string1);
-
+		} else {
+			sb.append("-");
+		}
 		return sb.toString();
 	}
 
