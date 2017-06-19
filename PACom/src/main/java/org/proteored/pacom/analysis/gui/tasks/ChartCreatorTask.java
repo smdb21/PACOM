@@ -139,8 +139,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				ret = showPeptideLengthDistributionChart();
 			} else if (ChartManagerFrame.PEPTIDE_CHARGE_HISTOGRAM.equals(chartType)) {
 				ret = showPeptideChargeBarChart();
-			} else if (ChartManagerFrame.CHR16_MAPPING.equals(chartType)) {
-				ret = showChr16MappingBarChart();
+				// } else if (ChartManagerFrame.CHR16_MAPPING.equals(chartType))
+				// {
+				// ret = showChr16MappingBarChart();
 			} else if (ChartManagerFrame.SINGLE_HIT_PROTEINS.equals(chartType)) {
 				ret = showSingleHitProteinsChart();
 			} else if (ChartManagerFrame.PEPTIDE_NUMBER_IN_PROTEINS.equals(chartType)) {

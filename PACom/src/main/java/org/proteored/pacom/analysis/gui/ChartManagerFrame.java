@@ -143,7 +143,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	public static final String PSMS_PER_PROTEIN_HEATMAP = "PSMs per protein heatmap";
 	public static final String PEPTIDE_NUM_PER_PROTEIN_MASS = "Number of peptides / protein molecular weight";
 	public static final String HUMAN_CHROMOSOME_COVERAGE = "Human chromosome coverage";
-	public static final String CHR16_MAPPING = "Human chromosome 16 mapping (SPanish-HPP)";
+	// public static final String CHR16_MAPPING = "Human chromosome 16 mapping
+	// (SPanish-HPP)";
 	public static final String CHR_MAPPING = "Proteins and genes per chromosome";
 	public static final String CHR_PEPTIDES_MAPPING = "Peptides and PSMs per chromosome";
 	public static final String PROTEIN_NAME_CLOUD = "Protein words cloud";
@@ -167,8 +168,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			PSMS_PER_PEPTIDE_HEATMAP, PEPTIDE_PRESENCY_HEATMAP, MODIFICATED_PEPTIDE_NUMBER, MODIFICATION_SITES_NUMBER,
 			PEPTIDE_MODIFICATION_DISTRIBUTION, PEPTIDE_MONITORING, MISSEDCLEAVAGE_DISTRIBUTION, FDR, FDR_VS_SCORE,
 			PEPTIDE_MASS_DISTRIBUTION, PEPTIDE_LENGTH_DISTRIBUTION, PEPTIDE_CHARGE_HISTOGRAM, CHR_MAPPING,
-			CHR_PEPTIDES_MAPPING, HUMAN_CHROMOSOME_COVERAGE, CHR16_MAPPING, DELTA_MZ_OVER_MZ, PROTEIN_NAME_CLOUD,
-			PEPTIDE_COUNTING_HISTOGRAM, PEPTIDE_COUNTING_VS_SCORE
+			CHR_PEPTIDES_MAPPING, HUMAN_CHROMOSOME_COVERAGE,
+			// CHR16_MAPPING,
+			DELTA_MZ_OVER_MZ, PROTEIN_NAME_CLOUD, PEPTIDE_COUNTING_HISTOGRAM, PEPTIDE_COUNTING_VS_SCORE
 			// ,LABELLED_PEPTIDE_MONITORING
 	};
 	private String currentChartType = PSM_PEP_PROT;
@@ -621,8 +623,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		humanGenesMenus.add(HUMAN_CHROMOSOME_COVERAGE);
 		humanGenesMenus.add(CHR_MAPPING);
 		humanGenesMenus.add(CHR_PEPTIDES_MAPPING);
-		humanGenesMenus.add(MENU_SEPARATION); // MENU SEPARATION
-		humanGenesMenus.add(CHR16_MAPPING);
+		// humanGenesMenus.add(MENU_SEPARATION); // MENU SEPARATION
+		// humanGenesMenus.add(CHR16_MAPPING);
 		addSubmenus(menuHumanGenes, humanGenesMenus, radioButtonMenuMap, jMenuChartType);
 
 		// Peptide counting
@@ -795,7 +797,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		// TODO
 		String[] ret = null;
 
-		if (CHR16_MAPPING.equals(chartType) || CHR_MAPPING.equals(chartType) || CHR_PEPTIDES_MAPPING.equals(chartType)
+		if (
+		// CHR16_MAPPING.equals(chartType) ||
+		CHR_MAPPING.equals(chartType) || CHR_PEPTIDES_MAPPING.equals(chartType)
 				|| PROTEIN_NAME_CLOUD.equals(chartType)) {
 			ret = new String[2];
 			ret[0] = ONE_SERIES_PER_EXPERIMENT_LIST;
@@ -1649,9 +1653,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			addMissedCleavageDistributionControls(options);
 		} else if (PEPTIDE_LENGTH_DISTRIBUTION.equals(chartType)) {
 			addPeptideLengthDistributionControls(options);
-		} else if (CHR16_MAPPING.equals(chartType)) {
-			// this.isChr16ChartShowed = true;
-			addChr16MappingControls();
+			// } else if (CHR16_MAPPING.equals(chartType)) {
+			// // this.isChr16ChartShowed = true;
+			// addChr16MappingControls();
 		} else if (SINGLE_HIT_PROTEINS.equals(chartType)) {
 			addSingleHitProteinControls();
 		} else if (PEPTIDE_NUMBER_IN_PROTEINS.equals(chartType)) {
@@ -2125,7 +2129,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		c.gridy++;
 		panel.add(chromosomesCombo, c);
 
-		JButton button2 = new JButton("Filter by chr.");
+		JButton button2 = new JButton("Filter by chromosome");
 		button2.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2133,7 +2137,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				ChartManagerFrame.this.exportHumanProteins(chr);
 			}
 		});
-		button2.setToolTipText("Filter proteins belonging to the chromosome sected in the combo-box");
+		button2.setToolTipText(
+				"<html>Filter proteins encoded by genes from the chromosome sected in the combo-box<br>discarding any other protein encoded by any gene in any other chromosome.</html>");
 		c.gridy++;
 		panel.add(button2, c);
 
@@ -2210,7 +2215,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		c.gridy++;
 		panel.add(chromosomesCombo, c);
 
-		JButton button2 = new JButton("Filter by chr.");
+		JButton button2 = new JButton("Filter by chromosome");
 		button2.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2218,7 +2223,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				ChartManagerFrame.this.exportHumanProteins(chr);
 			}
 		});
-		button2.setToolTipText("Filter proteins belonging to the chromosome sected in the combo-box");
+		button2.setToolTipText(
+				"<html>Filter proteins encoded by genes from the chromosome sected in the combo-box<br>discarding any other protein encoded by any gene in any other chromosome.</html>");
+
 		c.gridy++;
 		panel.add(button2, c);
 
