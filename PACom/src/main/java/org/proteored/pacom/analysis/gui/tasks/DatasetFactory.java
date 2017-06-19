@@ -3510,17 +3510,12 @@ public class DatasetFactory {
 			for (int i = 0; i < idSets.size(); i++) {
 				IdentificationSet idSet = idSets.get(i);
 				String idSetName = idSet.getFullName();
-				Set<String> keys = hashMapKeys.get(idSet.getFullName());
+				Set<String> keys = hashMapKeys.get(idSetName);
 
 				if (accumulativeTrend) {
 					globalVenn = new VennDataForPeptides(keys, union, null);
 					union = globalVenn.getUnion12();
-					int num = 0;
-					for (Object obj : union) {
-						String key = (String) obj;
-
-						num++;
-					}
+					int num = union.size();
 					accumulativeDataSet.addValue(num, "Accumulative # peptides", idSetName);
 				}
 
