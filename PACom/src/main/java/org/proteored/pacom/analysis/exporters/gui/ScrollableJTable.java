@@ -168,7 +168,7 @@ public class ScrollableJTable extends JPanel {
 			}
 		} else {
 			final int selectedOption = JOptionPane.showConfirmDialog(this,
-					"<html>Click YES to go open the protein entry.</html>", "Open protein Entry",
+					"<html>Click YES to open the protein entry in a browser window.</html>", "Open protein Entry",
 					JOptionPane.YES_NO_OPTION);
 
 			if (selectedOption == JOptionPane.YES_OPTION) {
