@@ -48,14 +48,14 @@
                 <include>*.xml</include>
             </includes>
             <excludes>
-            	<exclude>PME6_Re-analysis.xml</exclude>
+            	<exclude>PME6_Reanalysis*.xml</exclude>
             </excludes>
-            <outputDirectory>${assembly.output.folder}/user_data/miape_data</outputDirectory>
+            <outputDirectory>${assembly.output.folder}/user_data/local_datasets/PME6_reanalysis</outputDirectory>
         </fileSet>
 		<fileSet>
             <directory>pme6_reanalysis_project</directory>
             <includes>
-                <include>PME6_Re-analysis*.xml</include>
+                <include>PME6_Reanalysis*.xml</include>
             </includes>
             <outputDirectory>${assembly.output.folder}/user_data/projects</outputDirectory>
         </fileSet>

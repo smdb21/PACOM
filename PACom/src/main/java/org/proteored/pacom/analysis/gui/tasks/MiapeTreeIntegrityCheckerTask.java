@@ -100,11 +100,12 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 					boolean curated = cpExperiment.isCurated();
 					if (cpExperiment.getCPReplicate() != null) {
 						for (CPReplicate cpReplicate : cpExperiment.getCPReplicate()) {
-							if (uniqueIds.contains(cpReplicate.getName())) {
+							String uniqueName = cpExperiment.getName() + cpReplicate.getName();
+							if (uniqueIds.contains(uniqueName)) {
 								throw new IllegalMiapeArgumentException("'" + cpReplicate.getName()
 										+ "' node name is repeated. You can not name different nodes with the same name. Please rename one of them with a unique name");
 							}
-							uniqueIds.add(cpReplicate.getName());
+							uniqueIds.add(uniqueName);
 							List<String> repScoreNames = new ArrayList<String>();
 
 							if (true) {
@@ -340,10 +341,8 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 				file = new File(FileManager.getMiapeMSIXMLFileLocalPathFromMiapeInformation(cpMSI));
 			} else {
 				file = new File(FileManager.getMiapeMSICuratedXMLFilePathFromMiapeInformation(
-						cpMSI.getLocalProjectName(), cpMSI.getId(), cpMSI.getName()));
+						cpMSI.getLocalProjectName(), cpMSI.getName()));
 			}
-		} else if (cpMSI.isManuallyCreated() != null && cpMSI.isManuallyCreated()) {
-			file = FileManager.getManualIdSetFile(cpMSI.getName());
 		}
 		if (file == null || !file.exists())
 			return null;

@@ -43,7 +43,6 @@ import org.proteored.pacom.analysis.conf.jaxb.CPMSList;
 import org.proteored.pacom.analysis.conf.jaxb.CPReplicate;
 import org.proteored.pacom.analysis.gui.components.ExtendedJTree;
 import org.proteored.pacom.analysis.gui.components.MyTreeRenderer;
-import org.proteored.pacom.analysis.gui.tasks.ExternalDataTreeLoaderTask;
 import org.proteored.pacom.analysis.gui.tasks.InitializeProjectComboBoxTask;
 import org.proteored.pacom.analysis.gui.tasks.LocalDataTreeLoaderTask;
 import org.proteored.pacom.analysis.gui.tasks.MiapeRetrieverManager;
@@ -103,7 +102,6 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 	private boolean correctlyInitialized = false;
 	private boolean finishPressed;
 	private InitializeProjectComboBoxTask projectComboLoaderTask;
-	private ExternalDataTreeLoaderTask externalDataTreeLoaderTask;
 	private LocalDataTreeLoaderTask localDataTreeLoaderTask;
 
 	@Override
@@ -122,17 +120,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 
 			}
 		}
-		if (externalDataTreeLoaderTask != null && externalDataTreeLoaderTask.getState() == StateValue.STARTED) {
-			boolean canceled = externalDataTreeLoaderTask.cancel(true);
-			while (!canceled) {
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-				}
-				log.info("Waiting for local tree loader closing");
-				canceled = externalDataTreeLoaderTask.cancel(true);
-			}
-		}
+
 		if (projectComboLoaderTask != null && projectComboLoaderTask.getState() == StateValue.STARTED) {
 			boolean canceled = projectComboLoaderTask.cancel(true);
 			while (!canceled) {
@@ -179,9 +167,6 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 		jTreeLocalMIAPEMSIs.setCellRenderer(new MyTreeRenderer());
 		jTreeManualMIAPEMSIs.setCellRenderer(new MyTreeRenderer());
 
-		// fill external data tree
-		fillExternalIdSetsTree();
-
 		// fill local data tree
 		fillLocalMIAPETree();
 
@@ -225,7 +210,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 	@Override
 	public void setVisible(boolean b) {
 		if (b) {
-			initializeComboBoxes();
+			loadProjectCombo();
 			jButtonStartLoading.setEnabled(true);
 			pack();
 		}
@@ -244,13 +229,6 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 
 			jButtonCancelLoading.setEnabled(true);
 		}
-	}
-
-	private void fillExternalIdSetsTree() {
-		externalDataTreeLoaderTask = new ExternalDataTreeLoaderTask(jTreeManualMIAPEMSIs);
-		externalDataTreeLoaderTask.addPropertyChangeListener(this);
-		externalDataTreeLoaderTask.execute();
-
 	}
 
 	private void fillLocalMIAPETree() {
@@ -438,7 +416,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 		jButtonAddManualList.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButtonAddManualListActionPerformed(evt);
+				// jButtonAddManualListActionPerformed(evt);
 			}
 		});
 
@@ -970,6 +948,9 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 				// get MIAPE Name
 				String miapeName = FilenameUtils
 						.getBaseName(jTreeLocalMIAPEMSIs.getStringFromSelection(LOCAL_MIAPE_UNIQUE_NAME_REGEXP));
+				if ("".equals(miapeName)) {
+					miapeName = "Dataset_" + miapeID;
+				}
 				// get local project name
 				String projectName = jTreeLocalMIAPEMSIs
 						.getStringFromParentOfSelection(MIAPE_LOCAL_PROJECT_NAME_REGEXP);
@@ -1205,7 +1186,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 				boolean deleted = FileManager.removeProjectXMLFile(projectName);
 				if (deleted) {
 					appendStatus("Inspection project '" + projectName + "' deleted");
-					initializeComboBoxes();
+					loadProjectCombo();
 				}
 			}
 		}
@@ -1289,18 +1270,20 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 
 	}
 
-	private void jButtonAddManualListActionPerformed(java.awt.event.ActionEvent evt) {
+	// private void
+	// jButtonAddManualListActionPerformed(java.awt.event.ActionEvent evt) {
+	//
+	// addManualIdSet();
+	//
+	// }
 
-		addManualIdSet();
-
-	}
-
-	private void addManualIdSet() {
-
-		// show manual id set creator dialog
-		ManualIdentificationSetCreatorDialog dialog = ManualIdentificationSetCreatorDialog.getInstance(this);
-		dialog.setVisible(true);
-	}
+	// private void addManualIdSet() {
+	//
+	// // show manual id set creator dialog
+	// ManualIdentificationSetCreatorDialog dialog =
+	// ManualIdentificationSetCreatorDialog.getInstance(this);
+	// dialog.setVisible(true);
+	// }
 
 	private void jComboBoxCuratedExperimentsActionPerformed(java.awt.event.ActionEvent evt) {
 
@@ -1336,10 +1319,14 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 			else
 				appendStatus("Some error occurred while removing curated experiment '" + curatedExperimentName + "'");
 
-			projectComboLoaderTask = new InitializeProjectComboBoxTask(this);
-			projectComboLoaderTask.addPropertyChangeListener(this);
-			projectComboLoaderTask.execute();
+			loadProjectCombo();
 		}
+	}
+
+	private void loadProjectCombo() {
+		projectComboLoaderTask = new InitializeProjectComboBoxTask(this);
+		projectComboLoaderTask.addPropertyChangeListener(this);
+		projectComboLoaderTask.execute();
 	}
 
 	private void jButtonAddCuratedExperimentActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1401,9 +1388,10 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 			log.info("Cancelling miape msi tree loading");
 		}
 		log.info("Starting miape msi tree loading");
+
 		fillTreeFromProteoRedRepository();
-		fillExternalIdSetsTree();
 		fillLocalMIAPETree();
+		loadProjectCombo();
 	}
 
 	private void jTextProjectNameKeyReleased(java.awt.event.KeyEvent evt) {
@@ -1478,11 +1466,6 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 		MiapeRetrieverManager.getInstance(MainFrame.userName, MainFrame.password).cancelAll();
 		// enable controls
 
-	}
-
-	public void initializeComboBoxes() {
-		projectComboLoaderTask = new InitializeProjectComboBoxTask(this);
-		projectComboLoaderTask.execute();
 	}
 
 	public JComboBox getProjectComboBox() {
@@ -2132,75 +2115,25 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 
 				if (cpReplicate.getCPMSIList() != null) {
 					for (CPMSI cpMsi : cpReplicate.getCPMSIList().getCPMSI()) {
-						if (cpMsi.isManuallyCreated() == null || !cpMsi.isManuallyCreated()) {
-							if (cpMsi.isLocal() == null || !cpMsi.isLocal()) {
-								boolean addNode = true;
-								final Integer miapeMSIID = Integer.valueOf(cpMsi.getId());
-								cpMsi.setName(FilenameUtils.getBaseName(
-										FileManager.getMiapeMSILocalFileName(miapeMSIID, cpMsi.getName())));
-								File file = null;
-								if (curated) {
-									file = new File(FileManager.getMiapeMSICuratedXMLFilePathFromFullName(
-											cpExperiment.getName(), cpMsi.getName()));
-									if (!file.exists())
-										addNode = false;
 
-								} else {
-									file = new File(FileManager.getMiapeMSIXMLFileLocalPathFromMiapeInformation(cpMsi));
-								}
-								if (addNode) {
-									jTreeProject.addNewNode(cpMsi, replicateNode);
-									hasOneReplicate = true;
-								} else {
-									cpRepIterator.remove();
-									jTreeProject.removeNode(replicateNode);
-								}
-								if (miapeMSIID > 0)
-									startMIAPEMSIRetrieving(miapeMSIID);
-								// if the file was created/modified before to 3
-								// October
-								// 2012:
-								if (MainFrame.userName != null && MainFrame.password != null
-										&& (!file.exists() || file.lastModified() < Long.valueOf("1349251004048")))
-									MiapeRetrieverManager.getInstance(MainFrame.userName, MainFrame.password)
-											.addRetrieving(miapeMSIID, "MSI", this);
-							} else {
-								// LOCAL MIAPE
-								boolean addNode = true;
-								if (curated) {
-									File file = new File(FileManager.getMiapeMSICuratedXMLFilePathFromMiapeInformation(
-											cpMsi.getLocalProjectName(), cpMsi.getId(), cpMsi.getName()));
-									if (!file.exists())
-										addNode = false;
-
-								} else {
-									File file = new File(
-											FileManager.getMiapeMSIXMLFileLocalPathFromMiapeInformation(cpMsi));
-									if (!file.exists())
-										addNode = false;
-								}
-								if (addNode) {
-									jTreeProject.addNewNode(cpMsi, replicateNode);
-									hasOneReplicate = true;
-								} else {
-									cpRepIterator.remove();
-									jTreeProject.removeNode(replicateNode);
-								}
-							}
-						} else {
-							// MANUALLY CREATED
-							boolean addNode = true;
-
-							File file = FileManager.getManualIdSetFile(cpMsi.getName());
-							if (file == null || !file.exists())
+						// LOCAL MIAPE
+						boolean addNode = true;
+						if (curated) {
+							File file = new File(FileManager.getMiapeMSICuratedXMLFilePathFromMiapeInformation(cpMsi));
+							if (!file.exists())
 								addNode = false;
-							if (addNode) {
-								jTreeProject.addNewNode(cpMsi, replicateNode);
-								hasOneReplicate = true;
-							} else {
-								cpRepIterator.remove();
-								jTreeProject.removeNode(replicateNode);
-							}
+
+						} else {
+							File file = new File(FileManager.getMiapeMSIXMLFileLocalPathFromMiapeInformation(cpMsi));
+							if (!file.exists())
+								addNode = false;
+						}
+						if (addNode) {
+							jTreeProject.addNewNode(cpMsi, replicateNode);
+							hasOneReplicate = true;
+						} else {
+							cpRepIterator.remove();
+							jTreeProject.removeNode(replicateNode);
 						}
 
 					}
@@ -2248,15 +2181,6 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 					// FileManager.getMiapeMSICuratedXMLFilePath(cpMsi.getId(),
 					// experimentName, cpMsi.getName())));
 
-					final Integer miapeMSIID = Integer.valueOf(cpMsi.getId());
-					File file = new File(FileManager.getMiapeMSICuratedXMLFilePathFromMiapeInformation(
-							cpMsi.getLocalProjectName(), cpMsi.getId(), cpMsi.getName()));
-					// if the file was created/modified before to 3 October
-					// 2012:
-					if (MainFrame.userName != null && MainFrame.password != null
-							&& (!file.exists() || file.lastModified() < Long.valueOf("1349251004048")))
-						MiapeRetrieverManager.getInstance(MainFrame.userName, MainFrame.password)
-								.addRetrieving(miapeMSIID, "MSI", this);
 				}
 			}
 		}
@@ -2482,11 +2406,6 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 		} else if (TreeLoaderTask.TREE_LOADER_CANCELED.equals(evt.getPropertyName())) {
 			jButtonStartLoading.setEnabled(true);
 			jButtonCancelLoading.setEnabled(false);
-		} else if (ExternalDataTreeLoaderTask.EXTERNAL_TREE_LOADER_FINISHED.equals(evt.getPropertyName())) {
-			Integer numLoaded = (Integer) evt.getNewValue();
-			appendStatus(numLoaded + " external protein list loaded.");
-		} else if (ExternalDataTreeLoaderTask.EXTERNAL_TREE_LOADER_ERROR.equals(evt.getPropertyName())) {
-			appendStatus("Error loading external protein lists: " + evt.getNewValue());
 		} else if (LocalDataTreeLoaderTask.LOCAL_TREE_LOADER_FINISHED.equals(evt.getPropertyName())) {
 			Integer numLoaded = (Integer) evt.getNewValue();
 			appendStatus(numLoaded + " imported datasets loaded.");
@@ -2532,7 +2451,4 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 		super.setState(state);
 	}
 
-	public void addReloadLocalIdentificationSetsTree() {
-		fillExternalIdSetsTree();
-	}
 }
