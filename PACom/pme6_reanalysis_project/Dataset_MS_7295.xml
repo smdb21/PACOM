@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MS_MIAPE_MS id="7295">
+	<MIAPEProject id="1191">
+		<Name>ProteoRed Multicentric Experiment 6</Name>
+		<Date>2013-07-03 14:33:14</Date>
+		<Comments>PME6</Comments>
+		<OwnerName>salvador martinez</OwnerName>
+	</MIAPEProject>
+	<Name>MIAPE MS from 'PME6_CSIC_UAB_rep3.mzML_fixed.mzML'</Name>
+	<Version>v1</Version>
+	<Date>2013-07-15 00:00:00</Date>
+	<Modification_Date>2013-08-23T17:36:00.160+01:00</Modification_Date>
+	<AttachedFileLocation>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_CSIC_UAB_rep3.mzML_fixed.mzML.gz</AttachedFileLocation>
+	<Template>false</Template>
+	<MS_Contact>
+		<Name>Montserrat</Name>
+		<LastName>Carrascal</LastName>
+		<Telephone>+34935814855</Telephone>
+		<Email>montserrat.carrascal.csic@uab.cat</Email>
+		<Address>Facultad de Medicina. Campus UAB</Address>
+		<Locality>Bellaterra</Locality>
+		<CP>08193</CP>
+		<Department>LP-CSIC/UAB</Department>
+		<Institution>IIBB-CSIC</Institution>
+		<Position>
+			<cvParam accession="MS:1001271" cvRef="MS" name="researcher"/>
+		</Position>
+	</MS_Contact>
+	<MS_Spectrometer>
+		<Name>
+			<cvParam accession="MS:1000449" cvRef="MS" name="LTQ Orbitrap"/>
+		</Name>
+		<Manufacturer>
+			<cvParam accession="MS:1000483" cvRef="MS" name="Thermo Fisher Scientific instrument model"/>
+		</Manufacturer>
+		<Model>
+			<cvParam accession="MS:1000556" cvRef="MS" name="LTQ Orbitrap XL"/>
+		</Model>
+		<Version>01860</Version>
+	</MS_Spectrometer>
+	<MS_Instrument_Configuration>
+		<Name>IC2</Name>
+		<MS_ESI>
+			<Name>
+				<cvParam accession="MS:1000398" cvRef="MS" name="nanoelectrospray"/>
+			</Name>
+			<Oparameters>nanospray inlet</Oparameters>
+		</MS_ESI>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000083" cvRef="MS" name="radial ejection linear ion trap"/>
+			</Name>
+		</MS_Analyzer>
+	</MS_Instrument_Configuration>
+	<MS_Instrument_Configuration>
+		<Name>IC</Name>
+		<MS_ESI>
+			<Name>
+				<cvParam accession="MS:1000397" cvRef="MS" name="microelectrospray"/>
+			</Name>
+			<Oparameters>nanospray inlet</Oparameters>
+			<MS_Interface>
+				<Name>
+					<userParam name="Proxeon miroESI"/>
+				</Name>
+				<Manufacturer>
+					<userParam name="Proxeon"/>
+				</Manufacturer>
+			</MS_Interface>
+		</MS_ESI>
+		<MS_MALDI>
+			<Name>maldi</Name>
+			<Plate_Type>plate composition</Plate_Type>
+			<Matrix>matrix composition</Matrix>
+			<Dissociation>
+				<cvParam accession="MS:1000393" cvRef="MS" name="laser desorption ionization"/>
+			</Dissociation>
+			<Dissociation_Summary>reduction</Dissociation_Summary>
+			<Extraction>delayed</Extraction>
+			<Laser>
+				<cvParam accession="MS:1000853" cvRef="MS" name="free electron laser"/>
+			</Laser>
+			<WaveLength>23</WaveLength>
+			<Oparameters>other paramters</Oparameters>
+		</MS_MALDI>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000484" cvRef="MS" name="orbitrap"/>
+			</Name>
+		</MS_Analyzer>
+		<MS_ActivationDissociation>
+			<Name>CID</Name>
+			<ActivationType>
+				<cvParam accession="MS:1000133" cvRef="MS" name="collision-induced dissociation"/>
+			</ActivationType>
+		</MS_ActivationDissociation>
+	</MS_Instrument_Configuration>
+	<MS_Acquisition>
+		<Name>
+			<cvParam accession="MS:1000532" cvRef="MS" name="Xcalibur"/>
+		</Name>
+		<Manufacturer>Thermo Instuments</Manufacturer>
+		<Version>2.0.7</Version>
+		<Parameters>Data dependent scan: 1 full MS followed by 10 MS/MS.</Parameters>
+	</MS_Acquisition>
+	<MS_DataAnalysis>
+		<Name>
+			<cvParam accession="MS:1000615" cvRef="MS" name="ProteoWizard software"/>
+		</Name>
+		<Version>2.2.3112</Version>
+		<Description>
+			<cvParam accession="MS:1000544" cvRef="MS" name="Conversion to mzML"/>
+		</Description>
+		<Parameters>Conversion to mzML</Parameters>
+	</MS_DataAnalysis>
+	<MS_Resulting_Data>
+		<Name>mzML file</Name>
+		<DataFile_URL>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_CSIC_UAB_rep3.mzML_fixed.mzML.gz</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1000584" cvRef="MS" name="mzML file"/>
+		</DataFile_Type>
+		<Additional_URL></Additional_URL>
+		<SRM_URL></SRM_URL>
+		<SRM_Descriptor></SRM_Descriptor>
+	</MS_Resulting_Data>
+	<MS_Resulting_Data>
+		<Name>RAW file rep3</Name>
+		<DataFile_URL>ftp://pme6:pme6@estrellapolar.cnb.csic.es/data/LP_CSIC_UAB/PME6_CSIC-UAB_rep3.RAW</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1000563" cvRef="MS" name="Thermo RAW file"/>
+		</DataFile_Type>
+		<Additional_URL></Additional_URL>
+		<SRM_URL></SRM_URL>
+		<SRM_Descriptor></SRM_Descriptor>
+	</MS_Resulting_Data>
+	<MS_Additional_Information>
+		<cvParam accession="MS:1000580" cvRef="MS" value="" name="MSn spectrum"/>
+	</MS_Additional_Information>
+	<MS_Additional_Information>
+		<cvParam accession="MS:1000579" cvRef="MS" value="" name="MS1 spectrum"/>
+	</MS_Additional_Information>
+</MS_MIAPE_MS>

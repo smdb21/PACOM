@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MS_MIAPE_MS id="7313">
+	<MIAPEProject id="1191">
+		<Name>ProteoRed Multicentric Experiment 6</Name>
+		<Date>2013-07-03 14:33:14</Date>
+		<Comments>PME6</Comments>
+		<OwnerName>salvador martinez</OwnerName>
+	</MIAPEProject>
+	<Name>MIAPE MS from 'PME6_UCO_rep3.mzML_fixed.mzML'</Name>
+	<Version>v1.0</Version>
+	<Date>2013-07-15 00:00:00</Date>
+	<Modification_Date>2013-08-29T09:34:35.827+01:00</Modification_Date>
+	<AttachedFileLocation>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_UCO_rep3.mzML_fixed.mzML.gz</AttachedFileLocation>
+	<Template>false</Template>
+	<MS_Contact>
+		<Name>Samuel</Name>
+		<LastName>Ogueta</LastName>
+		<Telephone>957218984</Telephone>
+		<Email>sogueta@proteored.org</Email>
+		<Address>Edificio Ramon y Cajal, Campus Rabanales, 14071 Cordoba</Address>
+		<Locality>Madrid</Locality>
+		<Country>Madrid</Country>
+		<CP>28049</CP>
+		<Department>SCAI</Department>
+		<Institution>University of Cordoba</Institution>
+		<Position>
+			<cvParam accession="MS:1001270" cvRef="MS" name="lab personnel"/>
+		</Position>
+	</MS_Contact>
+	<MS_Spectrometer>
+		<Name>
+			<cvParam accession="MS:1000449" cvRef="MS" name="LTQ Orbitrap"/>
+		</Name>
+		<Manufacturer>
+			<cvParam accession="MS:1000483" cvRef="MS" name="Thermo Fisher Scientific instrument model"/>
+		</Manufacturer>
+		<Model>
+			<userParam name=""/>
+		</Model>
+		<Version>01812B</Version>
+		<Description></Description>
+		<Parameters></Parameters>
+		<Comments></Comments>
+		<Catalog_Number></Catalog_Number>
+		<URI></URI>
+		<Customizations></Customizations>
+	</MS_Spectrometer>
+	<MS_Instrument_Configuration>
+		<Name>IC</Name>
+		<MS_ESI>
+			<Name>
+				<cvParam accession="MS:1000398" cvRef="MS" name="nanoelectrospray"/>
+			</Name>
+			<Oparameters>Look at the parameters file on the acquisition section (section 4.1)</Oparameters>
+			<MS_Sprayer>
+				<Name>
+					<userParam name="Sprayer"/>
+				</Name>
+			</MS_Sprayer>
+		</MS_ESI>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000484" cvRef="MS" name="orbitrap"/>
+			</Name>
+		</MS_Analyzer>
+		<MS_ActivationDissociation>
+			<Name>linear ion trap</Name>
+			<Gas>
+				<cvParam accession="CHEBI:30217" cvRef="CHEBI" name="helium atom"/>
+			</Gas>
+			<Pressure unitName="psi" value="3"/>
+			<ActivationType>
+				<cvParam accession="MS:1000133" cvRef="MS" name="collision-induced dissociation"/>
+			</ActivationType>
+		</MS_ActivationDissociation>
+	</MS_Instrument_Configuration>
+	<MS_Instrument_Configuration>
+		<Name>IC2</Name>
+		<MS_ESI>
+			<Name>
+				<cvParam accession="MS:1000398" cvRef="MS" name="nanoelectrospray"/>
+			</Name>
+			<Oparameters>nanospray inlet</Oparameters>
+		</MS_ESI>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000083" cvRef="MS" name="radial ejection linear ion trap"/>
+			</Name>
+		</MS_Analyzer>
+	</MS_Instrument_Configuration>
+	<MS_Acquisition>
+		<Name>
+			<cvParam accession="MS:1000532" cvRef="MS" name="Xcalibur"/>
+		</Name>
+		<Manufacturer>Thermo Scientific</Manufacturer>
+		<Version>1.4</Version>
+		<Description>
+			<userParam name="Spectra acquisition"/>
+		</Description>
+	</MS_Acquisition>
+	<MS_DataAnalysis>
+		<Name>
+			<cvParam accession="MS:1000615" cvRef="MS" name="ProteoWizard software"/>
+		</Name>
+		<Manufacturer></Manufacturer>
+		<Model></Model>
+		<Version>2.2.3112</Version>
+		<Description>
+			<cvParam accession="MS:1000544" cvRef="MS" name="Conversion to mzML"/>
+		</Description>
+		<Parameters>command-line parameters=msconvert --mzML -z -v -i contact_info.txt --filter 'peakPicking true 1-'</Parameters>
+		<Comments></Comments>
+		<Catalog_Number></Catalog_Number>
+		<URI></URI>
+		<Customizations></Customizations>
+		<Parameters_Location></Parameters_Location>
+	</MS_DataAnalysis>
+	<MS_Resulting_Data>
+		<Name>mzML file</Name>
+		<DataFile_URL>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_UCO_rep3.mzML_fixed.mzML.gz</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1000584" cvRef="MS" name="mzML file"/>
+		</DataFile_Type>
+	</MS_Resulting_Data>
+	<MS_Resulting_Data>
+		<Name>PME6_UCO_rep3.raw</Name>
+		<DataFile_URL>ftp://pme6:pme6@estrellapolar.cnb.csic.es/data/UCO/PME6_UCO_rep3.RAW</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1000563" cvRef="MS" name="Thermo RAW file"/>
+		</DataFile_Type>
+	</MS_Resulting_Data>
+	<MS_Additional_Information>
+		<userParam value="Sample was quantified and 10ug were digested in triplicate. 500ug of each triplicate were subjected to LC-MS/MS" name="General explanations (samples amount, relicates, labelling)"/>
+	</MS_Additional_Information>
+</MS_MIAPE_MS>

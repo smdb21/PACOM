@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MS_MIAPE_MS id="7318">
+	<MIAPEProject id="1191">
+		<Name>ProteoRed Multicentric Experiment 6</Name>
+		<Date>2013-07-03 14:33:14</Date>
+		<Comments>PME6</Comments>
+		<OwnerName>salvador martinez</OwnerName>
+	</MIAPEProject>
+	<Name>MIAPE MS from 'PME6_VH_IT_rep2.mzML_fixed.mzML'</Name>
+	<Version>v1.0</Version>
+	<Date>2013-07-15 00:00:00</Date>
+	<Modification_Date>2013-08-17T15:36:16.363+01:00</Modification_Date>
+	<AttachedFileLocation>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_VH_IT_rep2.mzML_fixed.mzML.gz</AttachedFileLocation>
+	<Template>false</Template>
+	<MS_Contact>
+		<Name>Núria</Name>
+		<LastName>Colomé Calls</LastName>
+		<Telephone>934894174</Telephone>
+		<Fax>934893884</Fax>
+		<Email>ncolome@vhio.net</Email>
+		<Address>Pg. Vall Hebron 119-129</Address>
+		<Locality>Barcelona</Locality>
+		<Country>Spain</Country>
+		<CP>08035</CP>
+		<Department>Unidad de Proteómica
+NODO 3</Department>
+		<Institution>Institut de Recerca del Hospital Universitari Vall Hebron</Institution>
+	</MS_Contact>
+	<MS_Spectrometer>
+		<Name>
+			<cvParam accession="MS:1000700" cvRef="MS" name="HCTultra ETD II"/>
+		</Name>
+		<Manufacturer>
+			<cvParam accession="MS:1000122" cvRef="MS" name="Bruker Daltonics instrument model"/>
+		</Manufacturer>
+		<Model>
+			<cvParam accession="MS:1000122" cvRef="MS" name="Bruker Daltonics instrument model"/>
+		</Model>
+		<Version>HCTultra ETDII</Version>
+		<Description>HCT Ultra ETDII PTM Discovery system</Description>
+	</MS_Spectrometer>
+	<MS_Instrument_Configuration>
+		<Name>IC</Name>
+		<MS_ESI>
+			<Name>
+				<cvParam accession="MS:1000398" cvRef="MS" name="nanoelectrospray"/>
+			</Name>
+			<Oparameters>HV capillary 4000V Positive mode
+HV End Plate Offset -500V
+Drying gas: Nitrogen
+Temperature: 300 degrees
+Flow: 5L/min
+Nebulaizer: 10psi</Oparameters>
+			<MS_Interface>
+				<Name>
+					<userParam name="NanoESI"/>
+				</Name>
+				<Manufacturer>
+					<cvParam accession="MS:1000122" cvRef="MS" name="Bruker Daltonics instrument model"/>
+				</Manufacturer>
+			</MS_Interface>
+			<MS_Sprayer>
+				<Name>
+					<userParam name="ESI Nano Sprayer"/>
+				</Name>
+				<Manufacturer>
+					<cvParam accession="MS:1000122" cvRef="MS" name="Bruker Daltonics instrument model"/>
+				</Manufacturer>
+				<Description>Catalog number: 253543</Description>
+			</MS_Sprayer>
+		</MS_ESI>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000264" cvRef="MS" name="ion trap"/>
+			</Name>
+		</MS_Analyzer>
+		<MS_ActivationDissociation>
+			<Name>HCT Ultra collision cell</Name>
+			<Gas>
+				<cvParam accession="CHEBI:30217" cvRef="CHEBI" name="helium atom"/>
+			</Gas>
+			<Pressure unitName="psi" value="65-80"/>
+			<ActivationType>
+				<cvParam accession="MS:1000133" cvRef="MS" name="collision-induced dissociation"/>
+			</ActivationType>
+		</MS_ActivationDissociation>
+	</MS_Instrument_Configuration>
+	<MS_Acquisition>
+		<Name>
+			<cvParam accession="MS:1000721" cvRef="MS" name="esquireControl"/>
+		</Name>
+		<Manufacturer>Burker Daltonics</Manufacturer>
+		<Version>6.2 Build No. 62.24</Version>
+		<Description>
+			<userParam name="Spectra acquisition"/>
+		</Description>
+		<Parameters>Auto MS(2) of the 3 most intense ions
+Threshold&gt;10000
+Charge determination : single charged ions excluded
+Dynamic exclusion: Exclude after 2 Spectra and release after 0.5min</Parameters>
+		<URI>http://www.bruker.es/productos/masas/lc.htm#tensor</URI>
+	</MS_Acquisition>
+	<MS_DataAnalysis>
+		<Name>
+			<cvParam accession="MS:1000717" cvRef="MS" name="CompassXport"/>
+		</Name>
+		<Manufacturer></Manufacturer>
+		<Model></Model>
+		<Version>3.0.5</Version>
+		<Description>
+			<cvParam accession="MS:1000544" cvRef="MS" name="Conversion to mzML"/>
+		</Description>
+		<Parameters></Parameters>
+		<Comments></Comments>
+		<Catalog_Number></Catalog_Number>
+		<URI></URI>
+		<Customizations></Customizations>
+		<Parameters_Location></Parameters_Location>
+	</MS_DataAnalysis>
+	<MS_Resulting_Data>
+		<Name>mzML file</Name>
+		<DataFile_URL>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_VH_IT_rep2.mzML_fixed.mzML.gz</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1000584" cvRef="MS" name="mzML file"/>
+		</DataFile_Type>
+		<Additional_URL></Additional_URL>
+		<SRM_URL></SRM_URL>
+		<SRM_Descriptor></SRM_Descriptor>
+	</MS_Resulting_Data>
+	<MS_Resulting_Data>
+		<Name>Raw data information</Name>
+		<DataFile_URL>ftp://pme6:pme6@estrellapolar.cnb.csic.es/data/VH/IT/PME6_VH_IT_rep2.yep</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1000567" cvRef="MS" name="Bruker/Agilent YEP file"/>
+		</DataFile_Type>
+	</MS_Resulting_Data>
+	<MS_Additional_Information>
+		<userParam value="One Sample was divided in three aliquots that were digested separately. One run of each digestion/aliquot was performed. PME6_VH_1,  Amount of sample injected= 1ug PME6_VH_2,  Amount of sample injected= 1ug PME6_VH_3,  Amount of sample injected= 1ug  " name="General explanations (samples amount, relicates, labelling)"/>
+	</MS_Additional_Information>
+</MS_MIAPE_MS>

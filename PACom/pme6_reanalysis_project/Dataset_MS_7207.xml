@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MS_MIAPE_MS id="7207">
+	<MIAPEProject id="1191">
+		<Name>ProteoRed Multicentric Experiment 6</Name>
+		<Date>2013-07-03 14:33:14</Date>
+		<Comments>PME6</Comments>
+		<OwnerName>salvador martinez</OwnerName>
+	</MIAPEProject>
+	<Name>MIAPE MS from 'PME6_CBT_rep1.mzML_fixed.mzML'</Name>
+	<Version>v1.0</Version>
+	<Date>2013-07-03 14:33:14</Date>
+	<Modification_Date>2013-08-17T20:01:26.567+01:00</Modification_Date>
+	<AttachedFileLocation>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_CBT_rep1.mzML_fixed.mzML.gz</AttachedFileLocation>
+	<Template>false</Template>
+	<MS_Contact>
+		<Name>Arttu</Name>
+		<LastName>Heinonen</LastName>
+		<Telephone>+358 2 3338604</Telephone>
+		<Fax>+34 91 585 4506</Fax>
+		<Email>aheinone@btk.fi</Email>
+		<Address>Tykistökatu 6</Address>
+		<Locality>Turku</Locality>
+		<Country>Madrid</Country>
+		<CP>20520</CP>
+		<Department>Proteomics Facility</Department>
+		<Institution>University of Turku / Turku Centre for Biotechnology</Institution>
+		<Position>
+			<cvParam accession="MS:1001270" cvRef="MS" name="lab personnel"/>
+		</Position>
+	</MS_Contact>
+	<MS_Spectrometer>
+		<Name>
+			<cvParam accession="MS:1000655" cvRef="MS" name="QSTAR Elite"/>
+		</Name>
+		<Manufacturer>
+			<cvParam accession="MS:1000121" cvRef="MS" name="AB SCIEX instrument model"/>
+		</Manufacturer>
+		<Model>
+			<cvParam accession="MS:1001742" cvRef="MS" name="LTQ Orbitrap Velos"/>
+		</Model>
+		<Version>Elite</Version>
+	</MS_Spectrometer>
+	<MS_Instrument_Configuration>
+		<Name>IC2</Name>
+		<MS_ESI>
+			<Name>
+				<cvParam accession="MS:1000398" cvRef="MS" name="nanoelectrospray"/>
+			</Name>
+			<Oparameters>nanospray inlet</Oparameters>
+		</MS_ESI>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000083" cvRef="MS" name="radial ejection linear ion trap"/>
+			</Name>
+		</MS_Analyzer>
+	</MS_Instrument_Configuration>
+	<MS_Instrument_Configuration>
+		<Name>IC</Name>
+		<MS_ESI>
+			<Name>
+				<cvParam accession="MS:1000398" cvRef="MS" name="nanoelectrospray"/>
+			</Name>
+			<Oparameters>Relevant voltages:
+IS 2300
+DP 50
+FP 200
+DP2 15.00
+IRD 11
+Detector MCP 2400
+IRW 10</Oparameters>
+			<MS_Sprayer>
+				<Name>
+					<userParam name="Sprayer"/>
+				</Name>
+				<Description>type: nanospray</Description>
+			</MS_Sprayer>
+		</MS_ESI>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000081" cvRef="MS" name="quadrupole"/>
+			</Name>
+		</MS_Analyzer>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000084" cvRef="MS" name="time-of-flight"/>
+			</Name>
+			<Reflectron>
+				<cvParam accession="MS:1000106" cvRef="MS" name="reflectron on"/>
+			</Reflectron>
+		</MS_Analyzer>
+		<MS_ActivationDissociation>
+			<Name>LINAC collision cell</Name>
+			<Gas>
+				<cvParam accession="CHEBI:17997" cvRef="CHEBI" name="dinitrogen"/>
+			</Gas>
+			<Pressure unitName="bar" value="5.5e-05"/>
+			<ActivationType>
+				<cvParam accession="MS:1000133" cvRef="MS" name="collision-induced dissociation"/>
+			</ActivationType>
+		</MS_ActivationDissociation>
+	</MS_Instrument_Configuration>
+	<MS_Acquisition>
+		<Name>
+			<cvParam accession="MS:1000551" cvRef="MS" name="Analyst"/>
+		</Name>
+		<Manufacturer>Applied Biosystems</Manufacturer>
+		<Version>2.0</Version>
+	</MS_Acquisition>
+	<MS_DataAnalysis>
+		<Name>
+			<cvParam accession="MS:1000615" cvRef="MS" name="ProteoWizard software"/>
+		</Name>
+		<Manufacturer></Manufacturer>
+		<Model></Model>
+		<Version>2.2.3112</Version>
+		<Description>
+			<cvParam accession="MS:1000544" cvRef="MS" name="Conversion to mzML"/>
+		</Description>
+		<Parameters>command-line parameters=msconvert --mzML -z -v -i contact_info.txt --filter 'peakPicking true 1-'</Parameters>
+		<Comments></Comments>
+		<Catalog_Number></Catalog_Number>
+		<URI></URI>
+		<Customizations></Customizations>
+		<Parameters_Location></Parameters_Location>
+	</MS_DataAnalysis>
+	<MS_Resulting_Data>
+		<Name>mzML file</Name>
+		<DataFile_URL>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_CBT_rep1.mzML_fixed.mzML.gz</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1000584" cvRef="MS" name="mzML file"/>
+		</DataFile_Type>
+	</MS_Resulting_Data>
+	<MS_Resulting_Data>
+		<Name>Raw rep1</Name>
+		<DataFile_URL>ftp://pme6:pme6@estrellapolar.cnb.csic.es/data/CBT/PME6_CBT_rep1.raw</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1000563" cvRef="MS" name="Thermo RAW file"/>
+		</DataFile_Type>
+	</MS_Resulting_Data>
+	<MS_Additional_Information>
+		<userParam value="This document describe the acquisition of mass spectra using a AB QSTAR Q-TOF, and the Analyst software. This experiment is one of the ProteoRed Multicentric Experiments performed during 2010 (PME5). Samples were labelled using iTRAQ8plex. 10 LCMSMS runs combined (5 runs with replicates of different amount of peptide)" name="General explanations (samples, runs, replicates, labelling)"/>
+	</MS_Additional_Information>
+	<MS_Additional_Information>
+		<userParam name="Human"/>
+	</MS_Additional_Information>
+	<MS_Additional_Information>
+		<cvParam accession="MS:1000053" cvRef="MS" value="PPSR (ProteoRed Plasma Subset Reference)" name="sample batch"/>
+	</MS_Additional_Information>
+</MS_MIAPE_MS>

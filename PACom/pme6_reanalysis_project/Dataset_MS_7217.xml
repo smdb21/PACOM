@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MS_MIAPE_MS id="7217">
+	<MIAPEProject id="1191">
+		<Name>ProteoRed Multicentric Experiment 6</Name>
+		<Date>2013-07-03 14:33:14</Date>
+		<Comments>PME6</Comments>
+		<OwnerName>salvador martinez</OwnerName>
+	</MIAPEProject>
+	<Name>MIAPE MS from 'PME6_CMU_rep2.mgf'</Name>
+	<Version>1.0</Version>
+	<Date>2013-07-03 14:33:15</Date>
+	<Modification_Date>2013-08-23T16:58:19.340+01:00</Modification_Date>
+	<Template>false</Template>
+	<MS_Contact>
+		<Name>Carla</Name>
+		<LastName>Pasquarello</LastName>
+		<Telephone>41 22 379 57 75</Telephone>
+		<Fax>41 22 379 59 26</Fax>
+		<Email>carla.pasquarello.mosimann@unige.ch</Email>
+		<Address>Rue Michel Servet 1</Address>
+		<Locality>Geneva</Locality>
+		<Country>Switzerland</Country>
+		<Institution>University of Geneva</Institution>
+		<Position>
+			<cvParam accession="MS:1001271" cvRef="MS" name="researcher"/>
+		</Position>
+	</MS_Contact>
+	<MS_Spectrometer>
+		<Name>
+			<cvParam accession="MS:1000449" cvRef="MS" name="LTQ Orbitrap"/>
+		</Name>
+		<Manufacturer>
+			<cvParam accession="MS:1000483" cvRef="MS" name="Thermo Fisher Scientific instrument model"/>
+		</Manufacturer>
+		<Version>1.0</Version>
+	</MS_Spectrometer>
+	<MS_Instrument_Configuration>
+		<Name>IC</Name>
+		<MS_ESI>
+			<Name>
+				<cvParam accession="MS:1000073" cvRef="MS" name="electrospray ionization"/>
+			</Name>
+			<Supply_Type>
+				<cvParam accession="MS:1001943" cvRef="MS" name="fed supply electrospray"/>
+			</Supply_Type>
+		</MS_ESI>
+		<MS_Analyzer>
+			<Name>
+				<userParam name="Geneva-LTQ Orbitrap Velos _MSstage"/>
+			</Name>
+		</MS_Analyzer>
+		<MS_ActivationDissociation>
+			<Name>Geneva-LTQ Orbitrap Velos_collision</Name>
+			<Gas>
+				<cvParam accession="CHEBI:30217" cvRef="CHEBI" name="helium atom"/>
+			</Gas>
+			<ActivationType>
+				<cvParam accession="MS:1000133" cvRef="MS" name="collision-induced dissociation"/>
+			</ActivationType>
+		</MS_ActivationDissociation>
+	</MS_Instrument_Configuration>
+	<MS_Acquisition>
+		<Name>
+			<cvParam accession="MS:1000541" cvRef="MS" name="ReAdW"/>
+		</Name>
+	</MS_Acquisition>
+	<MS_DataAnalysis>
+		<Name>
+			<cvParam accession="MS:1000615" cvRef="MS" name="ProteoWizard software"/>
+		</Name>
+		<Manufacturer></Manufacturer>
+		<Model></Model>
+		<Version>2.2.3112</Version>
+		<Description>
+			<cvParam accession="MS:1000544" cvRef="MS" name="Conversion to mzML"/>
+		</Description>
+		<Parameters>command-line parameters=msconvert --mzML -z -v -i contact_info.txt --filter 'peakPicking true 1-'</Parameters>
+		<Comments></Comments>
+		<Catalog_Number></Catalog_Number>
+		<URI></URI>
+		<Customizations></Customizations>
+		<Parameters_Location></Parameters_Location>
+	</MS_DataAnalysis>
+	<MS_Resulting_Data>
+		<Name>MGF file</Name>
+		<DataFile_URL>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_CMU_rep2.mgf.gz</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1001062" cvRef="MS" name="Mascot MGF file"/>
+		</DataFile_Type>
+		<Additional_URL></Additional_URL>
+		<SRM_URL></SRM_URL>
+		<SRM_Descriptor></SRM_Descriptor>
+	</MS_Resulting_Data>
+	<MS_Resulting_Data>
+		<Name>RAW file rep2</Name>
+		<DataFile_URL>ftp://pme6:pme6@estrellapolar.cnb.csic.es/data/CMU_geneva/PME6_CMU_rep2.raw</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1000563" cvRef="MS" name="Thermo RAW file"/>
+		</DataFile_Type>
+		<Additional_URL></Additional_URL>
+		<SRM_URL></SRM_URL>
+		<SRM_Descriptor></SRM_Descriptor>
+	</MS_Resulting_Data>
+	<MS_Additional_Information>
+		<userParam value="Phosphopeptides enrichment was perform following Larsen protocol (Rapid commun. mass. Spectrom. 2007, 21, 3635). Started from 7.5 µg of digested peptides (replicate P3) ." name="PM6_phosphoenrichment"/>
+	</MS_Additional_Information>
+</MS_MIAPE_MS>

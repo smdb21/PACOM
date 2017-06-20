@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MS_MIAPE_MS id="7224">
+	<MIAPEProject id="1191">
+		<Name>ProteoRed Multicentric Experiment 6</Name>
+		<Date>2013-07-03 14:33:14</Date>
+		<Comments>PME6</Comments>
+		<OwnerName>salvador martinez</OwnerName>
+	</MIAPEProject>
+	<Name>MIAPE MS from 'PME6_CNB_MALDI_rep2.mzML_fixed.mzML'</Name>
+	<Version>v1.0</Version>
+	<Date>2013-07-03 00:00:00</Date>
+	<Modification_Date>2013-08-17T19:51:49.993+01:00</Modification_Date>
+	<AttachedFileLocation>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_CNB_MALDI_rep2.mzML_fixed.mzML.gz</AttachedFileLocation>
+	<Template>false</Template>
+	<MS_Contact>
+		<Name>Silvia Juarez/Sergio Ciordia</Name>
+		<Email>proteomics.masas@cnb.csic.es</Email>
+		<Department>Proteomics Facility</Department>
+		<Institution>CNB</Institution>
+		<Position>
+			<cvParam accession="MS:1001270" cvRef="MS" name="lab personnel"/>
+		</Position>
+	</MS_Contact>
+	<MS_Spectrometer>
+		<Name>
+			<cvParam accession="MS:1000652" cvRef="MS" name="4800 Plus MALDI TOF/TOF"/>
+		</Name>
+		<Manufacturer>
+			<cvParam accession="MS:1000121" cvRef="MS" name="AB SCIEX instrument model"/>
+		</Manufacturer>
+		<Version>4800 Plus</Version>
+	</MS_Spectrometer>
+	<MS_Instrument_Configuration>
+		<Name>IC</Name>
+		<MS_MALDI>
+			<Name>4800 MALDI-TOF-TOF ion source</Name>
+			<Plate_Type>Opti-TOF™ 384 (123x81 mm) stainless steel plate</Plate_Type>
+			<Matrix>alpha-cyano-4-hydroxycinnamic acid</Matrix>
+			<Dissociation>
+				<cvParam accession="MS:1000135" cvRef="MS" name="post-source decay"/>
+			</Dissociation>
+			<Dissociation_Summary>Enhanced Post-source decay (PSD)
+For more information, look at the acquisition parameters file.</Dissociation_Summary>
+			<Extraction>Yes, with delayed extraction</Extraction>
+			<Laser>
+				<userParam name="Nitrogen Laser Diode-pumped Nd:YAG"/>
+			</Laser>
+			<WaveLength>355</WaveLength>
+			<Oparameters>Pulse rate up to 200 Hz with &lt; 500 psec duration/pulse
+
+Also look at acquisition parameters file</Oparameters>
+		</MS_MALDI>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000084" cvRef="MS" name="time-of-flight"/>
+			</Name>
+			<Reflectron>
+				<cvParam accession="MS:1000106" cvRef="MS" name="reflectron on"/>
+			</Reflectron>
+		</MS_Analyzer>
+		<MS_ActivationDissociation>
+			<Name>MALDI Collision cell</Name>
+			<Gas>
+				<userParam name=" Air"/>
+			</Gas>
+			<Pressure value="Medium"/>
+			<ActivationType>
+				<cvParam accession="MS:1000133" cvRef="MS" name="collision-induced dissociation"/>
+			</ActivationType>
+		</MS_ActivationDissociation>
+	</MS_Instrument_Configuration>
+	<MS_Acquisition>
+		<Name>
+			<cvParam accession="MS:1000659" cvRef="MS" name="4000 Series Explorer Software"/>
+		</Name>
+		<Manufacturer>AB SCIEX</Manufacturer>
+		<Version>V3.5.28193 (build 1011)</Version>
+		<Description>
+			<userParam name="Spectra Acquisition and Processing Software"/>
+		</Description>
+		<Parameters>See link below</Parameters>
+		<URI>http://www.absciex.com/mk/get/SOFTWARE_4000_SERIES_EXPLORER?_A=11264&amp;_D=10856&amp;_V=0</URI>
+		<Parameter_File>http://estrellapolar.cnb.csic.es/proteored/MIAPE/Ficheros/470/MSMS_2KV.XML</Parameter_File>
+	</MS_Acquisition>
+	<MS_DataAnalysis>
+		<Name>
+			<cvParam accession="MS:1000615" cvRef="MS" name="ProteoWizard software"/>
+		</Name>
+		<Manufacturer></Manufacturer>
+		<Model></Model>
+		<Version>2.2.3112</Version>
+		<Description>
+			<userParam name="peak picking Conversion to mzML"/>
+		</Description>
+		<Parameters>command-line parameters=msconvert --mzML -z -v -i contact_info.txt --filter 'peakPicking true 1-'</Parameters>
+		<Comments></Comments>
+		<Catalog_Number></Catalog_Number>
+		<URI></URI>
+		<Customizations></Customizations>
+		<Parameters_Location></Parameters_Location>
+	</MS_DataAnalysis>
+	<MS_Resulting_Data>
+		<Name>Raw data information (1372 T2D files)</Name>
+		<DataFile_URL>ftp://pme6:pme6@estrellapolar.cnb.csic.es/data/CNB/MALDI/PME6_CNB_MALDI_rep2_T2D.zip</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1001560" cvRef="MS" name="AB SCIEX TOF/TOF T2D file"/>
+		</DataFile_Type>
+	</MS_Resulting_Data>
+	<MS_Resulting_Data>
+		<Name>mzML file</Name>
+		<DataFile_URL>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_CNB_MALDI_rep2.mzML_fixed.mzML.gz</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1000584" cvRef="MS" name="mzML file"/>
+		</DataFile_Type>
+		<Additional_URL></Additional_URL>
+		<SRM_URL></SRM_URL>
+		<SRM_Descriptor></SRM_Descriptor>
+	</MS_Resulting_Data>
+</MS_MIAPE_MS>

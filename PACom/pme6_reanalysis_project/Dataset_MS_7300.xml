@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MS_MIAPE_MS id="7300">
+	<MIAPEProject id="1191">
+		<Name>ProteoRed Multicentric Experiment 6</Name>
+		<Date>2013-07-03 14:33:14</Date>
+		<Comments>PME6</Comments>
+		<OwnerName>salvador martinez</OwnerName>
+	</MIAPEProject>
+	<Name>MIAPE MS from 'PME6_UCM_PCM_IT_rep2.mzML_fixed.mzML'</Name>
+	<Version>PME6_UCM_PCM_IT_rep2 1.1.0</Version>
+	<Date>2013-07-15 00:00:00</Date>
+	<Modification_Date>2013-08-17T15:54:14.300+01:00</Modification_Date>
+	<AttachedFileLocation>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_UCM_PCM_IT_rep2.mzML_fixed.mzML.gz</AttachedFileLocation>
+	<Template>false</Template>
+	<MS_Contact>
+		<Name>Maria Luisa</Name>
+		<LastName>Hernaez</LastName>
+		<Email>mlhernae@farm.ucm.es</Email>
+		<Position>
+			<cvParam accession="MS:1001270" cvRef="MS" name="lab personnel"/>
+		</Position>
+	</MS_Contact>
+	<MS_Spectrometer>
+		<Name>
+			<cvParam accession="MS:1000447" cvRef="MS" name="LTQ"/>
+		</Name>
+		<Manufacturer>
+			<cvParam accession="MS:1000483" cvRef="MS" name="Thermo Fisher Scientific instrument model"/>
+		</Manufacturer>
+		<Model>
+			<cvParam accession="MS:1000447" cvRef="MS" name="LTQ"/>
+		</Model>
+		<Version>LCQLT-10000</Version>
+	</MS_Spectrometer>
+	<MS_Instrument_Configuration>
+		<Name>IC</Name>
+		<MS_ESI>
+			<Name>
+				<cvParam accession="MS:1000398" cvRef="MS" name="nanoelectrospray"/>
+			</Name>
+			<Oparameters>nanospray inlet</Oparameters>
+		</MS_ESI>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000291" cvRef="MS" name="linear ion trap"/>
+			</Name>
+		</MS_Analyzer>
+		<MS_ActivationDissociation>
+			<Name>linear ion trap</Name>
+			<Gas>
+				<cvParam accession="CHEBI:30217" cvRef="CHEBI" name="helium atom"/>
+			</Gas>
+			<ActivationType>
+				<cvParam accession="MS:1000133" cvRef="MS" name="collision-induced dissociation"/>
+			</ActivationType>
+		</MS_ActivationDissociation>
+	</MS_Instrument_Configuration>
+	<MS_Acquisition>
+		<Name>
+			<cvParam accession="MS:1000532" cvRef="MS" name="Xcalibur"/>
+		</Name>
+		<Manufacturer>Thermo</Manufacturer>
+		<Version>2.0</Version>
+		<Parameters>TriplePlayx3</Parameters>
+	</MS_Acquisition>
+	<MS_DataAnalysis>
+		<Name>
+			<cvParam accession="MS:1000615" cvRef="MS" name="ProteoWizard software"/>
+		</Name>
+		<Manufacturer></Manufacturer>
+		<Model></Model>
+		<Version>2.2.3112</Version>
+		<Description>
+			<userParam name="Conversion to mzML peak picking"/>
+		</Description>
+		<Parameters>command-line parameters=msconvert --mzML -z -v -i contact_info.txt --filter 'peakPicking true 1-'</Parameters>
+		<Comments></Comments>
+		<Catalog_Number></Catalog_Number>
+		<URI></URI>
+		<Customizations></Customizations>
+		<Parameters_Location></Parameters_Location>
+	</MS_DataAnalysis>
+	<MS_Resulting_Data>
+		<Name>mzML file</Name>
+		<DataFile_URL>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_UCM_PCM_IT_rep2.mzML_fixed.mzML.gz</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1000584" cvRef="MS" name="mzML file"/>
+		</DataFile_Type>
+	</MS_Resulting_Data>
+	<MS_Resulting_Data>
+		<Name>UCM-PCM_PME6 2_LTQ</Name>
+		<DataFile_URL>ftp://pme6:pme6@estrellapolar.cnb.csic.es/data/PCM-UCM/IT/PME6_PCM-UCM_IT_rep2.raw</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1000563" cvRef="MS" name="Thermo RAW file"/>
+		</DataFile_Type>
+	</MS_Resulting_Data>
+	<MS_Additional_Information>
+		<userParam value="Digestion protocol: ?  Denaturant added and initial concentration: 8M Urea ?  Reduction reagent used , concentration, temperature, time of reaction: 10mM DTT 37ºC 1h ?  Alkylation reagent uses, concentration, temperature, time of reaction: 55mM IA, RT, 1h.   ?  Buffer for digestion, denaturant and concentration: 25mM AmBi, 2M Urea.  ?  Ratio w/w trypsin used: 1:10  ?Temperature / time digestion: 37ºC/ON   Chromatography: ??Trap column used: Acclaim PepMap 100 C18, 5 um, 100A ?        Column used, lenght of column: Picofrit Column BioBasic C18,  75um, 10 cm ??Gradient (initial-final % ACN), time 4-32%  120min O  Amount of sample:  3 ug " name="Digestion protocol"/>
+	</MS_Additional_Information>
+	<MS_Additional_Information>
+		<cvParam accession="MS:1000580" cvRef="MS" value="" name="MSn spectrum"/>
+	</MS_Additional_Information>
+</MS_MIAPE_MS>

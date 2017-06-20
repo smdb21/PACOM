@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MS_MIAPE_MS id="7306">
+	<MIAPEProject id="1191">
+		<Name>ProteoRed Multicentric Experiment 6</Name>
+		<Date>2013-07-03 14:33:14</Date>
+		<Comments>PME6</Comments>
+		<OwnerName>salvador martinez</OwnerName>
+	</MIAPEProject>
+	<Name>MIAPE MS from 'PME6_UA_rep2.mzML'</Name>
+	<Version>1.1.0</Version>
+	<Date>2013-07-15 00:00:00</Date>
+	<Modification_Date>2013-08-17T19:33:52.267+01:00</Modification_Date>
+	<AttachedFileLocation>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_UA_rep2.mzML.gz</AttachedFileLocation>
+	<Template>false</Template>
+	<MS_Contact>
+		<Name>Susana</Name>
+		<LastName>Sellés</LastName>
+		<Telephone>965909717 o 965902022</Telephone>
+		<Fax>965903643</Fax>
+		<Email>Susana.selles@ua.es</Email>
+		<Address>Servicios Técnicos de investigación Ampliación del campus (detras de los bomberos)</Address>
+		<Locality>San Vicente del Raspeig</Locality>
+		<Country>ALICANTE</Country>
+		<CP>03080</CP>
+		<Department>Unidad de Genomica y Proteómica</Department>
+		<Institution>Universidad de Alicante</Institution>
+		<Position>
+			<cvParam accession="MS:1001270" cvRef="MS" name="lab personnel"/>
+		</Position>
+	</MS_Contact>
+	<MS_Spectrometer>
+		<Name>
+			<cvParam accession="MS:1000475" cvRef="MS" name="6330 Ion Trap LC/MS"/>
+		</Name>
+		<Manufacturer>
+			<cvParam accession="MS:1000490" cvRef="MS" name="Agilent instrument model"/>
+		</Manufacturer>
+		<Model>
+			<cvParam accession="MS:1000122" cvRef="MS" name="Bruker Daltonics instrument model"/>
+		</Model>
+		<Version>6.2</Version>
+		<Description>InstrumentDescription=Agilent 6330 Ion Trap</Description>
+	</MS_Spectrometer>
+	<MS_Instrument_Configuration>
+		<Name>IC</Name>
+		<MS_ESI>
+			<Name>
+				<cvParam accession="MS:1000398" cvRef="MS" name="nanoelectrospray"/>
+			</Name>
+			<Oparameters>Dryging gas : Nitrogen
+Temperature:300ºC
+Flow:5L/min</Oparameters>
+			<MS_Sprayer>
+				<Name>
+					<userParam name="Sprayer"/>
+				</Name>
+			</MS_Sprayer>
+		</MS_ESI>
+		<MS_Other_IonSource>
+			<Name>
+				<cvParam accession="MS:1000008" cvRef="MS" name="ionization type"/>
+			</Name>
+		</MS_Other_IonSource>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000264" cvRef="MS" name="ion trap"/>
+			</Name>
+		</MS_Analyzer>
+		<MS_ActivationDissociation>
+			<Name>ion trap XCT plus</Name>
+			<Gas>
+				<cvParam accession="CHEBI:30217" cvRef="CHEBI" name="helium atom"/>
+			</Gas>
+			<Pressure unitName="mbar" value="High :1.27e-0.05mbar; Fore:5.62e+00 mbar"/>
+			<ActivationType>
+				<cvParam accession="MS:1000133" cvRef="MS" name="collision-induced dissociation"/>
+			</ActivationType>
+		</MS_ActivationDissociation>
+	</MS_Instrument_Configuration>
+	<MS_Acquisition>
+		<Name>
+			<cvParam accession="MS:1000688" cvRef="MS" name="6300 Series Ion Trap Data Analysis Software"/>
+		</Name>
+		<Manufacturer>Bruker Daltonics</Manufacturer>
+		<Version>6.1</Version>
+		<Description>
+			<userParam name="This software controls the mass spectrometer"/>
+		</Description>
+		<Parameters>Auto Ms(2) 
+Precursor ions: 4, 
+preferred charge state precursor: doble
+Threshold Abs 20000
+Threshold rel 5%
+Active exclusion: 0.2 min
+Exclude after 2 spectra
+Acq parameters:MS/MS Frag amp 1.30V
+MS(n) parameters: isol with 4 m/z</Parameters>
+	</MS_Acquisition>
+	<MS_Acquisition>
+		<Name>
+			<cvParam accession="MS:1000719" cvRef="MS" name="DataAnalysis"/>
+		</Name>
+		<Manufacturer>Bruker Daltonics</Manufacturer>
+		<Version>3.4</Version>
+		<Description>
+			<userParam name="Data processing"/>
+		</Description>
+	</MS_Acquisition>
+	<MS_DataAnalysis>
+		<Name>
+			<cvParam accession="MS:1000615" cvRef="MS" name="ProteoWizard software"/>
+		</Name>
+		<Manufacturer></Manufacturer>
+		<Model></Model>
+		<Version>2.2.3112</Version>
+		<Description>
+			<cvParam accession="MS:1000544" cvRef="MS" name="Conversion to mzML"/>
+		</Description>
+		<Parameters>command-line parameters=msconvert --mzML -z -v -i contact_info.txt --filter 'peakPicking true 1-'</Parameters>
+		<Comments></Comments>
+		<Catalog_Number></Catalog_Number>
+		<URI></URI>
+		<Customizations></Customizations>
+		<Parameters_Location></Parameters_Location>
+	</MS_DataAnalysis>
+	<MS_Resulting_Data>
+		<Name>Analysis réplica 2_raw data</Name>
+		<DataFile_URL>ftp://pme6:pme6@estrellapolar.cnb.csic.es/data/UA/PME6_UA_rep2.yep</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1000567" cvRef="MS" name="Bruker/Agilent YEP file"/>
+		</DataFile_Type>
+	</MS_Resulting_Data>
+	<MS_Resulting_Data>
+		<Name>mzML file</Name>
+		<DataFile_URL>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_UA_rep2.mzML.gz</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1000584" cvRef="MS" name="mzML file"/>
+		</DataFile_Type>
+		<Additional_URL></Additional_URL>
+		<SRM_URL></SRM_URL>
+		<SRM_Descriptor></SRM_Descriptor>
+	</MS_Resulting_Data>
+	<MS_Additional_Information>
+		<userParam value="1ug" name="Amount of sample"/>
+	</MS_Additional_Information>
+</MS_MIAPE_MS>

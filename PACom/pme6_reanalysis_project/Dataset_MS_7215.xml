@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MS_MIAPE_MS id="7215">
+	<MIAPEProject id="1191">
+		<Name>ProteoRed Multicentric Experiment 6</Name>
+		<Date>2013-07-03 14:33:14</Date>
+		<Comments>PME6</Comments>
+		<OwnerName>salvador martinez</OwnerName>
+	</MIAPEProject>
+	<Name>MIAPE MS from 'PME6_CIPF_rep1.mzML_fixed.mzML'</Name>
+	<Version>v1.0</Version>
+	<Date>2013-07-03 14:33:15</Date>
+	<Modification_Date>2013-08-17T19:57:07.083+01:00</Modification_Date>
+	<AttachedFileLocation>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_CIPF_rep1.mzML_fixed.mzML.gz</AttachedFileLocation>
+	<Template>false</Template>
+	<MS_Contact>
+		<Name>Manuel</Name>
+		<LastName>Sánchez del Pino </LastName>
+		<Email>sandelpi@uv.es</Email>
+		<Locality>Valencia</Locality>
+		<Country>Spain</Country>
+		<Department>Proteomics Facility</Department>
+		<Institution>Centro de Investigaciones Principe Felipe</Institution>
+		<Position>
+			<cvParam accession="MS:1001271" cvRef="MS" name="researcher"/>
+		</Position>
+	</MS_Contact>
+	<MS_Spectrometer>
+		<Name>
+			<cvParam accession="MS:1000657" cvRef="MS" name="QSTAR XL"/>
+		</Name>
+		<Manufacturer>
+			<cvParam accession="MS:1000121" cvRef="MS" name="AB SCIEX instrument model"/>
+		</Manufacturer>
+		<Model>
+			<cvParam accession="MS:1000495" cvRef="MS" name="Applied Biosystems instrument model"/>
+		</Model>
+		<Version>XL</Version>
+	</MS_Spectrometer>
+	<MS_Instrument_Configuration>
+		<Name>IC</Name>
+		<MS_ESI>
+			<Name>
+				<cvParam accession="MS:1000397" cvRef="MS" name="microelectrospray"/>
+			</Name>
+			<Oparameters>Relevant voltages:
+IS 2750
+DP 60.00
+FP 265.00
+DP2 15.00
+IRD 6.00
+Detector MCP 2100
+IRW 5.00</Oparameters>
+			<MS_Sprayer>
+				<Name>
+					<userParam name="Sprayer"/>
+				</Name>
+				<Description>type: nanospray</Description>
+			</MS_Sprayer>
+		</MS_ESI>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000084" cvRef="MS" name="time-of-flight"/>
+			</Name>
+			<Reflectron>
+				<cvParam accession="MS:1000106" cvRef="MS" name="reflectron on"/>
+			</Reflectron>
+		</MS_Analyzer>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000081" cvRef="MS" name="quadrupole"/>
+			</Name>
+		</MS_Analyzer>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000081" cvRef="MS" name="quadrupole"/>
+			</Name>
+		</MS_Analyzer>
+		<MS_ActivationDissociation>
+			<Name>LINAC collision cell</Name>
+			<Gas>
+				<cvParam accession="CHEBI:17997" cvRef="CHEBI" name="dinitrogen"/>
+			</Gas>
+			<Pressure unitName="bar" value="5.5e-05"/>
+			<ActivationType>
+				<cvParam accession="MS:1000133" cvRef="MS" name="collision-induced dissociation"/>
+			</ActivationType>
+		</MS_ActivationDissociation>
+	</MS_Instrument_Configuration>
+	<MS_Acquisition>
+		<Name>
+			<cvParam accession="MS:1000551" cvRef="MS" name="Analyst"/>
+		</Name>
+		<Manufacturer>Applied Biosystems</Manufacturer>
+		<Version>1.1</Version>
+	</MS_Acquisition>
+	<MS_DataAnalysis>
+		<Name>
+			<cvParam accession="MS:1000615" cvRef="MS" name="ProteoWizard software"/>
+		</Name>
+		<Manufacturer></Manufacturer>
+		<Model></Model>
+		<Version>2.2.3112</Version>
+		<Description>
+			<cvParam accession="MS:1000544" cvRef="MS" name="Conversion to mzML"/>
+		</Description>
+		<Parameters>command-line parameters=msconvert --mzML -z -v -i contact_info.txt --filter 'peakPicking true 1-'</Parameters>
+		<Comments></Comments>
+		<Catalog_Number></Catalog_Number>
+		<URI></URI>
+		<Customizations></Customizations>
+		<Parameters_Location></Parameters_Location>
+	</MS_DataAnalysis>
+	<MS_Resulting_Data>
+		<Name>mzML file</Name>
+		<DataFile_URL>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_CIPF_rep1.mzML_fixed.mzML.gz</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1000584" cvRef="MS" name="mzML file"/>
+		</DataFile_Type>
+	</MS_Resulting_Data>
+	<MS_Resulting_Data>
+		<Name>Raw data information</Name>
+		<DataFile_URL>ftp://pme6:pme6@estrellapolar.cnb.csic.es/data/CIPF/PME6_CIPF_raw.rar</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1000562" cvRef="MS" name="ABI WIFF file"/>
+		</DataFile_Type>
+	</MS_Resulting_Data>
+	<MS_Additional_Information>
+		<cvParam accession="MS:1000053" cvRef="MS" value="PPSR (ProteoRed Plasma Subset Reference)" name="sample batch"/>
+	</MS_Additional_Information>
+	<MS_Additional_Information>
+		<userParam value="3 ug" name="Amount of sample"/>
+	</MS_Additional_Information>
+	<MS_Additional_Information>
+		<userParam name="Human"/>
+	</MS_Additional_Information>
+</MS_MIAPE_MS>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MS_MIAPE_MS id="7310">
+	<MIAPEProject id="1191">
+		<Name>ProteoRed Multicentric Experiment 6</Name>
+		<Date>2013-07-03 14:33:14</Date>
+		<Comments>PME6</Comments>
+		<OwnerName>salvador martinez</OwnerName>
+	</MIAPEProject>
+	<Name>MIAPE MS from 'PME6_UB_rep3.mzML_fixed.mzML'</Name>
+	<Version>PME6_UB_rep3 1.1.0</Version>
+	<Date>2013-07-15 00:00:00</Date>
+	<Modification_Date>2013-08-29T09:33:39.203+01:00</Modification_Date>
+	<AttachedFileLocation>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_UB_rep3.mzML_fixed.mzML.gz</AttachedFileLocation>
+	<Template>false</Template>
+	<MS_Contact>
+		<Name>María José</Name>
+		<LastName>Fidalgo Sáez</LastName>
+		<Telephone>934039929</Telephone>
+		<Email>fidalgo@ub.edu</Email>
+		<Address>C\Casanova 143</Address>
+		<Locality>Barcelona</Locality>
+		<Country>Spain</Country>
+		<CP>08036</CP>
+		<Department>Unidad de proteómica</Department>
+		<Institution>Facultad de Medicina</Institution>
+	</MS_Contact>
+	<MS_Spectrometer>
+		<Name>
+			<cvParam accession="MS:1001742" cvRef="MS" name="LTQ Orbitrap Velos"/>
+		</Name>
+		<Manufacturer>
+			<cvParam accession="MS:1000483" cvRef="MS" name="Thermo Fisher Scientific instrument model"/>
+		</Manufacturer>
+		<Model>
+			<userParam name=""/>
+		</Model>
+		<Version>Velos with ETD</Version>
+		<Description></Description>
+		<Parameters></Parameters>
+		<Comments></Comments>
+		<Catalog_Number></Catalog_Number>
+		<URI></URI>
+		<Customizations></Customizations>
+	</MS_Spectrometer>
+	<MS_Instrument_Configuration>
+		<Name>IC</Name>
+		<MS_ESI>
+			<Name>
+				<cvParam accession="MS:1000398" cvRef="MS" name="nanoelectrospray"/>
+			</Name>
+			<Oparameters>nanospray inlet</Oparameters>
+			<MS_Sprayer>
+				<Name>
+					<userParam name="Sprayer"/>
+				</Name>
+				<URI>ES502</URI>
+			</MS_Sprayer>
+		</MS_ESI>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000484" cvRef="MS" name="orbitrap"/>
+			</Name>
+		</MS_Analyzer>
+	</MS_Instrument_Configuration>
+	<MS_Instrument_Configuration>
+		<Name>IC2</Name>
+		<MS_ESI>
+			<Name>
+				<cvParam accession="MS:1000398" cvRef="MS" name="nanoelectrospray"/>
+			</Name>
+			<Oparameters>nanospray inlet</Oparameters>
+		</MS_ESI>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000083" cvRef="MS" name="radial ejection linear ion trap"/>
+			</Name>
+		</MS_Analyzer>
+	</MS_Instrument_Configuration>
+	<MS_Acquisition>
+		<Name>
+			<cvParam accession="MS:1000532" cvRef="MS" name="Xcalibur"/>
+		</Name>
+		<Manufacturer>Thermo Scientific</Manufacturer>
+		<Version>2.1</Version>
+		<Parameter_File>ftp.//estrellapolar.cnb.csic.es</Parameter_File>
+	</MS_Acquisition>
+	<MS_DataAnalysis>
+		<Name>
+			<cvParam accession="MS:1000615" cvRef="MS" name="ProteoWizard software"/>
+		</Name>
+		<Manufacturer></Manufacturer>
+		<Model></Model>
+		<Version>2.2.3112</Version>
+		<Description>
+			<cvParam accession="MS:1000544" cvRef="MS" name="Conversion to mzML"/>
+		</Description>
+		<Parameters>command-line parameters=msconvert --mzML -z -v -i contact_info.txt --filter 'peakPicking true 1-'</Parameters>
+		<Comments></Comments>
+		<Catalog_Number></Catalog_Number>
+		<URI></URI>
+		<Customizations></Customizations>
+		<Parameters_Location></Parameters_Location>
+	</MS_DataAnalysis>
+	<MS_Resulting_Data>
+		<Name>Raw data rep3</Name>
+		<DataFile_URL>ftp://pme6:pme6@estrellapolar.cnb.csic.es/data/UB/PME6_UB_rep3.raw</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1000563" cvRef="MS" name="Thermo RAW file"/>
+		</DataFile_Type>
+	</MS_Resulting_Data>
+	<MS_Resulting_Data>
+		<Name>mzML file</Name>
+		<DataFile_URL>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_UB_rep3.mzML_fixed.mzML.gz</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1000584" cvRef="MS" name="mzML file"/>
+		</DataFile_Type>
+		<Additional_URL></Additional_URL>
+		<SRM_URL></SRM_URL>
+		<SRM_Descriptor></SRM_Descriptor>
+	</MS_Resulting_Data>
+	<MS_Additional_Information>
+		<userParam value="3 replicates were digested the amount os sample was 6ug on each replicate." name="sample amount, replicates."/>
+	</MS_Additional_Information>
+	<MS_Additional_Information>
+		<userParam value="-Urea as denaturant was added 10ul 8M -Reduction reagent DTT was used 2ul 50mM. Let it react for 60min at 60 ºC temperature. - Alkilation reagent. 6ul 50mM of IAA was added. Let it react at room temperature and in the dark for 45min -The reaction was stopped with 2ul 500mM of DTT. Volume of sample was brougth up to 40ul with Ammonium bicarbonate 25mM. -1ul [0.1ug/ul] of trypsin was added. Ratio (1/50) The reaction was carry out over night at 35ºC  " name="Digestion protocol"/>
+	</MS_Additional_Information>
+</MS_MIAPE_MS>

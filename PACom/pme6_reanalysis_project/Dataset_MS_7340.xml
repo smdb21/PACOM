@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MS_MIAPE_MS id="7340">
+	<MIAPEProject id="1191">
+		<Name>ProteoRed Multicentric Experiment 6</Name>
+		<Date>2013-07-03 14:33:14</Date>
+		<Comments>PME6</Comments>
+		<OwnerName>salvador martinez</OwnerName>
+	</MIAPEProject>
+	<Name>MIAPE MS from 'PME6_PCM_UCM_MALDI_rep2.mzML_fixed.mzML'</Name>
+	<Version>PME6_PCM_UCM_MALDI_rep1 1.1.0</Version>
+	<Date>2013-07-16 00:00:00</Date>
+	<Modification_Date>2013-08-17T19:40:22.020+01:00</Modification_Date>
+	<AttachedFileLocation>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_PCM_UCM_MALDI_rep2.mzML_fixed.mzML.gz</AttachedFileLocation>
+	<Template>false</Template>
+	<MS_Contact>
+		<Name>Lola </Name>
+		<LastName>Gutiérrez Blázquez</LastName>
+		<Email>dgutierr@farm.ucm.es</Email>
+		<Position>
+			<cvParam accession="MS:1001270" cvRef="MS" name="lab personnel"/>
+		</Position>
+	</MS_Contact>
+	<MS_Spectrometer>
+		<Name>
+			<cvParam accession="MS:1000652" cvRef="MS" name="4800 Plus MALDI TOF/TOF"/>
+		</Name>
+		<Manufacturer>
+			<cvParam accession="MS:1000121" cvRef="MS" name="AB SCIEX instrument model"/>
+		</Manufacturer>
+	</MS_Spectrometer>
+	<MS_Instrument_Configuration>
+		<Name>IC</Name>
+		<MS_MALDI>
+			<Name>4800 Plus MALDI-TOF/TOF Analyzer, AB</Name>
+			<Plate_Type>Opti-TOF™ LC/MALDI  (123x81mm) stainless steel</Plate_Type>
+			<Matrix>Alpha-cyano-4-hydroxycinnamic acid</Matrix>
+			<Dissociation_Summary>Collission Induced Disociation (CID)
+Selection of ion precursor (Timed Ion Selector)
+Reduction of energy of ions before collision cell (Deceleration Stack 6.30 Kv). In the collision cell the ion precursors are fragmented for collision with atmosferic gas and then are reaccelerated in source 2 with variable voltage and ground  to get fine-tune spectrum.
+Collision Cell 7.00 Kv
+Collision Cell Offset -0.04 Kv
+Source 2 Delay 27304(ns)
+Metastable suppressor  suppress the precursor ions and deflect the metastable fragment ions formed after second source.
+Metastable Suppress 1 Kv, Delay 38340.158 (ns)
+The fragment ions formed in Collision cell and a fraction of precursor ions reach the reflector detector</Dissociation_Summary>
+			<Extraction>Delayed</Extraction>
+			<Laser>
+				<userParam name="Nitrogen Laser Diode-pumped Nd:YAG"/>
+			</Laser>
+			<WaveLength>355</WaveLength>
+			<Oparameters>Pulse rate up to 200 Hz with &lt; 500 psec duration/pulse
+
+</Oparameters>
+		</MS_MALDI>
+		<MS_Other_IonSource>
+			<Name>
+				<cvParam accession="MS:1000075" cvRef="MS" name="matrix-assisted laser desorption ionization"/>
+			</Name>
+		</MS_Other_IonSource>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000084" cvRef="MS" name="time-of-flight"/>
+			</Name>
+			<Reflectron>
+				<cvParam accession="MS:1000106" cvRef="MS" name="reflectron on"/>
+			</Reflectron>
+		</MS_Analyzer>
+		<MS_ActivationDissociation>
+			<Name>Collision cell</Name>
+			<Gas>
+				<userParam name="Atmospheric"/>
+			</Gas>
+			<Pressure value="9x10-7"/>
+			<ActivationType>
+				<cvParam accession="MS:1000133" cvRef="MS" name="collision-induced dissociation"/>
+			</ActivationType>
+		</MS_ActivationDissociation>
+	</MS_Instrument_Configuration>
+	<MS_Acquisition>
+		<Name>
+			<cvParam accession="MS:1000659" cvRef="MS" name="4000 Series Explorer Software"/>
+		</Name>
+		<Manufacturer>Applied Biosystems</Manufacturer>
+		<Version>V3.5.28193 (build 1011)</Version>
+		<Description>
+			<userParam name="4000 Series Explorer 3.5.2 (Spectra Acquisition and Processing Software ; GPS Explorer 3.6 (Automatic Protein Database Searches); Data Explorer 4.9.6 (Spectra Reprocessing Software) "/>
+		</Description>
+		<Parameter_File>\MS Reflector Positivo (MS Acquisition Method); \MSMS 1kV Positivo (MSMS Acquisition Method)</Parameter_File>
+	</MS_Acquisition>
+	<MS_DataAnalysis>
+		<Name>
+			<cvParam accession="MS:1000615" cvRef="MS" name="ProteoWizard software"/>
+		</Name>
+		<Manufacturer></Manufacturer>
+		<Model></Model>
+		<Version>2.2.3112</Version>
+		<Description>
+			<cvParam accession="MS:1000544" cvRef="MS" name="Conversion to mzML"/>
+		</Description>
+		<Parameters>command-line parameters=msconvert --mzML -z -v -i contact_info.txt --filter 'peakPicking true 1-'</Parameters>
+		<Comments></Comments>
+		<Catalog_Number></Catalog_Number>
+		<URI></URI>
+		<Customizations></Customizations>
+		<Parameters_Location></Parameters_Location>
+	</MS_DataAnalysis>
+	<MS_Resulting_Data>
+		<Name>mzML file</Name>
+		<DataFile_URL>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_PCM_UCM_MALDI_rep2.mzML_fixed.mzML.gz</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1000584" cvRef="MS" name="mzML file"/>
+		</DataFile_Type>
+		<Additional_URL></Additional_URL>
+		<SRM_URL></SRM_URL>
+		<SRM_Descriptor></SRM_Descriptor>
+	</MS_Resulting_Data>
+	<MS_Resulting_Data>
+		<Name>1357 T2D files</Name>
+		<DataFile_URL>ftp://pme6:pme6@estrellapolar.cnb.csic.es/data/PCM-UCM/MALDI/PME6_PCM-UCM_MALDI_rep2_t2d.rar</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1001560" cvRef="MS" name="AB SCIEX TOF/TOF T2D file"/>
+		</DataFile_Type>
+	</MS_Resulting_Data>
+	<MS_Additional_Information>
+		<userParam value="Digestion protocol: ?  Denaturant added and initial concentration: 8M Urea ?  Reduction reagent used , concentration, temperature, time of reaction: 10mM DTT 37ºC 1h ?  Alkylation reagent uses, concentration, temperature, time of reaction: 55mM IA, RT, 1h.   ?  Buffer for digestion, denaturant and concentration: 25mM AmBi, 2M Urea.  ?  Ratio w/w trypsin used: 1:10  ?Temperature / time digestion: 37ºC/ON   Chromatography: ??Trap column used: Acclaim PepMap 100 C18, 5 um, 100A ?        Column used, lenght of column Acclaim PepMap C18, 3um 100A, 15 cm ??Gradient (initial-final % ACN), time 6-80% 120min O  Amount of sample:  4 ug " name="Digestion protocol"/>
+	</MS_Additional_Information>
+</MS_MIAPE_MS>

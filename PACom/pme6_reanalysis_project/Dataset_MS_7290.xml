@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MS_MIAPE_MS id="7290">
+	<MIAPEProject id="1191">
+		<Name>ProteoRed Multicentric Experiment 6</Name>
+		<Date>2013-07-03 14:33:14</Date>
+		<Comments>PME6</Comments>
+		<OwnerName>salvador martinez</OwnerName>
+	</MIAPEProject>
+	<Name>MIAPE MS from 'PME6_INIBIC_rep1.mzML_fixed.mzML'</Name>
+	<Version>PME6_INIBIC_rep1 1.1.0</Version>
+	<Date>2013-07-15 19:00:13</Date>
+	<Modification_Date>2013-08-29T09:30:08.233+01:00</Modification_Date>
+	<AttachedFileLocation>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_INIBIC_rep1.mzML_fixed.mzML.gz</AttachedFileLocation>
+	<Template>false</Template>
+	<MS_Contact>
+		<Name>Salvador Martinez-Bartolome</Name>
+		<Email>smartinez@proteored.org</Email>
+		<Address>Darwin Street, 3. 28049. Cantoblanco, Madrid, Spain</Address>
+		<Department>http://www.proteored.org</Department>
+		<Institution>ProteoRed-ISCIII - National Center for Biotechnology-CSIC</Institution>
+		<Position>
+			<cvParam accession="MS:1001268" cvRef="MS" name="programmer"/>
+		</Position>
+	</MS_Contact>
+	<MS_Spectrometer>
+		<Name>
+			<cvParam accession="MS:1000652" cvRef="MS" name="4800 Plus MALDI TOF/TOF"/>
+		</Name>
+		<Manufacturer>
+			<cvParam accession="MS:1000121" cvRef="MS" name="AB SCIEX instrument model"/>
+		</Manufacturer>
+		<Model>
+			<userParam name=""/>
+		</Model>
+		<Version></Version>
+		<Description></Description>
+		<Parameters></Parameters>
+		<Comments></Comments>
+		<Catalog_Number></Catalog_Number>
+		<URI></URI>
+		<Customizations></Customizations>
+	</MS_Spectrometer>
+	<MS_Instrument_Configuration>
+		<Name>IC1</Name>
+	</MS_Instrument_Configuration>
+	<MS_Acquisition>
+		<Name>
+			<cvParam accession="MS:1000536" cvRef="MS" name="Data Explorer"/>
+		</Name>
+		<Version>unknown</Version>
+	</MS_Acquisition>
+	<MS_DataAnalysis>
+		<Name>
+			<cvParam accession="MS:1000615" cvRef="MS" name="ProteoWizard software"/>
+		</Name>
+		<Manufacturer></Manufacturer>
+		<Model></Model>
+		<Version>2.2.3126</Version>
+		<Description>
+			<userParam name="Conversion to mzML Conversion to mzML peak picking"/>
+		</Description>
+		<Parameters>command-line parameters=msconvert --mzML -z -v -i contact_info.txt --filter 'peakPicking true 1-'msconvert --mzML -z -v -i contact_info.txt --filter 'peakPicking true 1-'</Parameters>
+		<Comments></Comments>
+		<Catalog_Number></Catalog_Number>
+		<URI></URI>
+		<Customizations></Customizations>
+		<Parameters_Location></Parameters_Location>
+	</MS_DataAnalysis>
+	<MS_Resulting_Data>
+		<Name>1489 T2D files</Name>
+		<DataFile_URL>ftp://pme6:pme6@estrellapolar.cnb.csic.es/data/INIBIC/PME6_INIBIC_rep1_T2D.rar</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1001560" cvRef="MS" name="AB SCIEX TOF/TOF T2D file"/>
+		</DataFile_Type>
+	</MS_Resulting_Data>
+	<MS_Resulting_Data>
+		<Name>mzML file</Name>
+		<DataFile_URL>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_INIBIC_rep1.mzML_fixed.mzML.gz</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1000584" cvRef="MS" name="mzML file"/>
+		</DataFile_Type>
+	</MS_Resulting_Data>
+	<MS_Additional_Information>
+		<userParam name="Human"/>
+	</MS_Additional_Information>
+	<MS_Additional_Information>
+		<cvParam accession="MS:1000053" cvRef="MS" value="PPSR (ProteoRed Plasma Subset Reference)" name="sample batch"/>
+	</MS_Additional_Information>
+</MS_MIAPE_MS>

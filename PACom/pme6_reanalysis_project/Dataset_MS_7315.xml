@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MS_MIAPE_MS id="7315">
+	<MIAPEProject id="1191">
+		<Name>ProteoRed Multicentric Experiment 6</Name>
+		<Date>2013-07-03 14:33:14</Date>
+		<Comments>PME6</Comments>
+		<OwnerName>salvador martinez</OwnerName>
+	</MIAPEProject>
+	<Name>MIAPE MS from 'PME6_UPF_rep2.mzML_fixed.mzML'</Name>
+	<Version>v1.0</Version>
+	<Date>2013-07-15 00:00:00</Date>
+	<Modification_Date>2013-08-17T20:25:00.737+01:00</Modification_Date>
+	<AttachedFileLocation>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_UPF_rep2.mzML_fixed.mzML.gz</AttachedFileLocation>
+	<Template>false</Template>
+	<MS_Contact>
+		<Name>Cristina</Name>
+		<LastName>Chiva</LastName>
+		<Telephone>933160869</Telephone>
+		<Fax>933160901</Fax>
+		<Email>cristina.chiva@upf.edu</Email>
+		<Address>Dr. Aiguader 88 3rd floor</Address>
+		<Locality>Barcelona</Locality>
+		<Country>Spain</Country>
+		<CP>08003</CP>
+		<Department>Proteomics Facility</Department>
+		<Institution>University Pompeu Fabra</Institution>
+		<Position>
+			<cvParam accession="MS:1001270" cvRef="MS" name="lab personnel"/>
+		</Position>
+	</MS_Contact>
+	<MS_Spectrometer>
+		<Name>
+			<cvParam accession="MS:1001742" cvRef="MS" name="LTQ Orbitrap Velos"/>
+		</Name>
+		<Manufacturer>
+			<cvParam accession="MS:1000483" cvRef="MS" name="Thermo Fisher Scientific instrument model"/>
+		</Manufacturer>
+		<Model>
+			<cvParam accession="MS:1001742" cvRef="MS" name="LTQ Orbitrap Velos"/>
+		</Model>
+		<Version>SN03133B</Version>
+	</MS_Spectrometer>
+	<MS_Instrument_Configuration>
+		<Name>IC2</Name>
+		<MS_ESI>
+			<Name>
+				<cvParam accession="MS:1000398" cvRef="MS" name="nanoelectrospray"/>
+			</Name>
+			<Oparameters>nanospray inlet</Oparameters>
+		</MS_ESI>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000083" cvRef="MS" name="radial ejection linear ion trap"/>
+			</Name>
+		</MS_Analyzer>
+	</MS_Instrument_Configuration>
+	<MS_Instrument_Configuration>
+		<Name>IC</Name>
+		<MS_ESI>
+			<Name>
+				<cvParam accession="MS:1000397" cvRef="MS" name="microelectrospray"/>
+			</Name>
+			<Oparameters>Look at the parameters file on the acquisition section (section 4.1)</Oparameters>
+			<MS_Sprayer>
+				<Name>
+					<userParam name="Sprayer"/>
+				</Name>
+				<Description>type: nanospray
+Part number: NTCC-360/100-5-153
+</Description>
+			</MS_Sprayer>
+		</MS_ESI>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000264" cvRef="MS" name="ion trap"/>
+			</Name>
+		</MS_Analyzer>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000484" cvRef="MS" name="orbitrap"/>
+			</Name>
+		</MS_Analyzer>
+		<MS_ActivationDissociation>
+			<Name>ion trap</Name>
+			<Gas>
+				<cvParam accession="CHEBI:30217" cvRef="CHEBI" name="helium atom"/>
+			</Gas>
+			<Pressure unitName="Torr" value="10-5"/>
+			<ActivationType>
+				<cvParam accession="MS:1000133" cvRef="MS" name="collision-induced dissociation"/>
+			</ActivationType>
+		</MS_ActivationDissociation>
+	</MS_Instrument_Configuration>
+	<MS_Acquisition>
+		<Name>
+			<cvParam accession="MS:1000532" cvRef="MS" name="Xcalibur"/>
+		</Name>
+		<Manufacturer>Thermo Fisher Scientific</Manufacturer>
+		<Version>2.1.0.1139</Version>
+		<Description>
+			<userParam name="Spectra acquisition"/>
+		</Description>
+		<Parameter_File>http://estrellapolar.cnb.csic.es/proteored/MIAPE/Ficheros/470/Acquisition_parameters(1).docx</Parameter_File>
+	</MS_Acquisition>
+	<MS_DataAnalysis>
+		<Name>
+			<cvParam accession="MS:1000615" cvRef="MS" name="ProteoWizard software"/>
+		</Name>
+		<Manufacturer></Manufacturer>
+		<Model></Model>
+		<Version>2.2.3112</Version>
+		<Description>
+			<cvParam accession="MS:1000544" cvRef="MS" name="Conversion to mzML"/>
+		</Description>
+		<Parameters>command-line parameters=msconvert --mzML -z -v -i contact_info.txt --filter 'peakPicking true 1-'</Parameters>
+		<Comments></Comments>
+		<Catalog_Number></Catalog_Number>
+		<URI></URI>
+		<Customizations></Customizations>
+		<Parameters_Location></Parameters_Location>
+	</MS_DataAnalysis>
+	<MS_Resulting_Data>
+		<Name>Peak list rep2</Name>
+		<DataFile_URL>ftp://pme6:pme6@estrellapolar.cnb.csic.es/data/UPF/PME6_UPF_rep2.zip</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1001062" cvRef="MS" name="Mascot MGF file"/>
+		</DataFile_Type>
+	</MS_Resulting_Data>
+	<MS_Resulting_Data>
+		<Name>Raw data information rep2</Name>
+		<DataFile_URL>ftp://pme6:pme6@estrellapolar.cnb.csic.es/data/UPF/PME6_UPF_rep2.raw</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1000563" cvRef="MS" name="Thermo RAW file"/>
+		</DataFile_Type>
+	</MS_Resulting_Data>
+	<MS_Additional_Information>
+		<userParam value="This document describe the acquisition of mass spectra using a LTQ_velos (Thermo Fisher Scientific), and the Xcalibur control software.  Sample received was quantified using the Bradford method. The resulting concentration was 1.48ug/uL. We separate three aliquots of 15ug each (replica1, replica2 and replica3). The three samples were digested in parallel and run once on the MS.  011010_Proteored_replica1: Gradient: 135 min Amout of sample: 15 ug 011010_Proteored_replica2: Gradient: 135 min Amout of sample: 15 ug 011010_Proteored_replica3: Gradient: 135 min Amout of sample: 15 ug " name="General explanations (samples amount, relicates, labelling)"/>
+	</MS_Additional_Information>
+	<MS_Additional_Information>
+		<userParam value="- Denaturing: urea 6M - Reduction: DTT,  10mM, 37ºC, 1h - Alkylation: IAM, 10mM, rt, 1h - Buffer for digestion: 0.6M urea Ammonium Bicarbonate 0.1M - Ratio w/w trypsin used: 1:20 - 37ºC / 20h" name="Digestion protocol"/>
+	</MS_Additional_Information>
+</MS_MIAPE_MS>

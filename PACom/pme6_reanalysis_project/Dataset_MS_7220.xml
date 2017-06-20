@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MS_MIAPE_MS id="7220">
+	<MIAPEProject id="1191">
+		<Name>ProteoRed Multicentric Experiment 6</Name>
+		<Date>2013-07-03 14:33:14</Date>
+		<Comments>PME6</Comments>
+		<OwnerName>salvador martinez</OwnerName>
+	</MIAPEProject>
+	<Name>MIAPE MS from 'PME6_CNB_IT_rep2.mzML_fixed.mzML'</Name>
+	<Version>PME6_CNB_IT_rep2.mzML 1.1.0</Version>
+	<Date>2013-07-03 00:00:00</Date>
+	<Modification_Date>2013-08-17T15:27:14.683+01:00</Modification_Date>
+	<AttachedFileLocation>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_CNB_IT_rep2.mzML_fixed.mzML.gz</AttachedFileLocation>
+	<Template>false</Template>
+	<MS_Contact>
+		<Name>Rosana</Name>
+		<LastName>Navajas</LastName>
+		<Telephone>91 5854540</Telephone>
+		<Email>rnavajas@cnb.csic.es</Email>
+		<Address>C/ Darwin 3</Address>
+		<Locality>Madrid</Locality>
+		<CP>28049</CP>
+		<Department>Análisis por nESI-MS/MS con trampa iónica.
+Servicio de Proteómica</Department>
+		<Institution>Centro Nacional de Biotecnología.- CSIC</Institution>
+		<Position>
+			<cvParam accession="MS:1001271" cvRef="MS" name="researcher"/>
+		</Position>
+	</MS_Contact>
+	<MS_Spectrometer>
+		<Name>
+			<cvParam accession="MS:1000698" cvRef="MS" name="HCTultra"/>
+		</Name>
+		<Manufacturer>
+			<cvParam accession="MS:1000122" cvRef="MS" name="Bruker Daltonics instrument model"/>
+		</Manufacturer>
+		<Model>
+			<cvParam accession="MS:1000122" cvRef="MS" name="Bruker Daltonics instrument model"/>
+		</Model>
+		<Description>3D ion trap with ETD capabilities</Description>
+	</MS_Spectrometer>
+	<MS_Instrument_Configuration>
+		<Name>IC</Name>
+		<MS_ESI>
+			<Name>
+				<cvParam accession="MS:1000397" cvRef="MS" name="microelectrospray"/>
+			</Name>
+			<MS_Sprayer>
+				<Name>
+					<userParam name="Sprayer"/>
+				</Name>
+			</MS_Sprayer>
+		</MS_ESI>
+		<MS_Analyzer>
+			<Name>
+				<cvParam accession="MS:1000264" cvRef="MS" name="ion trap"/>
+			</Name>
+		</MS_Analyzer>
+		<MS_ActivationDissociation>
+			<Name>Ion trap</Name>
+			<Gas>
+				<cvParam accession="CHEBI:30217" cvRef="CHEBI" name="helium atom"/>
+			</Gas>
+			<Pressure value="5.5 bar"/>
+			<ActivationType>
+				<cvParam accession="MS:1000133" cvRef="MS" name="collision-induced dissociation"/>
+			</ActivationType>
+		</MS_ActivationDissociation>
+	</MS_Instrument_Configuration>
+	<MS_Acquisition>
+		<Name>
+			<cvParam accession="MS:1000721" cvRef="MS" name="esquireControl"/>
+		</Name>
+		<Manufacturer>Bruker Daltonics</Manufacturer>
+		<Version>6.1</Version>
+		<Description>
+			<userParam name="AcquisitionProgram=esquireControl"/>
+		</Description>
+		<Parameters>data dependen acquisition (DDA)</Parameters>
+	</MS_Acquisition>
+	<MS_DataAnalysis>
+		<Name>
+			<cvParam accession="MS:1000717" cvRef="MS" name="CompassXport"/>
+		</Name>
+		<Manufacturer></Manufacturer>
+		<Model></Model>
+		<Version>3.0.5</Version>
+		<Description>
+			<cvParam accession="MS:1000544" cvRef="MS" name="Conversion to mzML"/>
+		</Description>
+		<Parameters></Parameters>
+		<Comments></Comments>
+		<Catalog_Number></Catalog_Number>
+		<URI></URI>
+		<Customizations></Customizations>
+		<Parameters_Location></Parameters_Location>
+	</MS_DataAnalysis>
+	<MS_Resulting_Data>
+		<Name>Peak list rep2</Name>
+		<DataFile_URL>ftp://pme6:pme6@estrellapolar.cnb.csic.es/data/CNB/IT/PME6_CNB_IT_rep2.mgf</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1001062" cvRef="MS" name="Mascot MGF file"/>
+		</DataFile_Type>
+	</MS_Resulting_Data>
+	<MS_Resulting_Data>
+		<Name>mzML file</Name>
+		<DataFile_URL>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_CNB_IT_rep2.mzML_fixed.mzML.gz</DataFile_URL>
+		<DataFile_Type>
+			<cvParam accession="MS:1000584" cvRef="MS" name="mzML file"/>
+		</DataFile_Type>
+		<Additional_URL></Additional_URL>
+		<SRM_URL></SRM_URL>
+		<SRM_Descriptor></SRM_Descriptor>
+	</MS_Resulting_Data>
+	<MS_Additional_Information>
+		<userParam name="centroid spectrum"/>
+	</MS_Additional_Information>
+	<MS_Additional_Information>
+		<cvParam accession="MS:1000579" cvRef="MS" name="MS1 spectrum"/>
+	</MS_Additional_Information>
+	<MS_Additional_Information>
+		<cvParam accession="MS:1000580" cvRef="MS" name="MSn spectrum"/>
+	</MS_Additional_Information>
+</MS_MIAPE_MS>
