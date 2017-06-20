@@ -148,12 +148,11 @@ public class ScrollableJTable extends JPanel {
 				}
 			}
 			if (numValid > 0) {
-				final int selectedOption = JOptionPane.showConfirmDialog(this,
-						"<html>The cell contains " + numValid + " different accessions.<br>"
-								+ "Click YES to go to UniprotKB in " + split.length + " different browser windows.<br>"
-								+ "If you want just to open the first accession, that is, '" + split[0]
-								+ "', click on NO.</html>",
-						"GO TO UNIPROTKB. More than one accession in the cell", JOptionPane.YES_NO_CANCEL_OPTION);
+				final int selectedOption = JOptionPane.showConfirmDialog(this, "<html>The cell contains " + numValid
+						+ " different accessions.<br>" + "Click YES to open the protein entry in " + split.length
+						+ " different browser windows.<br>" + "If you want just to open the first accession, that is, '"
+						+ split[0] + "', click on NO.</html>",
+						"Open protein entry. More than one accession in the cell", JOptionPane.YES_NO_CANCEL_OPTION);
 
 				if (selectedOption == JOptionPane.YES_OPTION) {
 					for (String singleProteinACC : split) {
@@ -168,8 +167,9 @@ public class ScrollableJTable extends JPanel {
 				}
 			}
 		} else {
-			final int selectedOption = JOptionPane.showConfirmDialog(this, "<html>Click YES to go to UniprotKB.</html>",
-					"GO TO UNIPROTKB", JOptionPane.YES_NO_OPTION);
+			final int selectedOption = JOptionPane.showConfirmDialog(this,
+					"<html>Click YES to go open the protein entry.</html>", "Open protein Entry",
+					JOptionPane.YES_NO_OPTION);
 
 			if (selectedOption == JOptionPane.YES_OPTION) {
 				String urlText = getURL(proteinACC);
