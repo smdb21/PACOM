@@ -73,7 +73,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 	final static String LOCAL_MIAPE_UNIQUE_NAME_REGEXP = "Dataset_(?:MS|MSI)_\\d+_(.*)";
 
 	final static String MIAPE_PROJECT_NAME_REGEXP = "\\d+:\\s(.*)";
-	private static final String MIAPE_LOCAL_PROJECT_NAME_REGEXP = "'(.*)'";
+	private static final String MIAPE_LOCAL_PROJECT_NAME_REGEXP = "(.*)";
 
 	private boolean saved = false;
 	public TreeLoaderTask treeLoaderTask;
