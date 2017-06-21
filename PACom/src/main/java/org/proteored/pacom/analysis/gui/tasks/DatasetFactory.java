@@ -51,6 +51,7 @@ import org.proteored.pacom.analysis.util.FileManager;
 import com.compomics.util.protein.AASequenceImpl;
 import com.compomics.util.protein.Protein;
 
+import edu.scripps.yates.utilities.fasta.FastaParser;
 import edu.scripps.yates.utilities.maths.Maths;
 
 public class DatasetFactory {
@@ -1864,6 +1865,16 @@ public class DatasetFactory {
 		double[] ret = null;
 		final Collection<ProteinGroupOccurrence> proteinOccurrences = idSet.getProteinGroupOccurrenceList().values();
 		if (proteinOccurrences != null && !proteinOccurrences.isEmpty()) {
+			// retrieve the information from uniprot first, all at once
+			Set<String> uniprotACCs = new HashSet<String>();
+			for (ProteinGroupOccurrence proteinGroupOccurrence : proteinOccurrences) {
+				for (String acc : proteinGroupOccurrence.getAccessions()) {
+					if (FastaParser.isUniProtACC(acc)) {
+						uniprotACCs.add(acc);
+					}
+				}
+			}
+			FileManager.getUniprotProteinLocalRetriever().getAnnotatedProteins(null, uniprotACCs);
 			ret = new double[idSet.getNumDifferentProteinGroups(countNonConclusiveProteins)];
 			int i = 0;
 			for (ProteinGroupOccurrence proteinGroupOccurrence : proteinOccurrences) {
@@ -3596,8 +3607,9 @@ public class DatasetFactory {
 					union = globalVenn.getUnion12();
 					int num = 0;
 					for (Object obj : union) {
-						String key = (String) obj;
-						if (key.contains(ProteinEvidence.NONCONCLUSIVE.toString()) && !countNonConclusiveProteins)
+						ProteinComparatorKey key = (ProteinComparatorKey) obj;
+						if (!countNonConclusiveProteins
+								&& key.getAccessionString().contains(ProteinEvidence.NONCONCLUSIVE.toString()))
 							continue;
 						// if (!key.contains(ProteinEvidence.NONCONCLUSIVE
 						// .toString()))
@@ -3622,9 +3634,11 @@ public class DatasetFactory {
 					Set<ProteinComparatorKey> keys2 = hashMapKeys.get(idSet2.getFullName());
 					VennData venn = null;
 					if (unique == null) {
-						venn = new VennDataForProteins(keys, keys2, null, null, countNonConclusiveProteins);
+						venn = new VennDataForProteins(keys, keys2, null, proteinGroupComparisonType,
+								countNonConclusiveProteins);
 					} else {
-						venn = new VennDataForProteins(unique, keys2, null, null, countNonConclusiveProteins);
+						venn = new VennDataForProteins(unique, keys2, null, proteinGroupComparisonType,
+								countNonConclusiveProteins);
 					}
 					unique = venn.getUniqueTo1();
 					log.info(unique.size() + " remaining exclusive");
