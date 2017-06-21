@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -16,7 +14,6 @@ import javax.xml.bind.PropertyException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
-import org.junit.Test;
 import org.proteored.miapeapi.cv.ControlVocabularyManager;
 import org.proteored.miapeapi.exceptions.MiapeDatabaseException;
 import org.proteored.miapeapi.exceptions.MiapeSecurityException;
@@ -60,31 +57,6 @@ public class FileManager {
 	private static final String UNIPROT_FOLDER = "uniprot";
 
 	private static UniprotProteinLocalRetriever upr;
-
-	@Test
-	public void test() {
-		int renamed = 0;
-		File folder1 = new File("C:\\Users\\Salva\\git2\\PACom\\user_data\\curated_exps");
-		File[] listFiles = folder1.listFiles();
-		for (File folder : listFiles) {
-			if (folder.isDirectory()) {
-				for (File file : folder.listFiles()) {
-					String name = FilenameUtils.getBaseName(file.getAbsolutePath());
-					Pattern pattern = Pattern.compile("MIAPE_(MS.*)_(\\d+)");
-					Matcher match = pattern.matcher(name);
-					if (match.find()) {
-						String miapeType = match.group(1);
-						String number = match.group(2);
-						File dest = new File(file.getParentFile().getAbsolutePath() + File.separator + "Dataset_"
-								+ miapeType + "_" + number + ".xml");
-						file.renameTo(dest);
-						renamed++;
-					}
-				}
-			}
-		}
-		System.out.println(renamed + " files renamed");
-	}
 
 	/**
 	 * Gets the folder (creating it if doesn't exist) APP_FOLDER/user_data/
