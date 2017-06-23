@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<CP_ExperimentList name="PME6_Re-analysis">
+<CP_ExperimentList name="PME6_Reanalysis">
 	<CP_Experiment curated="false" name="QT_1">
 		<CP_Replicate name="rep:1">
 			<CP_MSI_List>
