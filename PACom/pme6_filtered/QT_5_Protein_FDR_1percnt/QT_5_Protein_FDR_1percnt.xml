@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CP_Experiment curated="true" name="QT_5_Protein_FDR_1percnt">
+	<CP_Replicate name="rep:1">
+		<CP_MSI_List>
+			<CP_MSI id="7115" name="MIAPE_MSI_7115.xml"/>
+		</CP_MSI_List>
+		<CP_MS_List>
+			<CP_MS id="7215" name="MIAPE_MS_7215.xml"/>
+		</CP_MS_List>
+	</CP_Replicate>
+</CP_Experiment>

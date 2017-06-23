@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CP_Experiment curated="true" name="OV_4_Protein_FDR_1percnt">
+	<CP_Replicate name="rep:1">
+		<CP_MSI_List>
+			<CP_MSI id="7201" name="MIAPE_MSI_7201.xml"/>
+		</CP_MSI_List>
+		<CP_MS_List>
+			<CP_MS id="7314" name="MIAPE_MS_7314.xml"/>
+		</CP_MS_List>
+	</CP_Replicate>
+	<CP_Replicate name="rep:2">
+		<CP_MSI_List>
+			<CP_MSI id="7202" name="MIAPE_MSI_7202.xml"/>
+		</CP_MSI_List>
+		<CP_MS_List>
+			<CP_MS id="7315" name="MIAPE_MS_7315.xml"/>
+		</CP_MS_List>
+	</CP_Replicate>
+	<CP_Replicate name="rep:3">
+		<CP_MSI_List>
+			<CP_MSI id="7203" name="MIAPE_MSI_7203.xml"/>
+		</CP_MSI_List>
+		<CP_MS_List>
+			<CP_MS id="7316" name="MIAPE_MS_7316.xml"/>
+		</CP_MS_List>
+	</CP_Replicate>
+</CP_Experiment>

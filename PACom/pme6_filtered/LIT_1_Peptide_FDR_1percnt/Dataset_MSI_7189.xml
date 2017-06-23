@@ -1,0 +1,1567 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MSI_MIAPE_MSI id="7189">
+	<MIAPEProject id="1191">
+		<Name>ProteoRed Multicentric Experiment 6</Name>
+		<Date>2013-07-03 14:33:14</Date>
+		<Comments>PME6</Comments>
+		<OwnerName>salvador martinez</OwnerName>
+	</MIAPEProject>
+	<Name>MIAPE MSI from 'PME6_PCM_UCM_IT_rep1.mzid'</Name>
+	<Version>1.1.0</Version>
+	<Date>2013-06-26 17:35:32</Date>
+	<Modification_Date>2013-07-15T18:32:31.148+01:00</Modification_Date>
+	<Generated_Files_URL>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_PCM_UCM_IT_rep1.mzid.gz</Generated_Files_URL>
+	<AttachedFileLocation>http://proteo.cnb.csic.es/downloads/smartinez@cnb.csic.es/PME6_PCM_UCM_IT_rep1.mzid.gz</AttachedFileLocation>
+	<Template>false</Template>
+	<MIAPE_MS_Ref>7299</MIAPE_MS_Ref>
+	<MSI_Contact>
+		<Name>Unknown</Name>
+		<LastName>Salvador</LastName>
+		<Email></Email>
+		<Position>
+			<cvParam accession="MS:1001271" cvRef="MS" name="researcher"/>
+		</Position>
+	</MSI_Contact>
+	<MSI_Software id="SW_34126">
+		<Name>
+			<cvParam accession="MS:1001207" cvRef="MS" name="Mascot"/>
+		</Name>
+		<Manufacturer>Matrix Science Limited</Manufacturer>
+		<Version>2.3.02</Version>
+		<URI>http://www.matrixscience.com/search_form_select.html</URI>
+		<Customizations>
+        No customisations
+      </Customizations>
+	</MSI_Software>
+	<MSI_Input_Data_Set id="INDATASET_6639">
+		<Name>SD_1</Name>
+		<MSI_Input_Data id="INDATA_6886">
+			<Name>SD_1</Name>
+			<MS_File_Type>
+				<userParam name="mzML file"/>
+			</MS_File_Type>
+			<Source_Data_URL>file:///PME6_UCM_PCM_IT_rep1.mzML_fixed.mzML</Source_Data_URL>
+		</MSI_Input_Data>
+	</MSI_Input_Data_Set>
+	<MSI_Input_Parameters id="PARAM_6765">
+		<Name>SIP</Name>
+		<SearchType>
+			<cvParam accession="MS:1001083" cvRef="MS" name="ms-ms search"/>
+		</SearchType>
+		<Taxonomy>Filter type=DB filter taxonomy
+</Taxonomy>
+		<NumEntries>40590</NumEntries>
+		<Cleavage_Name>
+			<cvParam accession="MS:1001251" cvRef="MS" name="Trypsin"/>
+		</Cleavage_Name>
+		<Cleavage_Rules>Site Regular Expresion=(?&lt;=[KR])(?!P)</Cleavage_Rules>
+		<Misscleavages>1</Misscleavages>
+		<Additional_Cleavages>Semispecific= true
+formula gained at NTerm=H
+formula gained at CTerm=H
+</Additional_Cleavages>
+		<AA_Modif>
+Carbamidomethyl
+Fixed
+mass delta=57.021465
+residues=C
+
+Oxidation
+Variable
+mass delta=15.994915
+residues=M
+</AA_Modif>
+		<Min_score>Mascot:SigThreshold=0.05</Min_score>
+		<Precursor_Mass_Tolerance unitCvRef="UO" unitName="parts per million" unitAccession="UO:0000169" value="search tolerance plus value=300&#xA;search tolerance minus value=300"/>
+		<Fragment_Mass_Tolerance unitCvRef="UO" unitName="dalton" unitAccession="UO:0000221" value="search tolerance plus value=0.6&#xA;search tolerance minus value=0.6"/>
+		<PMF_Mass_Tolerance/>
+		<Scoring_Algorithm>Mascot Instrument Name=ESI-TRAP</Scoring_Algorithm>
+		<Software_Ref>SW_34126</Software_Ref>
+		<MSI_Additional_Parameter>
+			<cvParam accession="MS:1001118" cvRef="MS" value="" name="param: b ion"/>
+		</MSI_Additional_Parameter>
+		<MSI_Additional_Parameter>
+			<cvParam accession="MS:1001149" cvRef="MS" value="" name="param: b ion-NH3"/>
+		</MSI_Additional_Parameter>
+		<MSI_Additional_Parameter>
+			<cvParam accession="MS:1001317" cvRef="MS" value="Auto" name="Mascot:MaxProteinHits"/>
+		</MSI_Additional_Parameter>
+		<MSI_Additional_Parameter>
+			<cvParam accession="MS:1001322" cvRef="MS" value="0" name="Mascot:RequireBoldRed"/>
+		</MSI_Additional_Parameter>
+		<MSI_Additional_Parameter>
+			<cvParam accession="MS:1001316" cvRef="MS" value="0.05" name="Mascot:SigThreshold"/>
+		</MSI_Additional_Parameter>
+		<MSI_Additional_Parameter>
+			<cvParam accession="MS:1001320" cvRef="MS" value="1" name="Mascot:ShowHomologousProteinsWithSamePeptides"/>
+		</MSI_Additional_Parameter>
+		<MSI_Additional_Parameter>
+			<cvParam accession="MS:1001319" cvRef="MS" value="0" name="Mascot:MinMSMSThreshold"/>
+		</MSI_Additional_Parameter>
+		<MSI_Additional_Parameter>
+			<cvParam accession="MS:1001323" cvRef="MS" value="false" name="Mascot:UseUnigeneClustering"/>
+		</MSI_Additional_Parameter>
+		<MSI_Additional_Parameter>
+			<cvParam accession="MS:1001262" cvRef="MS" value="" name="param: y ion"/>
+		</MSI_Additional_Parameter>
+		<MSI_Additional_Parameter>
+			<cvParam accession="MS:1001321" cvRef="MS" value="10" name="Mascot:ShowHomologousProteinsWithSubsetOfPeptides"/>
+		</MSI_Additional_Parameter>
+		<MSI_Additional_Parameter>
+			<cvParam accession="MS:1001325" cvRef="MS" value="0" name="Mascot:ShowDecoyMatches"/>
+		</MSI_Additional_Parameter>
+		<MSI_Additional_Parameter>
+			<userParam value="PME6_PCM_UCM_IT_rep1" name="Mascot User Comment"/>
+		</MSI_Additional_Parameter>
+		<MSI_Additional_Parameter>
+			<cvParam accession="MS:1001150" cvRef="MS" value="" name="param: b ion-H2O"/>
+		</MSI_Additional_Parameter>
+		<MSI_Additional_Parameter>
+			<cvParam accession="MS:1001324" cvRef="MS" value="1" name="Mascot:IncludeErrorTolerantMatches"/>
+		</MSI_Additional_Parameter>
+		<MSI_Additional_Parameter>
+			<userParam value="" name="parent mass type mono"/>
+		</MSI_Additional_Parameter>
+		<MSI_Additional_Parameter>
+			<userParam value="ESI-TRAP" name="Mascot Instrument Name"/>
+		</MSI_Additional_Parameter>
+		<MSI_Additional_Parameter>
+			<cvParam accession="MS:1001318" cvRef="MS" value="MudPIT" name="Mascot:ProteinScoringMethod"/>
+		</MSI_Additional_Parameter>
+		<MSI_Additional_Parameter>
+			<cvParam accession="MS:1001151" cvRef="MS" value="" name="param: y ion-NH3"/>
+		</MSI_Additional_Parameter>
+		<MSI_Additional_Parameter>
+			<cvParam accession="MS:1001152" cvRef="MS" value="" name="param: y ion-H2O"/>
+		</MSI_Additional_Parameter>
+		<MSI_Database>
+			<Name>
+				<userParam name="PME6_TD"/>
+			</Name>
+			<Version>PME6_decoy.fasta</Version>
+			<Description>database type amino acid
+</Description>
+			<Sequence_Number>40590</Sequence_Number>
+			<URI>file:///E:/MASCOT/sequence/PME6_TD/current/PME6_decoy.fasta</URI>
+		</MSI_Database>
+	</MSI_Input_Parameters>
+	<MSI_Identified_Protein_Set>
+		<Name>identified proteins</Name>
+		<Input_Data_Set_References>
+			<Input_Data_Set_Ref>INDATASET_6639</Input_Data_Set_Ref>
+		</Input_Data_Set_References>
+		<MSI_Identified_Protein id="PROT_8900728">
+			<AC>P01860</AC>
+			<ProteinScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="83.32" name="Mascot:score"/>
+			</ProteinScore>
+			<Description>Ig gamma-3 chain C region OS=Homo sapiens GN=IGHG3 PE=1 SV=2</Description>
+			<Validation_Status>true</Validation_Status>
+			<Peptide_Number>2</Peptide_Number>
+			<Peptide_Refs>
+				<Ref id="PEP_36864499"/>
+				<Ref id="PEP_36864498"/>
+				<Ref id="PEP_36864500"/>
+			</Peptide_Refs>
+		</MSI_Identified_Protein>
+		<MSI_Identified_Protein id="PROT_8900730">
+			<AC>P02787</AC>
+			<ProteinScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="142.993333333333" name="Mascot:score"/>
+			</ProteinScore>
+			<Description>Serotransferrin OS=Homo sapiens GN=TF PE=1 SV=2</Description>
+			<Validation_Status>true</Validation_Status>
+			<Peptide_Number>4</Peptide_Number>
+			<Peptide_Refs>
+				<Ref id="PEP_36864503"/>
+				<Ref id="PEP_36864502"/>
+				<Ref id="PEP_36864505"/>
+				<Ref id="PEP_36864504"/>
+				<Ref id="PEP_36864512"/>
+				<Ref id="PEP_36864507"/>
+				<Ref id="PEP_36864506"/>
+				<Ref id="PEP_36864509"/>
+				<Ref id="PEP_36864508"/>
+				<Ref id="PEP_36864511"/>
+				<Ref id="PEP_36864510"/>
+			</Peptide_Refs>
+		</MSI_Identified_Protein>
+		<MSI_Identified_Protein id="PROT_8900729">
+			<AC>P01861</AC>
+			<ProteinScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="83.0466666666667" name="Mascot:score"/>
+			</ProteinScore>
+			<Description>Ig gamma-4 chain C region OS=Homo sapiens GN=IGHG4 PE=1 SV=1</Description>
+			<Validation_Status>true</Validation_Status>
+			<Peptide_Number>2</Peptide_Number>
+			<Peptide_Refs>
+				<Ref id="PEP_36864499"/>
+				<Ref id="PEP_36864498"/>
+				<Ref id="PEP_36864501"/>
+				<Ref id="PEP_36864500"/>
+			</Peptide_Refs>
+		</MSI_Identified_Protein>
+		<MSI_Identified_Protein id="PROT_8900731">
+			<AC>P02675</AC>
+			<ProteinScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="30.12" name="Mascot:score"/>
+			</ProteinScore>
+			<Description>Fibrinogen beta chain OS=Homo sapiens GN=FGB PE=1 SV=2</Description>
+			<Validation_Status>true</Validation_Status>
+			<Peptide_Number>2</Peptide_Number>
+			<Peptide_Refs>
+				<Ref id="PEP_36864513"/>
+			</Peptide_Refs>
+		</MSI_Identified_Protein>
+		<MSI_Identified_Protein id="PROT_8900732">
+			<AC>P0CF74</AC>
+			<ProteinScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="68.74" name="Mascot:score"/>
+			</ProteinScore>
+			<Description>Ig lambda-6 chain C region OS=Homo sapiens GN=IGLC6 PE=4 SV=1</Description>
+			<Validation_Status>true</Validation_Status>
+			<Peptide_Number>1</Peptide_Number>
+			<Peptide_Refs>
+				<Ref id="PEP_36864514"/>
+			</Peptide_Refs>
+		</MSI_Identified_Protein>
+		<MSI_Identified_Protein id="PROT_8900733">
+			<AC>P68871</AC>
+			<ProteinScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="77.04" name="Mascot:score"/>
+			</ProteinScore>
+			<Description>Hemoglobin subunit beta OS=Homo sapiens GN=HBB PE=1 SV=2</Description>
+			<Validation_Status>true</Validation_Status>
+			<Peptide_Number>1</Peptide_Number>
+			<Peptide_Refs>
+				<Ref id="PEP_36864515"/>
+				<Ref id="PEP_36864516"/>
+			</Peptide_Refs>
+		</MSI_Identified_Protein>
+		<MSI_Identified_Protein id="PROT_8900734">
+			<AC>P01834</AC>
+			<ProteinScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="193.01" name="Mascot:score"/>
+			</ProteinScore>
+			<Description>Ig kappa chain C region OS=Homo sapiens GN=IGKC PE=1 SV=1</Description>
+			<Validation_Status>true</Validation_Status>
+			<Peptide_Number>3</Peptide_Number>
+			<Peptide_Refs>
+				<Ref id="PEP_36864521"/>
+				<Ref id="PEP_36864520"/>
+				<Ref id="PEP_36864523"/>
+				<Ref id="PEP_36864522"/>
+				<Ref id="PEP_36864524"/>
+				<Ref id="PEP_36864517"/>
+				<Ref id="PEP_36864519"/>
+				<Ref id="PEP_36864518"/>
+			</Peptide_Refs>
+		</MSI_Identified_Protein>
+		<MSI_Identified_Protein id="PROT_8900735">
+			<AC>P01857</AC>
+			<ProteinScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="83.32" name="Mascot:score"/>
+			</ProteinScore>
+			<Description>Ig gamma-1 chain C region OS=Homo sapiens GN=IGHG1 PE=1 SV=1</Description>
+			<Validation_Status>true</Validation_Status>
+			<Peptide_Number>3</Peptide_Number>
+			<Peptide_Refs>
+				<Ref id="PEP_36864499"/>
+				<Ref id="PEP_36864498"/>
+				<Ref id="PEP_36864525"/>
+				<Ref id="PEP_36864500"/>
+			</Peptide_Refs>
+		</MSI_Identified_Protein>
+		<MSI_Identified_Protein id="PROT_8900736">
+			<AC>A0M8Q6</AC>
+			<ProteinScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="68.74" name="Mascot:score"/>
+			</ProteinScore>
+			<Description>Ig lambda-7 chain C region OS=Homo sapiens GN=IGLC7 PE=1 SV=2</Description>
+			<Validation_Status>true</Validation_Status>
+			<Peptide_Number>1</Peptide_Number>
+			<Peptide_Refs>
+				<Ref id="PEP_36864514"/>
+			</Peptide_Refs>
+		</MSI_Identified_Protein>
+		<MSI_Identified_Protein id="PROT_8900738">
+			<AC>P01779</AC>
+			<ProteinScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="151.65" name="Mascot:score"/>
+			</ProteinScore>
+			<Description>Ig heavy chain V-III region TUR OS=Homo sapiens PE=1 SV=1</Description>
+			<Validation_Status>true</Validation_Status>
+			<Peptide_Number>2</Peptide_Number>
+			<Peptide_Refs>
+				<Ref id="PEP_36864528"/>
+				<Ref id="PEP_36864529"/>
+				<Ref id="PEP_36864530"/>
+				<Ref id="PEP_36864531"/>
+			</Peptide_Refs>
+		</MSI_Identified_Protein>
+		<MSI_Identified_Protein id="PROT_8900737">
+			<AC>P01859</AC>
+			<ProteinScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="77.94" name="Mascot:score"/>
+			</ProteinScore>
+			<Description>Ig gamma-2 chain C region OS=Homo sapiens GN=IGHG2 PE=1 SV=2</Description>
+			<Validation_Status>true</Validation_Status>
+			<Peptide_Number>1</Peptide_Number>
+			<Peptide_Refs>
+				<Ref id="PEP_36864527"/>
+				<Ref id="PEP_36864526"/>
+			</Peptide_Refs>
+		</MSI_Identified_Protein>
+		<MSI_Identified_Protein id="PROT_8900740">
+			<AC>P01009</AC>
+			<ProteinScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="82.2433333333333" name="Mascot:score"/>
+			</ProteinScore>
+			<Description>Alpha-1-antitrypsin OS=Homo sapiens GN=SERPINA1 PE=1 SV=3</Description>
+			<Validation_Status>true</Validation_Status>
+			<Peptide_Number>2</Peptide_Number>
+			<Peptide_Refs>
+				<Ref id="PEP_36864536"/>
+				<Ref id="PEP_36864534"/>
+				<Ref id="PEP_36864535"/>
+			</Peptide_Refs>
+		</MSI_Identified_Protein>
+		<MSI_Identified_Protein id="PROT_8900741">
+			<AC>P0CG06</AC>
+			<ProteinScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="68.74" name="Mascot:score"/>
+			</ProteinScore>
+			<Description>Ig lambda-3 chain C regions OS=Homo sapiens GN=IGLC3 PE=1 SV=1</Description>
+			<Validation_Status>true</Validation_Status>
+			<Peptide_Number>1</Peptide_Number>
+			<Peptide_Refs>
+				<Ref id="PEP_36864514"/>
+			</Peptide_Refs>
+		</MSI_Identified_Protein>
+		<MSI_Identified_Protein id="PROT_8900739">
+			<AC>P01625</AC>
+			<ProteinScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="107.87" name="Mascot:score"/>
+			</ProteinScore>
+			<Description>Ig kappa chain V-IV region Len OS=Homo sapiens PE=1 SV=2</Description>
+			<Validation_Status>true</Validation_Status>
+			<Peptide_Number>1</Peptide_Number>
+			<Peptide_Refs>
+				<Ref id="PEP_36864532"/>
+				<Ref id="PEP_36864533"/>
+			</Peptide_Refs>
+		</MSI_Identified_Protein>
+		<MSI_Identified_Protein id="PROT_8900742">
+			<AC>P00738</AC>
+			<ProteinScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="60.63" name="Mascot:score"/>
+			</ProteinScore>
+			<Description>Haptoglobin OS=Homo sapiens GN=HP PE=1 SV=1</Description>
+			<Validation_Status>true</Validation_Status>
+			<Peptide_Number>1</Peptide_Number>
+			<Peptide_Refs>
+				<Ref id="PEP_36864537"/>
+				<Ref id="PEP_36864538"/>
+			</Peptide_Refs>
+		</MSI_Identified_Protein>
+		<MSI_Identified_Protein id="PROT_8900743">
+			<AC>P01765</AC>
+			<ProteinScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="151.65" name="Mascot:score"/>
+			</ProteinScore>
+			<Description>Ig heavy chain V-III region TIL OS=Homo sapiens PE=1 SV=1</Description>
+			<Validation_Status>true</Validation_Status>
+			<Peptide_Number>1</Peptide_Number>
+			<Peptide_Refs>
+				<Ref id="PEP_36864529"/>
+				<Ref id="PEP_36864530"/>
+				<Ref id="PEP_36864531"/>
+			</Peptide_Refs>
+		</MSI_Identified_Protein>
+		<MSI_Identified_Protein id="PROT_8900744">
+			<AC>P0CG04</AC>
+			<ProteinScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="68.74" name="Mascot:score"/>
+			</ProteinScore>
+			<Description>Ig lambda-1 chain C regions OS=Homo sapiens GN=IGLC1 PE=1 SV=1</Description>
+			<Validation_Status>true</Validation_Status>
+			<Peptide_Number>2</Peptide_Number>
+			<Peptide_Refs>
+				<Ref id="PEP_36864514"/>
+			</Peptide_Refs>
+		</MSI_Identified_Protein>
+		<MSI_Identified_Protein id="PROT_8900746">
+			<AC>P01776</AC>
+			<ProteinScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="151.65" name="Mascot:score"/>
+			</ProteinScore>
+			<Description>Ig heavy chain V-III region WAS OS=Homo sapiens PE=1 SV=1</Description>
+			<Validation_Status>true</Validation_Status>
+			<Peptide_Number>1</Peptide_Number>
+			<Peptide_Refs>
+				<Ref id="PEP_36864529"/>
+				<Ref id="PEP_36864530"/>
+				<Ref id="PEP_36864531"/>
+			</Peptide_Refs>
+		</MSI_Identified_Protein>
+		<MSI_Identified_Protein id="PROT_8900745">
+			<AC>P0CG05</AC>
+			<ProteinScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="68.74" name="Mascot:score"/>
+			</ProteinScore>
+			<Description>Ig lambda-2 chain C regions OS=Homo sapiens GN=IGLC2 PE=1 SV=1</Description>
+			<Validation_Status>true</Validation_Status>
+			<Peptide_Number>1</Peptide_Number>
+			<Peptide_Refs>
+				<Ref id="PEP_36864514"/>
+			</Peptide_Refs>
+		</MSI_Identified_Protein>
+		<MSI_Identified_Protein id="PROT_8900747">
+			<AC>P01024</AC>
+			<ProteinScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="79.36" name="Mascot:score"/>
+			</ProteinScore>
+			<Description>Complement C3 OS=Homo sapiens GN=C3 PE=1 SV=2</Description>
+			<Validation_Status>true</Validation_Status>
+			<Peptide_Number>1</Peptide_Number>
+			<Peptide_Refs>
+				<Ref id="PEP_36864539"/>
+			</Peptide_Refs>
+		</MSI_Identified_Protein>
+		<MSI_Identified_Protein id="PROT_8900750">
+			<AC>P02652</AC>
+			<ProteinScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="28.23" name="Mascot:score"/>
+			</ProteinScore>
+			<Description>Apolipoprotein A-II OS=Homo sapiens GN=APOA2 PE=1 SV=1</Description>
+			<Validation_Status>true</Validation_Status>
+			<Peptide_Number>1</Peptide_Number>
+			<Peptide_Refs>
+				<Ref id="PEP_36864547"/>
+			</Peptide_Refs>
+		</MSI_Identified_Protein>
+		<MSI_Identified_Protein id="PROT_8900749">
+			<AC>P02647</AC>
+			<ProteinScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="188.12" name="Mascot:score"/>
+			</ProteinScore>
+			<Description>Apolipoprotein A-I OS=Homo sapiens GN=APOA1 PE=1 SV=1</Description>
+			<Validation_Status>true</Validation_Status>
+			<Peptide_Number>4</Peptide_Number>
+			<Peptide_Refs>
+				<Ref id="PEP_36864540"/>
+				<Ref id="PEP_36864541"/>
+				<Ref id="PEP_36864542"/>
+				<Ref id="PEP_36864543"/>
+				<Ref id="PEP_36864546"/>
+				<Ref id="PEP_36864545"/>
+				<Ref id="PEP_36864544"/>
+			</Peptide_Refs>
+		</MSI_Identified_Protein>
+		<MSI_Identified_Protein id="PROT_8900748">
+			<AC>P01774</AC>
+			<ProteinScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="151.65" name="Mascot:score"/>
+			</ProteinScore>
+			<Description>Ig heavy chain V-III region POM OS=Homo sapiens PE=1 SV=1</Description>
+			<Validation_Status>true</Validation_Status>
+			<Peptide_Number>1</Peptide_Number>
+			<Peptide_Refs>
+				<Ref id="PEP_36864529"/>
+				<Ref id="PEP_36864530"/>
+				<Ref id="PEP_36864531"/>
+			</Peptide_Refs>
+		</MSI_Identified_Protein>
+	</MSI_Identified_Protein_Set>
+	<MSI_Identified_Peptide_Set>
+		<MSI_Identified_Peptide id="PEP_36864499">
+			<Sequence>VVSVLTVLHQDWLNGK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="52.98" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.000365289691675625" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=6496</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=904.5068945
+Experimental Mass to Charge=904.357971</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>7260.58</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900728"/>
+				<Ref id="PROT_8900729"/>
+				<Ref id="PROT_8900735"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864498">
+			<Sequence>VVSVLTVLHQDWLNGK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.154723045162422" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="12.81" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=6509</Spectrum_Ref>
+			<Charge>3</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=603.340355
+Experimental Mass to Charge=603.244019</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>7274.3</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900728"/>
+				<Ref id="PROT_8900729"/>
+				<Ref id="PROT_8900735"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864501">
+			<Sequence>TTPPVLDSDGSFFLYSR</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.0279480559710108" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="20.56" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5716</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=951.4676335
+Experimental Mass to Charge=951.230164</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6437.27</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900729"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864500">
+			<Sequence>VVSVLTVLHQDWLNGK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="56.84" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="1.87387408167207e-005" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=6507</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=904.5068945
+Experimental Mass to Charge=904.344177</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>7271.86</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900728"/>
+				<Ref id="PROT_8900729"/>
+				<Ref id="PROT_8900735"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864503">
+			<Sequence>SAGWNIPIGLLYCDLPEPR</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.000266944946891246" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="44.42" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=7205</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=1086.0513205
+Experimental Mass to Charge=1085.894653</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>7961.47</RT>
+			<Rank>1</Rank>
+			<MSI_PeptideModification>
+				<Name>
+					<cvParam accession="MOD:00397" cvRef="MOD" name="iodoacetamide derivatized residue"/>
+				</Name>
+				<Position>13</Position>
+				<Residues>C</Residues>
+				<MonoDelta>57.021464</MonoDelta>
+			</MSI_PeptideModification>
+			<Protein_Refs>
+				<Ref id="PROT_8900730"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864502">
+			<Sequence>SAGWNIPIGLLYCDLPEPR</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="12.85" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.273739521857749" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=7207</Spectrum_Ref>
+			<Charge>3</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=724.369972333333
+Experimental Mass to Charge=724.189453</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>7963.92</RT>
+			<Rank>1</Rank>
+			<MSI_PeptideModification>
+				<Name>
+					<cvParam accession="MOD:00397" cvRef="MOD" name="iodoacetamide derivatized residue"/>
+				</Name>
+				<Position>13</Position>
+				<Residues>C</Residues>
+				<MonoDelta>57.021464</MonoDelta>
+			</MSI_PeptideModification>
+			<Protein_Refs>
+				<Ref id="PROT_8900730"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864505">
+			<Sequence>SAGWNIPIGLLYCDLPEPR</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.123857241782756" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="21.39" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=7212</Spectrum_Ref>
+			<Charge>3</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=724.369972333333
+Experimental Mass to Charge=724.17334</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>7969.5</RT>
+			<Rank>1</Rank>
+			<MSI_PeptideModification>
+				<Name>
+					<cvParam accession="MOD:00397" cvRef="MOD" name="iodoacetamide derivatized residue"/>
+				</Name>
+				<Position>13</Position>
+				<Residues>C</Residues>
+				<MonoDelta>57.021464</MonoDelta>
+			</MSI_PeptideModification>
+			<Protein_Refs>
+				<Ref id="PROT_8900730"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864504">
+			<Sequence>IMNGEADAMSLDGGFVYIAGK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.00654157920751196" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="35.51" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5801</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=1080.011007
+Experimental Mass to Charge=1079.775757</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6531.19</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900730"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864507">
+			<Sequence>IMNGEADAMSLDGGFVYIAGK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="33.43" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.0479135376374289" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5794</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=1080.011007
+Experimental Mass to Charge=1079.751831</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6522.91</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900730"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864506">
+			<Sequence>MYLGYEYVTAIRNLR</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="21.62" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.0664303291561595" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5935</Spectrum_Ref>
+			<Charge>3</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=621.325808333333
+Experimental Mass to Charge=621.245667</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6674.85</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900730"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864509">
+			<Sequence>SAGWNIPIGLLYCDLPEPR</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="1.76856491156608e-005" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="56.73" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=7200</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=1086.0513205
+Experimental Mass to Charge=1085.886963</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>7956.71</RT>
+			<Rank>1</Rank>
+			<MSI_PeptideModification>
+				<Name>
+					<cvParam accession="MOD:00397" cvRef="MOD" name="iodoacetamide derivatized residue"/>
+				</Name>
+				<Position>13</Position>
+				<Residues>C</Residues>
+				<MonoDelta>57.021464</MonoDelta>
+			</MSI_PeptideModification>
+			<Protein_Refs>
+				<Ref id="PROT_8900730"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864508">
+			<Sequence>MYLGYEYVTAIRNLR</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="16.48" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.99706645294669" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5929</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=931.4850745
+Experimental Mass to Charge=931.34021</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6669.11</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900730"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864511">
+			<Sequence>MYLGYEYVTAIRNLR</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="19.50" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.14550120978911" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5927</Spectrum_Ref>
+			<Charge>3</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=621.325808333333
+Experimental Mass to Charge=621.233826</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6666.65</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900730"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864510">
+			<Sequence>MYLGYEYVTAIR</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.000200823857233248" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="46.92" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5164</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=739.8710305
+Experimental Mass to Charge=739.705322</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>5851.39</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900730"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864536">
+			<Sequence>FNKPFVFLMIEQNTK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="27.61" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.0144547739487011" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=6234</Spectrum_Ref>
+			<Charge>3</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=619.330681
+Experimental Mass to Charge=619.166992</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6986.77</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900740"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864537">
+			<Sequence>VTSIQDWVQKTIAEN</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.000933453534170814" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="41.60" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5857</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=866.4492315
+Experimental Mass to Charge=866.237305</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6590.35</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900742"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864538">
+			<Sequence>VTSIQDWVQKTIAEN</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="40.03" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.000388185227652031" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5849</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=866.4492315
+Experimental Mass to Charge=866.250061</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6581.29</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900742"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864534">
+			<Sequence>FNKPFVFLMIEQNTK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.0361461964280963" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="24.74" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=6239</Spectrum_Ref>
+			<Charge>3</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=619.330681
+Experimental Mass to Charge=619.182678</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6992.48</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900740"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864535">
+			<Sequence>VFSNGADLSGVTEEAPLK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="6.50438147645742e-007" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="80.56" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=4453</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=917.465078
+Experimental Mass to Charge=917.25824</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>5087.61</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900740"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864521">
+			<Sequence>TVAAPSVFIFPPSDEQLK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="33.37" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.00222836692811471" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=6035</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=973.517118
+Experimental Mass to Charge=973.275146</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6777.09</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900734"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864520">
+			<Sequence>SGTASVVCLLNNFYPR</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="9.32" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.21018963902246" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=6532</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=899.4512535
+Experimental Mass to Charge=899.318848</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>7296.6</RT>
+			<Rank>1</Rank>
+			<MSI_PeptideModification>
+				<Name>
+					<cvParam accession="MOD:00397" cvRef="MOD" name="iodoacetamide derivatized residue"/>
+				</Name>
+				<Position>8</Position>
+				<Residues>C</Residues>
+				<MonoDelta>57.021464</MonoDelta>
+			</MSI_PeptideModification>
+			<Protein_Refs>
+				<Ref id="PROT_8900734"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864523">
+			<Sequence>SGTASVVCLLNNFYPR</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.0536901483972428" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="16.13" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=6527</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=899.4512535
+Experimental Mass to Charge=899.306458</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>7290.93</RT>
+			<Rank>1</Rank>
+			<MSI_PeptideModification>
+				<Name>
+					<cvParam accession="MOD:00397" cvRef="MOD" name="iodoacetamide derivatized residue"/>
+				</Name>
+				<Position>8</Position>
+				<Residues>C</Residues>
+				<MonoDelta>57.021464</MonoDelta>
+			</MSI_PeptideModification>
+			<Protein_Refs>
+				<Ref id="PROT_8900734"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864522">
+			<Sequence>TVAAPSVFIFPPSDEQLK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="60.15" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="4.15597383169522e-006" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5855</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=973.517118
+Experimental Mass to Charge=973.327454</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6587.9</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900734"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864525">
+			<Sequence>TTPPVLDSDGSFFLYSK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.250669678684777" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="11.42" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5610</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=937.464559
+Experimental Mass to Charge=937.258057</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6323.6</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900735"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864524">
+			<Sequence>DSTYSLSSTLTLSK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.432397928137221" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="10.09" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=4301</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=751.882856
+Experimental Mass to Charge=751.99</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>4927.24</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900734"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864527">
+			<Sequence>TTPPMLDSDGSFFLYSK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.000263392560589124" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="48.26" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5761</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=953.4505895
+Experimental Mass to Charge=953.206299</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6485.79</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900737"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864526">
+			<Sequence>TTPPMLDSDGSFFLYSK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.000150306123314057" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="58.18" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5767</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=953.4505895
+Experimental Mass to Charge=953.203857</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6492.42</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900737"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864513">
+			<Sequence>YYWGGQYTWDMAK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="30.12" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.00230924814981826" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5139</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=834.8612035
+Experimental Mass to Charge=835.0</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>5824.48</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900731"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864512">
+			<Sequence>MYLGYEYVTAIR</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.000126945673583295" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="45.15" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5160</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=739.8710305
+Experimental Mass to Charge=739.675598</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>5847.14</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900730"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864515">
+			<Sequence>FFESFGDLSTPDAVMGNPK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="54.08" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.00040588827028041" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5750</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=1029.977506
+Experimental Mass to Charge=1029.741211</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6473.64</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900733"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864514">
+			<Sequence>YAASSYLSLTPEQWK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="6.13041541143648e-007" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="68.74" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5237</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=872.4330345
+Experimental Mass to Charge=872.261841</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>5929.79</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900732"/>
+				<Ref id="PROT_8900736"/>
+				<Ref id="PROT_8900741"/>
+				<Ref id="PROT_8900744"/>
+				<Ref id="PROT_8900745"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864517">
+			<Sequence>TVAAPSVFIFPPSDEQLK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="70.48" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="1.0590920409461e-006" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5861</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=973.517118
+Experimental Mass to Charge=973.355042</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6594.52</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900734"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864516">
+			<Sequence>FFESFGDLSTPDAVMGNPK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="48.46" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="5.61462046527407e-005" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5773</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=1029.977506
+Experimental Mass to Charge=1029.735474</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6498.95</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900733"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864519">
+			<Sequence>SGTASVVCLLNNFYPR</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="9.2896447093502e-007" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="73.54" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=6563</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=899.4512535
+Experimental Mass to Charge=899.360291</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>7325.38</RT>
+			<Rank>1</Rank>
+			<MSI_PeptideModification>
+				<Name>
+					<cvParam accession="MOD:00397" cvRef="MOD" name="iodoacetamide derivatized residue"/>
+				</Name>
+				<Position>8</Position>
+				<Residues>C</Residues>
+				<MonoDelta>57.021464</MonoDelta>
+			</MSI_PeptideModification>
+			<Protein_Refs>
+				<Ref id="PROT_8900734"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864518">
+			<Sequence>SGTASVVCLLNNFYPR</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="44.34" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.000370040538539337" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=6608</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=899.4512535
+Experimental Mass to Charge=899.281799</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>7370.37</RT>
+			<Rank>1</Rank>
+			<MSI_PeptideModification>
+				<Name>
+					<cvParam accession="MOD:00397" cvRef="MOD" name="iodoacetamide derivatized residue"/>
+				</Name>
+				<Position>8</Position>
+				<Residues>C</Residues>
+				<MonoDelta>57.021464</MonoDelta>
+			</MSI_PeptideModification>
+			<Protein_Refs>
+				<Ref id="PROT_8900734"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864547">
+			<Sequence>EPCVESLVSQYFQTVTDYGK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.00745442079008562" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="28.23" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=7425</Spectrum_Ref>
+			<Charge>3</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=784.035108
+Experimental Mass to Charge=783.830444</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>8180.04</RT>
+			<Rank>1</Rank>
+			<MSI_PeptideModification>
+				<Name>
+					<cvParam accession="MOD:00397" cvRef="MOD" name="iodoacetamide derivatized residue"/>
+				</Name>
+				<Position>3</Position>
+				<Residues>C</Residues>
+				<MonoDelta>57.021464</MonoDelta>
+			</MSI_PeptideModification>
+			<Protein_Refs>
+				<Ref id="PROT_8900750"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864546">
+			<Sequence>LLDNWDSVTSTFSK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="82.91" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="1.28518250323353e-007" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5405</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=806.8963065
+Experimental Mass to Charge=806.732361</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6105.44</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900749"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864544">
+			<Sequence>EQLGPVTQEFWDNLEK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="2.72017474608088e-007" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="73.46" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=6121</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=966.970525
+Experimental Mass to Charge=966.799194</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6866.63</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900749"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864539">
+			<Sequence>SNLDEDIIAEENIVSR</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="2.77081419791092e-007" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="79.36" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5128</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=908.9497735
+Experimental Mass to Charge=908.722229</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>5811.29</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900747"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864540">
+			<Sequence>LLDNWDSVTSTFSK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="43.38" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.00335673747383751" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5342</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=806.8963065
+Experimental Mass to Charge=806.702515</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6040.98</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900749"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864541">
+			<Sequence>EQLGPVTQEFWDNLEK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.0244534216686987" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="35.31" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=6126</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=966.970525
+Experimental Mass to Charge=966.805298</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6872.3</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900749"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864542">
+			<Sequence>DLATVYVDVLK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="14.49" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.0636457786897225" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5440</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=618.34773
+Experimental Mass to Charge=618.199219</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6143.55</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900749"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864543">
+			<Sequence>EQLGPVTQEFWDNLEKETEGLR</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="14.48" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.132988352026989" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=7271</Spectrum_Ref>
+			<Charge>3</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=873.429273
+Experimental Mass to Charge=873.25708</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>8025.08</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900749"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864528">
+			<Sequence>GLEWVSGRLNASSNLHFAVSAQGR</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.920715817773184" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="0.39" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=8126</Spectrum_Ref>
+			<Charge>3</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=852.773709666667
+Experimental Mass to Charge=852.83</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>8877.73</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900738"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864529">
+			<Sequence>EVQLLESGGGLVQPGGSLR</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="0.291169314724507" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="8.51" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=4771</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=948.512899
+Experimental Mass to Charge=948.276611</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>5426.32</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900738"/>
+				<Ref id="PROT_8900743"/>
+				<Ref id="PROT_8900746"/>
+				<Ref id="PROT_8900748"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864530">
+			<Sequence>EVQLLESGGGLVQPGGSLR</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="111.36" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="5.44698617195145e-010" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=4959</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=948.512899
+Experimental Mass to Charge=948.295776</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>5630.45</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900738"/>
+				<Ref id="PROT_8900743"/>
+				<Ref id="PROT_8900746"/>
+				<Ref id="PROT_8900748"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864531">
+			<Sequence>EVQLLESGGGLVQPGGSLR</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="4.37161194880361e-006" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="70.29" name="Mascot:score"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=4950</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=948.512899
+Experimental Mass to Charge=948.274475</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>5619.76</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900738"/>
+				<Ref id="PROT_8900743"/>
+				<Ref id="PROT_8900746"/>
+				<Ref id="PROT_8900748"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864532">
+			<Sequence>DIVMTQSPDSLAVSLGER</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="72.38" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="3.4258228703703e-006" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5156</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=959.482946
+Experimental Mass to Charge=959.242554</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>5842.83</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900739"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864533">
+			<Sequence>DIVMTQSPDSLAVSLGER</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="63.49" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="9.47428629911287e-006" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5149</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=959.482946
+Experimental Mass to Charge=959.23877</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>5835.4</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900739"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+		<MSI_Identified_Peptide id="PEP_36864545">
+			<Sequence>LLDNWDSVTSTFSK</Sequence>
+			<PeptideScore>
+				<cvParam accession="MS:1001171" cvRef="MS" value="57.06" name="Mascot:score"/>
+			</PeptideScore>
+			<PeptideScore>
+				<cvParam accession="MS:1001172" cvRef="MS" value="1.15862555802872e-005" name="Mascot:expectation value"/>
+			</PeptideScore>
+			<Spectrum_Ref>controllerType=0 controllerNumber=1 scan=5336</Spectrum_Ref>
+			<Charge>2</Charge>
+			<Mass_Deviation>Calculated Mass to Charge=806.8963065
+Experimental Mass to Charge=806.727173</Mass_Deviation>
+			<Input_Data_Ref>INDATA_6886</Input_Data_Ref>
+			<RT>6034.35</RT>
+			<Rank>1</Rank>
+			<Protein_Refs>
+				<Ref id="PROT_8900749"/>
+			</Protein_Refs>
+		</MSI_Identified_Peptide>
+	</MSI_Identified_Peptide_Set>
+	<MSI_Validation>
+		<Name>Post-processing by ProteoRed MIAPE Extractor tool</Name>
+		<GlobalThresholds>FDR at 1.0% at peptide level in 'rep:1' (Mascot:score)</GlobalThresholds>
+		<MSI_PostProcessing_Software>
+			<Name>
+				<userParam name="ProteoRed MIAPE Extractor tool"/>
+			</Name>
+			<Manufacturer>ProteoRed inhouse tool</Manufacturer>
+			<Version>3.8.0</Version>
+			<Description>
+				<userParam name="The ProteoRed MIAPE Extractor tool is a standalone tool that allows: to obtain graphical representations of qualitative information from MIAPE MSI documents; to automatically create MIAPE compliant reports from your standard data files (PRIDE XML, mzML, mzIdentML) and others (XTandem output xml), storing these reports in the ProteoRed MIAPE repository;  to export your MIAPE-compliant reports to standard data files (currently to PRIDE XML)."/>
+			</Description>
+			<URI>http://proteo.cnb.csic.es/trac#MIAPEExtractorTool</URI>
+		</MSI_PostProcessing_Software>
+	</MSI_Validation>
+	<MSI_Validation>
+		<Name>Protein detection protocol</Name>
+		<GlobalThresholds>no threshold</GlobalThresholds>
+		<MSI_PostProcessing_Software>
+			<Name>
+				<cvParam accession="MS:1001478" cvRef="MS" name="Mascot Parser"/>
+			</Name>
+			<Manufacturer>Matrix Science Limited</Manufacturer>
+			<Version>2.3.3.0</Version>
+			<Parameters>Mascot:SigThreshold=0.05
+Mascot:MaxProteinHits=Auto
+Mascot:ProteinScoringMethod=MudPIT
+Mascot:MinMSMSThreshold=0
+Mascot:ShowHomologousProteinsWithSamePeptides=1
+Mascot:ShowHomologousProteinsWithSubsetOfPeptides=10
+Mascot:RequireBoldRed=0
+Mascot:UseUnigeneClustering=false
+Mascot:IncludeErrorTolerantMatches=1
+Mascot:ShowDecoyMatches=0
+no threshold
+</Parameters>
+			<URI>http://www.matrixscience.com/msparser.html</URI>
+			<Customizations>
+        No customisations
+      </Customizations>
+		</MSI_PostProcessing_Software>
+	</MSI_Validation>
+	<MSI_Validation>
+		<Name>Spectrum identification protocol</Name>
+	</MSI_Validation>
+	<MSI_Additional_Information>
+		<userParam value="Authors=David N. Perkins, Darryl J. C. Pappin, David M. Creasy, John S. Cottrell&#xA;Id=10.1002/(SICI)1522-2683(19991201)20:18&lt;3551::AID-ELPS3551&gt;3.0.CO;2-2&#xA;Name=Probability-based protein identification by searching sequence databases using mass spectrometry data&#xA;Issue=18&#xA;Pages=3551-3567&#xA;Publication=Electrophoresis&#xA;Volume=20&#xA;Year=1999&#xA;Publisher=Wiley VCH&#xA;Title=Probability-based protein identification by searching sequence databases using mass spectrometry data&#xA;" name="Bibliographic reference"/>
+	</MSI_Additional_Information>
+</MSI_MIAPE_MSI>
