@@ -1,6 +1,7 @@
-<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3 http://maven.apache.org/xsd/assembly-1.1.3.xsd">
-    <id>with_examples</id>
-    
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+    <id>no_examples</id>
     <formats>
         <format>zip</format>
         <format>tar.gz</format>
@@ -19,30 +20,6 @@
                 <include>*.jar</include>
             </includes>
             <outputDirectory>${assembly.output.folder}</outputDirectory>
-        </fileSet>
-		<fileSet>
-			<directory>pme6_filtered</directory>
-			<includes>
-				<include>*percnt/*</include>
-			</includes>
-			<outputDirectory>${assembly.output.folder}/user_data/curated_exps</outputDirectory>
-		</fileSet>
-        <fileSet>
-            <directory>pme6_reanalysis_project</directory>
-            <includes>
-                <include>*.xml</include>
-            </includes>
-            <excludes>
-            	<exclude>PME6_Reanalysis*.xml</exclude>
-            </excludes>
-            <outputDirectory>${assembly.output.folder}/user_data/local_datasets/PME6_reanalysis</outputDirectory>
-        </fileSet>
-		<fileSet>
-            <directory>pme6_reanalysis_project</directory>
-            <includes>
-                <include>PME6_Reanalysis*.xml</include>
-            </includes>
-            <outputDirectory>${assembly.output.folder}/user_data/projects</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>metadata_templates</directory>
