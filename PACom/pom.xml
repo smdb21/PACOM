@@ -173,9 +173,9 @@
    <profiles>
       <profile>
          <id>PACOM_with_examples</id>
-         <activation>
-            <activeByDefault>true</activeByDefault>
-         </activation>
+<!--          <activation> -->
+<!--             <activeByDefault>true</activeByDefault> -->
+<!--          </activation> -->
          <build>
             <plugins>
                <plugin>
@@ -206,9 +206,9 @@
       </profile>
       <profile>
          <id>PACOM_no_examples</id>
-         <activation>
-            <activeByDefault>true</activeByDefault>
-         </activation>
+<!--          <activation> -->
+<!--             <activeByDefault>true</activeByDefault> -->
+<!--          </activation> -->
          <build>
             <plugins>
                <plugin>
