@@ -5,13 +5,14 @@
 package org.proteored.pacom.gui;
 
 import java.awt.event.MouseEvent;
-import java.util.Map;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.AbstractTableModel;
 
 import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
+
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 /**
  *
@@ -59,7 +60,7 @@ public class TFrmInputTable extends javax.swing.JDialog {
 	}
 
 	public TFrmInputTable(MiapeExtractionFrame parentForm, boolean modal, int _mode,
-			Map<Integer, String> miapeProjects) {
+			TIntObjectHashMap<String> miapeProjects) {
 		super(parentForm, modal);
 		try {
 			UIManager.setLookAndFeel(new WindowsLookAndFeel());
@@ -124,20 +125,16 @@ public class TFrmInputTable extends javax.swing.JDialog {
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(
-				layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								layout.createSequentialGroup().addContainerGap()
-										.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-												.addComponent(jLabel_head)
-												.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1204,
-														Short.MAX_VALUE)
-												.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
-														layout.createSequentialGroup().addComponent(jButtonOK)
-																.addPreferredGap(
-																		javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																.addComponent(jButtonCancel)))
-										.addContainerGap()));
+		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup().addContainerGap()
+						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addComponent(jLabel_head)
+								.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1204, Short.MAX_VALUE)
+								.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+										layout.createSequentialGroup().addComponent(jButtonOK)
+												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+												.addComponent(jButtonCancel)))
+						.addContainerGap()));
 		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jLabel_head)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)

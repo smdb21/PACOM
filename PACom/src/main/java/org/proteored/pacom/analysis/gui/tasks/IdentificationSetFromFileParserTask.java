@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +39,9 @@ import com.compomics.util.protein.Enzyme;
 import com.compomics.util.protein.Protein;
 
 import edu.scripps.yates.utilities.fasta.FastaParser;
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.set.hash.THashSet;
 import uk.ac.ebi.pridemod.PrideModController;
 import uk.ac.ebi.pridemod.slimmod.model.SlimModCollection;
 
@@ -122,15 +123,15 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 	@Override
 	protected Void doInBackground() throws Exception {
 		try {
-			Map<String, Integer> indexesByHeaders = new HashMap<String, Integer>();
-			Map<String, Integer> indexesByScoreNames = new HashMap<String, Integer>();
+			Map<String, Integer> indexesByHeaders = new THashMap<String, Integer>();
+			Map<String, Integer> indexesByScoreNames = new THashMap<String, Integer>();
 
 			firePropertyChange(PARSER_STARTS, null, null);
 			BufferedReader dis = new BufferedReader(new FileReader(file));
 			String line = "";
 			log.info("Parsing file " + file.getAbsolutePath());
-			HashMap<String, IdentifiedProtein> proteins = new HashMap<String, IdentifiedProtein>();
-			Map<String, IdentifiedPeptide> peptides = new HashMap<String, IdentifiedPeptide>();
+			Map<String, IdentifiedProtein> proteins = new THashMap<String, IdentifiedProtein>();
+			Map<String, IdentifiedPeptide> peptides = new THashMap<String, IdentifiedPeptide>();
 			String previousProteinACC = null;
 			// String scoreName = null;
 			int numLine = 0;
@@ -191,8 +192,8 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 							peptide = new IdentifiedPeptideImplFromTSV(seq);
 							peptides.put(psmID, peptide);
 							if (FastaParser.somethingExtrangeInSequence(rawSeq)) {
-								Map<Integer, Double> pTMsByPosition = FastaParser.getPTMsFromSequence(rawSeq);
-								for (Integer position : pTMsByPosition.keySet()) {
+								TIntObjectHashMap<Double> pTMsByPosition = FastaParser.getPTMsFromSequence(rawSeq);
+								for (int position : pTMsByPosition.keys()) {
 									String aa = String.valueOf(peptide.getSequence().charAt(position - 1));
 									double deltaMass = pTMsByPosition.get(position);
 									PeptideModificationBuilder ptmBuilder = MiapeMSIDocumentFactory
@@ -268,13 +269,15 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 						for (String proteinAcc : accessions) {
 
 							if (proteins.containsKey(proteinAcc)) {
-								final IdentifiedProteinImplFromTSV protein = (IdentifiedProteinImplFromTSV) proteins.get(proteinAcc);
+								final IdentifiedProteinImplFromTSV protein = (IdentifiedProteinImplFromTSV) proteins
+										.get(proteinAcc);
 								if (peptide != null) {
 									protein.addPeptide(peptide);
 									peptide.addProtein(protein);
 								}
 							} else {
-								IdentifiedProteinImplFromTSV protein = new IdentifiedProteinImplFromTSV(proteinAcc, null);
+								IdentifiedProteinImplFromTSV protein = new IdentifiedProteinImplFromTSV(proteinAcc,
+										null);
 								if (peptide != null) {
 									protein.addPeptide(peptide);
 									peptide.addProtein(protein);
@@ -304,7 +307,7 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 			List<IdentifiedPeptide> peptideList = new ArrayList<IdentifiedPeptide>();
 			peptideList.addAll(peptides.values());
 			builder.identifiedPeptides(peptideList);
-			Set<IdentifiedProteinSet> proteinSets = new HashSet<IdentifiedProteinSet>();
+			Set<IdentifiedProteinSet> proteinSets = new THashSet<IdentifiedProteinSet>();
 			IdentifiedProteinSet proteinSet = MiapeMSIDocumentFactory.createIdentifiedProteinSetBuilder("Protein set")
 					.identifiedProteins(proteins).build();
 			proteinSets.add(proteinSet);
@@ -406,7 +409,7 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 
 	}
 
-	private void addRelationShips(List<IdentifiedPeptide> peptides, HashMap<String, IdentifiedProtein> proteinMap)
+	private void addRelationShips(List<IdentifiedPeptide> peptides, Map<String, IdentifiedProtein> proteinMap)
 			throws IOException {
 
 		// ask for a Fasta file
@@ -415,8 +418,8 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 				"No relationships between peptides and proteins", JOptionPane.YES_NO_CANCEL_OPTION,
 				JOptionPane.WARNING_MESSAGE);
 		if (userSelection == JOptionPane.YES_OPTION) {
-			// convert peptides to hashmaps
-			HashMap<String, IdentifiedPeptide> peptideMap = new HashMap<String, IdentifiedPeptide>();
+			// convert peptides to Maps
+			Map<String, IdentifiedPeptide> peptideMap = new THashMap<String, IdentifiedPeptide>();
 			for (IdentifiedPeptide identifiedPeptide : peptides) {
 				peptideMap.put(identifiedPeptide.getSequence(), identifiedPeptide);
 			}
@@ -443,7 +446,7 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 					fastaLoader.load(fastaFile.getAbsolutePath());
 				}
 			}
-			HashMap<String, List<String>> peptideToProteinsMap = new HashMap<String, List<String>>();
+			Map<String, List<String>> peptideToProteinsMap = new THashMap<String, List<String>>();
 			final long countNumberOfEntries = fastaLoader.countNumberOfEntries();
 			log.info("Readed " + countNumberOfEntries + " entries in the fasta file");
 			for (int i = 0; i < countNumberOfEntries; i++) {
@@ -472,7 +475,8 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 			log.info(peptideToProteinsMap.size() + " peptides mapped");
 			for (String peptideSeq : peptideToProteinsMap.keySet()) {
 				if (peptideMap.containsKey(peptideSeq)) {
-					final IdentifiedPeptideImplFromTSV identifiedPeptide = (IdentifiedPeptideImplFromTSV) peptideMap.get(peptideSeq);
+					final IdentifiedPeptideImplFromTSV identifiedPeptide = (IdentifiedPeptideImplFromTSV) peptideMap
+							.get(peptideSeq);
 					final List<String> proteinAccs = peptideToProteinsMap.get(peptideSeq);
 					for (String proteinAcc : proteinAccs) {
 						if (proteinMap.containsKey(proteinAcc)) {
@@ -486,7 +490,8 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 							// Create the protein if the peptide has been mapped
 							// with it
 							log.info("Adding new protein: " + proteinAcc + " that supports peptide " + peptideSeq);
-							IdentifiedProteinImplFromTSV identifiedProtein = new IdentifiedProteinImplFromTSV(proteinAcc);
+							IdentifiedProteinImplFromTSV identifiedProtein = new IdentifiedProteinImplFromTSV(
+									proteinAcc);
 							identifiedPeptide.addProtein(identifiedProtein);
 							identifiedProtein.addPeptide(identifiedPeptide);
 							proteinMap.put(proteinAcc, identifiedProtein);
@@ -507,7 +512,7 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 	 * @return
 	 */
 	private void checkRelationBetweenPeptidesAndProteins(Map<String, IdentifiedPeptide> peptides,
-			HashMap<String, IdentifiedProtein> proteins) {
+			Map<String, IdentifiedProtein> proteins) {
 		for (String psmID : peptides.keySet()) {
 			IdentifiedPeptide identifiedPeptide = peptides.get(psmID);
 			if (identifiedPeptide.getIdentifiedProteins() == null

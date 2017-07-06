@@ -1,8 +1,6 @@
 package org.proteored.pacom.gui.tasks;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.SwingWorker;
 
@@ -15,17 +13,19 @@ import org.proteored.pacom.gui.MainFrame;
 import org.proteored.pacom.gui.MiapeExtractionFrame;
 import org.proteored.pacom.utils.Wrapper;
 
+import gnu.trove.map.hash.TIntObjectHashMap;
+
 public class LoadProjectsTask extends SwingWorker<Void, Void> {
 	private final String userName;
 	private final String password;
 	private final int userID;
-	private HashMap<Integer, String> loadedProjects;
+	private TIntObjectHashMap<String> loadedProjects;
 	private boolean loading;
 	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("log4j.logger.org.proteored");
 	private final MiapeExtractionFrame parentDialog;
 	private final boolean localProjects;
-	private final static HashMap<Integer, String> cachedLocalProjects = new HashMap<Integer, String>();
-	private final static HashMap<Integer, Map<Integer, String>> cachedRemoteProjects = new HashMap<Integer, Map<Integer, String>>();
+	private final static TIntObjectHashMap<String> cachedLocalProjects = new TIntObjectHashMap<String>();
+	private final static TIntObjectHashMap<TIntObjectHashMap<String>> cachedRemoteProjects = new TIntObjectHashMap<TIntObjectHashMap<String>>();
 	public final static String PROJECT_LOADED_DONE = "project loaded done";
 
 	public LoadProjectsTask(MiapeExtractionFrame standard2miapeDialog, boolean localProjects, int userID,
@@ -41,7 +41,7 @@ public class LoadProjectsTask extends SwingWorker<Void, Void> {
 	@Override
 	protected Void doInBackground() throws Exception {
 		parentDialog.setLoadingProjects(true);
-		Map<Integer, String> projects = null;
+		TIntObjectHashMap<String> projects = null;
 		if (loadedProjects == null || loadedProjects.size() == 0) {
 			projects = loadProjects();
 			parentDialog.setLoadedProjects(projects);
@@ -61,7 +61,7 @@ public class LoadProjectsTask extends SwingWorker<Void, Void> {
 		super.done();
 	}
 
-	private Map<Integer, String> loadProjects() {
+	private TIntObjectHashMap<String> loadProjects() {
 
 		if (localProjects) {
 			// look into cached projects
@@ -72,7 +72,7 @@ public class LoadProjectsTask extends SwingWorker<Void, Void> {
 				firePropertyChange(MiapeExtractionTask.NOTIFICATION, null,
 						"Pre-loading projects from local file system...");
 				final List<String> localMIAPEProjects = FileManager.getlocalMIAPEProjects();
-				HashMap<Integer, String> projectsHashMap = new HashMap<Integer, String>();
+				TIntObjectHashMap<String> projectsHashMap = new TIntObjectHashMap<String>();
 				int counter = 1;
 				for (String projectName : localMIAPEProjects) {
 					projectsHashMap.put(counter++, projectName);
@@ -104,13 +104,13 @@ public class LoadProjectsTask extends SwingWorker<Void, Void> {
 				firePropertyChange(MiapeExtractionTask.NOTIFICATION, null, "Pre-loading projects from repository...");
 				final List<IntegerString> allProjects = MainFrame.getMiapeAPIWebservice().getAllProjects(userName,
 						password);
-				HashMap<Integer, String> miapeProjects = Wrapper.getHashMap(allProjects);
+				TIntObjectHashMap<String> miapeProjects = Wrapper.getHashMap(allProjects);
 				int numProjects = miapeProjects.size();
-				HashMap<Integer, String> ret = new HashMap<Integer, String>();
+				TIntObjectHashMap<String> ret = new TIntObjectHashMap<String>();
 
 				// filter the onw that the user has not write permissions
 				int counter = 1;
-				for (Integer projectId : miapeProjects.keySet()) {
+				for (int projectId : miapeProjects.keys()) {
 					Permission perm = new Permission(
 							MainFrame.getMiapeAPIWebservice().getProjectPermissions(projectId, userName, password));
 					setProgress(counter * 100 / numProjects);
@@ -144,36 +144,36 @@ public class LoadProjectsTask extends SwingWorker<Void, Void> {
 		}
 	}
 
-	private static synchronized void addToLocalCache(HashMap<Integer, String> projectsHashMap) {
+	private static synchronized void addToLocalCache(TIntObjectHashMap<String> projectsHashMap) {
 		cachedLocalProjects.putAll(projectsHashMap);
 	}
 
-	private static synchronized Map<Integer, String> getLocalCachedProjects() {
+	private static synchronized TIntObjectHashMap<String> getLocalCachedProjects() {
 		return cachedLocalProjects;
 	}
 
-	private static synchronized void addToRemoteCache(int userID, HashMap<Integer, String> projectsHashMap) {
+	private static synchronized void addToRemoteCache(int userID, TIntObjectHashMap<String> projectsHashMap) {
 		if (cachedRemoteProjects.containsKey(userID)) {
-			final Map<Integer, String> map = cachedRemoteProjects.get(userID);
+			final TIntObjectHashMap<String> map = cachedRemoteProjects.get(userID);
 			log.info("This may not happen");
 			map.putAll(projectsHashMap);
 		} else {
-			final Map<Integer, String> map = new HashMap<Integer, String>();
+			final TIntObjectHashMap<String> map = new TIntObjectHashMap<String>();
 			map.putAll(projectsHashMap);
 			log.info("Caching " + map.size() + " projects from user: " + userID);
 			cachedRemoteProjects.put(userID, map);
 		}
 	}
 
-	private static synchronized Map<Integer, String> getRemoteCachedProjects(int userID) {
+	private static synchronized TIntObjectHashMap<String> getRemoteCachedProjects(int userID) {
 		log.info("Getting cached projects from user: " + userID);
 		if (cachedRemoteProjects.containsKey(userID)) {
-			final Map<Integer, String> map = cachedRemoteProjects.get(userID);
+			final TIntObjectHashMap<String> map = cachedRemoteProjects.get(userID);
 			log.info("Returning " + map.size() + " cached projects from user: " + userID);
 			return map;
 		}
 		log.info("No cached projects from user: " + userID);
-		return new HashMap<Integer, String>();
+		return new TIntObjectHashMap<String>();
 	}
 
 }

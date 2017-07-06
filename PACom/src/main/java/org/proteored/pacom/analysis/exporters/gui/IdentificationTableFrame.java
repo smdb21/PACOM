@@ -13,7 +13,6 @@ import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -44,6 +43,8 @@ import org.proteored.pacom.gui.ImageManager;
 
 import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 
+import gnu.trove.set.hash.THashSet;
+
 /**
  * 
  * @author __USER__
@@ -52,7 +53,7 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
 	private static final int NUM_MIN_TYPED_CHARS = 2;
 
-	private final Set<IdentificationSet> idSets = new HashSet<IdentificationSet>();
+	private final Set<IdentificationSet> idSets = new THashSet<IdentificationSet>();
 
 	private JTableLoader tableExporter;
 	private JPanel scrollPanel;
@@ -277,6 +278,7 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 			dataLevelComboBox.addItem(dataLevel);
 		}
 		dataLevelComboBox.addItemListener(new ItemListener() {
+			@Override
 			public void itemStateChanged(ItemEvent e) {
 				dataLevelSelected();
 			}
@@ -284,6 +286,7 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 
 		jButtonExport2Excel = new JButton();
 		jButtonExport2Excel.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				exportTSV();
 			}

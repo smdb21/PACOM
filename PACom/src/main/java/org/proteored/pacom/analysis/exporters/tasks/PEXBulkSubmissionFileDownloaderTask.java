@@ -11,9 +11,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.SwingWorker;
@@ -38,10 +37,11 @@ import org.proteored.pacom.analysis.exporters.ProteomeXchangeFilev2_1;
 import org.proteored.pacom.gui.MainFrame;
 import org.proteored.pacom.gui.tasks.WebservicesLoaderTask;
 
+import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.set.hash.THashSet;
 import sun.net.www.protocol.ftp.FtpURLConnection;
 
-public class PEXBulkSubmissionFileDownloaderTask extends
-		SwingWorker<Void, String> {
+public class PEXBulkSubmissionFileDownloaderTask extends SwingWorker<Void, String> {
 
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
 
@@ -57,8 +57,7 @@ public class PEXBulkSubmissionFileDownloaderTask extends
 	public static final String PEX_FILE_COMPRESSION_STARTED = "pex_downloading_compression_started";
 	public static final String PEX_FILE_COMPRESSION_FINISHED = "pex_downloading_compression_finished";
 
-	private static final String FILE_SEPARATOR = System
-			.getProperty("file.separator");
+	private static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
 	public List<PexExportingMessage> messages = new ArrayList<PexExportingMessage>();
 	private final ProteomeXchangeFilev2_1 pexFile;
@@ -71,13 +70,12 @@ public class PEXBulkSubmissionFileDownloaderTask extends
 
 	private final boolean includeMIAPEReports;
 
-	private HashMap<Replicate, Set<String>> filesToSkip;
+	private Map<Replicate, Set<String>> filesToSkip;
 
 	private FTPClient ftp;
 
-	public PEXBulkSubmissionFileDownloaderTask(ProteomeXchangeFilev2_1 pexFile,
-			boolean includeMSIAttachedFiles, boolean includeMIAPEReports,
-			boolean compressDownloadedData) {
+	public PEXBulkSubmissionFileDownloaderTask(ProteomeXchangeFilev2_1 pexFile, boolean includeMSIAttachedFiles,
+			boolean includeMIAPEReports, boolean compressDownloadedData) {
 		this.pexFile = pexFile;
 		this.includeMSIAttachedFiles = includeMSIAttachedFiles;
 		this.includeMIAPEReports = includeMIAPEReports;
@@ -88,8 +86,8 @@ public class PEXBulkSubmissionFileDownloaderTask extends
 		if (userName == null || password == null)
 			return -1;
 		try {
-			MiapeAPIWebserviceDelegate miapeAPIWebservice = WebservicesLoaderTask
-					.getInstace().getMiapeAPIWebservice(true);
+			MiapeAPIWebserviceDelegate miapeAPIWebservice = WebservicesLoaderTask.getInstace()
+					.getMiapeAPIWebservice(true);
 			return miapeAPIWebservice.getUserId(userName, password);
 		} catch (MiapeDatabaseException_Exception e) {
 			e.printStackTrace();
@@ -107,6 +105,7 @@ public class PEXBulkSubmissionFileDownloaderTask extends
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see javax.swing.SwingWorker#done()
 	 */
 	@Override
@@ -129,65 +128,52 @@ public class PEXBulkSubmissionFileDownloaderTask extends
 		try {
 			filesToSkip = pexFile.getFilesToSkip();
 			ExperimentList experimentList = pexFile.getExperimentList();
-			HashMap<Replicate, List<ResultingData>> rawFilesByReplicate = experimentList
+			Map<Replicate, List<ResultingData>> rawFilesByReplicate = experimentList
 					.getRawFileResultingDataMapByReplicate();
-			HashMap<Replicate, List<ResultingData>> peaklistFilesByReplicate = experimentList
+			Map<Replicate, List<ResultingData>> peaklistFilesByReplicate = experimentList
 					.getPeakListResultingDataMapByReplicate();
-			HashMap<Replicate, List<String>> msiFilesByReplicate = null;
+			Map<Replicate, List<String>> msiFilesByReplicate = null;
 			if (includeMSIAttachedFiles) {
-				msiFilesByReplicate = experimentList
-						.getMSIGeneratedFilesByReplicate();
+				msiFilesByReplicate = experimentList.getMSIGeneratedFilesByReplicate();
 			}
 
 			if ((rawFilesByReplicate != null && !rawFilesByReplicate.isEmpty())
-					|| (peaklistFilesByReplicate != null && !peaklistFilesByReplicate
-							.isEmpty())
-					|| (msiFilesByReplicate != null && !msiFilesByReplicate
-							.isEmpty())) {
+					|| (peaklistFilesByReplicate != null && !peaklistFilesByReplicate.isEmpty())
+					|| (msiFilesByReplicate != null && !msiFilesByReplicate.isEmpty())) {
 
 				// peak lists
-				if (peaklistFilesByReplicate != null
-						&& !peaklistFilesByReplicate.isEmpty()) {
+				if (peaklistFilesByReplicate != null && !peaklistFilesByReplicate.isEmpty()) {
 
 					for (Replicate rep : peaklistFilesByReplicate.keySet()) {
 						Set<String> filesToSkip = this.filesToSkip.get(rep);
 						List<URL> urls = new ArrayList<URL>();
-						List<ResultingData> resultingDatas = peaklistFilesByReplicate
-								.get(rep);
-						urls.addAll(getFileUrlsFromResultingDatas(
-								resultingDatas, filesToSkip));
+						List<ResultingData> resultingDatas = peaklistFilesByReplicate.get(rep);
+						urls.addAll(getFileUrlsFromResultingDatas(resultingDatas, filesToSkip));
 						List<File> downloadedFiles = downloadFiles(urls);
 						pexFile.addReplicatePeakListFiles(rep, downloadedFiles);
 					}
 				}
 				// rawFiles
-				if (rawFilesByReplicate != null
-						&& !rawFilesByReplicate.isEmpty()) {
+				if (rawFilesByReplicate != null && !rawFilesByReplicate.isEmpty()) {
 					for (Replicate rep : rawFilesByReplicate.keySet()) {
 						Set<String> filesToSkip = this.filesToSkip.get(rep);
 						List<URL> urls = new ArrayList<URL>();
-						List<ResultingData> resultingDatas = rawFilesByReplicate
-								.get(rep);
-						urls.addAll(getFileUrlsFromResultingDatas(
-								resultingDatas, filesToSkip));
+						List<ResultingData> resultingDatas = rawFilesByReplicate.get(rep);
+						urls.addAll(getFileUrlsFromResultingDatas(resultingDatas, filesToSkip));
 						List<File> downloadedFiles = downloadFiles(urls);
 						pexFile.addReplicateRawFiles(rep, downloadedFiles);
 					}
 				}
 
 				// search engine output files
-				if (msiFilesByReplicate != null
-						&& !msiFilesByReplicate.isEmpty()) {
+				if (msiFilesByReplicate != null && !msiFilesByReplicate.isEmpty()) {
 					for (Replicate rep : msiFilesByReplicate.keySet()) {
 						Set<String> filesToSkip = this.filesToSkip.get(rep);
 						List<URL> urls = new ArrayList<URL>();
-						List<String> attachedFiles = msiFilesByReplicate
-								.get(rep);
-						urls.addAll(getFileUrlsFromInputDatas(attachedFiles,
-								filesToSkip));
+						List<String> attachedFiles = msiFilesByReplicate.get(rep);
+						urls.addAll(getFileUrlsFromInputDatas(attachedFiles, filesToSkip));
 						List<File> downloadedFiles = downloadFiles(urls);
-						pexFile.addReplicateSearchEngineOutputFiles(rep,
-								downloadedFiles);
+						pexFile.addReplicateSearchEngineOutputFiles(rep, downloadedFiles);
 					}
 				}
 			}
@@ -199,12 +185,10 @@ public class PEXBulkSubmissionFileDownloaderTask extends
 					for (Replicate replicate : experiment.getReplicates()) {
 						Thread.sleep(1L);
 						// REPORTS MIAPE MS
-						int userID = getUserID(MainFrame.userName,
-								MainFrame.password);
-						HashMap<Integer, URL> reportLocations = replicate
-								.getMSReportURLs(userID);
+						int userID = getUserID(MainFrame.userName, MainFrame.password);
+						TIntObjectHashMap<URL> reportLocations = replicate.getMSReportURLs(userID);
 						boolean thereIsAtLEastOneMIAPEFromRemote = false;
-						for (Integer miapeID : reportLocations.keySet()) {
+						for (int miapeID : reportLocations.keys()) {
 							if (miapeID > 0)
 								thereIsAtLEastOneMIAPEFromRemote = true;
 						}
@@ -215,41 +199,33 @@ public class PEXBulkSubmissionFileDownloaderTask extends
 
 							List<File> files = new ArrayList<File>();
 
-							for (Integer miapeID : reportLocations.keySet()) {
-								URL miapeReportLocation = reportLocations
-										.get(miapeID);
+							for (int miapeID : reportLocations.keys()) {
+								URL miapeReportLocation = reportLocations.get(miapeID);
 								// Download report:
-								File downloadedReportFile = downloadFile(
-										miapeReportLocation, "MIAPE_MS_"
-												+ miapeID + "_report.html");
+								File downloadedReportFile = downloadFile(miapeReportLocation,
+										"MIAPE_MS_" + miapeID + "_report.html");
 								if (downloadedReportFile != null)
 									files.add(downloadedReportFile);
 							}
-							pexFile.addReplicateMIAPEMSReportFiles(replicate,
-									files);
+							pexFile.addReplicateMIAPEMSReportFiles(replicate, files);
 
 							// REPORTS MIAPE MSI
-							reportLocations = replicate
-									.getMSIReportURLs(userID);
+							reportLocations = replicate.getMSIReportURLs(userID);
 							files.clear();
-							for (Integer miapeID : reportLocations.keySet()) {
-								URL miapeReportLocation = reportLocations
-										.get(miapeID);
+							for (int miapeID : reportLocations.keys()) {
+								URL miapeReportLocation = reportLocations.get(miapeID);
 								// Download report:
-								File downloadedReportFile = downloadFile(
-										miapeReportLocation, "MIAPE_MSI_"
-												+ miapeID + "_report.html");
+								File downloadedReportFile = downloadFile(miapeReportLocation,
+										"MIAPE_MSI_" + miapeID + "_report.html");
 								if (downloadedReportFile != null)
 									files.add(downloadedReportFile);
 							}
-							pexFile.addReplicateMIAPEMSIReportFiles(replicate,
-									files);
+							pexFile.addReplicateMIAPEMSIReportFiles(replicate, files);
 						}
 					}
 				}
 			}
-			firePropertyChange(PEX_FILE_DOWNLOADING_FINISH, null,
-					numDownloadedFiles);
+			firePropertyChange(PEX_FILE_DOWNLOADING_FINISH, null, numDownloadedFiles);
 		} catch (Exception e) {
 			e.printStackTrace();
 			firePropertyChange(PEX_FILE_DOWNLOADING_ERROR, null, e.getMessage());
@@ -268,15 +244,12 @@ public class PEXBulkSubmissionFileDownloaderTask extends
 		return downloadedFiles;
 	}
 
-	private Collection<URL> getFileUrlsFromResultingDatas(
-			List<ResultingData> resultingDatas, Set<String> filesToSkip) {
+	private Collection<URL> getFileUrlsFromResultingDatas(List<ResultingData> resultingDatas, Set<String> filesToSkip) {
 		if (resultingDatas != null) {
-			Collection<URL> ret = new HashSet<URL>();
+			Collection<URL> ret = new THashSet<URL>();
 			for (ResultingData resultingData : resultingDatas) {
 				String dataFileUri = resultingData.getDataFileUri();
-				if (filesToSkip != null
-						&& filesToSkip.contains(FilenameUtils
-								.getName(dataFileUri)))
+				if (filesToSkip != null && filesToSkip.contains(FilenameUtils.getName(dataFileUri)))
 					continue;
 				log.info("File url=" + dataFileUri);
 				try {
@@ -294,14 +267,11 @@ public class PEXBulkSubmissionFileDownloaderTask extends
 		return null;
 	}
 
-	private Collection<URL> getFileUrlsFromInputDatas(List<String> inputDatas,
-			Set<String> filesToSkip) {
+	private Collection<URL> getFileUrlsFromInputDatas(List<String> inputDatas, Set<String> filesToSkip) {
 		if (inputDatas != null) {
-			Collection<URL> ret = new HashSet<URL>();
+			Collection<URL> ret = new THashSet<URL>();
 			for (String dataFileUri : inputDatas) {
-				if (filesToSkip != null
-						&& filesToSkip.contains(FilenameUtils
-								.getName(dataFileUri)))
+				if (filesToSkip != null && filesToSkip.contains(FilenameUtils.getName(dataFileUri)))
 					continue;
 				log.info("File url=" + dataFileUri);
 				try {
@@ -329,26 +299,21 @@ public class PEXBulkSubmissionFileDownloaderTask extends
 	 */
 	private File downloadFile(URL url) {
 		try {
-			firePropertyChange(PEX_FILE_DOWNLOADING_STARTED, null,
-					url.toString());
+			firePropertyChange(PEX_FILE_DOWNLOADING_STARTED, null, url.toString());
 			URL encodedURL = new URL(URLParamEncoder.encode(url.toString()));
 			String localName = FilenameUtils.getName(encodedURL.getFile());
 			localName = localName.replace("%20", " ");
-			File downloadedFile = new File(pexFile.getOutputFolder()
-					+ FILE_SEPARATOR + localName);
+			File downloadedFile = new File(pexFile.getOutputFolder() + FILE_SEPARATOR + localName);
 			if (downloadedFile.exists() && downloadedFile.length() > 0) {
-				log.info("File " + downloadedFile.getAbsolutePath()
-						+ " found in the output folder");
-				firePropertyChange(PEX_FILE_FOUND_IN_OUTPUT_FOLDER, null,
-						downloadedFile);
+				log.info("File " + downloadedFile.getAbsolutePath() + " found in the output folder");
+				firePropertyChange(PEX_FILE_FOUND_IN_OUTPUT_FOLDER, null, downloadedFile);
 				numDownloadedFiles++;
 				return downloadedFile;
 			}
 
 			log.info("Downloading file: " + encodedURL);
 			URLConnection inputConnection = encodedURL.openConnection();
-			final BufferedOutputStream local = new BufferedOutputStream(
-					new FileOutputStream(downloadedFile));
+			final BufferedOutputStream local = new BufferedOutputStream(new FileOutputStream(downloadedFile));
 			if (inputConnection instanceof FtpURLConnection) {
 				String userName = null;
 				String password = null;
@@ -363,8 +328,7 @@ public class PEXBulkSubmissionFileDownloaderTask extends
 				}
 				ftp = new org.apache.commons.net.ftp.FTPClient();
 				try {
-					ftp.addProtocolCommandListener(new PrintCommandListener(
-							new PrintWriter(System.out)));
+					ftp.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
 					ftp.setConnectTimeout(5000);
 					ftp.setDataTimeout(5000);
 					ftp.setDefaultTimeout(5000);
@@ -379,8 +343,7 @@ public class PEXBulkSubmissionFileDownloaderTask extends
 							// ftp.enterRemotePassiveMode();
 							log.info("getting inputstream");
 							try {
-								final boolean downloaded = ftp.retrieveFile(
-										url.getFile(), local);
+								final boolean downloaded = ftp.retrieveFile(url.getFile(), local);
 							} finally {
 								local.close();
 							}
@@ -393,8 +356,7 @@ public class PEXBulkSubmissionFileDownloaderTask extends
 						ftp.disconnect();
 				}
 			} else {
-				BufferedInputStream inputStream = new BufferedInputStream(
-						inputConnection.getInputStream());
+				BufferedInputStream inputStream = new BufferedInputStream(inputConnection.getInputStream());
 				ZipManager.copyInputStream(inputStream, local);
 				local.close();
 			}
@@ -403,19 +365,13 @@ public class PEXBulkSubmissionFileDownloaderTask extends
 			firePropertyChange(PEX_FILE_DOWNLOADED, null, downloadedFile);
 			numDownloadedFiles++;
 
-			String extension = FilenameUtils.getExtension(downloadedFile
-					.getAbsolutePath());
-			if (compressDownloadedData && !"gz".equalsIgnoreCase(extension)
-					&& !"rar".equalsIgnoreCase(extension)
-					&& !"zip".equalsIgnoreCase(extension)
-					&& !"gzip".equalsIgnoreCase(extension)) {
-				firePropertyChange(PEX_FILE_COMPRESSION_STARTED, null,
-						downloadedFile);
+			String extension = FilenameUtils.getExtension(downloadedFile.getAbsolutePath());
+			if (compressDownloadedData && !"gz".equalsIgnoreCase(extension) && !"rar".equalsIgnoreCase(extension)
+					&& !"zip".equalsIgnoreCase(extension) && !"gzip".equalsIgnoreCase(extension)) {
+				firePropertyChange(PEX_FILE_COMPRESSION_STARTED, null, downloadedFile);
 				log.info("Compressing file");
-				File compressedFile = ZipManager
-						.compressGZipFile(downloadedFile);
-				firePropertyChange(PEX_FILE_COMPRESSION_FINISHED, null,
-						compressedFile);
+				File compressedFile = ZipManager.compressGZipFile(downloadedFile);
+				firePropertyChange(PEX_FILE_COMPRESSION_FINISHED, null, compressedFile);
 				return compressedFile;
 			}
 
@@ -430,24 +386,19 @@ public class PEXBulkSubmissionFileDownloaderTask extends
 	private File downloadFile(URL url, String fileName) {
 		try {
 
-			File downloadedFile = new File(pexFile.getOutputFolder()
-					+ FILE_SEPARATOR + fileName);
+			File downloadedFile = new File(pexFile.getOutputFolder() + FILE_SEPARATOR + fileName);
 			if (downloadedFile.exists()) {
-				log.info("File " + downloadedFile.getAbsolutePath()
-						+ " found in the output folder");
-				firePropertyChange(PEX_FILE_FOUND_IN_OUTPUT_FOLDER, null,
-						downloadedFile);
+				log.info("File " + downloadedFile.getAbsolutePath() + " found in the output folder");
+				firePropertyChange(PEX_FILE_FOUND_IN_OUTPUT_FOLDER, null, downloadedFile);
 				numDownloadedFiles++;
 				return downloadedFile;
 			}
 			log.info("Downloading file: " + url);
 			URLConnection inputConnection = url.openConnection();
 
-			BufferedInputStream inputStream = new BufferedInputStream(
-					inputConnection.getInputStream());
+			BufferedInputStream inputStream = new BufferedInputStream(inputConnection.getInputStream());
 
-			BufferedOutputStream outputStream = new BufferedOutputStream(
-					new FileOutputStream(downloadedFile));
+			BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(downloadedFile));
 
 			ZipManager.copyInputStream(inputStream, outputStream);
 

@@ -9,7 +9,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.GroupLayout;
@@ -35,12 +34,14 @@ import org.proteored.pacom.analysis.util.DataLevel;
 import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.gui.MainFrame;
 
+import gnu.trove.set.hash.THashSet;
+
 /**
  *
  * @author __USER__
  */
 public class ExporterDialog extends javax.swing.JDialog implements PropertyChangeListener, ExporterManager {
-	private final Set<IdentificationSet> idSets = new HashSet<IdentificationSet>();
+	private final Set<IdentificationSet> idSets = new THashSet<IdentificationSet>();
 	private TSVExporter exporter;
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
 	private boolean previousCollapsePeptides;

@@ -3,10 +3,9 @@ package org.proteored.pacom.analysis.gui.tasks;
 import java.awt.Color;
 import java.awt.Panel;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.JCheckBox;
@@ -49,6 +48,9 @@ import org.proteored.pacom.analysis.charts.XYPointChart;
 import org.proteored.pacom.analysis.gui.AdditionalOptionsPanelFactory;
 import org.proteored.pacom.analysis.gui.ChartManagerFrame;
 
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
+
 public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
 	public static final String CHART_GENERATED = "Chart generated";
@@ -61,7 +63,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	private String error;
 	private final AdditionalOptionsPanelFactory optionsFactory;
 	private final boolean countNonConclusiveProteins;
-	private final Map<String, VennData> vennDataMap = new HashMap<String, VennData>();
+	private final Map<String, VennData> vennDataMap = new THashMap<String, VennData>();
 
 	public ChartCreatorTask(ChartManagerFrame parent, String chartType, String optionParam,
 			ExperimentList experimentList) {
@@ -368,7 +370,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	private Object showRetentionTimeComparisonChart() {
 		parent.setInformation1(parent.getCurrentChartType());
 
-		final HashMap<String, JCheckBox> scoreComparisonJCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
+		final Map<String, JCheckBox> scoreComparisonJCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
 
 		String xAxisLabel = "RT (sg)";
 		String yAxisLabel = "RT (sg)";
@@ -447,7 +449,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 		boolean showParent = optionsFactory.isTotalSerieShown();
 		boolean inMinutes = optionsFactory.showInMinutes();
-		final HashMap<String, JCheckBox> idSetsJCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
+		final Map<String, JCheckBox> idSetsJCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
 		if (inMinutes)
 			xAxisLabel = "RT (min)";
 		List<IdentificationSet> idSets = getIdentificationSets(null, idSetsJCheckBoxes, showParent);
@@ -678,7 +680,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
 
 		boolean showAccumulativeTrend = optionsFactory.isAccumulativeTrendSelected();
-		final HashMap<String, JCheckBox> checkBoxControls = optionsFactory.getIdSetsJCheckBoxes();
+		final Map<String, JCheckBox> checkBoxControls = optionsFactory.getIdSetsJCheckBoxes();
 		ProteinGroupComparisonType proteinGroupComparisonType = optionsFactory.getProteinGroupComparisonType();
 		boolean distModPeptides = parent.distinguishModifiedPeptides();
 		List<IdentificationSet> idSets = getIdentificationSets(null, checkBoxControls, false);
@@ -778,7 +780,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	}
 
 	private List<IdentificationSet> getIdentificationSets(String experimentName,
-			HashMap<String, JCheckBox> idSetsCheckBoxes, boolean addParentLevelIdSet) {
+			Map<String, JCheckBox> idSetsCheckBoxes, boolean addParentLevelIdSet) {
 		List<IdentificationSet> idSets = new ArrayList<IdentificationSet>();
 		if (ChartManagerFrame.ONE_SERIES_PER_REPLICATE.equals(option)) {
 			final List<Experiment> experiments = experimentList.getExperiments();
@@ -1227,7 +1229,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		String xAxisLabel = "m/z";
 		String yAxisLabel = "Delta(m/z)";
 		boolean showRegressionLine = optionsFactory.showRegressionLine();
-		final HashMap<String, JCheckBox> experimentJCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
+		final Map<String, JCheckBox> experimentJCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
 		List<IdentificationSet> idSets = getIdentificationSets(null, experimentJCheckBoxes, false);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 			XYDataset dataset = DatasetFactory.createDeltaMzOverMzXYDataSet(idSets);
@@ -1326,7 +1328,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		String yAxisLabel = "0-1";
 
 		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
-		HashSet<String> proteinsInSample = optionsFactory.getProteinsInSample();
+		Set<String> proteinsInSample = optionsFactory.getProteinsInSample();
 		if (proteinsInSample == null || proteinsInSample.isEmpty())
 			throw new IllegalMiapeArgumentException(
 					"In order to show this chart, it is necessary to define the proteins in sample that will be the positives hits");
@@ -2370,7 +2372,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		String label2 = null;
 		IdentificationSet idSet3 = null;
 		String label3 = null;
-		final HashMap<String, JCheckBox> checkBoxControls = optionsFactory.getIdSetsJCheckBoxes();
+		final Map<String, JCheckBox> checkBoxControls = optionsFactory.getIdSetsJCheckBoxes();
 
 		ProteinGroupComparisonType proteinSelection = null;
 		if (IdentificationItemEnum.PROTEIN.equals(plotItem)) {
@@ -3309,7 +3311,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		} else {
 			scoreName = optionsFactory.getProteinScoreName();
 		}
-		final HashMap<String, JCheckBox> scoreComparisonJCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
+		final Map<String, JCheckBox> scoreComparisonJCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
 
 		String xAxisLabel = scoreName;
 		String yAxisLabel = scoreName;
@@ -3525,7 +3527,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			yAxisLabel = "# proteins";
 
 		List<IdentificationSet> idSets = getIdentificationSets(null, optionsFactory.getIdSetsJCheckBoxes(), false);
-		java.util.Set<String> scoreNames = new HashSet<String>();
+		java.util.Set<String> scoreNames = new THashSet<String>();
 		for (IdentificationSet identificationSet : idSets) {
 			FDRFilter fdrFilter = identificationSet.getFDRFilter();
 			if (fdrFilter != null)
@@ -3665,7 +3667,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		int bins = optionsFactory.getHistogramBins();
 		HistogramType histogramType = optionsFactory.getHistogramType();
 		String xAxisLabel = "log (A/B)";
-		HashMap<String, JCheckBox> idSetsCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
+		Map<String, JCheckBox> idSetsCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
 		ProteinGroupComparisonType proteinGroupComparisonType = optionsFactory.getProteinGroupComparisonType();
 		boolean distinguish = parent.distinguishModifiedPeptides();
 		List<IdentificationSet> idSets = getIdentificationSets(null, idSetsCheckBoxes, false);
@@ -3728,7 +3730,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		String selectedScoreName = optionsFactory.getPeptideScoreName();
 		String xAxisLabel = "log (A/B)";
 		String yAxisLabel = selectedScoreName;
-		HashMap<String, JCheckBox> idSetsCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
+		Map<String, JCheckBox> idSetsCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
 		ProteinGroupComparisonType proteinGroupComparisonType = optionsFactory.getProteinGroupComparisonType();
 		boolean distinguish = parent.distinguishModifiedPeptides();
 		List<IdentificationSet> idSets = getIdentificationSets(null, idSetsCheckBoxes, false);

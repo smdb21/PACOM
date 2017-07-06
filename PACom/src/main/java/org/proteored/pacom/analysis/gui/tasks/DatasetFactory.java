@@ -3,7 +3,6 @@ package org.proteored.pacom.analysis.gui.tasks;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -53,6 +52,11 @@ import com.compomics.util.protein.Protein;
 
 import edu.scripps.yates.utilities.fasta.FastaParser;
 import edu.scripps.yates.utilities.maths.Maths;
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.map.hash.TIntIntHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.set.hash.THashSet;
+import gnu.trove.set.hash.TIntHashSet;
 
 public class DatasetFactory {
 	private static final Logger log = Logger.getLogger("log4j.logger.org.proteored");
@@ -147,14 +151,14 @@ public class DatasetFactory {
 
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		try {
-			HashMap<String, HashMap<Integer, Integer>> distributions = new HashMap<String, HashMap<Integer, Integer>>();
+			Map<String, TIntObjectHashMap<Integer>> distributions = new THashMap<String, TIntObjectHashMap<Integer>>();
 			for (IdentificationSet idSet : idSets) {
 				String experimentName = idSet.getFullName();
 
 				double numProteins = 0;
 				// key: number of peptides - value=number of proteins with that
 				// number of peptides
-				HashMap<Integer, Integer> distribution = new HashMap<Integer, Integer>();
+				TIntObjectHashMap<Integer> distribution = new TIntObjectHashMap<Integer>();
 				if (differentIdentificationsShown) {
 					Collection<ProteinGroupOccurrence> proteinOccurrenceList = idSet.getProteinGroupOccurrenceList()
 							.values();
@@ -206,7 +210,7 @@ public class DatasetFactory {
 			if (!distributions.isEmpty()) {
 				for (int i = 1; i <= maximum; i++) {
 					for (IdentificationSet idSet : idSets) {
-						HashMap<Integer, Integer> distribution = distributions.get(idSet.getFullName());
+						TIntObjectHashMap<Integer> distribution = distributions.get(idSet.getFullName());
 						if (distribution == null) {
 							dataset.addValue(0, "0", idSet.getFullName());
 							continue;
@@ -232,7 +236,7 @@ public class DatasetFactory {
 	private static int getNumDifferentPeptides(List<ExtendedIdentifiedPeptide> peptides) {
 		int ret = 0;
 		if (peptides != null) {
-			Set<String> sequences = new HashSet<String>();
+			Set<String> sequences = new THashSet<String>();
 			for (ExtendedIdentifiedPeptide extendedIdentifiedPeptide : peptides) {
 				if (!sequences.contains(extendedIdentifiedPeptide.getSequence())) {
 					sequences.add(extendedIdentifiedPeptide.getSequence());
@@ -539,11 +543,10 @@ public class DatasetFactory {
 
 			for (IdentificationSet idSet : idSets) {
 				String experimentName = idSet.getFullName();
-				HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+				TIntObjectHashMap<Integer> map = new TIntObjectHashMap<Integer>();
 
 				if (itemType.equals(IdentificationItemEnum.PEPTIDE)) {
-					HashMap<String, PeptideOccurrence> peptideOccurrences = idSet
-							.getPeptideOccurrenceList(distModPeptides);
+					Map<String, PeptideOccurrence> peptideOccurrences = idSet.getPeptideOccurrenceList(distModPeptides);
 
 					for (PeptideOccurrence occurrence : peptideOccurrences.values()) {
 
@@ -582,8 +585,9 @@ public class DatasetFactory {
 					}
 				}
 				List<Integer> keys = new ArrayList<Integer>();
-				for (Integer key : map.keySet())
+				for (int key : map.keys()) {
 					keys.add(key);
+				}
 				Collections.sort(keys);
 				int numFound = 0;
 				for (int i = 1; i < 100; i++) {
@@ -622,7 +626,7 @@ public class DatasetFactory {
 		try {
 
 			for (IdentificationSet parentIdSet : idSets) {
-				HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+				TIntObjectHashMap<Integer> map = new TIntObjectHashMap<Integer>();
 				final List<IdentificationSet> nextLevelIdentificationSetList = parentIdSet
 						.getNextLevelIdentificationSetList();
 				log.info(parentIdSet.getFullName() + " -> " + nextLevelIdentificationSetList.size());
@@ -779,10 +783,10 @@ public class DatasetFactory {
 				int maximumOccurrence = 0;
 				for (String modification : modifications) {
 
-					final HashMap<Integer, Integer> modificationOccurrence = idSet
+					final TIntIntHashMap modificationOccurrence = idSet
 							.getModificationOccurrenceDistribution(modification);
 					if (modificationOccurrence != null && !modificationOccurrence.isEmpty()) {
-						final Set<Integer> keySet = modificationOccurrence.keySet();
+						final int[] keySet = modificationOccurrence.keys();
 						List<Integer> keyList = toSortedList(keySet);
 						for (Integer integer : keyList) {
 							if (integer >= maximum)
@@ -818,10 +822,9 @@ public class DatasetFactory {
 			for (IdentificationSet idSet : idSets) {
 				String experimentName = idSet.getFullName();
 				int maximumOccurrence = 0;
-				final HashMap<Integer, Integer> missCleavageOccurrence = idSet
-						.getMissedCleavagesOccurrenceDistribution();
+				final TIntIntHashMap missCleavageOccurrence = idSet.getMissedCleavagesOccurrenceDistribution();
 				if (missCleavageOccurrence != null && !missCleavageOccurrence.isEmpty()) {
-					final Set<Integer> keySet = missCleavageOccurrence.keySet();
+					final int[] keySet = missCleavageOccurrence.keys();
 					List<Integer> keyList = toSortedList(keySet);
 					for (Integer integer : keyList) {
 						if (integer >= maximum)
@@ -849,11 +852,11 @@ public class DatasetFactory {
 		try {
 
 			for (IdentificationSet idSet : idSets) {
-				HashMap<ProteinEvidence, Integer> proteinEvidenceMap = new HashMap<ProteinEvidence, Integer>();
+				Map<ProteinEvidence, Integer> proteinEvidenceMap = new THashMap<ProteinEvidence, Integer>();
 
 				String idSetName = idSet.getFullName();
 				int maximumOccurrence = 0;
-				final HashMap<String, ProteinGroupOccurrence> proteinGroupOccurrences = idSet
+				final Map<String, ProteinGroupOccurrence> proteinGroupOccurrences = idSet
 						.getProteinGroupOccurrenceList();
 				if (proteinGroupOccurrences != null && !proteinGroupOccurrences.isEmpty()) {
 					for (ProteinGroupOccurrence proteinGroupOcc : proteinGroupOccurrences.values()) {
@@ -1075,7 +1078,7 @@ public class DatasetFactory {
 		double[][] dataset = null;
 
 		boolean someValueIsMoreThanZero = false;
-		HashMap<Integer, List<String>> occurrenceRankingPep = new HashMap<Integer, List<String>>();
+		TIntObjectHashMap<List<String>> occurrenceRankingPep = new TIntObjectHashMap<List<String>>();
 		// Firstly, to iterate over parent elements and fill the
 		// occurrenceRanking, where the key is the number of idSets that
 		// contains the item<br>
@@ -1167,7 +1170,7 @@ public class DatasetFactory {
 		double[][] dataset = null;
 
 		boolean someValueIsMoreThanZero = false;
-		HashMap<Integer, List<String>> occurrenceRankingPep = new HashMap<Integer, List<String>>();
+		TIntObjectHashMap<List<String>> occurrenceRankingPep = new TIntObjectHashMap<List<String>>();
 		// Firstly, to iterate over parent elements and fill the
 		// occurrenceRanking, where the key is the number of idSets that
 		// contains the item<br>
@@ -1267,12 +1270,12 @@ public class DatasetFactory {
 		double[][] dataset = null;
 
 		boolean someValueIsMoreThanZero = false;
-		HashMap<Integer, List<String>> occurrenceRankingPep = new HashMap<Integer, List<String>>();
+		TIntObjectHashMap<List<String>> occurrenceRankingPep = new TIntObjectHashMap<List<String>>();
 		// Firstly, to iterate over parent elements and fill the
 		// occurrenceRanking, where the key is the number of idSets that
 		// contains the item<br>
 		// Then, from 1 to numberOfIdSets, build the heatmap
-		HashMap<Integer, List<ProteinGroup>> occurrenceRankingProt = new HashMap<Integer, List<ProteinGroup>>();
+		TIntObjectHashMap<List<ProteinGroup>> occurrenceRankingProt = new TIntObjectHashMap<List<ProteinGroup>>();
 
 		final Collection<ProteinGroupOccurrence> proteinOccurrenceSet = parentIdSet.getProteinGroupOccurrenceList()
 				.values();
@@ -1391,7 +1394,7 @@ public class DatasetFactory {
 		// contains the item<br>
 		// Then, from 1 to numberOfIdSets, build the heatmap
 		// ranking the proteins by the number of peptides they have
-		HashMap<Integer, List<ProteinGroup>> peptideNumberRankingProt = new HashMap<Integer, List<ProteinGroup>>();
+		TIntObjectHashMap<List<ProteinGroup>> peptideNumberRankingProt = new TIntObjectHashMap<List<ProteinGroup>>();
 		log.info("Creating peptides per protein heatmap: PSM=" + isPSM);
 		final Collection<ProteinGroupOccurrence> proteinOccurrenceSet = parentIdSet.getProteinGroupOccurrenceList()
 				.values();
@@ -1693,16 +1696,16 @@ public class DatasetFactory {
 			int minimum, int maximum) {
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-		HashMap<IdentificationSet, Map<Integer, Integer>> map = new HashMap<IdentificationSet, Map<Integer, Integer>>();
+		Map<IdentificationSet, TIntObjectHashMap<Integer>> map = new THashMap<IdentificationSet, TIntObjectHashMap<Integer>>();
 		for (IdentificationSet idSet : idSets) {
-			Map<Integer, Integer> values = getPeptideLengths(idSet);
+			TIntObjectHashMap<Integer> values = getPeptideLengths(idSet);
 			map.put(idSet, values);
 		}
 
 		for (IdentificationSet idSet : idSets) {
 			int maxLength = 0;
 			int minLength = 0;
-			Map<Integer, Integer> values = map.get(idSet);
+			TIntObjectHashMap<Integer> values = map.get(idSet);
 			if (values != null) {
 				for (int length = 1; length < 100; length++) {
 					if (values.containsKey(length)) {
@@ -1785,8 +1788,8 @@ public class DatasetFactory {
 		return ret;
 	}
 
-	private static Map<Integer, Integer> getPeptideLengths(IdentificationSet idSet) {
-		Map<Integer, Integer> ret = new HashMap<Integer, Integer>();
+	private static TIntObjectHashMap<Integer> getPeptideLengths(IdentificationSet idSet) {
+		TIntObjectHashMap<Integer> ret = new TIntObjectHashMap<Integer>();
 
 		final List<ExtendedIdentifiedPeptide> peptides = idSet.getIdentifiedPeptides();
 		if (peptides != null) {
@@ -1810,10 +1813,10 @@ public class DatasetFactory {
 	public static DefaultCategoryDataset createPeptideChargeHistogramDataSet(List<IdentificationSet> idSets) {
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-		List<HashMap<Integer, Integer>> totalList = new ArrayList<HashMap<Integer, Integer>>();
+		List<TIntObjectHashMap<Integer>> totalList = new ArrayList<TIntObjectHashMap<Integer>>();
 		for (IdentificationSet idSet : idSets) {
 			int[] values = getPeptideCharges(idSet);
-			HashMap<Integer, Integer> chargeHash = new HashMap<Integer, Integer>();
+			TIntObjectHashMap<Integer> chargeHash = new TIntObjectHashMap<Integer>();
 			for (int charge : values) {
 				if (charge > 0)
 					if (chargeHash.containsKey(charge)) {
@@ -1826,7 +1829,7 @@ public class DatasetFactory {
 					}
 			}
 			List<Integer> chargeList = new ArrayList<Integer>();
-			for (Integer integer : chargeHash.keySet()) {
+			for (int integer : chargeHash.keys()) {
 				chargeList.add(integer);
 			}
 			Collections.sort(chargeList);
@@ -1866,7 +1869,7 @@ public class DatasetFactory {
 		final Collection<ProteinGroupOccurrence> proteinOccurrences = idSet.getProteinGroupOccurrenceList().values();
 		if (proteinOccurrences != null && !proteinOccurrences.isEmpty()) {
 			// retrieve the information from uniprot first, all at once
-			Set<String> uniprotACCs = new HashSet<String>();
+			Set<String> uniprotACCs = new THashSet<String>();
 			for (ProteinGroupOccurrence proteinGroupOccurrence : proteinOccurrences) {
 				for (String acc : proteinGroupOccurrence.getAccessions()) {
 					if (FastaParser.isUniProtACC(acc)) {
@@ -2231,13 +2234,13 @@ public class DatasetFactory {
 			decoySeries = new XYSeries(idSet1.getName() + " vs " + idSet2.getName() + " (decoy)");
 		}
 
-		// Foreach protein in replicate2, look it in the hashmap and add an XY
+		// Foreach protein in replicate2, look it in the Map and add an XY
 		// point to the
 		// series
 
 		if (plotItem.equals(IdentificationItemEnum.PEPTIDE)) {
-			HashMap<String, PeptideOccurrence> peptideOccurrences1 = idSet1.getPeptideOccurrenceList(distinguish);
-			HashMap<String, PeptideOccurrence> peptideOccurrences2 = idSet2.getPeptideOccurrenceList(distinguish);
+			Map<String, PeptideOccurrence> peptideOccurrences1 = idSet1.getPeptideOccurrenceList(distinguish);
+			Map<String, PeptideOccurrence> peptideOccurrences2 = idSet2.getPeptideOccurrenceList(distinguish);
 			if (separateDecoyHits) {
 				peptideOccurrences1 = DataManager
 						.createPeptideOccurrenceListInParallel(idSet1.getNonFilteredIdentifiedPeptides(), true);
@@ -2269,12 +2272,12 @@ public class DatasetFactory {
 			}
 		} else {
 			Collection<ProteinGroupOccurrence> occurrenceList1 = idSet1.getProteinGroupOccurrenceList().values();
-			HashMap<String, ProteinGroupOccurrence> occurrenceMap1 = new HashMap<String, ProteinGroupOccurrence>();
+			Map<String, ProteinGroupOccurrence> occurrenceMap1 = new THashMap<String, ProteinGroupOccurrence>();
 			for (ProteinGroupOccurrence proteinGroupOccurrence : occurrenceList1) {
 				occurrenceMap1.put(proteinGroupOccurrence.toString(), proteinGroupOccurrence);
 			}
 			Collection<ProteinGroupOccurrence> occurrenceList2 = idSet2.getProteinGroupOccurrenceList().values();
-			HashMap<String, ProteinGroupOccurrence> occurrenceMap2 = new HashMap<String, ProteinGroupOccurrence>();
+			Map<String, ProteinGroupOccurrence> occurrenceMap2 = new THashMap<String, ProteinGroupOccurrence>();
 			for (ProteinGroupOccurrence proteinGroupOccurrence : occurrenceList2) {
 				occurrenceMap2.put(proteinGroupOccurrence.toString(), proteinGroupOccurrence);
 			}
@@ -2410,11 +2413,22 @@ public class DatasetFactory {
 		return ret;
 	}
 
-	public static List<Integer> toSortedList(Set<Integer> list) {
+	public static List<Integer> toSortedList(TIntHashSet list) {
 		if (list == null)
 			return null;
 		List<Integer> ret = new ArrayList<Integer>();
-		for (Integer integer : list) {
+		for (int integer : list._set) {
+			ret.add(integer);
+		}
+		Collections.sort(ret);
+		return ret;
+	}
+
+	public static List<Integer> toSortedList(int[] list) {
+		if (list == null)
+			return null;
+		List<Integer> ret = new ArrayList<Integer>();
+		for (int integer : list) {
 			ret.add(integer);
 		}
 		Collections.sort(ret);
@@ -2493,7 +2507,7 @@ public class DatasetFactory {
 	}
 
 	public static CategoryDataset createProteinSensitivityCategoryDataSet(List<IdentificationSet> idSets,
-			HashSet<String> proteinsInSample, boolean countNonConclusiveProteins, boolean sensitivity, boolean accuracy,
+			Set<String> proteinsInSample, boolean countNonConclusiveProteins, boolean sensitivity, boolean accuracy,
 			boolean specificity, boolean precision, boolean npv, boolean fdr) {
 		// create the dataset...
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -2612,7 +2626,7 @@ public class DatasetFactory {
 				|| proteinOrGene.equals(AdditionalOptionsPanelFactory.BOTH)) {
 			if (knownUnknown.equals(AdditionalOptionsPanelFactory.KNOWN)
 					|| knownUnknown.equals(AdditionalOptionsPanelFactory.BOTH)) {
-				HashMap<String, Integer> numKnownProteinsHashMap = getAssignedChr16NumProteins(idSet, true,
+				Map<String, Integer> numKnownProteinsHashMap = getAssignedChr16NumProteins(idSet, true,
 						countNonConclusiveProteins);
 
 				for (String researcher : assignedGroupsNames) {
@@ -2633,7 +2647,7 @@ public class DatasetFactory {
 				|| proteinOrGene.equals(AdditionalOptionsPanelFactory.BOTH)) {
 			if (knownUnknown.equals(AdditionalOptionsPanelFactory.KNOWN)
 					|| knownUnknown.equals(AdditionalOptionsPanelFactory.BOTH)) {
-				HashMap<String, Integer> numKnownGenesHashMap = getAssignedChr16NumGenes(idSet, true,
+				Map<String, Integer> numKnownGenesHashMap = getAssignedChr16NumGenes(idSet, true,
 						takeGeneFromFirstProteinSelected, countNonConclusiveProteins);
 
 				for (String researcher : assignedGroupsNames) {
@@ -2654,7 +2668,7 @@ public class DatasetFactory {
 				|| proteinOrGene.equals(AdditionalOptionsPanelFactory.BOTH)) {
 			if (knownUnknown.equals(AdditionalOptionsPanelFactory.UNKNOWN)
 					|| knownUnknown.equals(AdditionalOptionsPanelFactory.BOTH)) {
-				HashMap<String, Integer> numUnKnownProteinsHashMap = getAssignedChr16NumProteins(idSet, false,
+				Map<String, Integer> numUnKnownProteinsHashMap = getAssignedChr16NumProteins(idSet, false,
 						countNonConclusiveProteins);
 				for (String researcher : assignedGroupsNames) {
 					if (groupsToShow.contains(researcher)) {
@@ -2674,7 +2688,7 @@ public class DatasetFactory {
 				|| proteinOrGene.equals(AdditionalOptionsPanelFactory.BOTH)) {
 			if (knownUnknown.equals(AdditionalOptionsPanelFactory.UNKNOWN)
 					|| knownUnknown.equals(AdditionalOptionsPanelFactory.BOTH)) {
-				HashMap<String, Integer> numUnKnownGenesHashMap = getAssignedChr16NumGenes(idSet, false,
+				Map<String, Integer> numUnKnownGenesHashMap = getAssignedChr16NumGenes(idSet, false,
 						takeGeneFromFirstProteinSelected, countNonConclusiveProteins);
 				for (String researcher : assignedGroupsNames) {
 					if (groupsToShow.contains(researcher)) {
@@ -2733,18 +2747,18 @@ public class DatasetFactory {
 	public static CategoryDataset createAllHumanChromosomePeptideMappingCategoryDataSet(IdentificationSet idSet,
 			String peptideOrPSM, boolean onlyOneIdSet, boolean distinguishModPep) {
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-		HashMap<String, PeptideOccurrence> peptideOccurrences = idSet.getPeptideOccurrenceList(distinguishModPep);
+		Map<String, PeptideOccurrence> peptideOccurrences = idSet.getPeptideOccurrenceList(distinguishModPep);
 
 		int totalNum = 0;
 		for (String chromosomeName : GeneDistributionReader.chromosomeNames) {
 			int numPeptides = 0;
 			int numPSMs = 0;
 			List<ENSGInfo> genes = new ArrayList<ENSGInfo>();
-			HashMap<String, List<ENSGInfo>> proteinGeneMapping = GeneDistributionReader.getInstance()
+			Map<String, List<ENSGInfo>> proteinGeneMapping = GeneDistributionReader.getInstance()
 					.getProteinGeneMapping(chromosomeName);
 			for (PeptideOccurrence peptideOccurrence : peptideOccurrences.values()) {
 				final Set<ExtendedIdentifiedProtein> proteinList = peptideOccurrence.getProteinList();
-				Set<String> accs = new HashSet<String>();
+				Set<String> accs = new THashSet<String>();
 				for (ExtendedIdentifiedProtein protein : proteinList) {
 					accs.add(protein.getAccession());
 				}
@@ -2795,7 +2809,7 @@ public class DatasetFactory {
 	public static PieDataset createAllHumanChromosomePeptideMappingPieDataSet(IdentificationSet idSet,
 			String peptideOrPSM, boolean distinguishModPep) {
 		DefaultPieDataset dataset = new DefaultPieDataset();
-		HashMap<String, PeptideOccurrence> peptideOccurrences = idSet.getPeptideOccurrenceList(distinguishModPep);
+		Map<String, PeptideOccurrence> peptideOccurrences = idSet.getPeptideOccurrenceList(distinguishModPep);
 
 		if (AdditionalOptionsPanelFactory.BOTH.equals(peptideOrPSM))
 			throw new IllegalMiapeArgumentException(
@@ -2806,11 +2820,11 @@ public class DatasetFactory {
 			int numPeptides = 0;
 			int numPSMs = 0;
 			List<ENSGInfo> genes = new ArrayList<ENSGInfo>();
-			HashMap<String, List<ENSGInfo>> proteinGeneMapping = GeneDistributionReader.getInstance()
+			Map<String, List<ENSGInfo>> proteinGeneMapping = GeneDistributionReader.getInstance()
 					.getProteinGeneMapping(chromosomeName);
 			for (PeptideOccurrence peptideOccurrence : peptideOccurrences.values()) {
 				final Set<ExtendedIdentifiedProtein> proteinList = peptideOccurrence.getProteinList();
-				Set<String> accs = new HashSet<String>();
+				Set<String> accs = new THashSet<String>();
 				for (ExtendedIdentifiedProtein protein : proteinList) {
 					accs.add(protein.getAccession());
 				}
@@ -2857,7 +2871,7 @@ public class DatasetFactory {
 			int numProteins = 0;
 			int numGenes = 0;
 			List<ENSGInfo> genes = new ArrayList<ENSGInfo>();
-			HashMap<String, List<ENSGInfo>> proteinGeneMapping = GeneDistributionReader.getInstance()
+			Map<String, List<ENSGInfo>> proteinGeneMapping = GeneDistributionReader.getInstance()
 					.getProteinGeneMapping(chromosomeName);
 			int numProteinsToCount = 0;
 			for (ProteinGroupOccurrence proteinGroupOccurrence : proteinGroupOccurrences) {
@@ -2954,7 +2968,7 @@ public class DatasetFactory {
 				}
 				int numProteins = 0;
 				List<ENSGInfo> genes = new ArrayList<ENSGInfo>();
-				HashMap<String, List<ENSGInfo>> proteinGeneMapping = GeneDistributionReader.getInstance()
+				Map<String, List<ENSGInfo>> proteinGeneMapping = GeneDistributionReader.getInstance()
 						.getProteinGeneMapping(chromosomeName);
 				for (ProteinGroupOccurrence proteinGroupOccurrence : proteinGroupOccurrences) {
 					if (!countNonConclusiveProteins
@@ -3037,8 +3051,8 @@ public class DatasetFactory {
 			int numProteins = 0;
 			int numGenes = 0;
 			List<ENSGInfo> genes = new ArrayList<ENSGInfo>();
-			HashMap<String, List<ENSGInfo>> proteinGeneMapping = proteinGeneMapping = GeneDistributionReader
-					.getInstance().getProteinGeneMapping(chromosomeName);
+			Map<String, List<ENSGInfo>> proteinGeneMapping = proteinGeneMapping = GeneDistributionReader.getInstance()
+					.getProteinGeneMapping(chromosomeName);
 
 			int numProteinsToCount = 0;
 			for (ProteinGroupOccurrence proteinGroupOccurrence : proteinGroupOccurrences) {
@@ -3129,9 +3143,9 @@ public class DatasetFactory {
 		return ret;
 	}
 
-	private static HashMap<String, Integer> getAssignedChr16NumProteins(IdentificationSet idSet, boolean known,
+	private static Map<String, Integer> getAssignedChr16NumProteins(IdentificationSet idSet, boolean known,
 			Boolean countNonConclusiveProteins) {
-		HashMap<String, Integer> ret = new HashMap<String, Integer>();
+		Map<String, Integer> ret = new THashMap<String, Integer>();
 
 		final Collection<ProteinGroupOccurrence> proteinGroupOccurrenceList = idSet.getProteinGroupOccurrenceList()
 				.values();
@@ -3169,9 +3183,9 @@ public class DatasetFactory {
 		return ret;
 	}
 
-	private static HashMap<String, Integer> getAssignedChr16NumGenes(IdentificationSet idSet, boolean known,
+	private static Map<String, Integer> getAssignedChr16NumGenes(IdentificationSet idSet, boolean known,
 			boolean takeGeneFromFirstProteinSelected, Boolean countNonConclusiveProteins) {
-		HashMap<String, Integer> ret = new HashMap<String, Integer>();
+		Map<String, Integer> ret = new THashMap<String, Integer>();
 		List<ENSGInfo> genes = new ArrayList<ENSGInfo>();
 
 		final Collection<ProteinGroupOccurrence> proteinGroupOccurrenceList = idSet.getProteinGroupOccurrenceList()
@@ -3513,7 +3527,7 @@ public class DatasetFactory {
 		DefaultCategoryDataset accumulativeDataSet = new DefaultCategoryDataset();
 
 		try {
-			HashMap<String, Set<String>> hashMapKeys = getHashMapKeysForPeptides(idSets, distModPeptides);
+			Map<String, Set<String>> MapKeys = getHashMapKeysForPeptides(idSets, distModPeptides);
 
 			VennData globalVenn = null;
 			Collection<Object> union = null;
@@ -3521,7 +3535,7 @@ public class DatasetFactory {
 			for (int i = 0; i < idSets.size(); i++) {
 				IdentificationSet idSet = idSets.get(i);
 				String idSetName = idSet.getFullName();
-				Set<String> keys = hashMapKeys.get(idSetName);
+				Set<String> keys = MapKeys.get(idSetName);
 
 				if (accumulativeTrend) {
 					globalVenn = new VennDataForPeptides(keys, union, null);
@@ -3543,7 +3557,7 @@ public class DatasetFactory {
 					moreThanOne = true;
 					final String idSetName2 = idSet2.getFullName();
 					log.info("Comparing " + idSet.getFullName() + " with " + idSetName2);
-					Set<String> keys2 = hashMapKeys.get(idSet2.getFullName());
+					Set<String> keys2 = MapKeys.get(idSet2.getFullName());
 					VennData venn = null;
 					if (unique == null) {
 						venn = new VennDataForPeptides(keys, keys2, null);
@@ -3590,7 +3604,7 @@ public class DatasetFactory {
 		DefaultCategoryDataset accumulativeDataSet = new DefaultCategoryDataset();
 
 		try {
-			HashMap<String, Set<ProteinComparatorKey>> hashMapKeys = getHashMapKeysForProteins(idSets,
+			Map<String, Set<ProteinComparatorKey>> MapKeys = getHashMapKeysForProteins(idSets,
 					proteinGroupComparisonType);
 
 			VennData globalVenn = null;
@@ -3599,7 +3613,7 @@ public class DatasetFactory {
 			for (int i = 0; i < idSets.size(); i++) {
 				IdentificationSet idSet = idSets.get(i);
 				String idSetName = idSet.getFullName();
-				Set<ProteinComparatorKey> keys = hashMapKeys.get(idSet.getFullName());
+				Set<ProteinComparatorKey> keys = MapKeys.get(idSet.getFullName());
 
 				if (accumulativeTrend) {
 					globalVenn = new VennDataForProteins(keys, union, null, proteinGroupComparisonType,
@@ -3631,7 +3645,7 @@ public class DatasetFactory {
 					moreThanOne = true;
 					final String idSetName2 = idSet2.getFullName();
 					log.info("Comparing " + idSet.getFullName() + " with " + idSetName2);
-					Set<ProteinComparatorKey> keys2 = hashMapKeys.get(idSet2.getFullName());
+					Set<ProteinComparatorKey> keys2 = MapKeys.get(idSet2.getFullName());
 					VennData venn = null;
 					if (unique == null) {
 						venn = new VennDataForProteins(keys, keys2, null, proteinGroupComparisonType,
@@ -3660,9 +3674,9 @@ public class DatasetFactory {
 		return datasets;
 	}
 
-	private static HashMap<String, Set<String>> getHashMapKeysForPeptides(List<IdentificationSet> idSets,
+	private static Map<String, Set<String>> getHashMapKeysForPeptides(List<IdentificationSet> idSets,
 			Boolean distModPeptides) {
-		HashMap<String, Set<String>> ret = new HashMap<String, Set<String>>();
+		Map<String, Set<String>> ret = new THashMap<String, Set<String>>();
 		for (IdentificationSet identificationSet : idSets) {
 			final Set<String> peptideKeySet = identificationSet.getPeptideOccurrenceList(distModPeptides).keySet();
 			ret.put(identificationSet.getFullName(), peptideKeySet);
@@ -3671,11 +3685,11 @@ public class DatasetFactory {
 		return ret;
 	}
 
-	private static HashMap<String, Set<ProteinComparatorKey>> getHashMapKeysForProteins(List<IdentificationSet> idSets,
+	private static Map<String, Set<ProteinComparatorKey>> getHashMapKeysForProteins(List<IdentificationSet> idSets,
 			ProteinGroupComparisonType proteinGroupComparisonType) {
-		HashMap<String, Set<ProteinComparatorKey>> ret = new HashMap<String, Set<ProteinComparatorKey>>();
+		Map<String, Set<ProteinComparatorKey>> ret = new THashMap<String, Set<ProteinComparatorKey>>();
 		for (IdentificationSet identificationSet : idSets) {
-			final Set<ProteinComparatorKey> proteinAccSet = new HashSet<ProteinComparatorKey>();
+			final Set<ProteinComparatorKey> proteinAccSet = new THashSet<ProteinComparatorKey>();
 			for (Object object : identificationSet.getProteinGroupOccurrenceList().values()) {
 				ProteinGroupOccurrence pgo = (ProteinGroupOccurrence) object;
 				// if (pgo.getEvidence() != ProteinEvidence.NONCONCLUSIVE)
@@ -3762,8 +3776,8 @@ public class DatasetFactory {
 	private static List<XYSeries> getXYRTSeries(IdentificationSet idSet1, IdentificationSet idSet2, boolean inMinutes) {
 		XYSeries normalSeries = new XYSeries(idSet1.getName() + " (x) vs " + idSet2.getName() + " (y)");
 
-		HashMap<String, PeptideOccurrence> peptideOccurrences1 = idSet1.getPeptideChargeOccurrenceList(true);
-		HashMap<String, PeptideOccurrence> peptideOccurrences2 = idSet2.getPeptideChargeOccurrenceList(true);
+		Map<String, PeptideOccurrence> peptideOccurrences1 = idSet1.getPeptideChargeOccurrenceList(true);
+		Map<String, PeptideOccurrence> peptideOccurrences2 = idSet2.getPeptideChargeOccurrenceList(true);
 		boolean someValidData = false;
 		for (PeptideOccurrence occurrence2 : peptideOccurrences2.values()) {
 

@@ -14,9 +14,8 @@ package org.proteored.pacom.analysis.charts;
 import java.awt.GridBagConstraints;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JLabel;
@@ -27,6 +26,8 @@ import org.apache.log4j.Logger;
 import org.proteored.miapeapi.experiment.model.ExtendedIdentifiedProtein;
 import org.proteored.miapeapi.experiment.model.IdentificationSet;
 
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PFont;
@@ -50,7 +51,7 @@ public class WordCramChart extends PApplet {
 	private static String noGoodFontNames = "Dingbats|Standard Symbols L";
 	private static String blockFontNames = "OpenSymbol|Mallige Bold|Mallige Normal|Lohit Bengali|Lohit Punjabi|Webdings";
 	public static final String RANDOM_FONT = "Random font";
-	private final HashMap<String, List<ExtendedIdentifiedProtein>> wordMapping = new HashMap<String, List<ExtendedIdentifiedProtein>>();
+	private final Map<String, List<ExtendedIdentifiedProtein>> wordMapping = new THashMap<String, List<ExtendedIdentifiedProtein>>();
 	private final boolean mapWordsAndProteins = true;
 
 	private JTextArea jTextAreaSelectedProteins;
@@ -261,7 +262,7 @@ public class WordCramChart extends PApplet {
 	private PFont randomFont() {
 		String[] fonts = PFont.list();
 
-		Set<String> noGoodFonts = new HashSet<String>(
+		Set<String> noGoodFonts = new THashSet<String>(
 				Arrays.asList((noGoodFontNames + "|" + blockFontNames).split("|")));
 		String fontName;
 		do {
@@ -286,7 +287,7 @@ public class WordCramChart extends PApplet {
 				// .fromTextFile(textFilePath())
 				// .fromTextFile(getPruebaFile())
 
-		.fromWords(words)
+				.fromWords(words)
 				// .fromTextString(array)
 				// .fromTextString("asdf", "asdfk23", "·ASDF", "asdfasdfo", ".")
 				// "stop")
@@ -298,16 +299,16 @@ public class WordCramChart extends PApplet {
 				// .withColorer(Colorers.complement(this, random(255), 200,
 				// 220))
 
-		.withAngler(Anglers.mostlyHoriz()).withPlacer(Placers.swirl())
+				.withAngler(Anglers.mostlyHoriz()).withPlacer(Placers.swirl())
 				// .withPlacer(Placers.centerClump())
 				.withSizer(Sizers.byWeight(1, 100)).withWordPadding(1).sizedByWeight(5, 100)
 
-		.minShapeSize(1)
+				.minShapeSize(1)
 				// .MaxAttemptsForPlacement(10)
 				.maxNumberOfWordsToDraw(getMaximumNumberOfWords()).withNudger(new SpiralWordNudger())
-				// .withNudger(
-				// new PlottingWordNudger(this, new SpiralWordNudger()))
-				// .withNudger(new RandomWordNudger())
+		// .withNudger(
+		// new PlottingWordNudger(this, new SpiralWordNudger()))
+		// .withNudger(new RandomWordNudger())
 
 		;
 	}
@@ -372,7 +373,7 @@ public class WordCramChart extends PApplet {
 					final List<ExtendedIdentifiedProtein> proteinList = wordMapping.get(word.word);
 					if (proteinList != null && !proteinList.isEmpty()) {
 						final List<ExtendedIdentifiedProtein> nonRedundantProteinList = new ArrayList<ExtendedIdentifiedProtein>();
-						Set<String> accs = new HashSet<String>();
+						Set<String> accs = new THashSet<String>();
 						for (ExtendedIdentifiedProtein extendedIdentifiedProtein : proteinList) {
 							if (!accs.contains(extendedIdentifiedProtein.getAccession())) {
 								nonRedundantProteinList.add(extendedIdentifiedProtein);

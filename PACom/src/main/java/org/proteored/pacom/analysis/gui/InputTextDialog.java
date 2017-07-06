@@ -7,8 +7,8 @@
 package org.proteored.pacom.analysis.gui;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 
@@ -18,8 +18,7 @@ public class InputTextDialog extends javax.swing.JDialog {
 	private java.awt.Frame parent;
 
 	/** Creates new form InputTextDialog */
-	public InputTextDialog(java.awt.Frame parent, String title,
-			String explanation, HashSet<String> list) {
+	public InputTextDialog(java.awt.Frame parent, String title, String explanation, Set<String> list) {
 		super(parent, true);
 		this.parent = parent;
 		initComponents();
@@ -90,6 +89,7 @@ public class InputTextDialog extends javax.swing.JDialog {
 
 		jButton1.setText("OK");
 		jButton1.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				jButton1ActionPerformed(evt);
 			}
@@ -98,62 +98,31 @@ public class InputTextDialog extends javax.swing.JDialog {
 		jLabelExplanation.setAutoscrolls(true);
 		jLabelExplanation.setFocusTraversalPolicyProvider(true);
 		jLabelExplanation.setFocusable(false);
-		jLabelExplanation
-				.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+		jLabelExplanation.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
 
-		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
-				getContentPane());
+		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(
-						layout.createSequentialGroup()
-								.addContainerGap()
-								.addComponent(jScrollPane2,
-										javax.swing.GroupLayout.PREFERRED_SIZE,
-										199,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(
-										javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addGroup(
-										layout.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.LEADING)
-												.addComponent(jButton1)
-												.addComponent(
-														jLabelExplanation,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														170, Short.MAX_VALUE))
-								.addContainerGap()));
-		layout.setVerticalGroup(layout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(
-						layout.createSequentialGroup()
-								.addContainerGap()
-								.addGroup(
-										layout.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.LEADING)
-												.addGroup(
-														layout.createSequentialGroup()
-																.addComponent(
-																		jButton1)
-																.addPreferredGap(
-																		javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																.addComponent(
-																		jLabelExplanation,
-																		javax.swing.GroupLayout.PREFERRED_SIZE,
-																		147,
-																		javax.swing.GroupLayout.PREFERRED_SIZE))
-												.addComponent(
-														jScrollPane2,
-														javax.swing.GroupLayout.PREFERRED_SIZE,
-														274,
-														javax.swing.GroupLayout.PREFERRED_SIZE))
-								.addContainerGap()));
+		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout
+				.createSequentialGroup().addContainerGap()
+				.addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 199,
+						javax.swing.GroupLayout.PREFERRED_SIZE)
+				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+				.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(jButton1)
+						.addComponent(jLabelExplanation, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE))
+				.addContainerGap()));
+		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup().addContainerGap()
+						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addGroup(layout.createSequentialGroup().addComponent(jButton1)
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(jLabelExplanation, javax.swing.GroupLayout.PREFERRED_SIZE, 147,
+												javax.swing.GroupLayout.PREFERRED_SIZE))
+								.addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 274,
+										javax.swing.GroupLayout.PREFERRED_SIZE))
+						.addContainerGap()));
 
-		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit()
-				.getScreenSize();
-		setBounds((screenSize.width - 416) / 2, (screenSize.height - 338) / 2,
-				416, 338);
+		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+		setBounds((screenSize.width - 416) / 2, (screenSize.height - 338) / 2, 416, 338);
 	}// </editor-fold>
 		// GEN-END:initComponents
 
@@ -167,13 +136,13 @@ public class InputTextDialog extends javax.swing.JDialog {
 	 */
 	public static void main(String args[]) {
 		java.awt.EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
-				InputTextDialog dialog = new InputTextDialog(
-						new javax.swing.JFrame(), "PRUEBA",
-						"<html>Paste here a list of protein" + "<br/>"
-								+ " accessions (one for each line)</html>",
+				InputTextDialog dialog = new InputTextDialog(new javax.swing.JFrame(), "PRUEBA",
+						"<html>Paste here a list of protein" + "<br/>" + " accessions (one for each line)</html>",
 						null);
 				dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+					@Override
 					public void windowClosing(java.awt.event.WindowEvent e) {
 						System.exit(0);
 					}

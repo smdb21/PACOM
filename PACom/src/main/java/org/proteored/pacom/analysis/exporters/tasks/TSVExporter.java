@@ -6,8 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -35,11 +33,12 @@ import org.proteored.pacom.analysis.util.FileManager;
 import edu.scripps.yates.annotations.uniprot.UniprotProteinLocalRetriever;
 import edu.scripps.yates.annotations.uniprot.xml.Entry;
 import edu.scripps.yates.utilities.fasta.FastaParser;
+import gnu.trove.set.hash.THashSet;
 
 public class TSVExporter extends SwingWorker<Void, String> implements Exporter<File> {
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
 
-	private Set<IdentificationSet> idSets = new HashSet<IdentificationSet>();
+	private Set<IdentificationSet> idSets = new THashSet<IdentificationSet>();
 	private final char separator;
 	private final File file;
 	private final boolean includeDecoyHits;
@@ -84,7 +83,7 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 			if (this.retrieveProteinSequences || this.includeGeneInfo) {
 				firePropertyChange(PROTEIN_SEQUENCE_RETRIEVAL, null, null);
 
-				Set<String> uniprotAccs = new HashSet<String>();
+				Set<String> uniprotAccs = new THashSet<String>();
 				for (IdentificationSet identificationSet : idSets) {
 					List<ExtendedIdentifiedProtein> identifiedProteins = identificationSet.getIdentifiedProteins();
 					for (ExtendedIdentifiedProtein protein : identifiedProteins) {
@@ -120,7 +119,7 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 			log.info(columnsString);
 			out.write(columnsString.getBytes());
 
-			// final HashMap<String,
+			// final Map<String,
 			// IdentificationOccurrence<ExtendedIdentifiedProtein>>
 			// proteinOccurrenceList = this.idSet
 			// .getProteinOccurrenceList();
@@ -131,7 +130,7 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 				// return;
 				if (this.showPeptides) {
 					if (this.showBestPeptides) {
-						final HashMap<String, PeptideOccurrence> peptideOccurrenceHashMap = idSet
+						final Map<String, PeptideOccurrence> peptideOccurrenceHashMap = idSet
 								.getPeptideOccurrenceList(true);
 						// sort if there is a FDR Filter activated that tells us
 						// which is the score sort

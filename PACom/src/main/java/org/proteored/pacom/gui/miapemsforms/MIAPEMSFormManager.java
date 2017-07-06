@@ -9,7 +9,6 @@ import java.awt.Insets;
 import java.awt.TextField;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -68,9 +67,10 @@ import org.proteored.miapeapi.interfaces.ms.Spectrometer;
 import org.proteored.miapeapi.spring.SpringHandler;
 import org.proteored.pacom.gui.miapemsforms.util.CVRetriever;
 
+import gnu.trove.set.hash.THashSet;
+
 public class MIAPEMSFormManager {
-	private static org.apache.log4j.Logger log = org.apache.log4j.Logger
-			.getLogger("log4j.logger.org.proteored");
+	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("log4j.logger.org.proteored");
 
 	private static final String REFLECTRON_TOOLTIP = "<html>Just in case of MALDI sources:<br>Time-of-Flight drift tube: reflectron status.</html>";
 	protected static final int ANALYZERS_INDEX = 0;
@@ -107,12 +107,10 @@ public class MIAPEMSFormManager {
 			+ "the ion source (for ISD, PSD, LID, isCID).</html>";
 
 	private static final String GAS_TYPE_TOOLTIP = "<html>Gas type (when used):<br>"
-			+ "The composition of the gas used to fragment ions,<br>"
-			+ "for instance in the collision cell.</html>";
+			+ "The composition of the gas used to fragment ions,<br>" + "for instance in the collision cell.</html>";
 
 	private static final String GAS_PRESSURE_TOOLTIP = "<html>Gas type (when used):<br>"
-			+ "The pressure of the gas used to fragment ions,<br>"
-			+ "for instance in the collision cell.</html>";
+			+ "The pressure of the gas used to fragment ions,<br>" + "for instance in the collision cell.</html>";
 
 	private static final String ACTIVATION_TYPE_TOOLTIP = "<html>The type of activation and/or dissociation used in the fragmentation process.<br>"
 			+ "Examples might include Collision Induced Dissociation (CID) with static or spread collision energy,<br>"
@@ -120,8 +118,7 @@ public class MIAPEMSFormManager {
 
 	private static final String ACQUISITION_SOFTWARE_NAME_TOOLTIP = "<html>The instrument management and data analysis package name<br>"
 			+ "where there are several piecces of software involved, give name,<br>"
-			+ "version and role for each of them. Mention also upgrades not reflected"
-			+ "in the version number</html>";
+			+ "version and role for each of them. Mention also upgrades not reflected" + "in the version number</html>";
 
 	private static final String ACQUISITION_PARAMETERS_TOOLTIP = "<html>The information on how the MS data have been generated.<br>"
 			+ "It describes the instrument's parameter settings / acquisition method<br>"
@@ -176,8 +173,7 @@ public class MIAPEMSFormManager {
 	private boolean showEsi = false;
 	private boolean showOther;
 
-	public MIAPEMSFormManager(MiapeMSForms miapeMSForms,
-			ControlVocabularyManager cvManager) {
+	public MIAPEMSFormManager(MiapeMSForms miapeMSForms, ControlVocabularyManager cvManager) {
 		this.cvManager = cvManager;
 		cvRetriever = new CVRetriever(cvManager);
 		this.miapeMSForms = miapeMSForms;
@@ -218,31 +214,23 @@ public class MIAPEMSFormManager {
 		if (projectName == null || !"".equals(projectName))
 			projectName = "MIAPE project";
 
-		MiapeMSDocumentBuilder builder = MiapeMSDocumentFactory
-				.createMiapeMSDocumentBuilder(MiapeDocumentFactory
-						.createProjectBuilder(projectName).build(), name, null,
-						null, SpringHandler.getInstance().getXmlManager(),
-						cvManager);
+		MiapeMSDocumentBuilder builder = MiapeMSDocumentFactory.createMiapeMSDocumentBuilder(
+				MiapeDocumentFactory.createProjectBuilder(projectName).build(), name, null, null,
+				SpringHandler.getInstance().getXmlManager(), cvManager);
 
 		// CONTACT
 		final String contactName = ((JTextField) contact.get(0)).getText();
 		if (contactName != null && !"".equals(contactName)) {
-			final String contactLastName = ((JTextField) contact.get(1))
-					.getText();
-			final String contactInstitution = ((JTextField) contact.get(2))
-					.getText();
-			final String contactDepartment = ((JTextField) contact.get(3))
-					.getText();
-			final String contactPosition = (String) ((JComboBox) contact.get(4))
-					.getSelectedItem();
+			final String contactLastName = ((JTextField) contact.get(1)).getText();
+			final String contactInstitution = ((JTextField) contact.get(2)).getText();
+			final String contactDepartment = ((JTextField) contact.get(3)).getText();
+			final String contactPosition = (String) ((JComboBox) contact.get(4)).getSelectedItem();
 			final String contactEmail = ((JTextField) contact.get(5)).getText();
-			final String contactAddress = ((JTextArea) contact.get(6))
-					.getText();
+			final String contactAddress = ((JTextArea) contact.get(6)).getText();
 			final String contactTlfn = ((JTextField) contact.get(7)).getText();
 
-			MSContactBuilder contactBuilder = MiapeDocumentFactory
-					.createMSContactBuilder(contactName, contactLastName,
-							contactEmail);
+			MSContactBuilder contactBuilder = MiapeDocumentFactory.createMSContactBuilder(contactName, contactLastName,
+					contactEmail);
 			if (contactInstitution != null && !"".equals(contactInstitution))
 				contactBuilder.institution(contactInstitution);
 			if (contactDepartment != null && !"".equals(contactDepartment))
@@ -257,18 +245,15 @@ public class MIAPEMSFormManager {
 		}
 
 		// SPECTROMETER
-		Set<Spectrometer> spectrometers = new HashSet<Spectrometer>();
-		final String spectrometerName = (String) ((JComboBox) spectrometer
-				.get(0)).getSelectedItem();
+		Set<Spectrometer> spectrometers = new THashSet<Spectrometer>();
+		final String spectrometerName = (String) ((JComboBox) spectrometer.get(0)).getSelectedItem();
 		if (!"".equals(spectrometerName)) {
 			final SpectrometerBuilder spectrometerBuilder = MiapeMSDocumentFactory
 					.createSpectrometerBuilder(spectrometerName);
-			final String manufacturer = (String) ((JComboBox) spectrometer
-					.get(1)).getSelectedItem();
+			final String manufacturer = (String) ((JComboBox) spectrometer.get(1)).getSelectedItem();
 			if (!"".equals(manufacturer))
 				spectrometerBuilder.manufacturer(manufacturer);
-			final String customizations = ((JTextArea) spectrometer.get(2))
-					.getText();
+			final String customizations = ((JTextArea) spectrometer.get(2)).getText();
 			if (!"".equals(customizations))
 				spectrometerBuilder.customizations(customizations);
 			final String version = ((JTextField) spectrometer.get(3)).getText();
@@ -285,22 +270,17 @@ public class MIAPEMSFormManager {
 			final InstrumentConfigurationBuilder icBuilder = MiapeMSDocumentFactory
 					.createInstrumentConfigurationBuilder(icName);
 
-			List analyserList = (List) instrumentConfiguration
-					.get(ANALYZERS_INDEX);
+			List analyserList = (List) instrumentConfiguration.get(ANALYZERS_INDEX);
 			if (analyserList != null && !analyserList.isEmpty()) {
 				List<Analyser> analysers = new ArrayList<Analyser>();
 				for (Object object : analyserList) {
 					List<JComponent> analyserComponentList = (List<JComponent>) object;
-					final String analyserName = (String) ((JComboBox) analyserComponentList
-							.get(0)).getSelectedItem();
+					final String analyserName = (String) ((JComboBox) analyserComponentList.get(0)).getSelectedItem();
 
 					if (!"".equals(analyserName)) {
-						final String analyserDescription = ((JTextArea) analyserComponentList
-								.get(1)).getText();
-						final String reflectron = (String) ((JComboBox) analyserComponentList
-								.get(2)).getSelectedItem();
-						AnalyserBuilder analyserBuilder = MiapeMSDocumentFactory
-								.createAnalyserBuilder(analyserName);
+						final String analyserDescription = ((JTextArea) analyserComponentList.get(1)).getText();
+						final String reflectron = (String) ((JComboBox) analyserComponentList.get(2)).getSelectedItem();
+						AnalyserBuilder analyserBuilder = MiapeMSDocumentFactory.createAnalyserBuilder(analyserName);
 						if (!"".equals(analyserDescription))
 							analyserBuilder.description(analyserDescription);
 						if (!"".equals(reflectron))
@@ -313,33 +293,22 @@ public class MIAPEMSFormManager {
 			}
 
 			if (showEsi) {
-				List<JComponent> esiComponentList = (List<JComponent>) instrumentConfiguration
-						.get(ESI_INDEX);
+				List<JComponent> esiComponentList = (List<JComponent>) instrumentConfiguration.get(ESI_INDEX);
 				if (esiComponentList != null && !esiComponentList.isEmpty()) {
-					final String esiName = (String) ((JComboBox) esiComponentList
-							.get(0)).getSelectedItem();
-					final String supplyType = (String) ((JComboBox) esiComponentList
-							.get(1)).getSelectedItem();
-					final String parameters = ((JTextArea) esiComponentList
-							.get(2)).getText();
+					final String esiName = (String) ((JComboBox) esiComponentList.get(0)).getSelectedItem();
+					final String supplyType = (String) ((JComboBox) esiComponentList.get(1)).getSelectedItem();
+					final String parameters = ((JTextArea) esiComponentList.get(2)).getText();
 
-					final List<JComponent> interfaceComponents = (List<JComponent>) esiComponentList
-							.get(3);
-					String interfaceName = ((JTextField) interfaceComponents
-							.get(0)).getText();
+					final List<JComponent> interfaceComponents = (List<JComponent>) esiComponentList.get(3);
+					String interfaceName = ((JTextField) interfaceComponents.get(0)).getText();
 					Equipment interfaceEquipment = null;
 					if (interfaceName != null && !"".equals(interfaceName)) {
-						String interfaceManufacturer = ((JTextField) interfaceComponents
-								.get(1)).getText();
-						String interfaceModel = ((JTextField) interfaceComponents
-								.get(2)).getText();
-						String interfaceDescription = ((JTextArea) interfaceComponents
-								.get(3)).getText();
-						EquipmentBuilder interfaceBuilder = MiapeDocumentFactory
-								.createEquipmentBuilder(interfaceName);
+						String interfaceManufacturer = ((JTextField) interfaceComponents.get(1)).getText();
+						String interfaceModel = ((JTextField) interfaceComponents.get(2)).getText();
+						String interfaceDescription = ((JTextArea) interfaceComponents.get(3)).getText();
+						EquipmentBuilder interfaceBuilder = MiapeDocumentFactory.createEquipmentBuilder(interfaceName);
 						if (!"".equals(interfaceManufacturer))
-							interfaceBuilder
-									.manufacturer(interfaceManufacturer);
+							interfaceBuilder.manufacturer(interfaceManufacturer);
 						if (!"".equals(interfaceModel))
 							interfaceBuilder.model(interfaceModel);
 						if (!"".equals(interfaceDescription))
@@ -347,20 +316,14 @@ public class MIAPEMSFormManager {
 						interfaceEquipment = interfaceBuilder.build();
 					}
 
-					final List<JComponent> sprayerComponents = (List<JComponent>) esiComponentList
-							.get(4);
-					String sprayerName = ((JTextField) sprayerComponents.get(0))
-							.getText();
+					final List<JComponent> sprayerComponents = (List<JComponent>) esiComponentList.get(4);
+					String sprayerName = ((JTextField) sprayerComponents.get(0)).getText();
 					Equipment sprayerEquipment = null;
 					if (sprayerName != null && !"".equals(sprayerName)) {
-						String sprayerManufacturer = ((JTextField) sprayerComponents
-								.get(1)).getText();
-						String sprayerModel = ((JTextField) sprayerComponents
-								.get(2)).getText();
-						String sprayerDescription = ((JTextArea) sprayerComponents
-								.get(3)).getText();
-						EquipmentBuilder sprayerBuilder = MiapeDocumentFactory
-								.createEquipmentBuilder(sprayerName);
+						String sprayerManufacturer = ((JTextField) sprayerComponents.get(1)).getText();
+						String sprayerModel = ((JTextField) sprayerComponents.get(2)).getText();
+						String sprayerDescription = ((JTextArea) sprayerComponents.get(3)).getText();
+						EquipmentBuilder sprayerBuilder = MiapeDocumentFactory.createEquipmentBuilder(sprayerName);
 						if (!"".equals(sprayerManufacturer))
 							sprayerBuilder.manufacturer(sprayerManufacturer);
 						if (!"".equals(sprayerModel))
@@ -371,8 +334,7 @@ public class MIAPEMSFormManager {
 					}
 
 					if (!"".equals(esiName)) {
-						EsiBuilder esiBuilder = MiapeMSDocumentFactory
-								.createEsiBuilder(esiName);
+						EsiBuilder esiBuilder = MiapeMSDocumentFactory.createEsiBuilder(esiName);
 						if (!"".equals(supplyType))
 							esiBuilder.supplyType(supplyType);
 						if (!"".equals(parameters))
@@ -387,32 +349,21 @@ public class MIAPEMSFormManager {
 				}
 			}
 			if (showMaldi) {
-				List<JComponent> maldiComponentList = (List<JComponent>) instrumentConfiguration
-						.get(MALDI_INDEX);
+				List<JComponent> maldiComponentList = (List<JComponent>) instrumentConfiguration.get(MALDI_INDEX);
 				if (maldiComponentList != null && !maldiComponentList.isEmpty()) {
 
-					final String maldiName = ((JTextField) maldiComponentList
-							.get(0)).getText();
-					final String plateType = (String) ((JComboBox) maldiComponentList
-							.get(1)).getSelectedItem();
-					final String matrix = ((JTextField) maldiComponentList
-							.get(2)).getText();
-					final String dissociation = (String) ((JComboBox) maldiComponentList
-							.get(3)).getSelectedItem();
-					final String dissociationSummary = ((JTextArea) maldiComponentList
-							.get(4)).getText();
-					final Boolean extraction = ((JCheckBox) maldiComponentList
-							.get(5)).isSelected();
-					final String laser = (String) ((JComboBox) maldiComponentList
-							.get(6)).getSelectedItem();
-					final String wavelength = ((JTextField) maldiComponentList
-							.get(7)).getText();
-					final String laserParams = ((JTextArea) maldiComponentList
-							.get(8)).getText();
+					final String maldiName = ((JTextField) maldiComponentList.get(0)).getText();
+					final String plateType = (String) ((JComboBox) maldiComponentList.get(1)).getSelectedItem();
+					final String matrix = ((JTextField) maldiComponentList.get(2)).getText();
+					final String dissociation = (String) ((JComboBox) maldiComponentList.get(3)).getSelectedItem();
+					final String dissociationSummary = ((JTextArea) maldiComponentList.get(4)).getText();
+					final Boolean extraction = ((JCheckBox) maldiComponentList.get(5)).isSelected();
+					final String laser = (String) ((JComboBox) maldiComponentList.get(6)).getSelectedItem();
+					final String wavelength = ((JTextField) maldiComponentList.get(7)).getText();
+					final String laserParams = ((JTextArea) maldiComponentList.get(8)).getText();
 
 					if (!"".equals(maldiName)) {
-						MaldiBuilder maldiBuilder = MiapeMSDocumentFactory
-								.createMaldiBuilder(maldiName);
+						MaldiBuilder maldiBuilder = MiapeMSDocumentFactory.createMaldiBuilder(maldiName);
 						if (!"".equals(plateType))
 							maldiBuilder.plateType(plateType);
 						if (!"".equals(matrix))
@@ -420,8 +371,7 @@ public class MIAPEMSFormManager {
 						if (!"".equals(dissociation))
 							maldiBuilder.dissociation(dissociation);
 						if (!"".equals(dissociationSummary))
-							maldiBuilder
-									.dissociationSummary(dissociationSummary);
+							maldiBuilder.dissociationSummary(dissociationSummary);
 						if (!"".equals(extraction))
 							maldiBuilder.extraction(extraction.toString());
 						if (!"".equals(laser))
@@ -437,39 +387,28 @@ public class MIAPEMSFormManager {
 			if (showOther) {
 				List<JComponent> otherSourceComponentList = (List<JComponent>) instrumentConfiguration
 						.get(OTHER_ION_SOURCE_INDEX);
-				if (otherSourceComponentList != null
-						&& !otherSourceComponentList.isEmpty()) {
+				if (otherSourceComponentList != null && !otherSourceComponentList.isEmpty()) {
 
-					final String otherSourceName = (String) ((JComboBox) otherSourceComponentList
-							.get(0)).getSelectedItem();
-					final String otherSourceParameters = ((JTextArea) otherSourceComponentList
-							.get(1)).getText();
+					final String otherSourceName = (String) ((JComboBox) otherSourceComponentList.get(0))
+							.getSelectedItem();
+					final String otherSourceParameters = ((JTextArea) otherSourceComponentList.get(1)).getText();
 					if (!"".equals(otherSourceName)) {
 						final Other_IonSourceBuilder other_IonSourceBuilder = MiapeMSDocumentFactory
 								.createOther_IonSourceBuilder(otherSourceName);
 						if (!"".equals(otherSourceParameters))
-							other_IonSourceBuilder
-									.parameters(otherSourceParameters);
-						icBuilder
-								.otherIonSource(other_IonSourceBuilder.build());
+							other_IonSourceBuilder.parameters(otherSourceParameters);
+						icBuilder.otherIonSource(other_IonSourceBuilder.build());
 					}
 				}
 			}
-			List<JComponent> activationComponentList = (List<JComponent>) instrumentConfiguration
-					.get(ACTIVATION_INDEX);
-			if (activationComponentList != null
-					&& !activationComponentList.isEmpty()) {
+			List<JComponent> activationComponentList = (List<JComponent>) instrumentConfiguration.get(ACTIVATION_INDEX);
+			if (activationComponentList != null && !activationComponentList.isEmpty()) {
 
-				final String activationName = ((JTextField) activationComponentList
-						.get(0)).getText();
-				final String gasType = (String) ((JComboBox) activationComponentList
-						.get(1)).getSelectedItem();
-				final String gasPressure = ((JTextField) activationComponentList
-						.get(2)).getText();
-				final String gasPressureUnits = (String) ((JComboBox) activationComponentList
-						.get(3)).getSelectedItem();
-				final String activationType = (String) ((JComboBox) activationComponentList
-						.get(4)).getSelectedItem();
+				final String activationName = ((JTextField) activationComponentList.get(0)).getText();
+				final String gasType = (String) ((JComboBox) activationComponentList.get(1)).getSelectedItem();
+				final String gasPressure = ((JTextField) activationComponentList.get(2)).getText();
+				final String gasPressureUnits = (String) ((JComboBox) activationComponentList.get(3)).getSelectedItem();
+				final String activationType = (String) ((JComboBox) activationComponentList.get(4)).getSelectedItem();
 				if (!"".equals(activationName)) {
 
 					final ActivationDissociationBuilder activationBuilder = MiapeMSDocumentFactory
@@ -483,8 +422,7 @@ public class MIAPEMSFormManager {
 					if (!"".equals(activationType))
 						activationBuilder.activationType(activationType);
 					icBuilder.activationDissociation(activationBuilder.build());
-				} else if (!"".equals(gasType) || !"".equals(gasPressure)
-						|| !"".equals(gasPressureUnits)
+				} else if (!"".equals(gasType) || !"".equals(gasPressure) || !"".equals(gasPressureUnits)
 						|| !"".equals(activationType)) {
 					throw new IllegalMiapeArgumentException(
 							"A name of the instrument component is necessary to define the 'Activation/Dissociation' information");
@@ -498,49 +436,37 @@ public class MIAPEMSFormManager {
 		}
 
 		if (!acquisitions.isEmpty()) {
-			Set<Acquisition> acquisitionSet = new HashSet<Acquisition>();
+			Set<Acquisition> acquisitionSet = new THashSet<Acquisition>();
 			for (Object object : acquisitions) {
 				List<JComponent> acquisitionComponentList = (List<JComponent>) object;
-				if (acquisitionComponentList != null
-						&& !acquisitionComponentList.isEmpty()) {
-					final String acquisitionName = (String) ((JComboBox) acquisitionComponentList
-							.get(0)).getSelectedItem();
+				if (acquisitionComponentList != null && !acquisitionComponentList.isEmpty()) {
+					final String acquisitionName = (String) ((JComboBox) acquisitionComponentList.get(0))
+							.getSelectedItem();
 					if (acquisitionName != null && !"".equals(acquisitionName)) {
-						final String acquisitionParameters = ((JTextArea) acquisitionComponentList
-								.get(1)).getText();
-						final String paramFile = ((JTextField) acquisitionComponentList
-								.get(2)).getText();
-						final String acquisitionManufacturer = ((JTextField) acquisitionComponentList
-								.get(3)).getText();
-						final String acquisitionVersion = ((JTextField) acquisitionComponentList
-								.get(4)).getText();
-						final String acquisitionDescr = ((JTextArea) acquisitionComponentList
-								.get(5)).getText();
-						final String acquisitionTargetList = ((JTextArea) acquisitionComponentList
-								.get(6)).getText();
-						final String acquisitionTargetFile = ((JTextField) acquisitionComponentList
-								.get(7)).getText();
+						final String acquisitionParameters = ((JTextArea) acquisitionComponentList.get(1)).getText();
+						final String paramFile = ((JTextField) acquisitionComponentList.get(2)).getText();
+						final String acquisitionManufacturer = ((JTextField) acquisitionComponentList.get(3)).getText();
+						final String acquisitionVersion = ((JTextField) acquisitionComponentList.get(4)).getText();
+						final String acquisitionDescr = ((JTextArea) acquisitionComponentList.get(5)).getText();
+						final String acquisitionTargetList = ((JTextArea) acquisitionComponentList.get(6)).getText();
+						final String acquisitionTargetFile = ((JTextField) acquisitionComponentList.get(7)).getText();
 
 						final AcquisitionBuilder acquisitionBuilder = MiapeMSDocumentFactory
 								.createAcquisitionBuilder(acquisitionName);
 						if (!"".equals(acquisitionParameters))
-							acquisitionBuilder
-									.parameters(acquisitionParameters);
+							acquisitionBuilder.parameters(acquisitionParameters);
 						if (!"".equals(paramFile))
 							acquisitionBuilder.parameterFile(paramFile);
 						if (!"".equals(acquisitionManufacturer))
-							acquisitionBuilder
-									.manufacturer(acquisitionManufacturer);
+							acquisitionBuilder.manufacturer(acquisitionManufacturer);
 						if (!"".equals(acquisitionVersion))
 							acquisitionBuilder.version(acquisitionVersion);
 						if (!"".equals(acquisitionDescr))
 							acquisitionBuilder.description(acquisitionDescr);
 						if (!"".equals(acquisitionTargetList))
-							acquisitionBuilder
-									.targetList(acquisitionTargetList);
+							acquisitionBuilder.targetList(acquisitionTargetList);
 						if (!"".equals(acquisitionTargetFile))
-							acquisitionBuilder
-									.transitionListFile(acquisitionTargetFile);
+							acquisitionBuilder.transitionListFile(acquisitionTargetFile);
 						acquisitionSet.add(acquisitionBuilder.build());
 					}
 				}
@@ -549,42 +475,33 @@ public class MIAPEMSFormManager {
 				builder.acquisitions(acquisitionSet);
 		}
 		if (!dataAnalysises.isEmpty()) {
-			Set<DataAnalysis> dataAnalysisSet = new HashSet<DataAnalysis>();
+			Set<DataAnalysis> dataAnalysisSet = new THashSet<DataAnalysis>();
 			for (Object object : dataAnalysises) {
 				List<JComponent> dataAnalysisComponentList = (List<JComponent>) object;
-				if (dataAnalysisComponentList != null
-						&& !dataAnalysisComponentList.isEmpty()) {
-					final String dataAnalysisName = (String) ((JComboBox) dataAnalysisComponentList
-							.get(0)).getSelectedItem();
-					if (dataAnalysisName != null
-							&& !"".equals(dataAnalysisName)) {
-						final String dataAnalysisVersion = ((JTextField) dataAnalysisComponentList
-								.get(4)).getText();
-						final String dataAnalysisManufacturer = ((JTextField) dataAnalysisComponentList
-								.get(3)).getText();
-						final String dataAnalysisDescription = (String) ((JComboBox) dataAnalysisComponentList
-								.get(5)).getSelectedItem();
-						final String dataAnalysisParameters = ((JTextArea) dataAnalysisComponentList
-								.get(1)).getText();
-						final String dataAnalysisParamFile = ((JTextField) dataAnalysisComponentList
-								.get(2)).getText();
+				if (dataAnalysisComponentList != null && !dataAnalysisComponentList.isEmpty()) {
+					final String dataAnalysisName = (String) ((JComboBox) dataAnalysisComponentList.get(0))
+							.getSelectedItem();
+					if (dataAnalysisName != null && !"".equals(dataAnalysisName)) {
+						final String dataAnalysisVersion = ((JTextField) dataAnalysisComponentList.get(4)).getText();
+						final String dataAnalysisManufacturer = ((JTextField) dataAnalysisComponentList.get(3))
+								.getText();
+						final String dataAnalysisDescription = (String) ((JComboBox) dataAnalysisComponentList.get(5))
+								.getSelectedItem();
+						final String dataAnalysisParameters = ((JTextArea) dataAnalysisComponentList.get(1)).getText();
+						final String dataAnalysisParamFile = ((JTextField) dataAnalysisComponentList.get(2)).getText();
 
 						final DataAnalysisBuilder dataAnalysisBuilder = MiapeMSDocumentFactory
 								.createDataAnalysisBuilder(dataAnalysisName);
 						if (!"".equals(dataAnalysisVersion))
 							dataAnalysisBuilder.version(dataAnalysisVersion);
 						if (!"".equals(dataAnalysisManufacturer))
-							dataAnalysisBuilder
-									.manufacturer(dataAnalysisManufacturer);
+							dataAnalysisBuilder.manufacturer(dataAnalysisManufacturer);
 						if (!"".equals(dataAnalysisDescription))
-							dataAnalysisBuilder
-									.description(dataAnalysisDescription);
+							dataAnalysisBuilder.description(dataAnalysisDescription);
 						if (!"".equals(dataAnalysisParameters))
-							dataAnalysisBuilder
-									.parameters(dataAnalysisParameters);
+							dataAnalysisBuilder.parameters(dataAnalysisParameters);
 						if (!"".equals(dataAnalysisParamFile))
-							dataAnalysisBuilder
-									.parametersLocation(dataAnalysisParamFile);
+							dataAnalysisBuilder.parametersLocation(dataAnalysisParamFile);
 
 						dataAnalysisSet.add(dataAnalysisBuilder.build());
 					}
@@ -596,75 +513,57 @@ public class MIAPEMSFormManager {
 		List<MSAdditionalInformation> addInfos = new ArrayList<MSAdditionalInformation>();
 		if (!this.addInfos.isEmpty()) {
 			// sample name
-			final String sampleName = ((JTextArea) this.addInfos.get(0))
-					.getText();
+			final String sampleName = ((JTextArea) this.addInfos.get(0)).getText();
 			if (sampleName != null && !"".equals(sampleName)) {
 				addInfos.add(MiapeMSDocumentFactory
 						.createAdditionalInformationBuilder(
-								SampleInformation.getInstance(cvManager)
-										.getSampleBatchTerm()
-										.getPreferredName()).value(sampleName)
-						.build());
+								SampleInformation.getInstance(cvManager).getSampleBatchTerm().getPreferredName())
+						.value(sampleName).build());
 
 			}
 			// sample name
-			final String sampleVolumen = ((JTextField) this.addInfos.get(1))
-					.getText();
+			final String sampleVolumen = ((JTextField) this.addInfos.get(1)).getText();
 			if (sampleVolumen != null && !"".equals(sampleVolumen)) {
 				addInfos.add(MiapeMSDocumentFactory
 						.createAdditionalInformationBuilder(
-								SampleInformation.getInstance(cvManager)
-										.getSampleVolumenTerm()
-										.getPreferredName())
+								SampleInformation.getInstance(cvManager).getSampleVolumenTerm().getPreferredName())
 						.value(sampleVolumen).build());
 
 			}
 			// tissue
-			final String sampletissue = (String) ((JComboBox) this.addInfos
-					.get(2)).getSelectedItem();
+			final String sampletissue = (String) ((JComboBox) this.addInfos.get(2)).getSelectedItem();
 			if (sampletissue != null && !"".equals(sampletissue)) {
-				addInfos.add(MiapeMSDocumentFactory
-						.createAdditionalInformationBuilder(sampletissue)
-						.build());
+				addInfos.add(MiapeMSDocumentFactory.createAdditionalInformationBuilder(sampletissue).build());
 
 			}
 
 			// cell type
-			final String cellType = (String) ((JComboBox) this.addInfos.get(3))
-					.getSelectedItem();
+			final String cellType = (String) ((JComboBox) this.addInfos.get(3)).getSelectedItem();
 			if (cellType != null && !"".equals(cellType)) {
-				addInfos.add(MiapeMSDocumentFactory
-						.createAdditionalInformationBuilder(cellType).build());
+				addInfos.add(MiapeMSDocumentFactory.createAdditionalInformationBuilder(cellType).build());
 
 			}
 			// disease
-			final String sampleDisease = (String) ((JComboBox) this.addInfos
-					.get(4)).getSelectedItem();
+			final String sampleDisease = (String) ((JComboBox) this.addInfos.get(4)).getSelectedItem();
 			if (sampleDisease != null && !"".equals(sampleDisease)) {
-				addInfos.add(MiapeMSDocumentFactory
-						.createAdditionalInformationBuilder(sampleDisease)
-						.build());
+				addInfos.add(MiapeMSDocumentFactory.createAdditionalInformationBuilder(sampleDisease).build());
 
 			}
 			// taxonomy
-			final String taxonomy = (String) ((JComboBox) this.addInfos.get(5))
-					.getSelectedItem();
+			final String taxonomy = (String) ((JComboBox) this.addInfos.get(5)).getSelectedItem();
 			if (taxonomy != null && !"".equals(taxonomy)) {
-				addInfos.add(MiapeMSDocumentFactory
-						.createAdditionalInformationBuilder(taxonomy).build());
+				addInfos.add(MiapeMSDocumentFactory.createAdditionalInformationBuilder(taxonomy).build());
 
 			}
 
 			if (this.addInfos.size() > 6) {
 				for (int i = 6; i < this.addInfos.size(); i++) {
-					final String addInfoName = (String) ((JComboBox) this.addInfos
-							.get(i)).getSelectedItem();
+					final String addInfoName = (String) ((JComboBox) this.addInfos.get(i)).getSelectedItem();
 					if (!"".equals(addInfoName)) {
 						AdditionalInformationBuilder addInfoBuilder = MiapeMSDocumentFactory
 								.createAdditionalInformationBuilder(addInfoName);
 						if (i + 1 < this.addInfos.size()) {
-							final String addInfoValue = ((JTextArea) this.addInfos
-									.get(i + 1)).getText();
+							final String addInfoValue = ((JTextArea) this.addInfos.get(i + 1)).getText();
 							addInfoBuilder.value(addInfoValue);
 						}
 						addInfos.add(addInfoBuilder.build());
@@ -676,14 +575,12 @@ public class MIAPEMSFormManager {
 		}
 		if (!samplePreps.isEmpty()) {
 			for (int i = 0; i < samplePreps.size(); i++) {
-				final String addInfoName = (String) ((JComboBox) samplePreps
-						.get(i)).getSelectedItem();
+				final String addInfoName = (String) ((JComboBox) samplePreps.get(i)).getSelectedItem();
 				if (!"".equals(addInfoName)) {
 					AdditionalInformationBuilder addInfoBuilder = MiapeMSDocumentFactory
 							.createAdditionalInformationBuilder(addInfoName);
 					if (i + 1 < samplePreps.size()) {
-						final String addInfoValue = ((JTextArea) samplePreps
-								.get(i + 1)).getText();
+						final String addInfoValue = ((JTextArea) samplePreps.get(i + 1)).getText();
 						addInfoBuilder.value(addInfoValue);
 					}
 					addInfos.add(addInfoBuilder.build());
@@ -707,8 +604,7 @@ public class MIAPEMSFormManager {
 		contact.clear();
 	}
 
-	public void loadMIAPEMS(MiapeMSDocument miapeMS,
-			ControlVocabularyManager cvManager) {
+	public void loadMIAPEMS(MiapeMSDocument miapeMS, ControlVocabularyManager cvManager) {
 
 		resetValues();
 
@@ -724,11 +620,9 @@ public class MIAPEMSFormManager {
 
 			// SPECTROMETER
 			// Spectrometer name
-			spectrometer
-					.add(getComboBox(cvRetriever.getInstrumentNames(), null));
+			spectrometer.add(getComboBox(cvRetriever.getInstrumentNames(), null));
 			// Spectrometer manufacturer
-			spectrometer.add(getComboBox(cvRetriever.getManufacturerNames(),
-					null));
+			spectrometer.add(getComboBox(cvRetriever.getManufacturerNames(), null));
 			// Spectrometer customizations
 			JTextArea customizations = getTextArea(null);
 			customizations.setToolTipText(CUSTOMIZATIONS_TOOLTIP);
@@ -761,8 +655,7 @@ public class MIAPEMSFormManager {
 			contact = getContactEmpyList();
 		}
 		// ADD INFO AND SAMPLE PROCESSING
-		final List<MSAdditionalInformation> additionalInformations = miapeMS
-				.getAdditionalInformations();
+		final List<MSAdditionalInformation> additionalInformations = miapeMS.getAdditionalInformations();
 		if (additionalInformations != null && !additionalInformations.isEmpty()) {
 			addInfos = getAddInformationList(additionalInformations);
 			samplePreps = getSamplePreparationList(additionalInformations);
@@ -780,10 +673,8 @@ public class MIAPEMSFormManager {
 			JComboBox name = getComboBox(instrumentNames, spect.getName());
 			spectrometer.add(name);
 			// Spectrometer manufacturer
-			List<String> manufacturersNames = cvRetriever
-					.getManufacturerNames();
-			JComboBox manufacturer = getComboBox(manufacturersNames,
-					spect.getManufacturer());
+			List<String> manufacturersNames = cvRetriever.getManufacturerNames();
+			JComboBox manufacturer = getComboBox(manufacturersNames, spect.getManufacturer());
 			spectrometer.add(manufacturer);
 			// Spectrometer customizations
 			JTextArea customizations = getTextArea(spect.getCustomizations());
@@ -795,11 +686,9 @@ public class MIAPEMSFormManager {
 		} else {
 
 			// Spectrometer name
-			spectrometer
-					.add(getComboBox(cvRetriever.getInstrumentNames(), null));
+			spectrometer.add(getComboBox(cvRetriever.getInstrumentNames(), null));
 			// Spectrometer manufacturer
-			spectrometer.add(getComboBox(cvRetriever.getManufacturerNames(),
-					null));
+			spectrometer.add(getComboBox(cvRetriever.getManufacturerNames(), null));
 			// Spectrometer customizations
 			JTextArea customizations = getTextArea(null);
 			customizations.setToolTipText(CUSTOMIZATIONS_TOOLTIP);
@@ -808,12 +697,9 @@ public class MIAPEMSFormManager {
 			spectrometer.add(getTextField(null));
 		}
 
-		final List<InstrumentConfiguration> instrumentConfigurations = miapeMS
-				.getInstrumentConfigurations();
-		if (instrumentConfigurations != null
-				&& !instrumentConfigurations.isEmpty()) {
-			InstrumentConfiguration instrumentConfiguration = instrumentConfigurations
-					.get(0);
+		final List<InstrumentConfiguration> instrumentConfigurations = miapeMS.getInstrumentConfigurations();
+		if (instrumentConfigurations != null && !instrumentConfigurations.isEmpty()) {
+			InstrumentConfiguration instrumentConfiguration = instrumentConfigurations.get(0);
 			this.instrumentConfiguration = getInstrumentConfigurationList(instrumentConfiguration);
 
 		} else {
@@ -858,8 +744,7 @@ public class MIAPEMSFormManager {
 		ret.add(getTextField(miapeContact.getLastName()));
 		ret.add(getTextField(miapeContact.getInstitution()));
 		ret.add(getTextField(miapeContact.getDepartment()));
-		ret.add(getComboBox(cvRetriever.getPositions(),
-				miapeContact.getPosition()));
+		ret.add(getComboBox(cvRetriever.getPositions(), miapeContact.getPosition()));
 		ret.add(getTextField(miapeContact.getEmail()));
 		ret.add(getTextArea(miapeContact.getAddress()));
 		ret.add(getTextField(miapeContact.getTelephone()));
@@ -879,44 +764,31 @@ public class MIAPEMSFormManager {
 		return ret;
 	}
 
-	private List<JComponent> getAddInformationList(
-			List<MSAdditionalInformation> additionalInformations) {
+	private List<JComponent> getAddInformationList(List<MSAdditionalInformation> additionalInformations) {
 		List<JComponent> ret = new ArrayList<JComponent>();
-		final String sampleBatchCVName = cvManager.getControlVocabularyName(
-				SampleInformation.SAMPLE_BATCH_ACC,
+		final String sampleBatchCVName = cvManager.getControlVocabularyName(SampleInformation.SAMPLE_BATCH_ACC,
 				SampleInformation.getInstance(cvManager));
-		final String sampleVolumneName = cvManager.getControlVocabularyName(
-				SampleInformation.SAMPLE_VOLUME_ACC,
+		final String sampleVolumneName = cvManager.getControlVocabularyName(SampleInformation.SAMPLE_VOLUME_ACC,
 				SampleInformation.getInstance(cvManager));
 
 		// sample name
-		ret.add(getTextArea(getAddInfoValue(additionalInformations,
-				sampleBatchCVName)));
+		ret.add(getTextArea(getAddInfoValue(additionalInformations, sampleBatchCVName)));
 		// sample volume
-		ret.add(getTextField(getAddInfoValue(additionalInformations,
-				sampleVolumneName)));
+		ret.add(getTextField(getAddInfoValue(additionalInformations, sampleVolumneName)));
 
 		// tissue
-		ret.add(getComboBox(
-				cvRetriever.getTissueNames(),
-				getAddInfoName(additionalInformations,
-						TissuesTypes.getInstance(cvManager))));
+		ret.add(getComboBox(cvRetriever.getTissueNames(),
+				getAddInfoName(additionalInformations, TissuesTypes.getInstance(cvManager))));
 
 		// cell type
-		ret.add(getComboBox(
-				cvRetriever.getCellTypesNames(),
-				getAddInfoName(additionalInformations,
-						CellTypes.getInstance(cvManager))));
+		ret.add(getComboBox(cvRetriever.getCellTypesNames(),
+				getAddInfoName(additionalInformations, CellTypes.getInstance(cvManager))));
 		// dissease
-		ret.add(getComboBox(
-				cvRetriever.getDisseasesNames(),
-				getAddInfoName(additionalInformations,
-						HumanDisseases.getInstance(cvManager))));
+		ret.add(getComboBox(cvRetriever.getDisseasesNames(),
+				getAddInfoName(additionalInformations, HumanDisseases.getInstance(cvManager))));
 		// taxonomies
-		ret.add(getComboBox(
-				cvRetriever.getTaxonomies(),
-				getAddInfoName(additionalInformations,
-						MainTaxonomies.getInstance(cvManager))));
+		ret.add(getComboBox(cvRetriever.getTaxonomies(),
+				getAddInfoName(additionalInformations, MainTaxonomies.getInstance(cvManager))));
 
 		// Other add infos:
 		boolean sampleNameFound = false;
@@ -927,46 +799,34 @@ public class MIAPEMSFormManager {
 		boolean someOtherAdded = false;
 		boolean taxonomyFound = false;
 		for (MSAdditionalInformation msAddInfo : additionalInformations) {
-			if (msAddInfo.getName().equals(sampleBatchCVName)
-					&& !sampleNameFound) {
+			if (msAddInfo.getName().equals(sampleBatchCVName) && !sampleNameFound) {
 				sampleNameFound = true;
 				continue;
 			}
-			if (msAddInfo.getName().equals(sampleVolumneName)
-					&& !sampleVolumenFound) {
+			if (msAddInfo.getName().equals(sampleVolumneName) && !sampleVolumenFound) {
 				sampleVolumenFound = true;
 				continue;
 			}
-			if (cvManager.isCV(msAddInfo.getName(),
-					TissuesTypes.getInstance(cvManager))
-					&& !tissueFound) {
+			if (cvManager.isCV(msAddInfo.getName(), TissuesTypes.getInstance(cvManager)) && !tissueFound) {
 				tissueFound = true;
 				continue;
 			}
-			if (cvManager.isCV(msAddInfo.getName(),
-					CellTypes.getInstance(cvManager))
-					&& !cellTypeFound) {
+			if (cvManager.isCV(msAddInfo.getName(), CellTypes.getInstance(cvManager)) && !cellTypeFound) {
 				cellTypeFound = true;
 				continue;
 			}
-			if (cvManager.isCV(msAddInfo.getName(),
-					HumanDisseases.getInstance(cvManager))
-					&& !diseaseFound) {
+			if (cvManager.isCV(msAddInfo.getName(), HumanDisseases.getInstance(cvManager)) && !diseaseFound) {
 				diseaseFound = true;
 				continue;
 			}
-			if (cvManager.isCV(msAddInfo.getName(),
-					MainTaxonomies.getInstance(cvManager))
-					&& !taxonomyFound) {
+			if (cvManager.isCV(msAddInfo.getName(), MainTaxonomies.getInstance(cvManager)) && !taxonomyFound) {
 				taxonomyFound = true;
 				continue;
 			}
 
-			if (!cvManager.isCV(msAddInfo.getName(),
-					SampleProcessingStep.getInstance(cvManager))) {
+			if (!cvManager.isCV(msAddInfo.getName(), SampleProcessingStep.getInstance(cvManager))) {
 				// if it is not any of the previous cvs
-				ret.add(getComboBox(cvRetriever.getSampleProcessingSteps(),
-						msAddInfo.getName()));
+				ret.add(getComboBox(cvRetriever.getSampleProcessingSteps(), msAddInfo.getName()));
 				ret.add(getTextArea(msAddInfo.getValue()));
 				someOtherAdded = true;
 			}
@@ -981,16 +841,13 @@ public class MIAPEMSFormManager {
 		return ret;
 	}
 
-	private List<JComponent> getSamplePreparationList(
-			List<MSAdditionalInformation> additionalInformations) {
+	private List<JComponent> getSamplePreparationList(List<MSAdditionalInformation> additionalInformations) {
 		List<JComponent> ret = new ArrayList<JComponent>();
 
 		for (MSAdditionalInformation msAddInfo : additionalInformations) {
-			if (cvManager.isCV(msAddInfo.getName(),
-					SampleProcessingStep.getInstance(cvManager))) {
+			if (cvManager.isCV(msAddInfo.getName(), SampleProcessingStep.getInstance(cvManager))) {
 				// if it is not any of the previous cvs
-				ret.add(getComboBox(cvRetriever.getSampleProcessingSteps(),
-						msAddInfo.getName()));
+				ret.add(getComboBox(cvRetriever.getSampleProcessingSteps(), msAddInfo.getName()));
 				ret.add(getTextArea(msAddInfo.getValue()));
 			}
 		}
@@ -998,13 +855,11 @@ public class MIAPEMSFormManager {
 		return ret;
 	}
 
-	private String getAddInfoName(
-			List<MSAdditionalInformation> additionalInformations,
+	private String getAddInfoName(List<MSAdditionalInformation> additionalInformations,
 			ControlVocabularySet... cvSets) {
 		for (MSAdditionalInformation addInfo : additionalInformations) {
 			for (ControlVocabularySet controlVocabularySet : cvSets) {
-				final boolean isCv = cvManager.isCV(addInfo.getName(),
-						controlVocabularySet);
+				final boolean isCv = cvManager.isCV(addInfo.getName(), controlVocabularySet);
 				if (isCv) {
 					return addInfo.getName();
 				}
@@ -1013,13 +868,11 @@ public class MIAPEMSFormManager {
 		return null;
 	}
 
-	private MSAdditionalInformation getAddInfo(
-			List<MSAdditionalInformation> additionalInformations,
+	private MSAdditionalInformation getAddInfo(List<MSAdditionalInformation> additionalInformations,
 			ControlVocabularySet... cvSets) {
 		for (MSAdditionalInformation addInfo : additionalInformations) {
 			for (ControlVocabularySet controlVocabularySet : cvSets) {
-				final boolean isCv = cvManager.isCV(addInfo.getName(),
-						controlVocabularySet);
+				final boolean isCv = cvManager.isCV(addInfo.getName(), controlVocabularySet);
 				if (isCv) {
 					return addInfo;
 				}
@@ -1028,8 +881,7 @@ public class MIAPEMSFormManager {
 		return null;
 	}
 
-	private String getAddInfoValue(
-			List<MSAdditionalInformation> additionalInformations, String name) {
+	private String getAddInfoValue(List<MSAdditionalInformation> additionalInformations, String name) {
 		for (MSAdditionalInformation msAdditionalInformation : additionalInformations) {
 			if (msAdditionalInformation.getName().equals(name))
 				return msAdditionalInformation.getValue();
@@ -1062,8 +914,7 @@ public class MIAPEMSFormManager {
 
 	private List<JComponent> getDataAnalysisEmptyList() {
 		List<JComponent> ret = new ArrayList<JComponent>();
-		final JComboBox comboBox = getComboBox(
-				cvRetriever.getDataAnalysisSoftwareNames(), null);
+		final JComboBox comboBox = getComboBox(cvRetriever.getDataAnalysisSoftwareNames(), null);
 		comboBox.setToolTipText(DATAANALYSIS_SOFTWARE_NAME_TOOLTIP);
 		ret.add(comboBox);
 		final JTextArea textArea = getTextArea(null);
@@ -1074,30 +925,25 @@ public class MIAPEMSFormManager {
 		ret.add(textField);
 		ret.add(getTextField(null));
 		ret.add(getTextField(null));
-		final JComponent comboBox2 = getComboBox(
-				cvRetriever.getDataAnalysisDescription(), null);
+		final JComponent comboBox2 = getComboBox(cvRetriever.getDataAnalysisDescription(), null);
 		ret.add(comboBox2);
 		return ret;
 	}
 
 	private List<JComponent> getDataAnalysisList(DataAnalysis dataAnalysis) {
 		List<JComponent> ret = new ArrayList<JComponent>();
-		final JComboBox comboBox = getComboBox(
-				cvRetriever.getDataAnalysisSoftwareNames(),
-				dataAnalysis.getName());
+		final JComboBox comboBox = getComboBox(cvRetriever.getDataAnalysisSoftwareNames(), dataAnalysis.getName());
 		comboBox.setToolTipText(DATAANALYSIS_SOFTWARE_NAME_TOOLTIP);
 		ret.add(comboBox);
 		final JTextArea textArea = getTextArea(dataAnalysis.getParameters());
 		textArea.setToolTipText(DATAANALYSIS_PARAMETERS_TOOLTIP);
 		ret.add(textArea);
-		final JTextField textField = getTextField(dataAnalysis
-				.getParametersLocation());
+		final JTextField textField = getTextField(dataAnalysis.getParametersLocation());
 		textField.setToolTipText(DATAANALYSIS_PARAMETERS_FILE_TOOLTIP);
 		ret.add(textField);
 		ret.add(getTextField(dataAnalysis.getManufacturer()));
 		ret.add(getTextField(dataAnalysis.getVersion()));
-		final JComponent comboBox2 = getComboBox(
-				cvRetriever.getDataAnalysisDescription(),
+		final JComponent comboBox2 = getComboBox(cvRetriever.getDataAnalysisDescription(),
 				dataAnalysis.getDescription());
 		ret.add(comboBox2);
 
@@ -1106,8 +952,7 @@ public class MIAPEMSFormManager {
 
 	private List<JComponent> getAcquisitionEmptyList() {
 		List<JComponent> ret = new ArrayList<JComponent>();
-		final JComboBox comboBox = getComboBox(
-				cvRetriever.getSoftwareAcquisitionNames(), null);
+		final JComboBox comboBox = getComboBox(cvRetriever.getSoftwareAcquisitionNames(), null);
 		comboBox.setToolTipText(ACQUISITION_SOFTWARE_NAME_TOOLTIP);
 		ret.add(comboBox);
 		final JTextArea textArea = getTextArea(null);
@@ -1130,16 +975,13 @@ public class MIAPEMSFormManager {
 
 	private List<JComponent> getAcquisitionList(Acquisition acquisition) {
 		List<JComponent> ret = new ArrayList<JComponent>();
-		final JComboBox comboBox = getComboBox(
-				cvRetriever.getSoftwareAcquisitionNames(),
-				acquisition.getName());
+		final JComboBox comboBox = getComboBox(cvRetriever.getSoftwareAcquisitionNames(), acquisition.getName());
 		comboBox.setToolTipText(ACQUISITION_SOFTWARE_NAME_TOOLTIP);
 		ret.add(comboBox);
 		final JTextArea textArea = getTextArea(acquisition.getParameters());
 		textArea.setToolTipText(ACQUISITION_PARAMETERS_TOOLTIP);
 		ret.add(textArea);
-		final JTextField textField = getTextField(acquisition
-				.getParameterFile());
+		final JTextField textField = getTextField(acquisition.getParameterFile());
 		textField.setToolTipText(ACQUISITION_PARAMETERS_FILE_TOOLTIP);
 		ret.add(textField);
 		ret.add(getTextField(acquisition.getManufacturer()));
@@ -1148,15 +990,13 @@ public class MIAPEMSFormManager {
 		final JTextArea textArea2 = getTextArea(acquisition.getTargetList());
 		textArea2.setToolTipText(TARGET_LIST_TOOLTIP);
 		ret.add(textArea2);
-		final JTextField textField2 = getTextField(acquisition
-				.getTransitionListFile());
+		final JTextField textField2 = getTextField(acquisition.getTransitionListFile());
 		textField2.setToolTipText(TARGET_FILE_TOOLTIP);
 		ret.add(textField2);
 		return ret;
 	}
 
-	private List getInstrumentConfigurationList(
-			InstrumentConfiguration instrumentConfiguration) {
+	private List getInstrumentConfigurationList(InstrumentConfiguration instrumentConfiguration) {
 		List ret = new ArrayList();
 
 		// ANALYZERS
@@ -1200,8 +1040,7 @@ public class MIAPEMSFormManager {
 		// END MALDI
 
 		// OTHER ION SOURCE
-		final List<Other_IonSource> others = instrumentConfiguration
-				.getOther_IonSources();
+		final List<Other_IonSource> others = instrumentConfiguration.getOther_IonSources();
 		List<JComponent> othersComponentsList = new ArrayList<JComponent>();
 		if (others != null && !others.isEmpty()) {
 			ionSourceTypeCombo = createIonSourceTypeCombo(OTHER);
@@ -1214,8 +1053,7 @@ public class MIAPEMSFormManager {
 		// END OTHER ION SOURCE
 
 		// ACTIVATION
-		final Set<ActivationDissociation> activations = instrumentConfiguration
-				.getActivationDissociations();
+		final Set<ActivationDissociation> activations = instrumentConfiguration.getActivationDissociations();
 		List<JComponent> activationComponentsList = new ArrayList();
 		if (activations != null && !activations.isEmpty()) {
 			ActivationDissociation activation = activations.iterator().next();
@@ -1269,37 +1107,30 @@ public class MIAPEMSFormManager {
 		final JTextField textField2 = getTextField(null);
 		textField2.setToolTipText(GAS_PRESSURE_TOOLTIP);
 		ret.add(textField2);
-		final JComboBox comboBox2 = getComboBox(cvRetriever.getPressureUnits(),
-				null);
+		final JComboBox comboBox2 = getComboBox(cvRetriever.getPressureUnits(), null);
 		comboBox2.setToolTipText(GAS_PRESSURE_TOOLTIP);
 		ret.add(comboBox2);
-		final JComboBox comboBox3 = getComboBox(
-				cvRetriever.getActivationTypes(), null);
+		final JComboBox comboBox3 = getComboBox(cvRetriever.getActivationTypes(), null);
 		comboBox3.setToolTipText(ACTIVATION_TYPE_TOOLTIP);
 		ret.add(comboBox3);
 		return ret;
 	}
 
-	private List<JComponent> getActivationComponentList(
-			ActivationDissociation activation) {
+	private List<JComponent> getActivationComponentList(ActivationDissociation activation) {
 		List<JComponent> ret = new ArrayList<JComponent>();
 		final JTextField textField = getTextField(activation.getName());
 		textField.setToolTipText(ACTIVATION_NAME_TOOLTIP);
 		ret.add(textField);
-		final JComboBox comboBox = getComboBox(cvRetriever.getGasTypes(),
-				activation.getGasType());
+		final JComboBox comboBox = getComboBox(cvRetriever.getGasTypes(), activation.getGasType());
 		comboBox.setToolTipText(GAS_TYPE_TOOLTIP);
 		ret.add(comboBox);
 		final JTextField textField2 = getTextField(activation.getGasPressure());
 		textField2.setToolTipText(GAS_PRESSURE_TOOLTIP);
 		ret.add(textField2);
-		final JComboBox comboBox2 = getComboBox(cvRetriever.getPressureUnits(),
-				activation.getPressureUnit());
+		final JComboBox comboBox2 = getComboBox(cvRetriever.getPressureUnits(), activation.getPressureUnit());
 		comboBox2.setToolTipText(GAS_PRESSURE_TOOLTIP);
 		ret.add(comboBox2);
-		final JComboBox comboBox3 = getComboBox(
-				cvRetriever.getActivationTypes(),
-				activation.getActivationType());
+		final JComboBox comboBox3 = getComboBox(cvRetriever.getActivationTypes(), activation.getActivationType());
 		comboBox3.setToolTipText(ACTIVATION_TYPE_TOOLTIP);
 		ret.add(comboBox3);
 		return ret;
@@ -1316,8 +1147,7 @@ public class MIAPEMSFormManager {
 		return ret;
 	}
 
-	private List<JComponent> getOtherIonSourceComponentList(
-			Other_IonSource ionSource) {
+	private List<JComponent> getOtherIonSourceComponentList(Other_IonSource ionSource) {
 		List<JComponent> ret = new ArrayList<JComponent>();
 
 		final String name = ionSource.getName();
@@ -1359,22 +1189,19 @@ public class MIAPEMSFormManager {
 	private List<JComponent> getMaldiEmptyList() {
 		List<JComponent> maldiComponentsList = new ArrayList<JComponent>();
 		maldiComponentsList.add(getTextField(null));
-		final JComboBox comboBoxPlate = getComboBox(
-				cvRetriever.getSamplePlateType(), null);
+		final JComboBox comboBoxPlate = getComboBox(cvRetriever.getSamplePlateType(), null);
 		comboBoxPlate.setToolTipText(PLATE_TYPE_TOOLTIP);
 		maldiComponentsList.add(comboBoxPlate);
 		final JTextField textFieldMatrix = getTextField(null);
 		textFieldMatrix.setToolTipText(MATRIX_TOOLTIP);
 		maldiComponentsList.add(textFieldMatrix);
-		final JComboBox comboBoxMaldiDissociations = getComboBox(
-				cvRetriever.getMaldiDissociations(), null);
+		final JComboBox comboBoxMaldiDissociations = getComboBox(cvRetriever.getMaldiDissociations(), null);
 		comboBoxMaldiDissociations.setToolTipText(MALDI_DISS_TOOLTIP);
 		maldiComponentsList.add(comboBoxMaldiDissociations);
 		final JTextArea textFieldMaldiDissSumary = getTextArea(null);
 		textFieldMaldiDissSumary.setToolTipText(MALDI_SUMMARY_TOOLTIP);
 		maldiComponentsList.add(textFieldMaldiDissSumary);
-		final JCheckBox checkboxExtraction = getCheckBox("delayed extraction",
-				false);
+		final JCheckBox checkboxExtraction = getCheckBox("delayed extraction", false);
 		maldiComponentsList.add(checkboxExtraction);
 		checkboxExtraction.setToolTipText(EXTRACTION_TOOLTIP);
 		maldiComponentsList.add(getComboBox(cvRetriever.getLaserTypes(), null));
@@ -1390,29 +1217,25 @@ public class MIAPEMSFormManager {
 	private List<JComponent> getMaldiComponentList(Maldi maldi) {
 		List<JComponent> maldiComponentsList = new ArrayList<JComponent>();
 		maldiComponentsList.add(getTextField(maldi.getName()));
-		final JComboBox comboBoxPlate = getComboBox(
-				cvRetriever.getSamplePlateType(), maldi.getPlateType());
+		final JComboBox comboBoxPlate = getComboBox(cvRetriever.getSamplePlateType(), maldi.getPlateType());
 		comboBoxPlate.setToolTipText(PLATE_TYPE_TOOLTIP);
 		maldiComponentsList.add(comboBoxPlate);
 		final JTextField textFieldMatrix = getTextField(maldi.getMatrix());
 		textFieldMatrix.setToolTipText(MATRIX_TOOLTIP);
 		maldiComponentsList.add(textFieldMatrix);
-		final JComboBox comboBoxMaldiDissociations = getComboBox(
-				cvRetriever.getMaldiDissociations(), maldi.getDissociation());
+		final JComboBox comboBoxMaldiDissociations = getComboBox(cvRetriever.getMaldiDissociations(),
+				maldi.getDissociation());
 		comboBoxMaldiDissociations.setToolTipText(MALDI_DISS_TOOLTIP);
 		maldiComponentsList.add(comboBoxMaldiDissociations);
-		final JTextArea textFieldMaldiDissSumary = getTextArea(maldi
-				.getDissociationSummary());
+		final JTextArea textFieldMaldiDissSumary = getTextArea(maldi.getDissociationSummary());
 		textFieldMaldiDissSumary.setToolTipText(MALDI_SUMMARY_TOOLTIP);
 		maldiComponentsList.add(textFieldMaldiDissSumary);
 
 		final String extraction = maldi.getExtraction();
 		JCheckBox checkBoxExtraction = null;
 
-		if (extraction != null
-				&& (extraction.equalsIgnoreCase("false")
-						|| extraction.contains("without") || extraction
-							.contains("no")))
+		if (extraction != null && (extraction.equalsIgnoreCase("false") || extraction.contains("without")
+				|| extraction.contains("no")))
 			checkBoxExtraction = getCheckBox("delayed extraction", false);
 		else
 			checkBoxExtraction = getCheckBox("delayed extraction", true);
@@ -1420,14 +1243,11 @@ public class MIAPEMSFormManager {
 
 		maldiComponentsList.add(checkBoxExtraction);
 
-		maldiComponentsList.add(getComboBox(cvRetriever.getLaserTypes(),
-				maldi.getLaser()));
-		final JTextField textFieldLaserWavelength = getTextField(maldi
-				.getLaserWaveLength());
+		maldiComponentsList.add(getComboBox(cvRetriever.getLaserTypes(), maldi.getLaser()));
+		final JTextField textFieldLaserWavelength = getTextField(maldi.getLaserWaveLength());
 		textFieldLaserWavelength.setToolTipText(LASER_WAVELENGTH_TOOLTIP);
 		maldiComponentsList.add(textFieldLaserWavelength);
-		final JTextArea textFieldLaserParameters = getTextArea(maldi
-				.getLaserParameters());
+		final JTextArea textFieldLaserParameters = getTextArea(maldi.getLaserParameters());
 		textFieldLaserParameters.setToolTipText(LASER_PARAMETERS_TOOLTIP);
 		maldiComponentsList.add(textFieldLaserParameters);
 		return maldiComponentsList;
@@ -1435,10 +1255,8 @@ public class MIAPEMSFormManager {
 
 	private List getEsiComponentList(Esi esi) {
 		List esiComponentsList = new ArrayList();
-		esiComponentsList.add(getComboBox(cvRetriever.getEsiNames(),
-				esi.getName()));
-		esiComponentsList.add(getComboBox(cvRetriever.getSupplyTypeNames(),
-				esi.getSupplyType()));
+		esiComponentsList.add(getComboBox(cvRetriever.getEsiNames(), esi.getName()));
+		esiComponentsList.add(getComboBox(cvRetriever.getSupplyTypeNames(), esi.getSupplyType()));
 		final JTextArea textField = getTextArea(esi.getParameters());
 		textField.setToolTipText(ESIPARAMETERS_TOOLTIP);
 		esiComponentsList.add(textField);
@@ -1481,8 +1299,7 @@ public class MIAPEMSFormManager {
 		sprayerComponents.add(getTextField(equipment.getName()));
 		sprayerComponents.add(getTextField(equipment.getManufacturer()));
 		sprayerComponents.add(getTextField(equipment.getModel()));
-		final JTextArea textFieldDescription = getTextArea(equipment
-				.getDescription());
+		final JTextArea textFieldDescription = getTextArea(equipment.getDescription());
 		textFieldDescription.setToolTipText(SPRAYER_DESCRIPTION_TOOLTIP);
 		sprayerComponents.add(textFieldDescription);
 		return sprayerComponents;
@@ -1493,8 +1310,7 @@ public class MIAPEMSFormManager {
 		interfaceComponents.add(getTextField(equipment.getName()));
 		interfaceComponents.add(getTextField(equipment.getManufacturer()));
 		interfaceComponents.add(getTextField(equipment.getModel()));
-		final JTextArea textFieldDescription = getTextArea(equipment
-				.getDescription());
+		final JTextArea textFieldDescription = getTextArea(equipment.getDescription());
 		textFieldDescription.setToolTipText(INTERFACE_DESCRIPTION_TOOLTIP);
 		interfaceComponents.add(textFieldDescription);
 		return interfaceComponents;
@@ -1514,8 +1330,7 @@ public class MIAPEMSFormManager {
 	private List getEsiEmptyList() {
 		List esiComponentsList = new ArrayList();
 		esiComponentsList.add(getComboBox(cvRetriever.getEsiNames(), null)); // 0
-		esiComponentsList.add(getComboBox(cvRetriever.getSupplyTypeNames(),
-				null)); // 1
+		esiComponentsList.add(getComboBox(cvRetriever.getSupplyTypeNames(), null)); // 1
 		final JTextArea textField = getTextArea(null);
 		textField.setToolTipText(ESIPARAMETERS_TOOLTIP); // 2
 		esiComponentsList.add(textField);
@@ -1548,11 +1363,9 @@ public class MIAPEMSFormManager {
 	private List<JComponent> getAnalyserComponentList(Analyser analyser) {
 		List<JComponent> analyserComponentsList = new ArrayList<JComponent>();
 
-		analyserComponentsList.add(getComboBox(cvRetriever.getAnalyzerNames(),
-				analyser.getName()));
+		analyserComponentsList.add(getComboBox(cvRetriever.getAnalyzerNames(), analyser.getName()));
 		analyserComponentsList.add(getTextArea(analyser.getDescription()));
-		final JComboBox comboBox = getComboBox(
-				cvRetriever.getRelectronStates(), analyser.getReflectron());
+		final JComboBox comboBox = getComboBox(cvRetriever.getRelectronStates(), analyser.getReflectron());
 		comboBox.setToolTipText(REFLECTRON_TOOLTIP);
 		analyserComponentsList.add(comboBox);
 		return analyserComponentsList;
@@ -1562,11 +1375,9 @@ public class MIAPEMSFormManager {
 		List analysersList = new ArrayList();
 
 		List<JComponent> analyserComponentsList = new ArrayList<JComponent>();
-		analyserComponentsList.add(getComboBox(cvRetriever.getAnalyzerNames(),
-				null));
+		analyserComponentsList.add(getComboBox(cvRetriever.getAnalyzerNames(), null));
 		analyserComponentsList.add(getTextArea(null));
-		final JComboBox comboBox = getComboBox(
-				cvRetriever.getRelectronStates(), null);
+		final JComboBox comboBox = getComboBox(cvRetriever.getRelectronStates(), null);
 		comboBox.setToolTipText(REFLECTRON_TOOLTIP);
 		analyserComponentsList.add(comboBox);
 		analysersList.add(analyserComponentsList);
@@ -1643,22 +1454,19 @@ public class MIAPEMSFormManager {
 	public JPanel getSpectrumGenerationPanel(int slide) {
 
 		JPanel spectrumGenerationPanel = new JPanel(new GridBagLayout());
-		spectrumGenerationPanel.setBorder(new TitledBorder(
-				"4. Spectrum and peak list generation and annotation"));
+		spectrumGenerationPanel.setBorder(new TitledBorder("4. Spectrum and peak list generation and annotation"));
 		GridBagConstraints spectrumGenerationC = getGridBagContraints();
 
 		if (slide == MiapeMSForms.ACQUISITION_SLIDE) {
 			JPanel acquisitionsPanel = new JPanel(new GridBagLayout());
 			GridBagConstraints acquisitionsC = getGridBagContraints();
-			acquisitionsPanel.setBorder(new TitledBorder(
-					"4.1 Data acquisition software and parameters"));
+			acquisitionsPanel.setBorder(new TitledBorder("4.1 Data acquisition software and parameters"));
 			int i = 0;
 			for (Object object : acquisitions) {
 				List<JComponent> acquisitionComponentList = (List<JComponent>) object;
 
 				JPanel acquisitionPanel = new JPanel(new GridBagLayout());
-				acquisitionPanel.setBorder(new TitledBorder("Data acquisition "
-						+ (i + 1)));
+				acquisitionPanel.setBorder(new TitledBorder("Data acquisition " + (i + 1)));
 				GridBagConstraints acquisitionC = getGridBagContraints();
 				acquisitionsC.gridy = i;
 
@@ -1668,8 +1476,7 @@ public class MIAPEMSFormManager {
 				acquisitionC.gridx = 0;
 				acquisitionPanel.add(labelName, acquisitionC);
 				acquisitionC.gridx = 1;
-				acquisitionPanel.add(acquisitionComponentList.get(0),
-						acquisitionC);
+				acquisitionPanel.add(acquisitionComponentList.get(0), acquisitionC);
 
 				// version
 				acquisitionC.gridy++;
@@ -1677,8 +1484,7 @@ public class MIAPEMSFormManager {
 				acquisitionC.gridx = 0;
 				acquisitionPanel.add(labelVersion, acquisitionC);
 				acquisitionC.gridx = 1;
-				acquisitionPanel.add(acquisitionComponentList.get(4),
-						acquisitionC);
+				acquisitionPanel.add(acquisitionComponentList.get(4), acquisitionC);
 
 				// software manufacturer
 				acquisitionC.gridy++;
@@ -1686,8 +1492,7 @@ public class MIAPEMSFormManager {
 				acquisitionC.gridx = 0;
 				acquisitionPanel.add(labelManufacturer, acquisitionC);
 				acquisitionC.gridx = 1;
-				acquisitionPanel.add(acquisitionComponentList.get(3),
-						acquisitionC);
+				acquisitionPanel.add(acquisitionComponentList.get(3), acquisitionC);
 
 				// description
 				acquisitionC.gridy++;
@@ -1695,38 +1500,30 @@ public class MIAPEMSFormManager {
 				acquisitionC.gridx = 0;
 				acquisitionPanel.add(labelDescription, acquisitionC);
 				acquisitionC.gridx = 1;
-				acquisitionPanel
-						.add(getScrollableComponent(acquisitionComponentList
-								.get(5)), acquisitionC);
+				acquisitionPanel.add(getScrollableComponent(acquisitionComponentList.get(5)), acquisitionC);
 
 				// parameters
 				acquisitionC.gridy++;
 				JLabel labelParameters = new JLabel("Acquisition parameters:");
-				labelParameters
-						.setToolTipText(ACQUISITION_SOFTWARE_NAME_TOOLTIP);
+				labelParameters.setToolTipText(ACQUISITION_SOFTWARE_NAME_TOOLTIP);
 				acquisitionC.gridx = 0;
 				acquisitionPanel.add(labelParameters, acquisitionC);
 				acquisitionC.gridx = 1;
-				acquisitionPanel
-						.add(getScrollableComponent(acquisitionComponentList
-								.get(1)), acquisitionC);
+				acquisitionPanel.add(getScrollableComponent(acquisitionComponentList.get(1)), acquisitionC);
 				// TODO
 
 				// parameter file
 				acquisitionC.gridy++;
 				JLabel labelParameterFile = new JLabel("URL to parameter file:");
-				labelParameterFile
-						.setToolTipText(ACQUISITION_PARAMETERS_FILE_TOOLTIP);
+				labelParameterFile.setToolTipText(ACQUISITION_PARAMETERS_FILE_TOOLTIP);
 				acquisitionC.gridx = 0;
 				acquisitionPanel.add(labelParameterFile, acquisitionC);
 				acquisitionC.gridx = 1;
-				acquisitionPanel.add(acquisitionComponentList.get(2),
-						acquisitionC);
+				acquisitionPanel.add(acquisitionComponentList.get(2), acquisitionC);
 
 				// label SRM
 				acquisitionC.gridy++;
-				JLabel label = new JLabel(
-						"<html><br>For targeted approaches:</html>");
+				JLabel label = new JLabel("<html><br>For targeted approaches:</html>");
 				acquisitionC.gridx = 0;
 				acquisitionPanel.add(label, acquisitionC);
 
@@ -1737,37 +1534,29 @@ public class MIAPEMSFormManager {
 				acquisitionC.gridx = 0;
 				acquisitionPanel.add(labelTargetList, acquisitionC);
 				acquisitionC.gridx = 1;
-				acquisitionPanel
-						.add(getScrollableComponent(acquisitionComponentList
-								.get(6)), acquisitionC);
+				acquisitionPanel.add(getScrollableComponent(acquisitionComponentList.get(6)), acquisitionC);
 
 				// target list file
 				acquisitionC.gridy++;
-				JLabel labelTargetListFile = new JLabel(
-						"<html>URL to the transition<br>list file:</html>");
+				JLabel labelTargetListFile = new JLabel("<html>URL to the transition<br>list file:</html>");
 				labelTargetListFile.setToolTipText(TARGET_FILE_TOOLTIP);
 				acquisitionC.gridx = 0;
 				acquisitionPanel.add(labelTargetListFile, acquisitionC);
 				acquisitionC.gridx = 1;
-				acquisitionPanel.add(acquisitionComponentList.get(7),
-						acquisitionC);
+				acquisitionPanel.add(acquisitionComponentList.get(7), acquisitionC);
 
 				// Add button for remove this acquisition
 				final int index = i;
 				JButton removeAcquisitionButton = new JButton("Remove");
-				removeAcquisitionButton
-						.setToolTipText("Remove this acquisition software");
-				removeAcquisitionButton
-						.addActionListener(new java.awt.event.ActionListener() {
-							@Override
-							public void actionPerformed(
-									java.awt.event.ActionEvent evt) {
-								acquisitions.remove(index);
-								miapeMSForms
-										.showMIAPEdata(MiapeMSForms.ACQUISITION_SLIDE);
+				removeAcquisitionButton.setToolTipText("Remove this acquisition software");
+				removeAcquisitionButton.addActionListener(new java.awt.event.ActionListener() {
+					@Override
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						acquisitions.remove(index);
+						miapeMSForms.showMIAPEdata(MiapeMSForms.ACQUISITION_SLIDE);
 
-							}
-						});
+					}
+				});
 				acquisitionC.gridy = 0;
 				acquisitionC.gridx = 2;
 				acquisitionC.gridheight = 8;
@@ -1779,23 +1568,17 @@ public class MIAPEMSFormManager {
 				i++;
 			}
 			// Add button for add more acquisitions
-			JButton addAcquisitionButton = new JButton(
-					"Add new data acquisition software");
-			addAcquisitionButton
-					.setToolTipText("Add new data acquisition software");
-			addAcquisitionButton
-					.addActionListener(new java.awt.event.ActionListener() {
-						@Override
-						public void actionPerformed(
-								java.awt.event.ActionEvent evt) {
-							final List<JComponent> acquisitionEmptyList = MIAPEMSFormManager.this
-									.getAcquisitionEmptyList();
-							acquisitions.add(acquisitionEmptyList);
-							miapeMSForms
-									.showMIAPEdata(MiapeMSForms.ACQUISITION_SLIDE);
+			JButton addAcquisitionButton = new JButton("Add new data acquisition software");
+			addAcquisitionButton.setToolTipText("Add new data acquisition software");
+			addAcquisitionButton.addActionListener(new java.awt.event.ActionListener() {
+				@Override
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					final List<JComponent> acquisitionEmptyList = MIAPEMSFormManager.this.getAcquisitionEmptyList();
+					acquisitions.add(acquisitionEmptyList);
+					miapeMSForms.showMIAPEdata(MiapeMSForms.ACQUISITION_SLIDE);
 
-						}
-					});
+				}
+			});
 			acquisitionsC.gridy++;
 			acquisitionsPanel.add(addAcquisitionButton, acquisitionsC);
 
@@ -1805,15 +1588,13 @@ public class MIAPEMSFormManager {
 
 			JPanel dataAnalysisesPanel = new JPanel(new GridBagLayout());
 			GridBagConstraints dataAnalysisesC = getGridBagContraints();
-			dataAnalysisesPanel
-					.setBorder(new TitledBorder("4.2 Data Analysis"));
+			dataAnalysisesPanel.setBorder(new TitledBorder("4.2 Data Analysis"));
 			int i = 0;
 			for (Object object : dataAnalysises) {
 				List<JComponent> dataAnalysisComponentList = (List<JComponent>) object;
 
 				JPanel dataAnalysisPanel = new JPanel(new GridBagLayout());
-				dataAnalysisPanel.setBorder(new TitledBorder("Data analysis "
-						+ (i + 1)));
+				dataAnalysisPanel.setBorder(new TitledBorder("Data analysis " + (i + 1)));
 				GridBagConstraints dataAnalysisC = getGridBagContraints();
 				dataAnalysisesC.gridy = i;
 
@@ -1823,8 +1604,7 @@ public class MIAPEMSFormManager {
 				dataAnalysisC.gridx = 0;
 				dataAnalysisPanel.add(labelName, dataAnalysisC);
 				dataAnalysisC.gridx = 1;
-				dataAnalysisPanel.add(dataAnalysisComponentList.get(0),
-						dataAnalysisC);
+				dataAnalysisPanel.add(dataAnalysisComponentList.get(0), dataAnalysisC);
 
 				// version
 				dataAnalysisC.gridy++;
@@ -1832,8 +1612,7 @@ public class MIAPEMSFormManager {
 				dataAnalysisC.gridx = 0;
 				dataAnalysisPanel.add(labelVersion, dataAnalysisC);
 				dataAnalysisC.gridx = 1;
-				dataAnalysisPanel.add(dataAnalysisComponentList.get(4),
-						dataAnalysisC);
+				dataAnalysisPanel.add(dataAnalysisComponentList.get(4), dataAnalysisC);
 
 				// software manufacturer
 				dataAnalysisC.gridy++;
@@ -1841,8 +1620,7 @@ public class MIAPEMSFormManager {
 				dataAnalysisC.gridx = 0;
 				dataAnalysisPanel.add(labelManufacturer, dataAnalysisC);
 				dataAnalysisC.gridx = 1;
-				dataAnalysisPanel.add(dataAnalysisComponentList.get(3),
-						dataAnalysisC);
+				dataAnalysisPanel.add(dataAnalysisComponentList.get(3), dataAnalysisC);
 
 				// description
 				dataAnalysisC.gridy++;
@@ -1850,8 +1628,7 @@ public class MIAPEMSFormManager {
 				dataAnalysisC.gridx = 0;
 				dataAnalysisPanel.add(labelDescription, dataAnalysisC);
 				dataAnalysisC.gridx = 1;
-				dataAnalysisPanel.add(dataAnalysisComponentList.get(5),
-						dataAnalysisC);
+				dataAnalysisPanel.add(dataAnalysisComponentList.get(5), dataAnalysisC);
 
 				// parameters
 				dataAnalysisC.gridy++;
@@ -1860,37 +1637,29 @@ public class MIAPEMSFormManager {
 				dataAnalysisC.gridx = 0;
 				dataAnalysisPanel.add(labelParameters, dataAnalysisC);
 				dataAnalysisC.gridx = 1;
-				dataAnalysisPanel
-						.add(getScrollableComponent(dataAnalysisComponentList
-								.get(1)), dataAnalysisC);
+				dataAnalysisPanel.add(getScrollableComponent(dataAnalysisComponentList.get(1)), dataAnalysisC);
 
 				// parameter file
 				dataAnalysisC.gridy++;
 				JLabel labelParameterFile = new JLabel("URL to parameter file:");
-				labelParameterFile
-						.setToolTipText(DATAANALYSIS_PARAMETERS_FILE_TOOLTIP);
+				labelParameterFile.setToolTipText(DATAANALYSIS_PARAMETERS_FILE_TOOLTIP);
 				dataAnalysisC.gridx = 0;
 				dataAnalysisPanel.add(labelParameterFile, dataAnalysisC);
 				dataAnalysisC.gridx = 1;
-				dataAnalysisPanel.add(dataAnalysisComponentList.get(2),
-						dataAnalysisC);
+				dataAnalysisPanel.add(dataAnalysisComponentList.get(2), dataAnalysisC);
 
 				// Add button for remove this acquisition
 				final int index = i;
 				JButton removeAcquisitionButton = new JButton("Remove");
-				removeAcquisitionButton
-						.setToolTipText("Remove this data analysis software");
-				removeAcquisitionButton
-						.addActionListener(new java.awt.event.ActionListener() {
-							@Override
-							public void actionPerformed(
-									java.awt.event.ActionEvent evt) {
-								dataAnalysises.remove(index);
-								miapeMSForms
-										.showMIAPEdata(MiapeMSForms.DATA_ANALYSIS_SLIDE);
+				removeAcquisitionButton.setToolTipText("Remove this data analysis software");
+				removeAcquisitionButton.addActionListener(new java.awt.event.ActionListener() {
+					@Override
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						dataAnalysises.remove(index);
+						miapeMSForms.showMIAPEdata(MiapeMSForms.DATA_ANALYSIS_SLIDE);
 
-							}
-						});
+					}
+				});
 				dataAnalysisC.gridy = 0;
 				dataAnalysisC.gridx = 2;
 				dataAnalysisC.gridheight = 8;
@@ -1902,27 +1671,20 @@ public class MIAPEMSFormManager {
 				i++;
 			}
 			// Add button for add more acquisitions
-			JButton addDataAnalysisButton = new JButton(
-					"Add new data analysis software");
-			addDataAnalysisButton
-					.setToolTipText("Add new data analysis software");
-			addDataAnalysisButton
-					.addActionListener(new java.awt.event.ActionListener() {
-						@Override
-						public void actionPerformed(
-								java.awt.event.ActionEvent evt) {
-							final List<JComponent> dataAnalysisEmptyList = MIAPEMSFormManager.this
-									.getDataAnalysisEmptyList();
-							dataAnalysises.add(dataAnalysisEmptyList);
-							miapeMSForms
-									.showMIAPEdata(MiapeMSForms.DATA_ANALYSIS_SLIDE);
+			JButton addDataAnalysisButton = new JButton("Add new data analysis software");
+			addDataAnalysisButton.setToolTipText("Add new data analysis software");
+			addDataAnalysisButton.addActionListener(new java.awt.event.ActionListener() {
+				@Override
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					final List<JComponent> dataAnalysisEmptyList = MIAPEMSFormManager.this.getDataAnalysisEmptyList();
+					dataAnalysises.add(dataAnalysisEmptyList);
+					miapeMSForms.showMIAPEdata(MiapeMSForms.DATA_ANALYSIS_SLIDE);
 
-						}
-					});
+				}
+			});
 			dataAnalysisesC.gridy++;
 			dataAnalysisesPanel.add(addDataAnalysisButton, dataAnalysisesC);
-			spectrumGenerationPanel.add(dataAnalysisesPanel,
-					spectrumGenerationC);
+			spectrumGenerationPanel.add(dataAnalysisesPanel, spectrumGenerationC);
 		}
 		return spectrumGenerationPanel;
 	}
@@ -1931,34 +1693,29 @@ public class MIAPEMSFormManager {
 		JScrollPane js = new JScrollPane(jComponent);
 		js.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		js.setBorder(border);
-		js.setPreferredSize(new Dimension(jComponent.getPreferredSize().width,
-				70));
+		js.setPreferredSize(new Dimension(jComponent.getPreferredSize().width, 70));
 		return js;
 	}
 
 	public JPanel getInstrumentConfigurationPanel(int slide) {
 
 		JPanel instrumentConfigurationPanel = new JPanel(new GridBagLayout());
-		instrumentConfigurationPanel.setBorder(new TitledBorder(
-				"Instrument configuration"));
+		instrumentConfigurationPanel.setBorder(new TitledBorder("Instrument configuration"));
 		GridBagConstraints instrumentCgfC = getGridBagContraints();
 
 		if (slide == MiapeMSForms.ANALYZERS_SLIDE) {
 			// ANALYZERS
-			final List analyzerList = (List) instrumentConfiguration
-					.get(ANALYZERS_INDEX);
+			final List analyzerList = (List) instrumentConfiguration.get(ANALYZERS_INDEX);
 
 			JPanel analyzersPanel = new JPanel(new GridBagLayout());
 			GridBagConstraints analycersC = getGridBagContraints();
-			analyzersPanel.setBorder(new TitledBorder(
-					"3. Post source component - 3.1 Analysers"));
+			analyzersPanel.setBorder(new TitledBorder("3. Post source component - 3.1 Analysers"));
 			int i = 0;
 			for (Object object : analyzerList) {
 				List<JComponent> analyserComponentList = (List<JComponent>) object;
 
 				JPanel analyzerPanel = new JPanel(new GridBagLayout());
-				analyzerPanel
-						.setBorder(new TitledBorder("Analyser " + (i + 1)));
+				analyzerPanel.setBorder(new TitledBorder("Analyser " + (i + 1)));
 				GridBagConstraints analyzerC = getGridBagContraints();
 				analycersC.gridy = i;
 
@@ -1975,9 +1732,7 @@ public class MIAPEMSFormManager {
 				analyzerC.gridx = 0;
 				analyzerPanel.add(labelDescription, analyzerC);
 				analyzerC.gridx = 1;
-				analyzerPanel.add(
-						getScrollableComponent(analyserComponentList.get(1)),
-						analyzerC);
+				analyzerPanel.add(getScrollableComponent(analyserComponentList.get(1)), analyzerC);
 
 				// Analyzer reflectron state
 				analyzerC.gridy++;
@@ -1992,19 +1747,15 @@ public class MIAPEMSFormManager {
 				final int index = i;
 				JButton removeAnalyzerButton = new JButton("Remove");
 				removeAnalyzerButton.setToolTipText("Remove this analyzer");
-				removeAnalyzerButton
-						.addActionListener(new java.awt.event.ActionListener() {
-							@Override
-							public void actionPerformed(
-									java.awt.event.ActionEvent evt) {
-								final List analyersListTMP = (List) instrumentConfiguration
-										.get(ANALYZERS_INDEX);
-								analyersListTMP.remove(index);
-								miapeMSForms
-										.showMIAPEdata(MiapeMSForms.ANALYZERS_SLIDE);
+				removeAnalyzerButton.addActionListener(new java.awt.event.ActionListener() {
+					@Override
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						final List analyersListTMP = (List) instrumentConfiguration.get(ANALYZERS_INDEX);
+						analyersListTMP.remove(index);
+						miapeMSForms.showMIAPEdata(MiapeMSForms.ANALYZERS_SLIDE);
 
-							}
-						});
+					}
+				});
 				analyzerC.gridy = 0;
 				analyzerC.gridx = 2;
 				analyzerC.gridheight = 3;
@@ -2019,24 +1770,20 @@ public class MIAPEMSFormManager {
 			// Add button for add more analyzers
 			JButton addAnalyzerButton = new JButton("Add new analyser");
 			addAnalyzerButton.setToolTipText("Add new analyser");
-			addAnalyzerButton
-					.addActionListener(new java.awt.event.ActionListener() {
-						@Override
-						public void actionPerformed(
-								java.awt.event.ActionEvent evt) {
-							List<JComponent> analyserComponentListTMP = (List<JComponent>) MIAPEMSFormManager.this
-									.getAnalyzerEmptyList().get(0);
+			addAnalyzerButton.addActionListener(new java.awt.event.ActionListener() {
+				@Override
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					List<JComponent> analyserComponentListTMP = (List<JComponent>) MIAPEMSFormManager.this
+							.getAnalyzerEmptyList().get(0);
 
-							final List analyzerListTMP = (List) instrumentConfiguration
-									.get(ANALYZERS_INDEX);
+					final List analyzerListTMP = (List) instrumentConfiguration.get(ANALYZERS_INDEX);
 
-							analyzerListTMP.add(analyserComponentListTMP);
+					analyzerListTMP.add(analyserComponentListTMP);
 
-							miapeMSForms
-									.showMIAPEdata(MiapeMSForms.ANALYZERS_SLIDE);
+					miapeMSForms.showMIAPEdata(MiapeMSForms.ANALYZERS_SLIDE);
 
-						}
-					});
+				}
+			});
 			analycersC.gridy++;
 			analyzersPanel.add(addAnalyzerButton, analycersC);
 
@@ -2055,12 +1802,10 @@ public class MIAPEMSFormManager {
 
 			if (showEsi) {
 				// ESI
-				final List esiList = (List) instrumentConfiguration
-						.get(ESI_INDEX);
+				final List esiList = (List) instrumentConfiguration.get(ESI_INDEX);
 
 				JPanel esiPanel = new JPanel(new GridBagLayout());
-				esiPanel.setBorder(new TitledBorder(
-						"2. Ion sources - 2.1 Electrospray Ionisation (ESI)"));
+				esiPanel.setBorder(new TitledBorder("2. Ion sources - 2.1 Electrospray Ionisation (ESI)"));
 				GridBagConstraints esiC = getGridBagContraints();
 
 				// ESI name
@@ -2092,8 +1837,7 @@ public class MIAPEMSFormManager {
 				esiPanel.add(getScrollableComponent(parameters), esiC);
 
 				// Interfaces
-				List<JComponent> interfaceComponents = (List<JComponent>) esiList
-						.get(3);
+				List<JComponent> interfaceComponents = (List<JComponent>) esiList.get(3);
 
 				JPanel interfacePanel = new JPanel(new GridBagLayout());
 				interfacePanel.setBorder(new TitledBorder("ESI interface"));
@@ -2127,16 +1871,13 @@ public class MIAPEMSFormManager {
 				interfaceC.gridy++;
 				interfacePanel.add(labelInterfaceDecription, interfaceC);
 				interfaceC.gridx = 1;
-				interfacePanel.add(
-						getScrollableComponent(interfaceComponents.get(3)),
-						interfaceC);
+				interfacePanel.add(getScrollableComponent(interfaceComponents.get(3)), interfaceC);
 
 				esiC.gridy++;
 				esiPanel.add(interfacePanel, esiC);
 
 				// Sprayers
-				List<JComponent> sprayerComponents = (List<JComponent>) esiList
-						.get(4);
+				List<JComponent> sprayerComponents = (List<JComponent>) esiList.get(4);
 
 				JPanel sprayerPanel = new JPanel(new GridBagLayout());
 				sprayerPanel.setBorder(new TitledBorder("ESI sprayer"));
@@ -2170,9 +1911,7 @@ public class MIAPEMSFormManager {
 				sprayerC.gridy++;
 				sprayerPanel.add(labelSprayerDecription, sprayerC);
 				sprayerC.gridx = 1;
-				sprayerPanel.add(
-						getScrollableComponent(sprayerComponents.get(3)),
-						sprayerC);
+				sprayerPanel.add(getScrollableComponent(sprayerComponents.get(3)), sprayerC);
 
 				esiC.gridy++;
 				esiPanel.add(sprayerPanel, esiC);
@@ -2184,12 +1923,10 @@ public class MIAPEMSFormManager {
 			}
 			if (showMaldi) {
 				// MALDI
-				final List<JComponent> maldiList = (List<JComponent>) instrumentConfiguration
-						.get(MALDI_INDEX);
+				final List<JComponent> maldiList = (List<JComponent>) instrumentConfiguration.get(MALDI_INDEX);
 
 				JPanel maldisPanel = new JPanel(new GridBagLayout());
-				maldisPanel.setBorder(new TitledBorder(
-						"2. Ion sources - 2.2 MALDI"));
+				maldisPanel.setBorder(new TitledBorder("2. Ion sources - 2.2 MALDI"));
 				GridBagConstraints maldiC = getGridBagContraints();
 
 				// maldi name
@@ -2200,16 +1937,14 @@ public class MIAPEMSFormManager {
 				maldisPanel.add(maldiList.get(0), maldiC);
 				// maldi plate
 				maldiC.gridy++;
-				JLabel labelPlateMALDI = new JLabel(
-						"Plate composition (or type):");
+				JLabel labelPlateMALDI = new JLabel("Plate composition (or type):");
 				maldiC.gridx = 0;
 				maldisPanel.add(labelPlateMALDI, maldiC);
 				maldiC.gridx = 1;
 				maldisPanel.add(maldiList.get(1), maldiC);
 				// maldi matrix
 				maldiC.gridy++;
-				JLabel labelMatrixMALDI = new JLabel(
-						"Matrix composition (if applicable):");
+				JLabel labelMatrixMALDI = new JLabel("Matrix composition (if applicable):");
 				maldiC.gridx = 0;
 				maldisPanel.add(labelMatrixMALDI, maldiC);
 				maldiC.gridx = 1;
@@ -2224,17 +1959,14 @@ public class MIAPEMSFormManager {
 				maldisPanel.add(maldiList.get(3), maldiC);
 				// maldi PSD description
 				maldiC.gridy++;
-				JLabel labelPSDSummaryMALDI = new JLabel(
-						"PSD (or LID/ISD) description:");
+				JLabel labelPSDSummaryMALDI = new JLabel("PSD (or LID/ISD) description:");
 				maldiC.gridx = 0;
 				maldisPanel.add(labelPSDSummaryMALDI, maldiC);
 				maldiC.gridx = 1;
-				maldisPanel.add(getScrollableComponent(maldiList.get(4)),
-						maldiC);
+				maldisPanel.add(getScrollableComponent(maldiList.get(4)), maldiC);
 				// maldi extraction
 				maldiC.gridy++;
-				JLabel labelExtractionMALDI = new JLabel(
-						"Operation with delayed extraction:");
+				JLabel labelExtractionMALDI = new JLabel("Operation with delayed extraction:");
 				labelExtractionMALDI.setToolTipText(EXTRACTION_TOOLTIP);
 				maldiC.gridx = 0;
 				maldisPanel.add(labelExtractionMALDI, maldiC);
@@ -2259,15 +1991,12 @@ public class MIAPEMSFormManager {
 
 				// maldi parameters
 				maldiC.gridy++;
-				JLabel labelLaserParametersMALDI = new JLabel(
-						"Other laser related parameters:");
-				labelLaserParametersMALDI
-						.setToolTipText(LASER_PARAMETERS_TOOLTIP);
+				JLabel labelLaserParametersMALDI = new JLabel("Other laser related parameters:");
+				labelLaserParametersMALDI.setToolTipText(LASER_PARAMETERS_TOOLTIP);
 				maldiC.gridx = 0;
 				maldisPanel.add(labelLaserParametersMALDI, maldiC);
 				maldiC.gridx = 1;
-				maldisPanel.add(getScrollableComponent(maldiList.get(8)),
-						maldiC);
+				maldisPanel.add(getScrollableComponent(maldiList.get(8)), maldiC);
 
 				instrumentCgfC.gridy++;
 				instrumentConfigurationPanel.add(maldisPanel, instrumentCgfC);
@@ -2279,8 +2008,7 @@ public class MIAPEMSFormManager {
 						.get(OTHER_ION_SOURCE_INDEX);
 
 				JPanel otherPanel = new JPanel(new GridBagLayout());
-				otherPanel.setBorder(new TitledBorder(
-						"2. Ion sources - 2.3 Other ion source"));
+				otherPanel.setBorder(new TitledBorder("2. Ion sources - 2.3 Other ion source"));
 				GridBagConstraints otherC = getGridBagContraints();
 
 				// name
@@ -2292,10 +2020,8 @@ public class MIAPEMSFormManager {
 
 				// description
 				otherC.gridy++;
-				JLabel labelParametersOtherSource = new JLabel(
-						"Relevant params:");
-				labelParametersOtherSource
-						.setToolTipText(OTHER_ION_SOURCE_TOOLTIP);
+				JLabel labelParametersOtherSource = new JLabel("Relevant params:");
+				labelParametersOtherSource.setToolTipText(OTHER_ION_SOURCE_TOOLTIP);
 				otherC.gridx = 0;
 				otherPanel.add(labelParametersOtherSource, otherC);
 				otherC.gridx = 1;
@@ -2311,26 +2037,20 @@ public class MIAPEMSFormManager {
 					.get(ACTIVATION_INDEX);
 
 			JPanel activationPanel = new JPanel(new GridBagLayout());
-			activationPanel
-					.setBorder(new TitledBorder(
-							"3. Post source component - 3.2 Activation / dissociation"));
+			activationPanel.setBorder(new TitledBorder("3. Post source component - 3.2 Activation / dissociation"));
 			GridBagConstraints activationC = getGridBagContraints();
 
 			// name
-			JLabel labelInstrumentComponentActivation = new JLabel(
-					"Instrument component:");
-			labelInstrumentComponentActivation
-					.setToolTipText(ACTIVATION_NAME_TOOLTIP);
+			JLabel labelInstrumentComponentActivation = new JLabel("Instrument component:");
+			labelInstrumentComponentActivation.setToolTipText(ACTIVATION_NAME_TOOLTIP);
 			activationC.gridx = 0;
-			activationPanel
-					.add(labelInstrumentComponentActivation, activationC);
+			activationPanel.add(labelInstrumentComponentActivation, activationC);
 			activationC.gridx = 1;
 			activationPanel.add(activationComponentList.get(0), activationC);
 
 			// activation type
 			activationC.gridy++;
-			JLabel labelActivationType = new JLabel(
-					"Activation / dissociation type:");
+			JLabel labelActivationType = new JLabel("Activation / dissociation type:");
 			labelActivationType.setToolTipText(ACTIVATION_TYPE_TOOLTIP);
 			activationC.gridx = 0;
 			activationPanel.add(labelActivationType, activationC);
@@ -2505,8 +2225,7 @@ public class MIAPEMSFormManager {
 		samplePanel.setBorder(new TitledBorder("Sample information"));
 
 		// Sample Name
-		JLabel labelSampleName = new JLabel(
-				"<html>Name(s) /<br>Identifier(s):</html>");
+		JLabel labelSampleName = new JLabel("<html>Name(s) /<br>Identifier(s):</html>");
 		sampleC.gridx = 0;
 		samplePanel.add(labelSampleName, sampleC);
 		sampleC.gridx = 1;
@@ -2560,8 +2279,7 @@ public class MIAPEMSFormManager {
 			for (int i = 0; i < samplePreps.size(); i++) {
 
 				JPanel addInfoPanel = new JPanel(new GridBagLayout());
-				addInfoPanel.setBorder(new TitledBorder(
-						"Sample preparation steps"));
+				addInfoPanel.setBorder(new TitledBorder("Sample preparation steps"));
 				GridBagConstraints addInfoC = getGridBagContraints();
 
 				// name
@@ -2578,27 +2296,21 @@ public class MIAPEMSFormManager {
 				addInfoC.gridx = 0;
 				addInfoPanel.add(labelValue, addInfoC);
 				addInfoC.gridx++;
-				addInfoPanel.add(
-						getScrollableComponent(samplePreps.get(i + 1)),
-						addInfoC);
+				addInfoPanel.add(getScrollableComponent(samplePreps.get(i + 1)), addInfoC);
 
 				// Add button for remove this add info
 				final int index = i;
 				JButton removeSamplePrepButton = new JButton("Remove");
-				removeSamplePrepButton
-						.setToolTipText("Remove this sample preparation step");
-				removeSamplePrepButton
-						.addActionListener(new java.awt.event.ActionListener() {
-							@Override
-							public void actionPerformed(
-									java.awt.event.ActionEvent evt) {
-								samplePreps.remove(index);
-								samplePreps.remove(index);
-								miapeMSForms
-										.showMIAPEdata(MiapeMSForms.ADD_INFO_SLIDE);
+				removeSamplePrepButton.setToolTipText("Remove this sample preparation step");
+				removeSamplePrepButton.addActionListener(new java.awt.event.ActionListener() {
+					@Override
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						samplePreps.remove(index);
+						samplePreps.remove(index);
+						miapeMSForms.showMIAPEdata(MiapeMSForms.ADD_INFO_SLIDE);
 
-							}
-						});
+					}
+				});
 
 				addInfoC.gridx++;
 
@@ -2613,19 +2325,17 @@ public class MIAPEMSFormManager {
 		// Add button for add more add info
 		JButton addSamplePrepButton = new JButton("Add new sample prep. step");
 		addSamplePrepButton.setToolTipText("Add new sample preparation step");
-		addSamplePrepButton
-				.addActionListener(new java.awt.event.ActionListener() {
-					@Override
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						// name
-						samplePreps.add(getComboBox(
-								cvRetriever.getSampleProcessingSteps(), null));
-						// others value
-						samplePreps.add(getTextArea(null));
-						miapeMSForms.showMIAPEdata(MiapeMSForms.ADD_INFO_SLIDE);
+		addSamplePrepButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				// name
+				samplePreps.add(getComboBox(cvRetriever.getSampleProcessingSteps(), null));
+				// others value
+				samplePreps.add(getTextArea(null));
+				miapeMSForms.showMIAPEdata(MiapeMSForms.ADD_INFO_SLIDE);
 
-					}
-				});
+			}
+		});
 		addInfosC.gridy++;
 		addInfosPanel.add(addSamplePrepButton, addInfosC);
 
@@ -2634,8 +2344,7 @@ public class MIAPEMSFormManager {
 			for (int i = 6; i < addInfos.size(); i++) {
 
 				JPanel addInfoPanel = new JPanel(new GridBagLayout());
-				addInfoPanel.setBorder(new TitledBorder(
-						"Additional information"));
+				addInfoPanel.setBorder(new TitledBorder("Additional information"));
 				GridBagConstraints addInfoC = getGridBagContraints();
 
 				// name
@@ -2652,26 +2361,21 @@ public class MIAPEMSFormManager {
 				addInfoC.gridx = 0;
 				addInfoPanel.add(labelValue, addInfoC);
 				addInfoC.gridx++;
-				addInfoPanel.add(getScrollableComponent(addInfos.get(i + 1)),
-						addInfoC);
+				addInfoPanel.add(getScrollableComponent(addInfos.get(i + 1)), addInfoC);
 
 				// Add button for remove this add info
 				final int index = i;
 				JButton removeAddInfoButton = new JButton("Remove");
-				removeAddInfoButton
-						.setToolTipText("Remove this additional information");
-				removeAddInfoButton
-						.addActionListener(new java.awt.event.ActionListener() {
-							@Override
-							public void actionPerformed(
-									java.awt.event.ActionEvent evt) {
-								addInfos.remove(index);
-								addInfos.remove(index);
-								miapeMSForms
-										.showMIAPEdata(MiapeMSForms.ADD_INFO_SLIDE);
+				removeAddInfoButton.setToolTipText("Remove this additional information");
+				removeAddInfoButton.addActionListener(new java.awt.event.ActionListener() {
+					@Override
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						addInfos.remove(index);
+						addInfos.remove(index);
+						miapeMSForms.showMIAPEdata(MiapeMSForms.ADD_INFO_SLIDE);
 
-							}
-						});
+					}
+				});
 
 				addInfoC.gridx++;
 
@@ -2711,8 +2415,7 @@ public class MIAPEMSFormManager {
 			JComponent jComponentName = componentList.get(0);
 			JComponent jComponentValue = componentList.get(1);
 			if (jComponentName instanceof JComboBox) {
-				if (((JComboBox) jComponentName).getSelectedItem().equals(
-						controlVocabularyName)) {
+				if (((JComboBox) jComponentName).getSelectedItem().equals(controlVocabularyName)) {
 					return i;
 				}
 			}

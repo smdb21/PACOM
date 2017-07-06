@@ -61,8 +61,7 @@ public class ClientHttpRequest {
 		return Long.toString(random.nextLong(), 36);
 	}
 
-	String boundary = "---------------------------" + randomString() + randomString()
-			+ randomString();
+	String boundary = "---------------------------" + randomString() + randomString() + randomString();
 
 	private void boundary() throws IOException {
 		write("--");
@@ -416,8 +415,7 @@ public class ClientHttpRequest {
 	 * @throws IOException
 	 * @see setParameter
 	 */
-	public InputStream post(String name1, Object value1, String name2, Object value2)
-			throws IOException {
+	public InputStream post(String name1, Object value1, String name2, Object value2) throws IOException {
 		setParameter(name1, value1);
 		return post(name2, value2);
 	}
@@ -441,8 +439,8 @@ public class ClientHttpRequest {
 	 * @throws IOException
 	 * @see setParameter
 	 */
-	public InputStream post(String name1, Object value1, String name2, Object value2, String name3,
-			Object value3) throws IOException {
+	public InputStream post(String name1, Object value1, String name2, Object value2, String name3, Object value3)
+			throws IOException {
 		setParameter(name1, value1);
 		return post(name2, value2, name3, value3);
 	}
@@ -470,8 +468,8 @@ public class ClientHttpRequest {
 	 * @throws IOException
 	 * @see setParameter
 	 */
-	public InputStream post(String name1, Object value1, String name2, Object value2, String name3,
-			Object value3, String name4, Object value4) throws IOException {
+	public InputStream post(String name1, Object value1, String name2, Object value2, String name3, Object value3,
+			String name4, Object value4) throws IOException {
 		setParameter(name1, value1);
 		return post(name2, value2, name3, value3, name4, value4);
 	}
@@ -534,8 +532,7 @@ public class ClientHttpRequest {
 	 * @see setCookies
 	 * @see setParameters
 	 */
-	public static InputStream post(URL url, String[] cookies, Object[] parameters)
-			throws IOException {
+	public static InputStream post(URL url, String[] cookies, Object[] parameters) throws IOException {
 		return new ClientHttpRequest(url).post(cookies, parameters);
 	}
 
@@ -593,8 +590,8 @@ public class ClientHttpRequest {
 	 * @throws IOException
 	 * @see setParameter
 	 */
-	public static InputStream post(URL url, String name1, Object value1, String name2,
-			Object value2, String name3, Object value3) throws IOException {
+	public static InputStream post(URL url, String name1, Object value1, String name2, Object value2, String name3,
+			Object value3) throws IOException {
 		return new ClientHttpRequest(url).post(name1, value1, name2, value2, name3, value3);
 	}
 
@@ -621,10 +618,8 @@ public class ClientHttpRequest {
 	 * @throws IOException
 	 * @see setParameter
 	 */
-	public static InputStream post(URL url, String name1, Object value1, String name2,
-			Object value2, String name3, Object value3, String name4, Object value4)
-			throws IOException {
-		return new ClientHttpRequest(url).post(name1, value1, name2, value2, name3, value3, name4,
-				value4);
+	public static InputStream post(URL url, String name1, Object value1, String name2, Object value2, String name3,
+			Object value3, String name4, Object value4) throws IOException {
+		return new ClientHttpRequest(url).post(name1, value1, name2, value2, name3, value3, name4, value4);
 	}
 }

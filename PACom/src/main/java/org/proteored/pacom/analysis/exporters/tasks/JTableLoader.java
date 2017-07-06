@@ -2,8 +2,6 @@ package org.proteored.pacom.analysis.exporters.tasks;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +33,7 @@ import org.proteored.pacom.analysis.util.FileManager;
 import edu.scripps.yates.annotations.uniprot.UniprotProteinLocalRetriever;
 import edu.scripps.yates.annotations.uniprot.xml.Entry;
 import edu.scripps.yates.utilities.fasta.FastaParser;
+import gnu.trove.set.hash.THashSet;
 
 public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JTable> {
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
@@ -46,7 +45,7 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 	private final boolean includeGeneInfo;
 	private final boolean collapsePeptides;
 	private final boolean collapseProteins;
-	private final Set<IdentificationSet> idSets = new HashSet<IdentificationSet>();
+	private final Set<IdentificationSet> idSets = new THashSet<IdentificationSet>();
 	private String error;
 
 	private final boolean isFDRApplied;
@@ -91,7 +90,7 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 		if (this.retrieveProteinSequences || includeGeneInfo) {
 			firePropertyChange(PROTEIN_SEQUENCE_RETRIEVAL, null, null);
 
-			Set<String> uniprotAccs = new HashSet<String>();
+			Set<String> uniprotAccs = new THashSet<String>();
 			for (IdentificationSet identificationSet : idSets) {
 				List<ExtendedIdentifiedProtein> identifiedProteins = identificationSet.getIdentifiedProteins();
 				for (ExtendedIdentifiedProtein protein : identifiedProteins) {
@@ -135,7 +134,7 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 						total += idSet.getPeptideOccurrenceList(true).size();
 					}
 					for (IdentificationSet idSet : idSets) {
-						final HashMap<String, PeptideOccurrence> peptideOccurrenceHashMap = idSet
+						final Map<String, PeptideOccurrence> peptideOccurrenceHashMap = idSet
 								.getPeptideOccurrenceList(true);
 						// sort if there is a FDR Filter activated that tells us
 						// which is the score sort

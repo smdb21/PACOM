@@ -3,8 +3,6 @@ package org.proteored.pacom.analysis.gui.tasks;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -27,6 +25,9 @@ import org.proteored.pacom.analysis.gui.Miape2ExperimentListDialog;
 import org.proteored.pacom.analysis.util.FileManager;
 import org.proteored.pacom.gui.MainFrame;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
+
+import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.set.hash.THashSet;
 
 public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
@@ -82,7 +83,7 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 	private void checkIntegrity() {
 		List<String> databaseNames = new ArrayList<String>();
 		List<Integer> listofNonExistingFiles = new ArrayList<Integer>();
-		Set<String> uniqueIds = new HashSet<String>();
+		Set<String> uniqueIds = new THashSet<String>();
 		if (expList != null) {
 			uniqueIds.add(expList.getName());
 			final List<CPExperiment> cpExperiments = expList.getCPExperiment();
@@ -113,7 +114,7 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 							}
 
 							// key=MIAPEMSI_ID - value=List<scoreNames>:
-							HashMap<Integer, List<String>> replicateScoreNames = new HashMap<Integer, List<String>>();
+							TIntObjectHashMap<List<String>> replicateScoreNames = new TIntObjectHashMap<List<String>>();
 							// just check if more than one MIAPE MSI is in a
 							// replicate
 							if (!cpReplicate.getCPMSIList().getCPMSI().isEmpty())
@@ -173,7 +174,7 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 
 										}
 										if (!replicateScoreNames.isEmpty()) {
-											for (Integer miape_msi_id : replicateScoreNames.keySet()) {
+											for (int miape_msi_id : replicateScoreNames.keys()) {
 												final List<String> scores = replicateScoreNames.get(miape_msi_id);
 												if (scores != null && !scores.isEmpty())
 													if (!hasOneElementInCommon(scores, peptideScoreNames))
@@ -280,7 +281,7 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 	}
 
 	private void checkExperimentListNames(CPExperimentList cpExpList) throws IllegalMiapeArgumentException {
-		Set<String> experimentNames = new HashSet<String>();
+		Set<String> experimentNames = new THashSet<String>();
 		if (cpExpList != null) {
 			final List<CPExperiment> experiments = cpExpList.getCPExperiment();
 			if (experiments != null) {
@@ -294,7 +295,7 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 					else
 						experimentNames.add(expName);
 					final List<CPReplicate> replicates = cpExperiment.getCPReplicate();
-					Set<String> replicateNames = new HashSet<String>();
+					Set<String> replicateNames = new THashSet<String>();
 					if (replicates != null) {
 						for (CPReplicate cpReplicate : replicates) {
 							thereIsAReplicate = true;

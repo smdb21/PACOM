@@ -6,8 +6,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +31,9 @@ import org.proteored.pacom.analysis.exporters.util.PexSubmissionType;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 import org.springframework.core.io.ClassPathResource;
 
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.set.hash.THashSet;
 import uk.ac.ebi.pridemod.PrideModController;
 import uk.ac.ebi.pridemod.slimmod.model.SlimModCollection;
 import uk.ac.ebi.pridemod.slimmod.model.SlimModification;
@@ -58,39 +59,38 @@ public class ProteomeXchangeFilev2_1 {
 	private Contact submitter;
 	private String projectTitle;
 	private String projectShortDescription;
-	private final HashSet<String> keywords = new HashSet<String>();
+	private final Set<String> keywords = new THashSet<String>();
 	private PexSubmissionType submissionType;
 	private String comment;
-	private Set<String> species = new HashSet<String>();
-	private Set<String> instruments = new HashSet<String>();
-	private Set<String> additionals = new HashSet<String>();
-	private Set<String> pubmeds = new HashSet<String>();
+	private Set<String> species = new THashSet<String>();
+	private Set<String> instruments = new THashSet<String>();
+	private Set<String> additionals = new THashSet<String>();
+	private Set<String> pubmeds = new THashSet<String>();
 	private String resubmission_px;
-	private Set<String> reanalyses_px = new HashSet<String>();
+	private Set<String> reanalyses_px = new THashSet<String>();
 	private String login;
-	private final HashMap<Experiment, List<PexFile>> rawFileMapToExperiment = new HashMap<Experiment, List<PexFile>>();
-	private final HashMap<Replicate, List<PexFile>> rawFileMapToReplicate = new HashMap<Replicate, List<PexFile>>();
-	private final HashMap<Replicate, List<PexFile>> peakListFileMap = new HashMap<Replicate, List<PexFile>>();
-	private final HashMap<Replicate, List<PexFile>> miapeMSReports = new HashMap<Replicate, List<PexFile>>();
-	private final HashMap<Replicate, List<PexFile>> miapeMSIReports = new HashMap<Replicate, List<PexFile>>();
-	private final HashMap<Replicate, List<PexFile>> searchEngineOutputFileMap = new HashMap<Replicate, List<PexFile>>();
-	ClassPathResource resource = new ClassPathResource(
-			"modification_mappings.xml");
-	private final HashMap<Replicate, Set<String>> filesToSkip;
+	private final Map<Experiment, List<PexFile>> rawFileMapToExperiment = new THashMap<Experiment, List<PexFile>>();
+	private final Map<Replicate, List<PexFile>> rawFileMapToReplicate = new THashMap<Replicate, List<PexFile>>();
+	private final Map<Replicate, List<PexFile>> peakListFileMap = new THashMap<Replicate, List<PexFile>>();
+	private final Map<Replicate, List<PexFile>> miapeMSReports = new THashMap<Replicate, List<PexFile>>();
+	private final Map<Replicate, List<PexFile>> miapeMSIReports = new THashMap<Replicate, List<PexFile>>();
+	private final Map<Replicate, List<PexFile>> searchEngineOutputFileMap = new THashMap<Replicate, List<PexFile>>();
+	ClassPathResource resource = new ClassPathResource("modification_mappings.xml");
+	private final Map<Replicate, Set<String>> filesToSkip;
 	private Set<String> sampleProcessingProtocols;
 	private Set<String> dataProcessingProtocols;
 	private Set<String> experimentTypes;
 	private Set<String> tissues;
 	private Set<String> cellTypes;
 	private Set<String> diseases;
-	private HashMap<Integer, List<String>> speciesByExperiment;
-	private HashMap<Integer, List<String>> tissuesByExperiment;
-	private HashMap<Integer, List<String>> cellTypesByExperiment;
-	private HashMap<Integer, List<String>> diseaseByExperiment;
-	private HashMap<Integer, List<String>> quantificationByExperiment;
-	private HashMap<Integer, List<String>> instrumentByExperiment;
-	private HashMap<Integer, List<String>> modificationByExperiment;
-	private HashMap<Integer, List<String>> experimental_factorByExperiment;
+	private TIntObjectHashMap<List<String>> speciesByExperiment;
+	private TIntObjectHashMap<List<String>> tissuesByExperiment;
+	private TIntObjectHashMap<List<String>> cellTypesByExperiment;
+	private TIntObjectHashMap<List<String>> diseaseByExperiment;
+	private TIntObjectHashMap<List<String>> quantificationByExperiment;
+	private TIntObjectHashMap<List<String>> instrumentByExperiment;
+	private TIntObjectHashMap<List<String>> modificationByExperiment;
+	private TIntObjectHashMap<List<String>> experimental_factorByExperiment;
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
 	private static SlimModCollection preferredModifications;
 
@@ -112,13 +112,10 @@ public class ProteomeXchangeFilev2_1 {
 	 * @param reanalysesPX
 	 * @param pride_login
 	 */
-	public ProteomeXchangeFilev2_1(File outputFolder, String outputFileName,
-			ExperimentList experimentList, String projectTitle,
-			String projectShortDescription, String keyword, String comment,
-			Set<String> species, Set<String> instruments,
-			Set<String> additionals, Set<String> pubmeds,
-			String resubmissionPX, Set<String> reanalysesPX,
-			String pride_login, HashMap<Replicate, Set<String>> filesToSkip2) {
+	public ProteomeXchangeFilev2_1(File outputFolder, String outputFileName, ExperimentList experimentList,
+			String projectTitle, String projectShortDescription, String keyword, String comment, Set<String> species,
+			Set<String> instruments, Set<String> additionals, Set<String> pubmeds, String resubmissionPX,
+			Set<String> reanalysesPX, String pride_login, Map<Replicate, Set<String>> filesToSkip2) {
 		this.outputFileName = outputFileName;
 		if (this.outputFileName == null)
 			this.outputFileName = "submission_file.px";
@@ -146,9 +143,8 @@ public class ProteomeXchangeFilev2_1 {
 
 	}
 
-	public ProteomeXchangeFilev2_1(File outputFolder,
-			ExperimentList experimentList,
-			HashMap<Replicate, Set<String>> filesToSkip2) {
+	public ProteomeXchangeFilev2_1(File outputFolder, ExperimentList experimentList,
+			Map<Replicate, Set<String>> filesToSkip2) {
 		this.outputFolder = outputFolder;
 		if (this.outputFolder == null)
 			throw new IllegalMiapeArgumentException("Output folder is null!!");
@@ -156,8 +152,7 @@ public class ProteomeXchangeFilev2_1 {
 			this.outputFolder.mkdirs();
 		}
 		if (!this.outputFolder.isDirectory())
-			throw new IllegalMiapeArgumentException(
-					"Output folder must be a folder!!");
+			throw new IllegalMiapeArgumentException("Output folder must be a folder!!");
 
 		this.experimentList = experimentList;
 		if (this.experimentList == null)
@@ -185,7 +180,7 @@ public class ProteomeXchangeFilev2_1 {
 
 	public void addReanalyses_px(String reanalysis_px) {
 		if (reanalyses_px == null)
-			reanalyses_px = new HashSet<String>();
+			reanalyses_px = new THashSet<String>();
 		reanalyses_px.add(reanalysis_px);
 	}
 
@@ -218,11 +213,10 @@ public class ProteomeXchangeFilev2_1 {
 	public void setSpecies(Set<String> species) {
 		if (species != null) {
 			if (this.species == null)
-				this.species = new HashSet<String>();
+				this.species = new THashSet<String>();
 			for (String specie : species) {
 
-				final String parsedSpecie = PexMiapeParser.parseSpecie(specie,
-						null);
+				final String parsedSpecie = PexMiapeParser.parseSpecie(specie, null);
 				if (parsedSpecie != null)
 					this.species.add(parsedSpecie);
 			}
@@ -233,10 +227,9 @@ public class ProteomeXchangeFilev2_1 {
 	public void addSpecie(String specie) {
 		if (specie != null) {
 			if (species == null)
-				species = new HashSet<String>();
+				species = new THashSet<String>();
 
-			final String parsedSpecie = PexMiapeParser
-					.parseSpecie(specie, null);
+			final String parsedSpecie = PexMiapeParser.parseSpecie(specie, null);
 			if (parsedSpecie != null)
 				species.add(parsedSpecie);
 
@@ -293,8 +286,7 @@ public class ProteomeXchangeFilev2_1 {
 	}
 
 	public File getOutputFile() {
-		String pathname = outputFolder.getAbsolutePath()
-				+ System.getProperty("file.separator") + getOutputFileName();
+		String pathname = outputFolder.getAbsolutePath() + System.getProperty("file.separator") + getOutputFileName();
 		log.info(pathname);
 		return new File(pathname);
 	}
@@ -307,8 +299,7 @@ public class ProteomeXchangeFilev2_1 {
 	public String getName() {
 		String submitterName = getSubmitterName();
 		if (submitterName != null)
-			return ProteomeXchangeFilev2_1.MTD + TAB + "submitter_name" + TAB
-					+ submitterName;
+			return ProteomeXchangeFilev2_1.MTD + TAB + "submitter_name" + TAB + submitterName;
 		return null;
 	}
 
@@ -320,8 +311,7 @@ public class ProteomeXchangeFilev2_1 {
 	public String getLabHeadName() {
 		String submitterName = getSubmitterName();
 		if (submitterName != null)
-			return ProteomeXchangeFilev2_1.MTD + TAB + "lab_head_name" + TAB
-					+ submitterName;
+			return ProteomeXchangeFilev2_1.MTD + TAB + "lab_head_name" + TAB + submitterName;
 		return null;
 	}
 
@@ -333,8 +323,7 @@ public class ProteomeXchangeFilev2_1 {
 	public String getEmail() {
 		String submitterEmail = getSubmitterEmail();
 		if (submitterEmail != null)
-			return ProteomeXchangeFilev2_1.MTD + TAB + "submitter_email" + TAB
-					+ submitterEmail;
+			return ProteomeXchangeFilev2_1.MTD + TAB + "submitter_email" + TAB + submitterEmail;
 		return null;
 	}
 
@@ -346,8 +335,7 @@ public class ProteomeXchangeFilev2_1 {
 	public String getLabHeadEmail() {
 		String submitterEmail = getSubmitterEmail();
 		if (submitterEmail != null)
-			return ProteomeXchangeFilev2_1.MTD + TAB + "lab_head_email" + TAB
-					+ submitterEmail;
+			return ProteomeXchangeFilev2_1.MTD + TAB + "lab_head_email" + TAB + submitterEmail;
 		return null;
 	}
 
@@ -360,8 +348,7 @@ public class ProteomeXchangeFilev2_1 {
 	public String getAffiliation() {
 		String submitterAffiliation = getSubmitterAffiliation();
 		if (submitterAffiliation != null)
-			return ProteomeXchangeFilev2_1.MTD + TAB + "submitter_affiliation"
-					+ TAB + submitterAffiliation;
+			return ProteomeXchangeFilev2_1.MTD + TAB + "submitter_affiliation" + TAB + submitterAffiliation;
 		return null;
 	}
 
@@ -374,8 +361,7 @@ public class ProteomeXchangeFilev2_1 {
 	public String getLabHeadAffiliation() {
 		String submitterAffiliation = getSubmitterAffiliation();
 		if (submitterAffiliation != null)
-			return ProteomeXchangeFilev2_1.MTD + TAB + "lab_head_affiliation"
-					+ TAB + submitterAffiliation;
+			return ProteomeXchangeFilev2_1.MTD + TAB + "lab_head_affiliation" + TAB + submitterAffiliation;
 		return null;
 	}
 
@@ -387,8 +373,7 @@ public class ProteomeXchangeFilev2_1 {
 	public String getProjectTitle() {
 
 		if (projectTitle != null)
-			return ProteomeXchangeFilev2_1.MTD + TAB + "project_title" + TAB
-					+ projectTitle;
+			return ProteomeXchangeFilev2_1.MTD + TAB + "project_title" + TAB + projectTitle;
 		return null;
 	}
 
@@ -399,8 +384,7 @@ public class ProteomeXchangeFilev2_1 {
 	 */
 	public String getProjectDescription() {
 		if (projectShortDescription != null)
-			return ProteomeXchangeFilev2_1.MTD + TAB + "project_description"
-					+ TAB + projectShortDescription;
+			return ProteomeXchangeFilev2_1.MTD + TAB + "project_description" + TAB + projectShortDescription;
 		return null;
 	}
 
@@ -417,8 +401,7 @@ public class ProteomeXchangeFilev2_1 {
 					keywordsString += ",";
 				keywordsString += keyword;
 			}
-			return ProteomeXchangeFilev2_1.MTD + TAB + "keywords" + TAB
-					+ keywordsString;
+			return ProteomeXchangeFilev2_1.MTD + TAB + "keywords" + TAB + keywordsString;
 		}
 		return null;
 	}
@@ -430,8 +413,7 @@ public class ProteomeXchangeFilev2_1 {
 	 */
 	public String getSubmissionType() {
 		if (submissionType != null)
-			return ProteomeXchangeFilev2_1.MTD + TAB + "submission_type" + TAB
-					+ submissionType.toString();
+			return ProteomeXchangeFilev2_1.MTD + TAB + "submission_type" + TAB + submissionType.toString();
 		return null;
 	}
 
@@ -459,8 +441,7 @@ public class ProteomeXchangeFilev2_1 {
 		if (species != null) {
 			List<String> ret = new ArrayList<String>();
 			for (String specie : species) {
-				ret.add(ProteomeXchangeFilev2_1.MTD + TAB + "species" + TAB
-						+ specie);
+				ret.add(ProteomeXchangeFilev2_1.MTD + TAB + "species" + TAB + specie);
 			}
 			return ret;
 		}
@@ -478,8 +459,7 @@ public class ProteomeXchangeFilev2_1 {
 		if (instruments != null) {
 			List<String> ret = new ArrayList<String>();
 			for (String instrument : instruments) {
-				ret.add(ProteomeXchangeFilev2_1.MTD + TAB + "instrument" + TAB
-						+ instrument);
+				ret.add(ProteomeXchangeFilev2_1.MTD + TAB + "instrument" + TAB + instrument);
 			}
 			return ret;
 		}
@@ -493,19 +473,16 @@ public class ProteomeXchangeFilev2_1 {
 	 */
 	public List<String> getPTMs() {
 
-		List<String> modificationStrings = experimentList
-				.getDifferentPeptideModificationNames();
+		List<String> modificationStrings = experimentList.getDifferentPeptideModificationNames();
 		if (modificationStrings != null && !modificationStrings.isEmpty()) {
 			List<String> ret = new ArrayList<String>();
-			ControlVocabularyManager cvManager = OntologyLoaderTask
-					.getCvManager();
+			ControlVocabularyManager cvManager = OntologyLoaderTask.getCvManager();
 			SlimModCollection preferredModifications = getModificationMapping();
 			for (String modificationString : modificationStrings) {
 				String modification = "";
 				ControlVocabularyTerm cvTerm = null;
 				if (preferredModifications != null) {
-					SlimModification mod = preferredModifications
-							.getbyName(modificationString);
+					SlimModification mod = preferredModifications.getbyName(modificationString);
 					if (mod != null) {
 						final String idPsiMod = mod.getIdPsiMod();
 						cvTerm = PeptideModificationName.getInstance(cvManager)
@@ -519,23 +496,16 @@ public class ProteomeXchangeFilev2_1 {
 				if (cvTerm != null) {
 					// if it is from UNIMOD, try to convert to PSI MOD
 					if (cvTerm.getCVRef().equals(UNIMODOntology.getCVLabel())) {
-						log.info("Converting " + cvTerm.getTermAccession()
-								+ " " + cvTerm.getPreferredName()
+						log.info("Converting " + cvTerm.getTermAccession() + " " + cvTerm.getPreferredName()
 								+ " to PSI-MOD");
 						for (SlimModification slimModification : preferredModifications) {
-							if ((UNIMODOntology.getCVLabel() + ":" + slimModification
-									.getIdUnimod()).equalsIgnoreCase(cvTerm
-									.getTermAccession().toString())) {
-								ControlVocabularyTerm cvTerm2 = PeptideModificationName
-										.getInstance(cvManager)
-										.getCVTermByAccession(
-												new Accession(slimModification
-														.getIdPsiMod()));
+							if ((UNIMODOntology.getCVLabel() + ":" + slimModification.getIdUnimod())
+									.equalsIgnoreCase(cvTerm.getTermAccession().toString())) {
+								ControlVocabularyTerm cvTerm2 = PeptideModificationName.getInstance(cvManager)
+										.getCVTermByAccession(new Accession(slimModification.getIdPsiMod()));
 								if (cvTerm2 != null) {
-									log.info(cvTerm.getTermAccession() + " "
-											+ cvTerm.getPreferredName()
-											+ " converter to "
-											+ cvTerm2.getTermAccession() + " "
+									log.info(cvTerm.getTermAccession() + " " + cvTerm.getPreferredName()
+											+ " converter to " + cvTerm2.getTermAccession() + " "
 											+ cvTerm2.getPreferredName());
 									cvTerm = cvTerm2;
 									break;
@@ -543,23 +513,18 @@ public class ProteomeXchangeFilev2_1 {
 							}
 						}
 					}
-					modification = "[" + cvTerm.getCVRef() + ","
-							+ cvTerm.getTermAccession().toString() + ","
+					modification = "[" + cvTerm.getCVRef() + "," + cvTerm.getTermAccession().toString() + ","
 							+ cvTerm.getPreferredName() + ",]";
 				} else {
 					// userParam
 					modification = "[,," + modificationString + ",]";
 				}
-				ret.add(ProteomeXchangeFilev2_1.MTD + TAB + "modification"
-						+ TAB + modification);
+				ret.add(ProteomeXchangeFilev2_1.MTD + TAB + "modification" + TAB + modification);
 			}
 			return ret;
 		} else {
 			List<String> ret = new ArrayList<String>();
-			ret.add(ProteomeXchangeFilev2_1.MTD
-					+ TAB
-					+ "modification"
-					+ TAB
+			ret.add(ProteomeXchangeFilev2_1.MTD + TAB + "modification" + TAB
 					+ "[PRIDE, PRIDE:0000398,No PTMs are included in the dataset,]");
 		}
 		return null;
@@ -570,8 +535,7 @@ public class ProteomeXchangeFilev2_1 {
 			URL url;
 			try {
 				url = resource.getURL();
-				ProteomeXchangeFilev2_1.preferredModifications = PrideModController
-						.parseSlimModCollection(url);
+				ProteomeXchangeFilev2_1.preferredModifications = PrideModController.parseSlimModCollection(url);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -588,10 +552,9 @@ public class ProteomeXchangeFilev2_1 {
 		if (additionals == null || additionals.isEmpty())
 			additionals = getAdditionalsFromMiapes();
 		if (additionals != null && !additionals.isEmpty()) {
-			Set<String> ret = new HashSet<String>();
+			Set<String> ret = new THashSet<String>();
 			for (String additional : additionals) {
-				ret.add(ProteomeXchangeFilev2_1.MTD + TAB + "additional" + TAB
-						+ additional);
+				ret.add(ProteomeXchangeFilev2_1.MTD + TAB + "additional" + TAB + additional);
 			}
 			return ret;
 		}
@@ -607,10 +570,9 @@ public class ProteomeXchangeFilev2_1 {
 		if (tissues == null || tissues.isEmpty())
 			tissues = getTissuesFromMiapes();
 		if (tissues != null) {
-			Set<String> ret = new HashSet<String>();
+			Set<String> ret = new THashSet<String>();
 			for (String tissue : tissues) {
-				ret.add(ProteomeXchangeFilev2_1.MTD + TAB + "tissue" + TAB
-						+ tissue);
+				ret.add(ProteomeXchangeFilev2_1.MTD + TAB + "tissue" + TAB + tissue);
 			}
 			return ret;
 		}
@@ -626,10 +588,9 @@ public class ProteomeXchangeFilev2_1 {
 		if (cellTypes == null || cellTypes.isEmpty())
 			cellTypes = getCellTypesFromMiapes();
 		if (cellTypes != null && !cellTypes.isEmpty()) {
-			Set<String> ret = new HashSet<String>();
+			Set<String> ret = new THashSet<String>();
 			for (String cellType : cellTypes) {
-				ret.add(ProteomeXchangeFilev2_1.MTD + TAB + "tissue" + TAB
-						+ cellType);
+				ret.add(ProteomeXchangeFilev2_1.MTD + TAB + "tissue" + TAB + cellType);
 			}
 			return ret;
 		}
@@ -640,10 +601,9 @@ public class ProteomeXchangeFilev2_1 {
 		if (diseases == null || diseases.isEmpty())
 			diseases = getDiseasesFromMiapes();
 		if (diseases != null) {
-			Set<String> ret = new HashSet<String>();
+			Set<String> ret = new THashSet<String>();
 			for (String tissue : diseases) {
-				ret.add(ProteomeXchangeFilev2_1.MTD + TAB + "disease" + TAB
-						+ tissue);
+				ret.add(ProteomeXchangeFilev2_1.MTD + TAB + "disease" + TAB + tissue);
 			}
 			return ret;
 		}
@@ -660,14 +620,12 @@ public class ProteomeXchangeFilev2_1 {
 			sampleProcessingProtocols = getSampleProcessingProtocolFromMiapes();
 		}
 		String ret = "Not available";
-		if (sampleProcessingProtocols != null
-				&& !sampleProcessingProtocols.isEmpty()) {
+		if (sampleProcessingProtocols != null && !sampleProcessingProtocols.isEmpty()) {
 			ret = "";
 			for (String sampleProcessingProtocol : sampleProcessingProtocols) {
 				ret += sampleProcessingProtocol + " ";
 			}
-			return ProteomeXchangeFilev2_1.MTD + TAB
-					+ "sample_processing_protocol" + TAB + ret.trim();
+			return ProteomeXchangeFilev2_1.MTD + TAB + "sample_processing_protocol" + TAB + ret.trim();
 		}
 		return null;
 
@@ -683,14 +641,12 @@ public class ProteomeXchangeFilev2_1 {
 			dataProcessingProtocols = getDataProcessingProtocolFromMiapes();
 		}
 		String ret = "Not available";
-		if (dataProcessingProtocols != null
-				&& !dataProcessingProtocols.isEmpty()) {
+		if (dataProcessingProtocols != null && !dataProcessingProtocols.isEmpty()) {
 			ret = "";
 			for (String dataProcessingProtocol : dataProcessingProtocols) {
 				ret += dataProcessingProtocol + " ";
 			}
-			return ProteomeXchangeFilev2_1.MTD + TAB
-					+ "data_processing_protocol" + TAB + ret.trim();
+			return ProteomeXchangeFilev2_1.MTD + TAB + "data_processing_protocol" + TAB + ret.trim();
 		}
 		return null;
 
@@ -700,7 +656,7 @@ public class ProteomeXchangeFilev2_1 {
 		if (experimentTypes == null) {
 			experimentTypes = getExperimentTypesFromMiapes();
 		}
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new THashSet<String>();
 		if (experimentTypes != null && !experimentTypes.isEmpty()) {
 			for (String experimentType : experimentTypes) {
 				ret.add(experimentType.trim());
@@ -722,10 +678,9 @@ public class ProteomeXchangeFilev2_1 {
 	 */
 	public Set<String> getPubmeds() {
 		if (pubmeds != null && !pubmeds.isEmpty()) {
-			Set<String> ret = new HashSet<String>();
+			Set<String> ret = new THashSet<String>();
 			for (String pubmed : pubmeds) {
-				ret.add(ProteomeXchangeFilev2_1.MTD + TAB + "pubmed" + TAB
-						+ pubmed);
+				ret.add(ProteomeXchangeFilev2_1.MTD + TAB + "pubmed" + TAB + pubmed);
 			}
 			return ret;
 		}
@@ -739,8 +694,7 @@ public class ProteomeXchangeFilev2_1 {
 	 */
 	public String getResubmissionPX() {
 		if (resubmission_px != null) {
-			return ProteomeXchangeFilev2_1.MTD + TAB + "resubmission_px" + TAB
-					+ resubmission_px;
+			return ProteomeXchangeFilev2_1.MTD + TAB + "resubmission_px" + TAB + resubmission_px;
 		}
 		return null;
 	}
@@ -752,10 +706,9 @@ public class ProteomeXchangeFilev2_1 {
 	 */
 	public Set<String> getReanalysesPX() {
 		if (reanalyses_px != null && !reanalyses_px.isEmpty()) {
-			Set<String> ret = new HashSet<String>();
+			Set<String> ret = new THashSet<String>();
 			for (String reanalysis_px : reanalyses_px) {
-				ret.add(ProteomeXchangeFilev2_1.MTD + TAB + "reanalysis_px"
-						+ TAB + reanalysis_px);
+				ret.add(ProteomeXchangeFilev2_1.MTD + TAB + "reanalysis_px" + TAB + reanalysis_px);
 			}
 			return ret;
 		}
@@ -769,26 +722,23 @@ public class ProteomeXchangeFilev2_1 {
 	 */
 	public String getSubmitterPrideLogin() {
 		if (login != null) {
-			return ProteomeXchangeFilev2_1.MTD + TAB + "submitter_pride_login"
-					+ TAB + login;
+			return ProteomeXchangeFilev2_1.MTD + TAB + "submitter_pride_login" + TAB + login;
 		}
 		return null;
 	}
 
 	private Set<String> getAdditionalsFromMiapes() {
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new THashSet<String>();
 		List<MiapeMSDocument> miapeMSs = experimentList.getMiapeMSs();
 		for (MiapeMSDocument miapeMSDocument : miapeMSs) {
-			Set<String> additionals = PexMiapeParser
-					.getAdditionals(miapeMSDocument);
+			Set<String> additionals = PexMiapeParser.getAdditionals(miapeMSDocument);
 			if (additionals != null && !additionals.isEmpty()) {
 				ret.addAll(additionals);
 			}
 		}
 		List<MiapeMSIDocument> miapeMSIs = experimentList.getMiapeMSIs();
 		for (MiapeMSIDocument miapeMSIDocument : miapeMSIs) {
-			Set<String> additionals = PexMiapeParser
-					.getAdditionals(miapeMSIDocument);
+			Set<String> additionals = PexMiapeParser.getAdditionals(miapeMSIDocument);
 			if (additionals != null && !additionals.isEmpty()) {
 				ret.addAll(additionals);
 			}
@@ -803,10 +753,9 @@ public class ProteomeXchangeFilev2_1 {
 	}
 
 	private Set<String> getDiseasesFromMiapes(List<MiapeMSDocument> miapeMSs) {
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new THashSet<String>();
 		for (MiapeMSDocument miapeMSDocument : miapeMSs) {
-			Set<String> additionals = PexMiapeParser
-					.getDisseases(miapeMSDocument);
+			Set<String> additionals = PexMiapeParser.getDisseases(miapeMSDocument);
 			if (additionals != null && !additionals.isEmpty()) {
 				ret.addAll(additionals);
 			}
@@ -816,13 +765,11 @@ public class ProteomeXchangeFilev2_1 {
 	}
 
 	private Set<String> getSampleProcessingProtocolFromMiapes() {
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new THashSet<String>();
 		List<MiapeMSDocument> miapeMSs = experimentList.getMiapeMSs();
 		for (MiapeMSDocument miapeMSDocument : miapeMSs) {
-			Set<String> sampleProcessingProtocols = PexMiapeParser
-					.getSampleProcessingProtocols(miapeMSDocument);
-			if (sampleProcessingProtocols != null
-					&& !sampleProcessingProtocols.isEmpty()) {
+			Set<String> sampleProcessingProtocols = PexMiapeParser.getSampleProcessingProtocols(miapeMSDocument);
+			if (sampleProcessingProtocols != null && !sampleProcessingProtocols.isEmpty()) {
 				ret.addAll(sampleProcessingProtocols);
 			}
 		}
@@ -830,22 +777,18 @@ public class ProteomeXchangeFilev2_1 {
 	}
 
 	private Set<String> getDataProcessingProtocolFromMiapes() {
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new THashSet<String>();
 		List<MiapeMSDocument> miapeMSs = experimentList.getMiapeMSs();
 		for (MiapeMSDocument miapeMSDocument : miapeMSs) {
-			Set<String> dataProcessingProtocols = PexMiapeParser
-					.getDataProcessingProtocols(miapeMSDocument);
-			if (dataProcessingProtocols != null
-					&& !dataProcessingProtocols.isEmpty()) {
+			Set<String> dataProcessingProtocols = PexMiapeParser.getDataProcessingProtocols(miapeMSDocument);
+			if (dataProcessingProtocols != null && !dataProcessingProtocols.isEmpty()) {
 				ret.addAll(dataProcessingProtocols);
 			}
 		}
 		List<MiapeMSIDocument> miapeMSIs = experimentList.getMiapeMSIs();
 		for (MiapeMSIDocument miapeMSIDocument : miapeMSIs) {
-			Set<String> dataProcessingProtocols = PexMiapeParser
-					.getDataProcessingProtocols(miapeMSIDocument);
-			if (dataProcessingProtocols != null
-					&& !dataProcessingProtocols.isEmpty()) {
+			Set<String> dataProcessingProtocols = PexMiapeParser.getDataProcessingProtocols(miapeMSIDocument);
+			if (dataProcessingProtocols != null && !dataProcessingProtocols.isEmpty()) {
 				ret.addAll(dataProcessingProtocols);
 			}
 		}
@@ -853,19 +796,17 @@ public class ProteomeXchangeFilev2_1 {
 	}
 
 	private Set<String> getExperimentTypesFromMiapes() {
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new THashSet<String>();
 		List<MiapeMSDocument> miapeMSs = experimentList.getMiapeMSs();
 		for (MiapeMSDocument miapeMSDocument : miapeMSs) {
-			Set<String> experimentTypes = PexMiapeParser
-					.getExperimentTypes(miapeMSDocument);
+			Set<String> experimentTypes = PexMiapeParser.getExperimentTypes(miapeMSDocument);
 			if (experimentTypes != null && !experimentTypes.isEmpty()) {
 				ret.addAll(experimentTypes);
 			}
 		}
 		List<MiapeMSIDocument> miapeMSIs = experimentList.getMiapeMSIs();
 		for (MiapeMSIDocument miapeMSIDocument : miapeMSIs) {
-			Set<String> experimentTypes = PexMiapeParser
-					.getExperimentTypes(miapeMSIDocument);
+			Set<String> experimentTypes = PexMiapeParser.getExperimentTypes(miapeMSIDocument);
 			if (experimentTypes != null && !experimentTypes.isEmpty()) {
 				ret.addAll(experimentTypes);
 			}
@@ -880,7 +821,7 @@ public class ProteomeXchangeFilev2_1 {
 	}
 
 	private Set<String> getTissuesFromMiapes(List<MiapeMSDocument> miapeMSs) {
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new THashSet<String>();
 		for (MiapeMSDocument miapeMSDocument : miapeMSs) {
 			Set<String> tissues = PexMiapeParser.getTissues(miapeMSDocument);
 			if (tissues != null && !tissues.isEmpty()) {
@@ -900,10 +841,9 @@ public class ProteomeXchangeFilev2_1 {
 	}
 
 	private Set<String> getCellTypesFromMiapes(List<MiapeMSDocument> miapeMSs) {
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new THashSet<String>();
 		for (MiapeMSDocument miapeMSDocument : miapeMSs) {
-			Set<String> cellTypes = PexMiapeParser
-					.getCellTypes(miapeMSDocument);
+			Set<String> cellTypes = PexMiapeParser.getCellTypes(miapeMSDocument);
 			if (cellTypes != null && !cellTypes.isEmpty()) {
 				ret.addAll(cellTypes);
 			}
@@ -918,10 +858,9 @@ public class ProteomeXchangeFilev2_1 {
 	}
 
 	private Set<String> getInstrumentsFromMiapes(List<MiapeMSDocument> miapeMSs) {
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new THashSet<String>();
 		for (MiapeMSDocument miapeMSDocument : miapeMSs) {
-			Set<String> instruments = PexMiapeParser
-					.getInstruments(miapeMSDocument);
+			Set<String> instruments = PexMiapeParser.getInstruments(miapeMSDocument);
 			if (instruments != null && !instruments.isEmpty()) {
 				ret.addAll(instruments);
 			}
@@ -936,7 +875,7 @@ public class ProteomeXchangeFilev2_1 {
 	}
 
 	private Set<String> getSpeciesFromMiapes(List<MiapeMSDocument> miapeMSs) {
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new THashSet<String>();
 		for (MiapeMSDocument miapeMSDocument : miapeMSs) {
 			Set<String> species = PexMiapeParser.getSpecies(miapeMSDocument);
 			if (species != null && !species.isEmpty()) {
@@ -1007,7 +946,7 @@ public class ProteomeXchangeFilev2_1 {
 		return null;
 	}
 
-	private void addToMap(Map<Integer, List<String>> map, int key, String value) {
+	private void addToMap(TIntObjectHashMap<List<String>> map, int key, String value) {
 		if (map.containsKey(key)) {
 			final List<String> list = map.get(key);
 			if (!list.contains(value))
@@ -1021,17 +960,17 @@ public class ProteomeXchangeFilev2_1 {
 
 	public List<String> getFileLines() {
 		// prepare the sample metadata maps:
-		speciesByExperiment = new HashMap<Integer, List<String>>();
-		tissuesByExperiment = new HashMap<Integer, List<String>>();
-		cellTypesByExperiment = new HashMap<Integer, List<String>>();
-		diseaseByExperiment = new HashMap<Integer, List<String>>();
-		quantificationByExperiment = new HashMap<Integer, List<String>>();
-		instrumentByExperiment = new HashMap<Integer, List<String>>();
-		modificationByExperiment = new HashMap<Integer, List<String>>();
-		experimental_factorByExperiment = new HashMap<Integer, List<String>>();
+		speciesByExperiment = new TIntObjectHashMap<List<String>>();
+		tissuesByExperiment = new TIntObjectHashMap<List<String>>();
+		cellTypesByExperiment = new TIntObjectHashMap<List<String>>();
+		diseaseByExperiment = new TIntObjectHashMap<List<String>>();
+		quantificationByExperiment = new TIntObjectHashMap<List<String>>();
+		instrumentByExperiment = new TIntObjectHashMap<List<String>>();
+		modificationByExperiment = new TIntObjectHashMap<List<String>>();
+		experimental_factorByExperiment = new TIntObjectHashMap<List<String>>();
 
 		List<String> ret = new ArrayList<String>();
-		HashMap<String, PexFileMapping> fileLocationsMapping = new HashMap<String, PexFileMapping>();
+		Map<String, PexFileMapping> fileLocationsMapping = new THashMap<String, PexFileMapping>();
 		List<PexFileMapping> totalFileList = new ArrayList<PexFileMapping>();
 		int fileCounter = 1;
 		// organize the files by experiments
@@ -1042,13 +981,11 @@ public class ProteomeXchangeFilev2_1 {
 				// FILEMAPPINGS
 				// PRIDE XML
 				int resultNum = fileCounter;
-				PexFileMapping prideXMLFileMapping = new PexFileMapping(
-						"result", fileCounter++,
+				PexFileMapping prideXMLFileMapping = new PexFileMapping("result", fileCounter++,
 						prideXmlFile.getAbsolutePath(), null);
 
 				totalFileList.add(prideXMLFileMapping);
-				fileLocationsMapping.put(prideXMLFileMapping.getPath(),
-						prideXMLFileMapping);
+				fileLocationsMapping.put(prideXMLFileMapping.getPath(), prideXMLFileMapping);
 
 				// Iterate over replicates
 				List<Replicate> replicates = experiment.getReplicates();
@@ -1069,19 +1006,14 @@ public class ProteomeXchangeFilev2_1 {
 
 					if (rawFiles != null) {
 						for (PexFile rawFile : rawFiles) {
-							if (!fileLocationsMapping.containsKey(rawFile
-									.getFileLocation())) {
-								PexFileMapping rawFileMapping = new PexFileMapping(
-										"raw", fileCounter++,
+							if (!fileLocationsMapping.containsKey(rawFile.getFileLocation())) {
+								PexFileMapping rawFileMapping = new PexFileMapping("raw", fileCounter++,
 										rawFile.getFileLocation(), null);
 								rawFileMappings.add(rawFileMapping);
-								fileLocationsMapping.put(
-										rawFile.getFileLocation(),
-										rawFileMapping);
+								fileLocationsMapping.put(rawFile.getFileLocation(), rawFileMapping);
 
 								// PRIDE XML -> RAW file
-								prideXMLFileMapping
-										.addRelationship(rawFileMapping.getId());
+								prideXMLFileMapping.addRelationship(rawFileMapping.getId());
 							}
 						}
 					}
@@ -1091,27 +1023,18 @@ public class ProteomeXchangeFilev2_1 {
 					List<PexFileMapping> replicatePeakListFileMappings = new ArrayList<PexFileMapping>();
 					if (peakListFiles != null) {
 						for (PexFile peakList : peakListFiles) {
-							if (!fileLocationsMapping.containsKey(peakList
-									.getFileLocation())) {
-								PexFileMapping peakListFileMapping = new PexFileMapping(
-										"peak", fileCounter++,
+							if (!fileLocationsMapping.containsKey(peakList.getFileLocation())) {
+								PexFileMapping peakListFileMapping = new PexFileMapping("peak", fileCounter++,
 										peakList.getFileLocation(), null);
 								peakListFileMappings.add(peakListFileMapping);
-								replicatePeakListFileMappings
-										.add(peakListFileMapping);
-								fileLocationsMapping.put(
-										peakList.getFileLocation(),
-										peakListFileMapping);
+								replicatePeakListFileMappings.add(peakListFileMapping);
+								fileLocationsMapping.put(peakList.getFileLocation(), peakListFileMapping);
 
 								// PRIDE XML -> PEAK LIST file
-								prideXMLFileMapping
-										.addRelationship(peakListFileMapping
-												.getId());
+								prideXMLFileMapping.addRelationship(peakListFileMapping.getId());
 								// RAW file -> PEAK LIST file
 								for (PexFileMapping rawFileMapping : rawFileMappings) {
-									rawFileMapping
-											.addRelationship(peakListFileMapping
-													.getId());
+									rawFileMapping.addRelationship(peakListFileMapping.getId());
 								}
 
 								// prideXMLFileMapping
@@ -1125,34 +1048,21 @@ public class ProteomeXchangeFilev2_1 {
 					List<PexFile> miapeMSReportFiles = getMiapeMSReportFiles(replicate);
 					if (miapeMSReportFiles != null)
 						for (PexFile miapeMSReportFile : miapeMSReportFiles) {
-							if (!fileLocationsMapping
-									.containsKey(miapeMSReportFile
-											.getFileLocation())) {
-								PexFileMapping miapeReportFileMapping = new PexFileMapping(
-										"other", fileCounter++,
-										miapeMSReportFile.getFileLocation(),
-										null);
-								miapeReportFileMappings
-										.add(miapeReportFileMapping);
-								fileLocationsMapping.put(
-										miapeMSReportFile.getFileLocation(),
-										miapeReportFileMapping);
+							if (!fileLocationsMapping.containsKey(miapeMSReportFile.getFileLocation())) {
+								PexFileMapping miapeReportFileMapping = new PexFileMapping("other", fileCounter++,
+										miapeMSReportFile.getFileLocation(), null);
+								miapeReportFileMappings.add(miapeReportFileMapping);
+								fileLocationsMapping.put(miapeMSReportFile.getFileLocation(), miapeReportFileMapping);
 
 								// PRIDE XML -> MIAPE MS report
-								prideXMLFileMapping
-										.addRelationship(miapeReportFileMapping
-												.getId());
+								prideXMLFileMapping.addRelationship(miapeReportFileMapping.getId());
 								// RAW file -> MIAPE MS report
 								for (PexFileMapping rawFileMapping : rawFileMappings) {
-									rawFileMapping
-											.addRelationship(miapeReportFileMapping
-													.getId());
+									rawFileMapping.addRelationship(miapeReportFileMapping.getId());
 								}
 								// PEAK LIST file -> MIAPE MS report
 								for (PexFileMapping peakListFileMapping : replicatePeakListFileMappings) {
-									peakListFileMapping
-											.addRelationship(miapeReportFileMapping
-													.getId());
+									peakListFileMapping.addRelationship(miapeReportFileMapping.getId());
 								}
 							}
 						}
@@ -1162,33 +1072,21 @@ public class ProteomeXchangeFilev2_1 {
 					List<PexFileMapping> replicatesearchEngineOutputFilesMappings = new ArrayList<PexFileMapping>();
 					if (searchEngineOutputFiles != null) {
 						for (PexFile peakList : searchEngineOutputFiles) {
-							if (!fileLocationsMapping.containsKey(peakList
-									.getFileLocation())) {
-								PexFileMapping searchEngineOutputFileMapping = new PexFileMapping(
-										"search", fileCounter++,
-										peakList.getFileLocation(), null);
-								outputSearchEngineFileMappings
-										.add(searchEngineOutputFileMapping);
-								replicatesearchEngineOutputFilesMappings
-										.add(searchEngineOutputFileMapping);
-								fileLocationsMapping.put(
-										peakList.getFileLocation(),
-										searchEngineOutputFileMapping);
+							if (!fileLocationsMapping.containsKey(peakList.getFileLocation())) {
+								PexFileMapping searchEngineOutputFileMapping = new PexFileMapping("search",
+										fileCounter++, peakList.getFileLocation(), null);
+								outputSearchEngineFileMappings.add(searchEngineOutputFileMapping);
+								replicatesearchEngineOutputFilesMappings.add(searchEngineOutputFileMapping);
+								fileLocationsMapping.put(peakList.getFileLocation(), searchEngineOutputFileMapping);
 								// PRIDE XML -> SEARCH ENGINE OUTPUT file
-								prideXMLFileMapping
-										.addRelationship(searchEngineOutputFileMapping
-												.getId());
+								prideXMLFileMapping.addRelationship(searchEngineOutputFileMapping.getId());
 								// RAW file -> SEARCH ENGINE OUTPUT file
 								for (PexFileMapping rawFileMapping : rawFileMappings) {
-									rawFileMapping
-											.addRelationship(searchEngineOutputFileMapping
-													.getId());
+									rawFileMapping.addRelationship(searchEngineOutputFileMapping.getId());
 								}
 								// PEAK LIST FILE -> SEARCH ENGINE OUTPUT file
 								for (PexFileMapping peakListFileMapping : replicatePeakListFileMappings) {
-									peakListFileMapping
-											.addRelationship(searchEngineOutputFileMapping
-													.getId());
+									peakListFileMapping.addRelationship(searchEngineOutputFileMapping.getId());
 								}
 							}
 						}
@@ -1198,40 +1096,25 @@ public class ProteomeXchangeFilev2_1 {
 					List<PexFile> miapeMSIReportFiles = getMiapeMSIReportFiles(replicate);
 					if (miapeMSIReportFiles != null)
 						for (PexFile miapeMSIReportFile : miapeMSIReportFiles) {
-							if (!fileLocationsMapping
-									.containsKey(miapeMSIReportFile
-											.getFileLocation())) {
-								PexFileMapping miapeReportFileMapping = new PexFileMapping(
-										"other", fileCounter++,
-										miapeMSIReportFile.getFileLocation(),
-										null);
-								miapeReportFileMappings
-										.add(miapeReportFileMapping);
-								fileLocationsMapping.put(
-										miapeMSIReportFile.getFileLocation(),
-										miapeReportFileMapping);
+							if (!fileLocationsMapping.containsKey(miapeMSIReportFile.getFileLocation())) {
+								PexFileMapping miapeReportFileMapping = new PexFileMapping("other", fileCounter++,
+										miapeMSIReportFile.getFileLocation(), null);
+								miapeReportFileMappings.add(miapeReportFileMapping);
+								fileLocationsMapping.put(miapeMSIReportFile.getFileLocation(), miapeReportFileMapping);
 
 								// PRIDE XML -> MIAPE MSI report
-								prideXMLFileMapping
-										.addRelationship(miapeReportFileMapping
-												.getId());
+								prideXMLFileMapping.addRelationship(miapeReportFileMapping.getId());
 								// RAW file -> MIAPE MSI report
 								for (PexFileMapping rawFileMapping : rawFileMappings) {
-									rawFileMapping
-											.addRelationship(miapeReportFileMapping
-													.getId());
+									rawFileMapping.addRelationship(miapeReportFileMapping.getId());
 								}
 								// PEAK LIST FILE -> MIAPE MSI report
 								for (PexFileMapping peakListFileMapping : replicatePeakListFileMappings) {
-									peakListFileMapping
-											.addRelationship(miapeReportFileMapping
-													.getId());
+									peakListFileMapping.addRelationship(miapeReportFileMapping.getId());
 								}
 								// SEARCH ENGINE OUTPUT file -> MIAPE MSI report
 								for (PexFileMapping searchEngineOutputFileMapping : replicatesearchEngineOutputFilesMappings) {
-									searchEngineOutputFileMapping
-											.addRelationship(miapeReportFileMapping
-													.getId());
+									searchEngineOutputFileMapping.addRelationship(miapeReportFileMapping.getId());
 								}
 
 							}
@@ -1251,8 +1134,7 @@ public class ProteomeXchangeFilev2_1 {
 			@Override
 			public int compare(PexFileMapping o1, PexFileMapping o2) {
 
-				return Integer.valueOf(o1.getId()).compareTo(
-						Integer.valueOf(o2.getId()));
+				return Integer.valueOf(o1.getId()).compareTo(Integer.valueOf(o2.getId()));
 
 			}
 
@@ -1315,10 +1197,8 @@ public class ProteomeXchangeFilev2_1 {
 
 			StringBuilder sb = new StringBuilder();
 			// file id
-			if (speciesByExperiment.containsKey(expCounter)
-					|| tissuesByExperiment.containsKey(expCounter)
-					|| cellTypesByExperiment.containsKey(expCounter)
-					|| diseaseByExperiment.containsKey(expCounter)
+			if (speciesByExperiment.containsKey(expCounter) || tissuesByExperiment.containsKey(expCounter)
+					|| cellTypesByExperiment.containsKey(expCounter) || diseaseByExperiment.containsKey(expCounter)
 					|| quantificationByExperiment.containsKey(expCounter)
 					|| instrumentByExperiment.containsKey(expCounter)
 					|| modificationByExperiment.containsKey(expCounter)
@@ -1371,8 +1251,7 @@ public class ProteomeXchangeFilev2_1 {
 			sb.append(TAB);
 			// experimental factor
 			if (experimental_factorByExperiment.containsKey(expCounter)) {
-				List<String> list = experimental_factorByExperiment
-						.get(expCounter);
+				List<String> list = experimental_factorByExperiment.get(expCounter);
 				sb.append(listToString(list, ","));
 			}
 			ret.add(sb.toString());
@@ -1424,20 +1303,17 @@ public class ProteomeXchangeFilev2_1 {
 	 * @param replicate
 	 * @param files
 	 */
-	public void addReplicateMIAPEMSReportFiles(Replicate replicate,
-			List<File> files) {
+	public void addReplicateMIAPEMSReportFiles(Replicate replicate, List<File> files) {
 		if (replicate != null && files != null && !files.isEmpty()) {
 			if (miapeMSReports.containsKey(replicate)) {
 				for (File file : files) {
-					PexFile pexFile = new PexFile(file.getAbsolutePath(),
-							replicate);
+					PexFile pexFile = new PexFile(file.getAbsolutePath(), replicate);
 					miapeMSReports.get(replicate).add(pexFile);
 				}
 			} else {
 				List<PexFile> pexFiles = new ArrayList<PexFile>();
 				for (File file : files) {
-					PexFile pexFile = new PexFile(file.getAbsolutePath(),
-							replicate);
+					PexFile pexFile = new PexFile(file.getAbsolutePath(), replicate);
 					pexFiles.add(pexFile);
 				}
 				miapeMSReports.put(replicate, pexFiles);
@@ -1451,20 +1327,17 @@ public class ProteomeXchangeFilev2_1 {
 	 * @param replicate
 	 * @param files
 	 */
-	public void addReplicateMIAPEMSIReportFiles(Replicate replicate,
-			List<File> files) {
+	public void addReplicateMIAPEMSIReportFiles(Replicate replicate, List<File> files) {
 		if (replicate != null && files != null && !files.isEmpty()) {
 			if (miapeMSIReports.containsKey(replicate)) {
 				for (File file : files) {
-					PexFile pexFile = new PexFile(file.getAbsolutePath(),
-							replicate);
+					PexFile pexFile = new PexFile(file.getAbsolutePath(), replicate);
 					miapeMSIReports.get(replicate).add(pexFile);
 				}
 			} else {
 				List<PexFile> pexFiles = new ArrayList<PexFile>();
 				for (File file : files) {
-					PexFile pexFile = new PexFile(file.getAbsolutePath(),
-							replicate);
+					PexFile pexFile = new PexFile(file.getAbsolutePath(), replicate);
 					pexFiles.add(pexFile);
 				}
 				miapeMSIReports.put(replicate, pexFiles);
@@ -1510,15 +1383,13 @@ public class ProteomeXchangeFilev2_1 {
 		if (replicate != null && files != null && !files.isEmpty()) {
 			if (rawFileMapToReplicate.containsKey(replicate)) {
 				for (File file : files) {
-					PexFile pexRawFile = new PexFile(file.getAbsolutePath(),
-							replicate);
+					PexFile pexRawFile = new PexFile(file.getAbsolutePath(), replicate);
 					rawFileMapToReplicate.get(replicate).add(pexRawFile);
 				}
 			} else {
 				List<PexFile> pexRawFiles = new ArrayList<PexFile>();
 				for (File file : files) {
-					PexFile pexRawFile = new PexFile(file.getAbsolutePath(),
-							replicate);
+					PexFile pexRawFile = new PexFile(file.getAbsolutePath(), replicate);
 					pexRawFiles.add(pexRawFile);
 				}
 				rawFileMapToReplicate.put(replicate, pexRawFiles);
@@ -1529,12 +1400,10 @@ public class ProteomeXchangeFilev2_1 {
 	public void removeReplicateRawFile(Replicate replicate, String nodeString) {
 		if (replicate != null) {
 			if (rawFileMapToReplicate.containsKey(replicate)) {
-				final List<PexFile> files = rawFileMapToReplicate
-						.get(replicate);
+				final List<PexFile> files = rawFileMapToReplicate.get(replicate);
 				while (files.iterator().hasNext()) {
 					PexFile file = files.iterator().next();
-					if (FilenameUtils.getName(file.getFileLocation()).equals(
-							nodeString))
+					if (FilenameUtils.getName(file.getFileLocation()).equals(nodeString))
 						files.iterator().remove();
 				}
 			}
@@ -1545,15 +1414,13 @@ public class ProteomeXchangeFilev2_1 {
 		if (replicate != null && files != null && !files.isEmpty()) {
 			if (peakListFileMap.containsKey(replicate)) {
 				for (File file : files) {
-					PexFile pexFile = new PexFile(file.getAbsolutePath(),
-							replicate);
+					PexFile pexFile = new PexFile(file.getAbsolutePath(), replicate);
 					peakListFileMap.get(replicate).add(pexFile);
 				}
 			} else {
 				List<PexFile> pexFiles = new ArrayList<PexFile>();
 				for (File file : files) {
-					PexFile pexFile = new PexFile(file.getAbsolutePath(),
-							replicate);
+					PexFile pexFile = new PexFile(file.getAbsolutePath(), replicate);
 					pexFiles.add(pexFile);
 				}
 				peakListFileMap.put(replicate, pexFiles);
@@ -1561,20 +1428,17 @@ public class ProteomeXchangeFilev2_1 {
 		}
 	}
 
-	public void addReplicateSearchEngineOutputFiles(Replicate replicate,
-			List<File> files) {
+	public void addReplicateSearchEngineOutputFiles(Replicate replicate, List<File> files) {
 		if (replicate != null && files != null && !files.isEmpty()) {
 			if (searchEngineOutputFileMap.containsKey(replicate)) {
 				for (File file : files) {
-					PexFile pexFile = new PexFile(file.getAbsolutePath(),
-							replicate);
+					PexFile pexFile = new PexFile(file.getAbsolutePath(), replicate);
 					searchEngineOutputFileMap.get(replicate).add(pexFile);
 				}
 			} else {
 				List<PexFile> pexFiles = new ArrayList<PexFile>();
 				for (File file : files) {
-					PexFile pexFile = new PexFile(file.getAbsolutePath(),
-							replicate);
+					PexFile pexFile = new PexFile(file.getAbsolutePath(), replicate);
 					pexFiles.add(pexFile);
 				}
 				searchEngineOutputFileMap.put(replicate, pexFiles);
@@ -1583,7 +1447,7 @@ public class ProteomeXchangeFilev2_1 {
 
 	}
 
-	public HashMap<Replicate, Set<String>> getFilesToSkip() {
+	public Map<Replicate, Set<String>> getFilesToSkip() {
 		return filesToSkip;
 	}
 

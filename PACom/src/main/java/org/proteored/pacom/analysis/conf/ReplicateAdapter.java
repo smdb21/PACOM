@@ -3,7 +3,6 @@ package org.proteored.pacom.analysis.conf;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,6 +37,7 @@ import edu.scripps.yates.annotations.uniprot.xml.ProteinType.AlternativeName;
 import edu.scripps.yates.annotations.uniprot.xml.ProteinType.RecommendedName;
 import edu.scripps.yates.annotations.uniprot.xml.ProteinType.SubmittedName;
 import edu.scripps.yates.utilities.fasta.FastaParser;
+import gnu.trove.set.hash.THashSet;
 
 public class ReplicateAdapter implements Adapter<Replicate> {
 	private final CPReplicate xmlRep;
@@ -165,9 +165,9 @@ public class ReplicateAdapter implements Adapter<Replicate> {
 	private void addProteinDescriptionFromUniprot(MiapeMSIDocument ret) {
 		// complete the information of the proteins with the Uniprot
 		// information
-		Set<String> accessionsToLookUp = new HashSet<String>();
+		Set<String> accessionsToLookUp = new THashSet<String>();
 		for (IdentifiedProteinSet proteinSet : ret.getIdentifiedProteinSets()) {
-			final HashMap<String, IdentifiedProtein> identifiedProteins = proteinSet.getIdentifiedProteins();
+			final Map<String, IdentifiedProtein> identifiedProteins = proteinSet.getIdentifiedProteins();
 			for (String proteinAcc : identifiedProteins.keySet()) {
 				final IdentifiedProtein protein = identifiedProteins.get(proteinAcc);
 				if (protein instanceof IdentifiedProteinImpl) {

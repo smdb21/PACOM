@@ -89,10 +89,10 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 
 	private File currentCgfFile;
 
-	// hashmap to store the MIAPE documents that are retrieved <Identified,
+	// Map to store the MIAPE documents that are retrieved <Identified,
 	// FullPath to the file>
-	// private static HashMap<Integer, String> miapeMSIsRetrieved = new
-	// HashMap<Integer, String>();
+	// private static TIntObjectHashMap< String> miapeMSIsRetrieved = new
+	// TIntObjectHashMap< String>();
 
 	public static final String MESSAGE_SPLITTER = "****";
 	public static final String SCAPED_MESSAGE_SPLITTER = "\\*\\*\\*\\*";

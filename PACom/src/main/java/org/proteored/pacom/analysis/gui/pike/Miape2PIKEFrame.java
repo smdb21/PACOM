@@ -14,8 +14,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +31,8 @@ import org.proteored.pacom.utils.HttpUtilities;
 
 import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 
+import gnu.trove.map.hash.THashMap;
+
 /**
  * 
  * @author __USER__
@@ -38,7 +40,7 @@ import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 public class Miape2PIKEFrame extends javax.swing.JFrame implements PropertyChangeListener {
 	private ClientHttpRequest pikeClient;
 	private final List<String> accessions;
-	private HashMap<String, String> databasesHash;
+	private Map<String, String> databasesHash;
 	private final Frame parentDialog;
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
 	public static final String TASK_DONE = "TASK_DONE";
@@ -79,7 +81,7 @@ public class Miape2PIKEFrame extends javax.swing.JFrame implements PropertyChang
 	}
 
 	private void initDatabaseComboBox() {
-		this.databasesHash = new HashMap<String, String>();
+		this.databasesHash = new THashMap<String, String>();
 		databasesHash.put("UniProt/SwissProt Accession (fi: P27098)", "0_SWISS-PROT-AC");
 		databasesHash.put("UniProt/SwissProt ID (fi: ALBU_HUMAN)", "0_SWISS-PROT-ID");
 		databasesHash.put("EBI IPI", "1_IPI");
@@ -90,8 +92,7 @@ public class Miape2PIKEFrame extends javax.swing.JFrame implements PropertyChang
 		databasesHash.put("PDB (Protein Data Bank)", "2_NCBI");
 		databasesHash.put("DDBJ (DataBase from Japan)", "2_NCBI");
 		databasesHash.put("Gene ID", "1_GeneName");
-		this.jComboBoxDatabase.setModel(new DefaultComboBoxModel(databasesHash.keySet().toArray(
-				new String[0])));
+		this.jComboBoxDatabase.setModel(new DefaultComboBoxModel(databasesHash.keySet().toArray(new String[0])));
 	}
 
 	private List<String> getFieldSelectParameters() {
@@ -188,8 +189,8 @@ public class Miape2PIKEFrame extends javax.swing.JFrame implements PropertyChang
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Protein Information and Knowledge Extractor (PIKE)");
 
-		jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(
-				javax.swing.BorderFactory.createEtchedBorder(), "1. Contact Information"));
+		jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(),
+				"1. Contact Information"));
 
 		jLabel1.setText("Your name:");
 
@@ -197,79 +198,52 @@ public class Miape2PIKEFrame extends javax.swing.JFrame implements PropertyChang
 
 		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 		jPanel1.setLayout(jPanel1Layout);
-		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				jPanel1Layout
-						.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(
-								jPanel1Layout
-										.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.LEADING)
-										.addComponent(jLabel2).addComponent(jLabel1))
+		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel1Layout.createSequentialGroup().addContainerGap()
+						.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addComponent(jLabel2).addComponent(jLabel1))
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(
-								jPanel1Layout
-										.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.LEADING)
-										.addComponent(jTextFieldName,
-												javax.swing.GroupLayout.DEFAULT_SIZE, 266,
-												Short.MAX_VALUE)
-										.addComponent(jTextFieldEMail,
-												javax.swing.GroupLayout.DEFAULT_SIZE, 266,
-												Short.MAX_VALUE)).addContainerGap()));
-		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				jPanel1Layout
-						.createSequentialGroup()
-						.addGroup(
-								jPanel1Layout
-										.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.BASELINE)
-										.addComponent(jLabel1)
-										.addComponent(jTextFieldName,
+						.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addComponent(jTextFieldName, javax.swing.GroupLayout.DEFAULT_SIZE, 266,
+										Short.MAX_VALUE)
+								.addComponent(jTextFieldEMail, javax.swing.GroupLayout.DEFAULT_SIZE, 266,
+										Short.MAX_VALUE))
+						.addContainerGap()));
+		jPanel1Layout
+				.setVerticalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(jPanel1Layout.createSequentialGroup().addGroup(jPanel1Layout
+								.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jLabel1)
+								.addComponent(jTextFieldName, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+										.addComponent(jLabel2).addComponent(jTextFieldEMail,
 												javax.swing.GroupLayout.PREFERRED_SIZE,
 												javax.swing.GroupLayout.DEFAULT_SIZE,
 												javax.swing.GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(
-								jPanel1Layout
-										.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.BASELINE)
-										.addComponent(jLabel2)
-										.addComponent(jTextFieldEMail,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.PREFERRED_SIZE))
-						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+								.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
-		jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(
-				javax.swing.BorderFactory.createEtchedBorder(), "2. Select the database"));
+		jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(),
+				"2. Select the database"));
 
 		jComboBoxDatabase.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "dsf" }));
 
 		javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
 		jPanel2.setLayout(jPanel2Layout);
-		jPanel2Layout.setHorizontalGroup(jPanel2Layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(
-						jPanel2Layout.createSequentialGroup().addContainerGap()
-								.addComponent(jComboBoxDatabase, 0, 336, Short.MAX_VALUE)
-								.addContainerGap()));
-		jPanel2Layout.setVerticalGroup(jPanel2Layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				jPanel2Layout
-						.createSequentialGroup()
+		jPanel2Layout.setHorizontalGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel2Layout.createSequentialGroup().addContainerGap()
+						.addComponent(jComboBoxDatabase, 0, 336, Short.MAX_VALUE).addContainerGap()));
+		jPanel2Layout.setVerticalGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel2Layout.createSequentialGroup()
 						.addComponent(jComboBoxDatabase, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
 						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
-		jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(
-				javax.swing.BorderFactory.createEtchedBorder(), "3. Select the annotations"));
+		jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(),
+				"3. Select the annotations"));
 
-		jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(
-				javax.swing.BorderFactory.createEtchedBorder(), "Protein Annotations"));
+		jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(),
+				"Protein Annotations"));
 
 		jCheckBoxProteinName.setText("Protein name");
 
@@ -301,35 +275,21 @@ public class Miape2PIKEFrame extends javax.swing.JFrame implements PropertyChang
 
 		javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
 		jPanel4.setLayout(jPanel4Layout);
-		jPanel4Layout.setHorizontalGroup(jPanel4Layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				jPanel4Layout
-						.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(
-								jPanel4Layout
-										.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.LEADING)
-										.addComponent(jCheckBoxProteinName)
-										.addComponent(jCheckBoxGeneName)
-										.addComponent(jCheckBoxProteinTaxonomy)
-										.addComponent(jCheckBoxProteinSequence)
-										.addComponent(jCheckBoxAlternativeIDs)
-										.addComponent(jCheckBoxProteinFunction)
-										.addComponent(jCheckBoxSubcellularLocation)
-										.addComponent(jCheckBoxTissueSpecificity)
-										.addComponent(jCheckBoxRelatedDisseases)
-										.addComponent(jCheckBoxSPKeywords)
-										.addComponent(jCheckBoxProteinAnnotationsSelectAll))
+		jPanel4Layout.setHorizontalGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel4Layout.createSequentialGroup().addContainerGap()
+						.addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addComponent(jCheckBoxProteinName).addComponent(jCheckBoxGeneName)
+								.addComponent(jCheckBoxProteinTaxonomy).addComponent(jCheckBoxProteinSequence)
+								.addComponent(jCheckBoxAlternativeIDs).addComponent(jCheckBoxProteinFunction)
+								.addComponent(jCheckBoxSubcellularLocation).addComponent(jCheckBoxTissueSpecificity)
+								.addComponent(jCheckBoxRelatedDisseases).addComponent(jCheckBoxSPKeywords)
+								.addComponent(jCheckBoxProteinAnnotationsSelectAll))
 						.addContainerGap(11, Short.MAX_VALUE)));
-		jPanel4Layout.setVerticalGroup(jPanel4Layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				javax.swing.GroupLayout.Alignment.TRAILING,
-				jPanel4Layout
-						.createSequentialGroup()
+		jPanel4Layout.setVerticalGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
 						.addComponent(jCheckBoxProteinAnnotationsSelectAll)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21,
-								Short.MAX_VALUE).addComponent(jCheckBoxProteinName)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+						.addComponent(jCheckBoxProteinName)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jCheckBoxGeneName)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -349,8 +309,8 @@ public class Miape2PIKEFrame extends javax.swing.JFrame implements PropertyChang
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jCheckBoxSPKeywords).addContainerGap()));
 
-		jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(
-				javax.swing.BorderFactory.createEtchedBorder(), "Cross References"));
+		jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(),
+				"Cross References"));
 
 		jCheckBoxGOTerms.setText("Gene Ontology Terms");
 
@@ -382,35 +342,21 @@ public class Miape2PIKEFrame extends javax.swing.JFrame implements PropertyChang
 
 		javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
 		jPanel5.setLayout(jPanel5Layout);
-		jPanel5Layout.setHorizontalGroup(jPanel5Layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				jPanel5Layout
-						.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(
-								jPanel5Layout
-										.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.LEADING)
-										.addComponent(jCheckBoxGOTerms)
-										.addComponent(jCheckBoxHPRDLink)
-										.addComponent(jCheckBoxOMIMDisseases)
-										.addComponent(jCheckBoxKEGGPathway)
-										.addComponent(jCheckBoxPRIDEEntries)
-										.addComponent(jCheckBoxSTRINGInteractions)
-										.addComponent(jCheckBoxIntActInteractions)
-										.addComponent(jCheckBoxInterProDomains)
-										.addComponent(jCheckBoxPhosphoSiteLink)
-										.addComponent(jCheckBoxPharmaGKBLink)
-										.addComponent(jCheckBoxCrossReferencesSelectAll))
+		jPanel5Layout.setHorizontalGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel5Layout.createSequentialGroup().addContainerGap()
+						.addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addComponent(jCheckBoxGOTerms).addComponent(jCheckBoxHPRDLink)
+								.addComponent(jCheckBoxOMIMDisseases).addComponent(jCheckBoxKEGGPathway)
+								.addComponent(jCheckBoxPRIDEEntries).addComponent(jCheckBoxSTRINGInteractions)
+								.addComponent(jCheckBoxIntActInteractions).addComponent(jCheckBoxInterProDomains)
+								.addComponent(jCheckBoxPhosphoSiteLink).addComponent(jCheckBoxPharmaGKBLink)
+								.addComponent(jCheckBoxCrossReferencesSelectAll))
 						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-		jPanel5Layout.setVerticalGroup(jPanel5Layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				javax.swing.GroupLayout.Alignment.TRAILING,
-				jPanel5Layout
-						.createSequentialGroup()
+		jPanel5Layout.setVerticalGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
 						.addComponent(jCheckBoxCrossReferencesSelectAll)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21,
-								Short.MAX_VALUE).addComponent(jCheckBoxGOTerms)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+						.addComponent(jCheckBoxGOTerms)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jCheckBoxHPRDLink)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -432,43 +378,30 @@ public class Miape2PIKEFrame extends javax.swing.JFrame implements PropertyChang
 
 		javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
 		jPanel3.setLayout(jPanel3Layout);
-		jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				jPanel3Layout
-						.createSequentialGroup()
-						.addContainerGap()
+		jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel3Layout.createSequentialGroup().addContainerGap()
 						.addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE,
 								javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 						.addContainerGap()));
-		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				jPanel3Layout
-						.createSequentialGroup()
-						.addGroup(
-								jPanel3Layout
-										.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.TRAILING, false)
-										.addComponent(jPanel5,
-												javax.swing.GroupLayout.Alignment.LEADING,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
-										.addComponent(jPanel4,
-												javax.swing.GroupLayout.Alignment.LEADING,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE))
+		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel3Layout.createSequentialGroup()
+						.addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+								.addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
+								.addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE))
 						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
-		jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(
-				javax.swing.BorderFactory.createEtchedBorder(), "4. GO Additional Information"));
+		jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(),
+				"4. GO Additional Information"));
 
-		jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(
-				javax.swing.BorderFactory.createEtchedBorder(), "Go Exhaustive search"));
+		jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(),
+				"Go Exhaustive search"));
 
 		jCheckBoxEnableExhaustiveSearch.setText("enable");
 		jCheckBoxEnableExhaustiveSearch.addActionListener(new java.awt.event.ActionListener() {
@@ -478,63 +411,41 @@ public class Miape2PIKEFrame extends javax.swing.JFrame implements PropertyChang
 			}
 		});
 
-		jComboBoxDeepLevel.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2",
-				"3", "4" }));
+		jComboBoxDeepLevel.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4" }));
 
 		jLabelDeepLevel.setText("deep level:");
 
 		javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
 		jPanel7.setLayout(jPanel7Layout);
-		jPanel7Layout.setHorizontalGroup(jPanel7Layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				jPanel7Layout
-						.createSequentialGroup()
-						.addContainerGap()
-						.addComponent(jCheckBoxEnableExhaustiveSearch)
-						.addGap(38, 38, 38)
-						.addComponent(jLabelDeepLevel)
+		jPanel7Layout.setHorizontalGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel7Layout.createSequentialGroup().addContainerGap()
+						.addComponent(jCheckBoxEnableExhaustiveSearch).addGap(38, 38, 38).addComponent(jLabelDeepLevel)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jComboBoxDeepLevel, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
 						.addContainerGap(123, Short.MAX_VALUE)));
-		jPanel7Layout.setVerticalGroup(jPanel7Layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				jPanel7Layout
-						.createSequentialGroup()
-						.addGroup(
-								jPanel7Layout
-										.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.BASELINE)
-										.addComponent(jCheckBoxEnableExhaustiveSearch)
-										.addComponent(jLabelDeepLevel)
-										.addComponent(jComboBoxDeepLevel,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.PREFERRED_SIZE))
+		jPanel7Layout.setVerticalGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel7Layout.createSequentialGroup()
+						.addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jCheckBoxEnableExhaustiveSearch).addComponent(jLabelDeepLevel)
+								.addComponent(jComboBoxDeepLevel, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
 						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
 		jPanel6.setLayout(jPanel6Layout);
-		jPanel6Layout.setHorizontalGroup(jPanel6Layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				jPanel6Layout
-						.createSequentialGroup()
-						.addContainerGap()
-						.addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+		jPanel6Layout.setHorizontalGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel6Layout.createSequentialGroup().addContainerGap().addComponent(jPanel7,
+						javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 						.addContainerGap()));
-		jPanel6Layout.setVerticalGroup(jPanel6Layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				jPanel6Layout
-						.createSequentialGroup()
+		jPanel6Layout.setVerticalGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel6Layout.createSequentialGroup()
 						.addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
 						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
-		jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(
-				javax.swing.BorderFactory.createEtchedBorder(), "5. Submit"));
+		jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(),
+				"5. Submit"));
 
 		jLabelSending.setText("Sending 0 proteins");
 
@@ -548,102 +459,55 @@ public class Miape2PIKEFrame extends javax.swing.JFrame implements PropertyChang
 
 		javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
 		jPanel8.setLayout(jPanel8Layout);
-		jPanel8Layout
-				.setHorizontalGroup(jPanel8Layout
+		jPanel8Layout.setHorizontalGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel8Layout.createSequentialGroup().addGroup(jPanel8Layout
 						.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanel8Layout
-										.createSequentialGroup()
-										.addGroup(
-												jPanel8Layout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.LEADING)
-														.addGroup(
-																jPanel8Layout
-																		.createSequentialGroup()
-																		.addContainerGap()
-																		.addComponent(jLabelSending))
-														.addGroup(
-																jPanel8Layout
-																		.createSequentialGroup()
-																		.addGap(122, 122, 122)
-																		.addComponent(jButton1))
-														.addGroup(
-																jPanel8Layout
-																		.createSequentialGroup()
-																		.addContainerGap()
-																		.addComponent(
-																				jProgressBar1,
-																				javax.swing.GroupLayout.DEFAULT_SIZE,
-																				336,
-																				Short.MAX_VALUE)))
-										.addContainerGap()));
-		jPanel8Layout.setVerticalGroup(jPanel8Layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				jPanel8Layout
-						.createSequentialGroup()
-						.addComponent(jLabelSending)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jButton1)
+						.addGroup(jPanel8Layout.createSequentialGroup().addContainerGap().addComponent(jLabelSending))
+						.addGroup(jPanel8Layout.createSequentialGroup().addGap(122, 122, 122).addComponent(jButton1))
+						.addGroup(jPanel8Layout.createSequentialGroup().addContainerGap().addComponent(jProgressBar1,
+								javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)))
+						.addContainerGap()));
+		jPanel8Layout.setVerticalGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel8Layout.createSequentialGroup().addComponent(jLabelSending)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jButton1)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
 						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				layout.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(
-								layout.createParallelGroup(
-										javax.swing.GroupLayout.Alignment.LEADING)
-										.addComponent(jPanel6,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
-										.addComponent(jPanel3,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
-										.addComponent(jPanel2,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
-										.addComponent(jPanel1,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
-										.addComponent(jPanel8,
-												javax.swing.GroupLayout.Alignment.TRAILING,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)).addContainerGap()));
-		layout.setVerticalGroup(layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				layout.createSequentialGroup()
-						.addContainerGap()
+		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup().addContainerGap()
+						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(jPanel8, javax.swing.GroupLayout.Alignment.TRAILING,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE))
+						.addContainerGap()));
+		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup().addContainerGap()
 						.addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
 						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
@@ -708,16 +572,14 @@ public class Miape2PIKEFrame extends javax.swing.JFrame implements PropertyChang
 			pikeClient.setParameter("username", this.jTextFieldName.getText());
 			final String text = this.jTextFieldEMail.getText();
 			pikeClient.setParameter("usermail", text);
-			pikeClient.setParameter("database",
-					databasesHash.get(this.jComboBoxDatabase.getSelectedItem()));
+			pikeClient.setParameter("database", databasesHash.get(this.jComboBoxDatabase.getSelectedItem()));
 			final List<String> fieldSelectParameters = getFieldSelectParameters();
 			for (String fieldSelectParameter : fieldSelectParameters) {
 				pikeClient.setParameter("fieldselect", fieldSelectParameter);
 			}
 			if (this.jCheckBoxEnableExhaustiveSearch.isSelected()) {
 				pikeClient.setParameter("gocheck", "1");
-				pikeClient.setParameter("maxdeep",
-						(String) this.jComboBoxDeepLevel.getSelectedItem());
+				pikeClient.setParameter("maxdeep", (String) this.jComboBoxDeepLevel.getSelectedItem());
 			}
 			Miape2PIKETask pikeTask = new Miape2PIKETask(pikeClient);
 			pikeTask.addPropertyChangeListener(this);
@@ -725,28 +587,20 @@ public class Miape2PIKEFrame extends javax.swing.JFrame implements PropertyChang
 
 			String messageEmail = "";
 			if (!"".equals(text)) {
-				messageEmail = "PIKE will send some emails to '" + text
-						+ "' notifying the status of the analysis.<br>";
+				messageEmail = "PIKE will send some emails to '" + text + "' notifying the status of the analysis.<br>";
 			}
-			JOptionPane
-					.showConfirmDialog(
-							this,
-							"<html>A list of "
-									+ this.accessions.size()
-									+ " proteins has been sent to PIKE.<br>"
-									+ "A notification dialog will be showed when results are generated.<br>"
-									+ messageEmail
-									+ "You can continue using the tool while PIKE is running on the server.</html>",
-							"Proteins sent to PIKE", JOptionPane.OK_OPTION);
+			JOptionPane.showConfirmDialog(this,
+					"<html>A list of " + this.accessions.size() + " proteins has been sent to PIKE.<br>"
+							+ "A notification dialog will be showed when results are generated.<br>" + messageEmail
+							+ "You can continue using the tool while PIKE is running on the server.</html>",
+					"Proteins sent to PIKE", JOptionPane.OK_OPTION);
 
 		} catch (IOException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error",
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		} catch (IllegalMiapeArgumentException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error",
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
 		} finally {
 			this.jProgressBar1.setIndeterminate(false);
@@ -755,21 +609,19 @@ public class Miape2PIKEFrame extends javax.swing.JFrame implements PropertyChang
 	}
 
 	private void showMessageDialog() {
-		JOptionPane
-				.showMessageDialog(
-						this,
-						"PIKE has finished the processing. Go to your email account to see the result link",
-						"PIKE results received", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(this,
+				"PIKE has finished the processing. Go to your email account to see the result link",
+				"PIKE results received", JOptionPane.INFORMATION_MESSAGE);
 
 	}
 
 	private void showOpenBrowserDialog(URL url) {
 
 		Object[] dialog_options = { "Yes, open browser", "No, close this dialog" };
-		int selected_option = JOptionPane.showOptionDialog(this, url.toString() + "\n"
-				+ "\nClick on yes to open a browser to go directly to the PIKE results" + "\n",
-				"PIKE results received", JOptionPane.YES_NO_CANCEL_OPTION,
-				JOptionPane.QUESTION_MESSAGE, null, dialog_options, dialog_options[1]);
+		int selected_option = JOptionPane.showOptionDialog(this,
+				url.toString() + "\n" + "\nClick on yes to open a browser to go directly to the PIKE results" + "\n",
+				"PIKE results received", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+				dialog_options, dialog_options[1]);
 		if (selected_option == 0) { // Yes
 			if (url != null)
 				HttpUtilities.openURL(url.toString());
@@ -787,15 +639,14 @@ public class Miape2PIKEFrame extends javax.swing.JFrame implements PropertyChang
 			Pattern p = Pattern.compile("^\\.|^\\@");
 			Matcher m = p.matcher(email);
 			if (m.find())
-				throw new IllegalMiapeArgumentException("Email addresses don't start"
-						+ " with dots or @ signs.");
+				throw new IllegalMiapeArgumentException("Email addresses don't start" + " with dots or @ signs.");
 			// Checks for email addresses that start with
 			// www. and prints a message if it does.
 			p = Pattern.compile("^www\\.");
 			m = p.matcher(email);
 			if (m.find()) {
-				throw new IllegalMiapeArgumentException("Email addresses don't start"
-						+ " with \"www.\", only web pages do.");
+				throw new IllegalMiapeArgumentException(
+						"Email addresses don't start" + " with \"www.\", only web pages do.");
 			}
 			p = Pattern.compile("[^A-Za-z0-9\\.\\@_\\-~#]+");
 			m = p.matcher(email);
@@ -815,8 +666,8 @@ public class Miape2PIKEFrame extends javax.swing.JFrame implements PropertyChang
 			email = sb.toString();
 
 			if (deletedIllegalChars) {
-				throw new IllegalMiapeArgumentException("It contained incorrect characters"
-						+ " , such as spaces or commas.");
+				throw new IllegalMiapeArgumentException(
+						"It contained incorrect characters" + " , such as spaces or commas.");
 			}
 		}
 	}

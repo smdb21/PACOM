@@ -1,6 +1,5 @@
 package org.proteored.pacom.analysis.exporters.util;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -28,23 +27,21 @@ import org.proteored.miapeapi.interfaces.msi.MSIAdditionalInformation;
 import org.proteored.miapeapi.interfaces.msi.MiapeMSIDocument;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 
-public class PexMiapeParser {
-	private static final Logger log = Logger
-			.getLogger("log4j.logger.org.proteored");
+import gnu.trove.set.hash.THashSet;
 
-	private static ControlVocabularyManager cvManager = OntologyLoaderTask
-			.getCvManager();
+public class PexMiapeParser {
+	private static final Logger log = Logger.getLogger("log4j.logger.org.proteored");
+
+	private static ControlVocabularyManager cvManager = OntologyLoaderTask.getCvManager();
 
 	public static Set<String> getSpecies(MiapeMSDocument miapeMSDocument) {
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new THashSet<String>();
 		if (miapeMSDocument != null) {
-			List<MSAdditionalInformation> additionalInformations = miapeMSDocument
-					.getAdditionalInformations();
+			List<MSAdditionalInformation> additionalInformations = miapeMSDocument.getAdditionalInformations();
 			if (additionalInformations != null) {
 				for (MSAdditionalInformation msAdditionalInformation : additionalInformations) {
 					String specieName = msAdditionalInformation.getName();
-					String parseSpecie = PexMiapeParser.parseSpecie(specieName,
-							msAdditionalInformation.getValue());
+					String parseSpecie = PexMiapeParser.parseSpecie(specieName, msAdditionalInformation.getValue());
 					if (parseSpecie != null)
 						ret.add(parseSpecie);
 					log.info("Specie= " + parseSpecie);
@@ -63,8 +60,8 @@ public class PexMiapeParser {
 	 * @return
 	 */
 	public static String parseSpecie(String specieName, String value) {
-		ControlVocabularyTerm cvTermByPreferredName = MainTaxonomies
-				.getInstance(cvManager).getCVTermByPreferredName(specieName);
+		ControlVocabularyTerm cvTermByPreferredName = MainTaxonomies.getInstance(cvManager)
+				.getCVTermByPreferredName(specieName);
 		if (cvTermByPreferredName != null) {
 			String text = "[" + cvTermByPreferredName.getCVRef() + ","
 					+ cvTermByPreferredName.getTermAccession().toString() + ","
@@ -79,30 +76,23 @@ public class PexMiapeParser {
 	}
 
 	public static Set<String> getInstruments(MiapeMSDocument miapeMSDocument) {
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new THashSet<String>();
 		if (miapeMSDocument != null) {
-			Set<Spectrometer> spectrometers = miapeMSDocument
-					.getSpectrometers();
+			Set<Spectrometer> spectrometers = miapeMSDocument.getSpectrometers();
 			if (spectrometers != null) {
 				for (Spectrometer spectrometer : spectrometers) {
 					String text = "";
 					// Name
-					ControlVocabularyTerm cvTermByPreferredName = SpectrometerName
-							.getInstance(cvManager).getCVTermByPreferredName(
-									spectrometer.getName());
+					ControlVocabularyTerm cvTermByPreferredName = SpectrometerName.getInstance(cvManager)
+							.getCVTermByPreferredName(spectrometer.getName());
 					if (cvTermByPreferredName != null) {
-						text = "["
-								+ cvTermByPreferredName.getCVRef()
-								+ ","
-								+ cvTermByPreferredName.getTermAccession()
-										.toString() + ","
-								+ cvTermByPreferredName.getPreferredName()
-								+ ",]";
+						text = "[" + cvTermByPreferredName.getCVRef() + ","
+								+ cvTermByPreferredName.getTermAccession().toString() + ","
+								+ cvTermByPreferredName.getPreferredName() + ",]";
 					} else {
 						// [MS, MS:1000031, instrument model, custom name]
 						text = "[MS, MS:1000031, instrument model,"
-								+ replaceNotAllowedCharacteres(spectrometer
-										.getName()) + "]";
+								+ replaceNotAllowedCharacteres(spectrometer.getName()) + "]";
 					}
 
 					// // Model
@@ -133,17 +123,12 @@ public class PexMiapeParser {
 					// Manufacturer
 					text = "";
 					if (spectrometer.getManufacturer() != null) {
-						cvTermByPreferredName = InstrumentModel.getInstance(
-								cvManager).getCVTermByPreferredName(
-								spectrometer.getManufacturer());
+						cvTermByPreferredName = InstrumentModel.getInstance(cvManager)
+								.getCVTermByPreferredName(spectrometer.getManufacturer());
 						if (cvTermByPreferredName != null) {
-							text += "["
-									+ cvTermByPreferredName.getCVRef()
-									+ ","
-									+ cvTermByPreferredName.getTermAccession()
-											.toString() + ","
-									+ cvTermByPreferredName.getPreferredName()
-									+ ",]";
+							text += "[" + cvTermByPreferredName.getCVRef() + ","
+									+ cvTermByPreferredName.getTermAccession().toString() + ","
+									+ cvTermByPreferredName.getPreferredName() + ",]";
 						} else {
 							// userPArams not allowed
 							// text += "[,,Manufacturer,"
@@ -176,14 +161,11 @@ public class PexMiapeParser {
 					// .getCustomizations()) + "]";
 					// }
 					// }
-					if (spectrometer.getVersion() != null
-							&& !"".equals(spectrometer.getVersion())) {
+					if (spectrometer.getVersion() != null && !"".equals(spectrometer.getVersion())) {
 						// userPAram
 						if (!"".equals(text))
 							text += ",";
-						text += "[,,Version,"
-								+ replaceNotAllowedCharacteres(spectrometer
-										.getVersion()) + "]";
+						text += "[,,Version," + replaceNotAllowedCharacteres(spectrometer.getVersion()) + "]";
 					}
 					// if (spectrometer.getDescription() != null) {
 					// // userPAram
@@ -217,22 +199,17 @@ public class PexMiapeParser {
 		return ret;
 	}
 
-	public static Set<String> getSampleProcessingProtocols(
-			MiapeMSDocument miapeMSDocument) {
-		Set<String> ret = new HashSet<String>();
+	public static Set<String> getSampleProcessingProtocols(MiapeMSDocument miapeMSDocument) {
+		Set<String> ret = new THashSet<String>();
 		if (miapeMSDocument != null) {
-			List<MSAdditionalInformation> additionalInformations = miapeMSDocument
-					.getAdditionalInformations();
+			List<MSAdditionalInformation> additionalInformations = miapeMSDocument.getAdditionalInformations();
 			if (additionalInformations != null) {
 				for (MSAdditionalInformation msAdditionalInformation : additionalInformations) {
-					ControlVocabularyTerm sampleProcessingTerm = SampleProcessingStep
-							.getInstance(cvManager).getCVTermByPreferredName(
-									msAdditionalInformation.getName());
+					ControlVocabularyTerm sampleProcessingTerm = SampleProcessingStep.getInstance(cvManager)
+							.getCVTermByPreferredName(msAdditionalInformation.getName());
 					if (sampleProcessingTerm != null) {
-						String name = replaceNotAllowedCharacteres(msAdditionalInformation
-								.getName());
-						String value = replaceNotAllowedCharacteres(msAdditionalInformation
-								.getValue());
+						String name = replaceNotAllowedCharacteres(msAdditionalInformation.getName());
+						String value = replaceNotAllowedCharacteres(msAdditionalInformation.getValue());
 						String text = name;
 						if (value != null && !"".equals(value))
 							text += ": " + value;
@@ -247,19 +224,17 @@ public class PexMiapeParser {
 	}
 
 	public static Set<String> getExperimentTypes(MiapeMSDocument miapeMSDocument) {
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new THashSet<String>();
 		if (miapeMSDocument != null) {
-			List<MSAdditionalInformation> additionalInformations = miapeMSDocument
-					.getAdditionalInformations();
+			List<MSAdditionalInformation> additionalInformations = miapeMSDocument.getAdditionalInformations();
 			if (additionalInformations != null) {
 				for (MSAdditionalInformation msAdditionalInformation : additionalInformations) {
-					ControlVocabularyTerm experimentType = ExperimentType
-							.getInstance(cvManager).getCVTermByPreferredName(
-									msAdditionalInformation.getName());
+					ControlVocabularyTerm experimentType = ExperimentType.getInstance(cvManager)
+							.getCVTermByPreferredName(msAdditionalInformation.getName());
 					if (experimentType != null) {
 						String text = "[" + experimentType.getCVRef() + ","
-								+ experimentType.getTermAccession().toString()
-								+ "," + experimentType.getPreferredName() + ",";
+								+ experimentType.getTermAccession().toString() + "," + experimentType.getPreferredName()
+								+ ",";
 						if (msAdditionalInformation.getValue() != null) {
 							text += msAdditionalInformation.getValue();
 						}
@@ -273,21 +248,18 @@ public class PexMiapeParser {
 		return ret;
 	}
 
-	public static Set<String> getExperimentTypes(
-			MiapeMSIDocument miapeMSIDocument) {
-		Set<String> ret = new HashSet<String>();
+	public static Set<String> getExperimentTypes(MiapeMSIDocument miapeMSIDocument) {
+		Set<String> ret = new THashSet<String>();
 		if (miapeMSIDocument != null) {
-			Set<MSIAdditionalInformation> additionalInformations = miapeMSIDocument
-					.getAdditionalInformations();
+			Set<MSIAdditionalInformation> additionalInformations = miapeMSIDocument.getAdditionalInformations();
 			if (additionalInformations != null) {
 				for (MSIAdditionalInformation msAdditionalInformation : additionalInformations) {
-					ControlVocabularyTerm experimentType = ExperimentType
-							.getInstance(cvManager).getCVTermByPreferredName(
-									msAdditionalInformation.getName());
+					ControlVocabularyTerm experimentType = ExperimentType.getInstance(cvManager)
+							.getCVTermByPreferredName(msAdditionalInformation.getName());
 					if (experimentType != null) {
 						String text = "[" + experimentType.getCVRef() + ","
-								+ experimentType.getTermAccession().toString()
-								+ "," + experimentType.getPreferredName() + ",";
+								+ experimentType.getTermAccession().toString() + "," + experimentType.getPreferredName()
+								+ ",";
 						if (msAdditionalInformation.getValue() != null) {
 							text += msAdditionalInformation.getValue();
 						}
@@ -301,22 +273,17 @@ public class PexMiapeParser {
 		return ret;
 	}
 
-	public static Set<String> getDataProcessingProtocols(
-			MiapeMSDocument miapeMSDocument) {
-		Set<String> ret = new HashSet<String>();
+	public static Set<String> getDataProcessingProtocols(MiapeMSDocument miapeMSDocument) {
+		Set<String> ret = new THashSet<String>();
 		if (miapeMSDocument != null) {
-			List<MSAdditionalInformation> additionalInformations = miapeMSDocument
-					.getAdditionalInformations();
+			List<MSAdditionalInformation> additionalInformations = miapeMSDocument.getAdditionalInformations();
 			if (additionalInformations != null) {
 				for (MSAdditionalInformation msAdditionalInformation : additionalInformations) {
-					ControlVocabularyTerm cvTerm = DataProcessingAction
-							.getInstance(cvManager).getCVTermByPreferredName(
-									msAdditionalInformation.getName());
+					ControlVocabularyTerm cvTerm = DataProcessingAction.getInstance(cvManager)
+							.getCVTermByPreferredName(msAdditionalInformation.getName());
 					if (cvTerm != null) {
-						String name = replaceNotAllowedCharacteres(msAdditionalInformation
-								.getName());
-						String value = replaceNotAllowedCharacteres(msAdditionalInformation
-								.getValue());
+						String name = replaceNotAllowedCharacteres(msAdditionalInformation.getName());
+						String value = replaceNotAllowedCharacteres(msAdditionalInformation.getValue());
 						String text = name;
 						if (value != null && !"".equals(value))
 							text += ": " + value;
@@ -324,13 +291,10 @@ public class PexMiapeParser {
 						ret.add(text);
 					}
 					cvTerm = DataTransformation.getInstance(cvManager)
-							.getCVTermByPreferredName(
-									msAdditionalInformation.getName());
+							.getCVTermByPreferredName(msAdditionalInformation.getName());
 					if (cvTerm != null) {
-						String name = replaceNotAllowedCharacteres(msAdditionalInformation
-								.getName());
-						String value = replaceNotAllowedCharacteres(msAdditionalInformation
-								.getValue());
+						String name = replaceNotAllowedCharacteres(msAdditionalInformation.getName());
+						String value = replaceNotAllowedCharacteres(msAdditionalInformation.getValue());
 						String text = name;
 						if (value != null && !"".equals(value))
 							text += ": " + value;
@@ -344,9 +308,8 @@ public class PexMiapeParser {
 
 	}
 
-	public static Set<String> getDataProcessingProtocols(
-			MiapeMSIDocument miapeMSIDocument) {
-		Set<String> ret = new HashSet<String>();
+	public static Set<String> getDataProcessingProtocols(MiapeMSIDocument miapeMSIDocument) {
+		Set<String> ret = new THashSet<String>();
 		if (miapeMSIDocument != null) {
 			// search engine
 			final Set<Software> softwares = miapeMSIDocument.getSoftwares();
@@ -358,23 +321,18 @@ public class PexMiapeParser {
 					if (software.getVersion() != null) {
 						sb.append(" version:" + software.getVersion() + " ");
 					}
-					ret.add("Samples were analyzed using software" + plural
-							+ ": " + sb.toString().trim());
+					ret.add("Samples were analyzed using software" + plural + ": " + sb.toString().trim());
 				}
 			}
 			// addtiional informations
-			Set<MSIAdditionalInformation> additionalInformations = miapeMSIDocument
-					.getAdditionalInformations();
+			Set<MSIAdditionalInformation> additionalInformations = miapeMSIDocument.getAdditionalInformations();
 			if (additionalInformations != null) {
 				for (MSIAdditionalInformation msAdditionalInformation : additionalInformations) {
-					ControlVocabularyTerm cvTerm = DataProcessingAction
-							.getInstance(cvManager).getCVTermByPreferredName(
-									msAdditionalInformation.getName());
+					ControlVocabularyTerm cvTerm = DataProcessingAction.getInstance(cvManager)
+							.getCVTermByPreferredName(msAdditionalInformation.getName());
 					if (cvTerm != null) {
-						String name = replaceNotAllowedCharacteres(msAdditionalInformation
-								.getName());
-						String value = replaceNotAllowedCharacteres(msAdditionalInformation
-								.getValue());
+						String name = replaceNotAllowedCharacteres(msAdditionalInformation.getName());
+						String value = replaceNotAllowedCharacteres(msAdditionalInformation.getValue());
 						String text = name;
 						if (value != null && !"".equals(value))
 							text += ": " + value;
@@ -382,13 +340,10 @@ public class PexMiapeParser {
 						ret.add(text);
 					}
 					cvTerm = DataTransformation.getInstance(cvManager)
-							.getCVTermByPreferredName(
-									msAdditionalInformation.getName());
+							.getCVTermByPreferredName(msAdditionalInformation.getName());
 					if (cvTerm != null) {
-						String name = replaceNotAllowedCharacteres(msAdditionalInformation
-								.getName());
-						String value = replaceNotAllowedCharacteres(msAdditionalInformation
-								.getValue());
+						String name = replaceNotAllowedCharacteres(msAdditionalInformation.getName());
+						String value = replaceNotAllowedCharacteres(msAdditionalInformation.getValue());
 						String text = name;
 						if (value != null && !"".equals(value))
 							text += ": " + value;
@@ -403,10 +358,9 @@ public class PexMiapeParser {
 	}
 
 	public static Set<String> getAdditionals(MiapeMSDocument miapeMSDocument) {
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new THashSet<String>();
 		if (miapeMSDocument != null) {
-			final Set<DataAnalysis> dataAnalysises = miapeMSDocument
-					.getDataAnalysis();
+			final Set<DataAnalysis> dataAnalysises = miapeMSDocument.getDataAnalysis();
 			if (dataAnalysises != null) {
 				for (DataAnalysis dataAnalysis : dataAnalysises) {
 					StringBuilder sb = new StringBuilder();
@@ -423,56 +377,42 @@ public class PexMiapeParser {
 					ret.add("[,," + sb.toString().trim() + ",]");
 				}
 			}
-			List<MSAdditionalInformation> additionalInformations = miapeMSDocument
-					.getAdditionalInformations();
+			List<MSAdditionalInformation> additionalInformations = miapeMSDocument.getAdditionalInformations();
 			if (additionalInformations != null) {
 				for (MSAdditionalInformation msAdditionalInformation : additionalInformations) {
-					ControlVocabularyTerm taxonomyTerm = MainTaxonomies
-							.getInstance(cvManager).getCVTermByPreferredName(
-									msAdditionalInformation.getName());
-					ControlVocabularyTerm sampleProcessingTerm = SampleProcessingStep
-							.getInstance(cvManager).getCVTermByPreferredName(
-									msAdditionalInformation.getName());
-					ControlVocabularyTerm dataProcessingTerm = DataProcessingAction
-							.getInstance(cvManager).getCVTermByPreferredName(
-									msAdditionalInformation.getName());
-					ControlVocabularyTerm dataTransformationTerm = DataProcessingAction
-							.getInstance(cvManager).getCVTermByPreferredName(
-									msAdditionalInformation.getName());
-					ControlVocabularyTerm tissue = TissuesTypes.getInstance(
-							cvManager).getCVTermByPreferredName(
-							msAdditionalInformation.getName());
-					ControlVocabularyTerm cellType = CellTypes.getInstance(
-							cvManager).getCVTermByPreferredName(
-							msAdditionalInformation.getName());
-					ControlVocabularyTerm humanDissease = HumanDisseases
-							.getInstance(cvManager).getCVTermByPreferredName(
-									msAdditionalInformation.getName());
+					ControlVocabularyTerm taxonomyTerm = MainTaxonomies.getInstance(cvManager)
+							.getCVTermByPreferredName(msAdditionalInformation.getName());
+					ControlVocabularyTerm sampleProcessingTerm = SampleProcessingStep.getInstance(cvManager)
+							.getCVTermByPreferredName(msAdditionalInformation.getName());
+					ControlVocabularyTerm dataProcessingTerm = DataProcessingAction.getInstance(cvManager)
+							.getCVTermByPreferredName(msAdditionalInformation.getName());
+					ControlVocabularyTerm dataTransformationTerm = DataProcessingAction.getInstance(cvManager)
+							.getCVTermByPreferredName(msAdditionalInformation.getName());
+					ControlVocabularyTerm tissue = TissuesTypes.getInstance(cvManager)
+							.getCVTermByPreferredName(msAdditionalInformation.getName());
+					ControlVocabularyTerm cellType = CellTypes.getInstance(cvManager)
+							.getCVTermByPreferredName(msAdditionalInformation.getName());
+					ControlVocabularyTerm humanDissease = HumanDisseases.getInstance(cvManager)
+							.getCVTermByPreferredName(msAdditionalInformation.getName());
 
-					if (taxonomyTerm != null || sampleProcessingTerm != null
-							|| dataTransformationTerm != null
-							|| dataProcessingTerm != null || tissue != null
-							|| cellType != null || humanDissease != null) {
-						log.info("This is a CV for taxonomy or sample processing or data transformation or data processing term or tissue or cell type ("
-								+ msAdditionalInformation.getName()
-								+ "), so it should be catured in species");
+					if (taxonomyTerm != null || sampleProcessingTerm != null || dataTransformationTerm != null
+							|| dataProcessingTerm != null || tissue != null || cellType != null
+							|| humanDissease != null) {
+						log.info(
+								"This is a CV for taxonomy or sample processing or data transformation or data processing term or tissue or cell type ("
+										+ msAdditionalInformation.getName() + "), so it should be catured in species");
 					} else {
-						ControlVocabularyTerm cvTerm = AdditionalInformationName
-								.getInstance(cvManager)
-								.getCVTermByPreferredName(
-										msAdditionalInformation.getName());
+						ControlVocabularyTerm cvTerm = AdditionalInformationName.getInstance(cvManager)
+								.getCVTermByPreferredName(msAdditionalInformation.getName());
 						if (cvTerm != null) {
 
-							String text = "[" + cvTerm.getCVRef() + ","
-									+ cvTerm.getTermAccession().toString()
-									+ "," + cvTerm.getPreferredName() + ",]";
+							String text = "[" + cvTerm.getCVRef() + "," + cvTerm.getTermAccession().toString() + ","
+									+ cvTerm.getPreferredName() + ",]";
 							log.info("Add Info= " + text);
 							ret.add(text);
 						} else {
-							String name = replaceNotAllowedCharacteres(msAdditionalInformation
-									.getName());
-							String value = replaceNotAllowedCharacteres(msAdditionalInformation
-									.getValue());
+							String name = replaceNotAllowedCharacteres(msAdditionalInformation.getName());
+							String value = replaceNotAllowedCharacteres(msAdditionalInformation.getValue());
 							// userPAram
 							String text = "[,," + name + ",";
 							if (value != null)
@@ -489,35 +429,28 @@ public class PexMiapeParser {
 	}
 
 	public static Set<String> getAdditionals(MiapeMSIDocument miapeMSIDocument) {
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new THashSet<String>();
 		if (miapeMSIDocument != null) {
-			Set<MSIAdditionalInformation> additionalInformations = miapeMSIDocument
-					.getAdditionalInformations();
+			Set<MSIAdditionalInformation> additionalInformations = miapeMSIDocument.getAdditionalInformations();
 			if (additionalInformations != null) {
 				for (MSIAdditionalInformation msiAdditionalInformation : additionalInformations) {
-					ControlVocabularyTerm cvTermByPreferredName = MainTaxonomies
-							.getInstance(cvManager).getCVTermByPreferredName(
-									msiAdditionalInformation.getName());
+					ControlVocabularyTerm cvTermByPreferredName = MainTaxonomies.getInstance(cvManager)
+							.getCVTermByPreferredName(msiAdditionalInformation.getName());
 					if (cvTermByPreferredName != null) {
 						log.info("This is a CV for taxonomy, so it should be catured in species");
 					} else {
-						ControlVocabularyTerm cvTerm = AdditionalInformationName
-								.getInstance(cvManager)
-								.getCVTermByPreferredName(
-										msiAdditionalInformation.getName());
+						ControlVocabularyTerm cvTerm = AdditionalInformationName.getInstance(cvManager)
+								.getCVTermByPreferredName(msiAdditionalInformation.getName());
 						if (cvTerm != null) {
-							String text = "[" + cvTerm.getCVRef() + ","
-									+ cvTerm.getTermAccession().toString()
-									+ "," + cvTerm.getPreferredName() + ",]";
+							String text = "[" + cvTerm.getCVRef() + "," + cvTerm.getTermAccession().toString() + ","
+									+ cvTerm.getPreferredName() + ",]";
 							log.info("Add Info= " + text);
 							ret.add(text);
 						} else {
 							// userPAram
-							String name = replaceNotAllowedCharacteres(msiAdditionalInformation
-									.getName());
+							String name = replaceNotAllowedCharacteres(msiAdditionalInformation.getName());
 
-							String value = replaceNotAllowedCharacteres(msiAdditionalInformation
-									.getValue());
+							String value = replaceNotAllowedCharacteres(msiAdditionalInformation.getValue());
 
 							String text = "[,," + name + ",";
 							if (value != null)
@@ -543,19 +476,17 @@ public class PexMiapeParser {
 	}
 
 	public static Set<String> getTissues(MiapeMSDocument miapeMSDocument) {
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new THashSet<String>();
 		if (miapeMSDocument != null) {
-			List<MSAdditionalInformation> additionalInformations = miapeMSDocument
-					.getAdditionalInformations();
+			List<MSAdditionalInformation> additionalInformations = miapeMSDocument.getAdditionalInformations();
 			if (additionalInformations != null) {
 				for (MSAdditionalInformation msAdditionalInformation : additionalInformations) {
-					ControlVocabularyTerm experimentType = TissuesTypes
-							.getInstance(cvManager).getCVTermByPreferredName(
-									msAdditionalInformation.getName());
+					ControlVocabularyTerm experimentType = TissuesTypes.getInstance(cvManager)
+							.getCVTermByPreferredName(msAdditionalInformation.getName());
 					if (experimentType != null) {
 						String text = "[" + experimentType.getCVRef() + ","
-								+ experimentType.getTermAccession().toString()
-								+ "," + experimentType.getPreferredName() + ",";
+								+ experimentType.getTermAccession().toString() + "," + experimentType.getPreferredName()
+								+ ",";
 						if (msAdditionalInformation.getValue() != null) {
 							text += msAdditionalInformation.getValue();
 						}
@@ -570,18 +501,15 @@ public class PexMiapeParser {
 	}
 
 	public static Set<String> getCellTypes(MiapeMSDocument miapeMSDocument) {
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new THashSet<String>();
 		if (miapeMSDocument != null) {
-			List<MSAdditionalInformation> additionalInformations = miapeMSDocument
-					.getAdditionalInformations();
+			List<MSAdditionalInformation> additionalInformations = miapeMSDocument.getAdditionalInformations();
 			if (additionalInformations != null) {
 				for (MSAdditionalInformation msAdditionalInformation : additionalInformations) {
-					ControlVocabularyTerm cellTypes = CellTypes.getInstance(
-							cvManager).getCVTermByPreferredName(
-							msAdditionalInformation.getName());
+					ControlVocabularyTerm cellTypes = CellTypes.getInstance(cvManager)
+							.getCVTermByPreferredName(msAdditionalInformation.getName());
 					if (cellTypes != null) {
-						String text = "[" + cellTypes.getCVRef() + ","
-								+ cellTypes.getTermAccession().toString() + ","
+						String text = "[" + cellTypes.getCVRef() + "," + cellTypes.getTermAccession().toString() + ","
 								+ cellTypes.getPreferredName() + ",";
 						if (msAdditionalInformation.getValue() != null) {
 							text += msAdditionalInformation.getValue();
@@ -597,19 +525,17 @@ public class PexMiapeParser {
 	}
 
 	public static Set<String> getDisseases(MiapeMSDocument miapeMSDocument) {
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new THashSet<String>();
 		if (miapeMSDocument != null) {
-			List<MSAdditionalInformation> additionalInformations = miapeMSDocument
-					.getAdditionalInformations();
+			List<MSAdditionalInformation> additionalInformations = miapeMSDocument.getAdditionalInformations();
 			if (additionalInformations != null) {
 				for (MSAdditionalInformation msAdditionalInformation : additionalInformations) {
-					ControlVocabularyTerm experimentType = HumanDisseases
-							.getInstance(cvManager).getCVTermByPreferredName(
-									msAdditionalInformation.getName());
+					ControlVocabularyTerm experimentType = HumanDisseases.getInstance(cvManager)
+							.getCVTermByPreferredName(msAdditionalInformation.getName());
 					if (experimentType != null) {
 						String text = "[" + experimentType.getCVRef() + ","
-								+ experimentType.getTermAccession().toString()
-								+ "," + experimentType.getPreferredName() + ",";
+								+ experimentType.getTermAccession().toString() + "," + experimentType.getPreferredName()
+								+ ",";
 						if (msAdditionalInformation.getValue() != null) {
 							text += msAdditionalInformation.getValue();
 						}
@@ -624,16 +550,14 @@ public class PexMiapeParser {
 	}
 
 	public static String getTissueNotApplicable() {
-		ControlVocabularyTerm tissueNotApplicableTerm = ExperimentAdditionalParameter
-				.getInstance(cvManager).getTissueNotApplicableTerm();
-		return "[" + tissueNotApplicableTerm.getCVRef() + ","
-				+ tissueNotApplicableTerm.getTermAccession().toString() + ","
-				+ tissueNotApplicableTerm.getPreferredName() + ",]";
+		ControlVocabularyTerm tissueNotApplicableTerm = ExperimentAdditionalParameter.getInstance(cvManager)
+				.getTissueNotApplicableTerm();
+		return "[" + tissueNotApplicableTerm.getCVRef() + "," + tissueNotApplicableTerm.getTermAccession().toString()
+				+ "," + tissueNotApplicableTerm.getPreferredName() + ",]";
 	}
 
 	public static void main(String[] args) {
-		final String tissueNotApplicable = PexMiapeParser
-				.getTissueNotApplicable();
+		final String tissueNotApplicable = PexMiapeParser.getTissueNotApplicable();
 		System.out.println(tissueNotApplicable);
 	}
 }

@@ -24,8 +24,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -98,6 +96,9 @@ import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 
 import edu.scripps.yates.utilities.checksum.MD5Checksum;
 import edu.scripps.yates.utilities.dates.DatesUtil;
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.set.hash.THashSet;
 
 /**
  *
@@ -180,9 +181,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 	public ExperimentList experimentList;
 	private DataLoaderTask dataLoader;
-	// hashmap to store the MIAPE documents that are retrieved <Identified,
+	// Map to store the MIAPE documents that are retrieved <Identified,
 	// FullPath to the file>
-	private static HashMap<Integer, String> miapeMSIsRetrieved = new HashMap<Integer, String>();
+	private static TIntObjectHashMap<String> miapeMSIsRetrieved = new TIntObjectHashMap<String>();
 	private static ChartManagerFrame instance;
 
 	public static final String ONE_SERIES_PER_EXPERIMENT = "One series per level 1 (experiment)";
@@ -483,7 +484,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 	private void initializeChartTypeMenu() {
 		// Store all chartTypes in a mapping
-		Map<String, JRadioButtonMenuItem> radioButtonMenuMap = new HashMap<String, JRadioButtonMenuItem>();
+		Map<String, JRadioButtonMenuItem> radioButtonMenuMap = new THashMap<String, JRadioButtonMenuItem>();
 		for (final String chartType : chartTypes) {
 
 			JRadioButtonMenuItem menuItem = new JRadioButtonMenuItem(chartType);
@@ -3064,7 +3065,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		IdentificationSet idSet2 = null;
 		IdentificationSet idSet3 = null;
 		String option = (String) jComboBoxChartOptions.getSelectedItem();
-		final HashMap<String, JCheckBox> checkBoxControls = optionsFactory.getIdSetsJCheckBoxes();
+		final Map<String, JCheckBox> checkBoxControls = optionsFactory.getIdSetsJCheckBoxes();
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 			final List<Experiment> experiments = experimentList.getExperiments();
 			for (Experiment experiment : experiments) {
@@ -3206,7 +3207,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	}
 
 	private Set<IdentificationSet> toSet(IdentificationSet... idSets) {
-		Set<IdentificationSet> ret = new HashSet<IdentificationSet>();
+		Set<IdentificationSet> ret = new THashSet<IdentificationSet>();
 		for (IdentificationSet idSet : idSets) {
 			if (idSet != null) {
 				ret.add(idSet);
@@ -3222,7 +3223,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		if (collection.isEmpty()) {
 			return;
 		}
-		Set<IdentificationSet> idSets = new HashSet<IdentificationSet>();
+		Set<IdentificationSet> idSets = new THashSet<IdentificationSet>();
 		for (String datasetName : datasetNames) {
 			IdentificationSet idSet = getDatasetFromName(experimentList, datasetName);
 			if (idSet != null) {
@@ -3235,7 +3236,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		Filters filter = null;
 		if (currentChartType.equals(PROTEIN_OVERLAPING)) {
 
-			Set<ProteinComparatorKey> keys = new HashSet<ProteinComparatorKey>();
+			Set<ProteinComparatorKey> keys = new THashSet<ProteinComparatorKey>();
 			for (Object object : collection) {
 				if (object instanceof ProteinGroupOccurrence) {
 					ProteinGroupOccurrence pgo = (ProteinGroupOccurrence) object;
@@ -3246,7 +3247,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			}
 			filter = new ProteinACCFilter(keys);
 		} else if (currentChartType.equals(PEPTIDE_OVERLAPING)) {
-			Set<String> sequences = new HashSet<String>();
+			Set<String> sequences = new THashSet<String>();
 			for (Object object : collection) {
 				if (object instanceof PeptideOccurrence) {
 					PeptideOccurrence po = (PeptideOccurrence) object;

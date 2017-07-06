@@ -6,12 +6,16 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.set.hash.THashSet;
+
 /**
- * This class represents a file containing an index of the files stored locally. <br>
+ * This class represents a file containing an index of the files stored locally.
+ * <br>
  * The index indexes the files with the identifier of the MIAPE and the values
  * are the absolute paths separated by commas.
  * 
@@ -27,8 +31,8 @@ public class LocalFilesIndex {
 	/** index file **/
 	private static File indexFile;
 	private static String INDEX_FILE_NAME = "local_files_index.idx";
-	private static final HashMap<String, Set<File>> indexByProject = new HashMap<String, Set<File>>();
-	private static final HashMap<Integer, Set<File>> indexByMiapeID = new HashMap<Integer, Set<File>>();
+	private static final Map<String, Set<File>> indexByProject = new THashMap<String, Set<File>>();
+	private static final TIntObjectHashMap<Set<File>> indexByMiapeID = new TIntObjectHashMap<Set<File>>();
 	private static LocalFilesIndex instance;
 
 	public static LocalFilesIndex getInstance() throws IOException {
@@ -38,15 +42,13 @@ public class LocalFilesIndex {
 	}
 
 	private LocalFilesIndex() throws IOException {
-		indexFile = new File(FileManager.getMiapeLocalDataPath()
-				+ INDEX_FILE_NAME);
+		indexFile = new File(FileManager.getMiapeLocalDataPath() + INDEX_FILE_NAME);
 		if (indexFile.exists())
 			loadIndex();
 	}
 
 	private void loadIndex() throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader(
-				LocalFilesIndex.indexFile));
+		BufferedReader br = new BufferedReader(new FileReader(LocalFilesIndex.indexFile));
 		try {
 			String line;
 			boolean byProject = false;
@@ -65,7 +67,7 @@ public class LocalFilesIndex {
 				String[] split = line.split(TAB);
 				String index = split[0];
 				String csvFiles = split[1];
-				Set<File> files = new HashSet<File>();
+				Set<File> files = new THashSet<File>();
 				if (csvFiles.contains(",")) {
 					String[] split2 = csvFiles.split(COMMA);
 					for (String string : split2) {
@@ -78,18 +80,14 @@ public class LocalFilesIndex {
 				if (files != null) {
 					if (!byProject) {
 						int numericalIndex = Integer.valueOf(index);
-						if (LocalFilesIndex.indexByMiapeID
-								.containsKey(numericalIndex)) {
-							LocalFilesIndex.indexByMiapeID.get(numericalIndex)
-									.addAll(files);
+						if (LocalFilesIndex.indexByMiapeID.containsKey(numericalIndex)) {
+							LocalFilesIndex.indexByMiapeID.get(numericalIndex).addAll(files);
 						} else {
-							LocalFilesIndex.indexByMiapeID.put(numericalIndex,
-									files);
+							LocalFilesIndex.indexByMiapeID.put(numericalIndex, files);
 						}
 					} else {
 						if (LocalFilesIndex.indexByProject.containsKey(index)) {
-							LocalFilesIndex.indexByProject.get(index).addAll(
-									files);
+							LocalFilesIndex.indexByProject.get(index).addAll(files);
 						} else {
 							LocalFilesIndex.indexByProject.put(index, files);
 						}
@@ -103,14 +101,13 @@ public class LocalFilesIndex {
 	}
 
 	private void writeIndex() throws IOException {
-		BufferedWriter bw = new BufferedWriter(new FileWriter(
-				LocalFilesIndex.indexFile));
+		BufferedWriter bw = new BufferedWriter(new FileWriter(LocalFilesIndex.indexFile));
 		try {
 			bw.write("# this file serves as index for the files associated to the locally created miape files\n");
 			bw.write("# INDEX BY MIAPE IDENTIFIERS\n");
 			if (!LocalFilesIndex.indexByMiapeID.isEmpty()) {
 				bw.write(BEGIN_BY_ID + "\n");
-				for (Integer index : LocalFilesIndex.indexByMiapeID.keySet()) {
+				for (int index : LocalFilesIndex.indexByMiapeID.keys()) {
 					Set<File> files = LocalFilesIndex.indexByMiapeID.get(index);
 					if (files != null && !files.isEmpty()) {
 						bw.write(index + TAB);
@@ -130,10 +127,8 @@ public class LocalFilesIndex {
 			bw.write("# INDEX BY MIAPE PROJECTS\n");
 			if (!LocalFilesIndex.indexByProject.isEmpty()) {
 				bw.write(BEGIN_BY_PROJECT + "\n");
-				for (String projectName : LocalFilesIndex.indexByProject
-						.keySet()) {
-					Set<File> files = LocalFilesIndex.indexByProject
-							.get(projectName);
+				for (String projectName : LocalFilesIndex.indexByProject.keySet()) {
+					Set<File> files = LocalFilesIndex.indexByProject.get(projectName);
 					if (files != null && !files.isEmpty()) {
 						bw.write(projectName + TAB);
 						int i = 0;
@@ -172,28 +167,26 @@ public class LocalFilesIndex {
 
 	public int getFreeIndex() {
 		int index = 0;
-		final Set<Integer> keySet = LocalFilesIndex.indexByMiapeID.keySet();
-		for (Integer integer : keySet) {
+		final int[] keySet = LocalFilesIndex.indexByMiapeID.keys();
+		for (int integer : keySet) {
 			if (integer > index)
 				index = integer;
 		}
 		return index + 1;
 	}
 
-	public void indexFileByProjectName(String projectName, File file)
-			throws IOException {
+	public void indexFileByProjectName(String projectName, File file) throws IOException {
 		if (LocalFilesIndex.indexByProject.containsKey(projectName)) {
 			LocalFilesIndex.indexByProject.get(projectName).add(file);
 		} else {
-			HashSet<File> set = new HashSet<File>();
+			Set<File> set = new THashSet<File>();
 			set.add(file);
 			LocalFilesIndex.indexByProject.put(projectName, set);
 		}
 		writeIndex();
 	}
 
-	public void indexFileByProjectName(String projectName, String fileName)
-			throws IOException {
+	public void indexFileByProjectName(String projectName, String fileName) throws IOException {
 		indexFileByProjectName(projectName, new File(fileName));
 	}
 
@@ -201,7 +194,7 @@ public class LocalFilesIndex {
 		if (LocalFilesIndex.indexByMiapeID.containsKey(index)) {
 			LocalFilesIndex.indexByMiapeID.get(index).add(file);
 		} else {
-			HashSet<File> set = new HashSet<File>();
+			Set<File> set = new THashSet<File>();
 			set.add(file);
 			LocalFilesIndex.indexByMiapeID.put(index, set);
 		}

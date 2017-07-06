@@ -9,8 +9,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,6 +25,9 @@ import org.proteored.miapeapi.xml.ms.MiapeMSXmlFactory;
 import org.proteored.pacom.analysis.util.FileManager;
 import org.proteored.pacom.gui.MainFrame;
 import org.proteored.pacom.gui.tasks.MiapeExtractionTask;
+
+import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.set.hash.TIntHashSet;
 
 public class MiapeExtractionBatchManager implements PropertyChangeListener {
 	private static final Logger log = Logger.getLogger("log4j.logger.org.proteored");
@@ -51,7 +52,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 	private static final Integer NUM_RETRIES = 2;
 
 	private final List<Integer> miapeExtractionQueueOrder = new ArrayList<Integer>();
-	private final HashMap<Integer, MiapeExtractionTask> miapeExtractionTasks = new HashMap<Integer, MiapeExtractionTask>();
+	private final TIntObjectHashMap<MiapeExtractionTask> miapeExtractionTasks = new TIntObjectHashMap<MiapeExtractionTask>();
 	private static int CONCURRENT_MIAPE_EXTRACTIONS = 1;
 	private final File inputBatchFile;
 	private final PropertyChangeListener listener;
@@ -61,11 +62,11 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 	/**
 	 * Indicates how many times a MIAPE Extraction Task has been started
 	 */
-	private final HashMap<Integer, Integer> numStartsMap = new HashMap<Integer, Integer>();
-	private final HashSet<Integer> completedJobs = new HashSet<Integer>();
+	private final TIntObjectHashMap<Integer> numStartsMap = new TIntObjectHashMap<Integer>();
+	private final TIntHashSet completedJobs = new TIntHashSet();
 	private int numTaskRunning;
-	private final HashSet<Integer> failedJobs = new HashSet<Integer>();
-	private final HashSet<Integer> runningJobs = new HashSet<Integer>();
+	private final TIntHashSet failedJobs = new TIntHashSet();
+	private final TIntHashSet runningJobs = new TIntHashSet();
 	private boolean startFailedJobs = false;
 	private boolean cancelAll = false;
 
@@ -386,7 +387,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 	public synchronized void cancelMiapeExtractions() {
 		log.info("Cancelling all tasks");
 		cancelAll = true;
-		for (MiapeExtractionTask miapeExtractionTask : miapeExtractionTasks.values()) {
+		for (MiapeExtractionTask miapeExtractionTask : miapeExtractionTasks.valueCollection()) {
 			if (miapeExtractionTask.getState() == StateValue.STARTED) {
 				while (true) {
 					boolean cancelled = miapeExtractionTask.cancel(true);
@@ -495,7 +496,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 	}
 
 	private void updateMiapeMSGeneratorTaskReference(MiapeExtractionResult result) {
-		for (MiapeExtractionTask task : miapeExtractionTasks.values()) {
+		for (MiapeExtractionTask task : miapeExtractionTasks.valueCollection()) {
 			MiapeExtractionRunParameters taskParameters = task.getParameters();
 			if (taskParameters != null) {
 				Integer associatedMiapeMSGeneratorJob = taskParameters.getAssociatedMiapeMSGeneratorJob();
@@ -517,7 +518,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 
 	private synchronized int getNumberOfPendingTasks() {
 		int ret = 0;
-		for (MiapeExtractionTask miapeTask : miapeExtractionTasks.values()) {
+		for (MiapeExtractionTask miapeTask : miapeExtractionTasks.valueCollection()) {
 			if (miapeTask.getState() == StateValue.PENDING)
 				ret++;
 			if (miapeTask.getState() == StateValue.DONE && !completedJobs.contains(miapeTask.getRunIdentifier()))
@@ -536,11 +537,11 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 		return false;
 	}
 
-	public HashSet<Integer> getFailedJobs() {
+	public TIntHashSet getFailedJobs() {
 		return failedJobs;
 	}
 
-	public HashSet<Integer> getRunningJobs() {
+	public TIntHashSet getRunningJobs() {
 		return runningJobs;
 	}
 

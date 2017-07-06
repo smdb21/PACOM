@@ -18,7 +18,6 @@ package wordcram;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -26,11 +25,12 @@ import java.util.Set;
 import cue.lang.Counter;
 import cue.lang.WordIterator;
 import cue.lang.stop.StopWords;
+import gnu.trove.set.hash.THashSet;
 
 public class WordCounter {
 
 	private StopWords cueStopWords;
-	private Set<String> extraStopWords = new HashSet<String>();
+	private Set<String> extraStopWords = new THashSet<String>();
 	private boolean excludeNumbers;
 	private int minWordLength = 4;
 
@@ -53,7 +53,7 @@ public class WordCounter {
 
 	public WordCounter withExtraStopWords(String extraStopWordsString) {
 		String[] stopWordsArray = extraStopWordsString.toLowerCase().split(" ");
-		extraStopWords = new HashSet<String>(Arrays.asList(stopWordsArray));
+		extraStopWords = new THashSet<String>(Arrays.asList(stopWordsArray));
 		return this;
 	}
 
@@ -81,20 +81,18 @@ public class WordCounter {
 		List<Word> words = new ArrayList<Word>();
 
 		for (Entry<String, Integer> entry : counter.entrySet()) {
-			words.add(new Word(entry.getKey(), (int) entry.getValue()));
+			words.add(new Word(entry.getKey(), entry.getValue()));
 		}
 
 		return words.toArray(new Word[0]);
 	}
 
 	private boolean shouldCountWord(String word) {
-		return hasEnoughLength(word) && !isStopWord(word)
-				&& !(excludeNumbers && isNumeric(word));
+		return hasEnoughLength(word) && !isStopWord(word) && !(excludeNumbers && isNumeric(word));
 	}
 
 	private boolean hasEnoughLength(String word) {
-		return word.length() >= this.minWordLength
-				&& !extraStopWords.contains(word.toLowerCase());
+		return word.length() >= this.minWordLength && !extraStopWords.contains(word.toLowerCase());
 	}
 
 	private boolean isNumeric(String word) {
@@ -108,8 +106,7 @@ public class WordCounter {
 
 	private boolean isStopWord(String word) {
 		if (cueStopWords != null)
-			return cueStopWords.isStopWord(word)
-					|| extraStopWords.contains(word.toLowerCase());
+			return cueStopWords.isStopWord(word) || extraStopWords.contains(word.toLowerCase());
 		return false;
 	}
 

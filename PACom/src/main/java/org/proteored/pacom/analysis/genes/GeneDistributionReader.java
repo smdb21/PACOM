@@ -15,9 +15,8 @@ import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -36,6 +35,8 @@ import com.compomics.util.protein.Header;
 import com.compomics.util.protein.Protein;
 
 import edu.scripps.yates.utilities.fasta.FastaParser;
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 
 public class GeneDistributionReader {
 	public static final String[] chromosomeNames = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
@@ -95,9 +96,9 @@ public class GeneDistributionReader {
 		return instance;
 	}
 
-	private HashMap<String, ENSGInfo> geneInfo;
-	private HashMap<String, List<ENSGInfo>> proteinGeneMapping;
-	private HashMap<String, HashMap<String, List<ENSGInfo>>> proteinGeneMappingByChromosome;
+	private Map<String, ENSGInfo> geneInfo;
+	private Map<String, List<ENSGInfo>> proteinGeneMapping;
+	private Map<String, Map<String, List<ENSGInfo>>> proteinGeneMappingByChromosome;
 
 	/**
 	 * Gets a list of names of the groups which some proteins has been assigned
@@ -145,15 +146,15 @@ public class GeneDistributionReader {
 	}
 
 	/**
-	 * Gets a HashMap: key=ENSGid - value=ENSGinfo object, from the
+	 * Gets a Map: key=ENSGid - value=ENSGinfo object, from the
 	 * 'repartoCH16.tsv' file.
 	 * 
 	 * @return
 	 */
-	private HashMap<String, ENSGInfo> getGeneInfoFromProteoRedDistribution() {
+	private Map<String, ENSGInfo> getGeneInfoFromProteoRedDistribution() {
 		if (geneInfo != null)
 			return geneInfo;
-		HashMap<String, ENSGInfo> ret = new HashMap<String, ENSGInfo>();
+		Map<String, ENSGInfo> ret = new THashMap<String, ENSGInfo>();
 		ClassLoader cl = this.getClass().getClassLoader();
 		try {
 			final InputStream fstream = cl.getResourceAsStream(distributionFileName);
@@ -269,22 +270,22 @@ public class GeneDistributionReader {
 	 *        null, all chromosomes will be read.
 	 * @return
 	 */
-	public HashMap<String, List<ENSGInfo>> getProteinGeneMapping(String chrName) {
+	public Map<String, List<ENSGInfo>> getProteinGeneMapping(String chrName) {
 		// Get proteins from Chr16 according to the table that comes from
 		// ENSEMBL
 		if (proteinGeneMapping != null) {
 			if (chrName != null) {
-				HashMap<String, List<ENSGInfo>> ret = getChromosomeProteinGeneMapping(chrName);
+				Map<String, List<ENSGInfo>> ret = getChromosomeProteinGeneMapping(chrName);
 				return ret;
 			} else
 				return proteinGeneMapping;
 		}
 
-		proteinGeneMapping = new HashMap<String, List<ENSGInfo>>();
-		proteinGeneMappingByChromosome = new HashMap<String, HashMap<String, List<ENSGInfo>>>();
-		// HashMap<String, ENSGInfo> assignedGenes =
+		proteinGeneMapping = new THashMap<String, List<ENSGInfo>>();
+		proteinGeneMappingByChromosome = new THashMap<String, Map<String, List<ENSGInfo>>>();
+		// Map<String, ENSGInfo> assignedGenes =
 		// getGeneInfoFromProteoRedDistribution();
-		HashMap<String, ENSGInfo> assignedGenes = new HashMap<String, ENSGInfo>();
+		Map<String, ENSGInfo> assignedGenes = new THashMap<String, ENSGInfo>();
 		// log.info("Num assigned genes = " + assignedGenes.size());
 		// log.info("Mapping ENSG Ids to Uniprot IDS");
 		mapGenesToUniprot(assignedGenes);
@@ -304,12 +305,12 @@ public class GeneDistributionReader {
 		return proteinGeneMapping;
 	}
 
-	private HashMap<String, List<ENSGInfo>> getChromosomeProteinGeneMapping(String chrName) {
+	private Map<String, List<ENSGInfo>> getChromosomeProteinGeneMapping(String chrName) {
 		// if (this.proteinGeneMapping != null) {
 		if (proteinGeneMappingByChromosome != null) {
 			return proteinGeneMappingByChromosome.get(chrName);
 		}
-		// HashMap<String, List<ENSGInfo>> ret = new HashMap<String,
+		// Map<String, List<ENSGInfo>> ret = new THashMap<String,
 		// List<ENSGInfo>>();
 		//
 		// for (String proteinACC : proteinGeneMapping.keySet()) {
@@ -330,7 +331,7 @@ public class GeneDistributionReader {
 
 	/**
 	 * Gets a mapping between the uniprot accessions and the list of genes,
-	 * adding values to the class variable proteinGeneMapping HashMap<String,
+	 * adding values to the class variable proteinGeneMapping Map<String,
 	 * List<ENSGInfo>>.<br>
 	 * The information added is comming from the file
 	 * 'Uniprot_Ensembl_Map_06_02_2013.txt' and consist on a table with the
@@ -348,7 +349,7 @@ public class GeneDistributionReader {
 	 * 
 	 * @param genes
 	 */
-	private void mapGenesToUniprot(HashMap<String, ENSGInfo> genes) {
+	private void mapGenesToUniprot(Map<String, ENSGInfo> genes) {
 		try {
 
 			if (uniprotEnsemblMapInputStream != null) {
@@ -437,13 +438,13 @@ public class GeneDistributionReader {
 									String chrName = gene.getChrName();
 									if (chrName != null) {
 										if (!proteinGeneMappingByChromosome.containsKey(chrName)) {
-											HashMap<String, List<ENSGInfo>> proteinGeneMappingChr = new HashMap<String, List<ENSGInfo>>();
+											Map<String, List<ENSGInfo>> proteinGeneMappingChr = new THashMap<String, List<ENSGInfo>>();
 											List<ENSGInfo> geneList = new ArrayList<ENSGInfo>();
 											geneList.add(gene);
 											proteinGeneMappingChr.put(proteinACC, geneList);
 											proteinGeneMappingByChromosome.put(chrName, proteinGeneMappingChr);
 										} else {
-											HashMap<String, List<ENSGInfo>> proteinGeneMappingChr = proteinGeneMappingByChromosome
+											Map<String, List<ENSGInfo>> proteinGeneMappingChr = proteinGeneMappingByChromosome
 													.get(chrName);
 											if (!proteinGeneMappingChr.containsKey(proteinACC)) {
 												List<ENSGInfo> geneList = new ArrayList<ENSGInfo>();
@@ -573,7 +574,7 @@ public class GeneDistributionReader {
 	 * @param assignedGenes
 	 * @param chrName
 	 */
-	private void addChr16InfoFromOtherFiles(HashMap<String, ENSGInfo> assignedGenes, String chrName) {
+	private void addChr16InfoFromOtherFiles(Map<String, ENSGInfo> assignedGenes, String chrName) {
 
 		if (chrName != null && !"16".equals(chrName))
 			return;
@@ -730,7 +731,7 @@ public class GeneDistributionReader {
 	}
 
 	public static void main(String args[]) {
-		final HashMap<String, List<ENSGInfo>> proteinGeneMapping = GeneDistributionReader.getInstance()
+		final Map<String, List<ENSGInfo>> proteinGeneMapping = GeneDistributionReader.getInstance()
 				.getProteinGeneMapping(null);
 		System.out.println(proteinGeneMapping.size());
 
@@ -738,7 +739,7 @@ public class GeneDistributionReader {
 
 	public Set<ENSGInfo> getGenesFromProteinGroup(ProteinGroupOccurrence proteinGroupOccurrence, String chrName) {
 		List<ENSGInfo> ret = new ArrayList<ENSGInfo>();
-		HashMap<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(chrName);
+		Map<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(chrName);
 
 		List<String> accessions = proteinGroupOccurrence.getAccessions();
 		for (String acc : accessions) {
@@ -751,13 +752,13 @@ public class GeneDistributionReader {
 
 			}
 		}
-		Set<ENSGInfo> set = new HashSet<ENSGInfo>();
+		Set<ENSGInfo> set = new THashSet<ENSGInfo>();
 		set.addAll(ret);
 		return set;
 	}
 
 	public boolean isProteinGroupFromChromosome(ProteinGroupOccurrence proteinGroupOccurrence, String chrName) {
-		HashMap<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(chrName);
+		Map<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(chrName);
 
 		List<String> accessions = proteinGroupOccurrence.getAccessions();
 		for (String acc : accessions) {
@@ -769,8 +770,8 @@ public class GeneDistributionReader {
 	}
 
 	public Set<ENSGInfo> getGenesFromProtein(ExtendedIdentifiedProtein protein, String chrName) {
-		Set<ENSGInfo> ret = new HashSet<ENSGInfo>();
-		HashMap<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(chrName);
+		Set<ENSGInfo> ret = new THashSet<ENSGInfo>();
+		Map<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(chrName);
 
 		String acc = protein.getAccession();
 
@@ -787,8 +788,8 @@ public class GeneDistributionReader {
 	}
 
 	public Collection<ENSGInfo> getGenesFromProteinGroup(List<ProteinGroup> identifiedProteinGroups) {
-		HashMap<String, ENSGInfo> ret = new HashMap<String, ENSGInfo>();
-		HashMap<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(null);
+		Map<String, ENSGInfo> ret = new THashMap<String, ENSGInfo>();
+		Map<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(null);
 
 		for (ProteinGroup pGroup : identifiedProteinGroups) {
 			if (pGroup.getEvidence() != ProteinEvidence.NONCONCLUSIVE) {
@@ -817,8 +818,8 @@ public class GeneDistributionReader {
 	}
 
 	public Collection<ENSGInfo> getFirstGenesFromProteinGroup(List<ProteinGroup> identifiedProteinGroups) {
-		HashMap<String, ENSGInfo> ret = new HashMap<String, ENSGInfo>();
-		HashMap<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(null);
+		Map<String, ENSGInfo> ret = new THashMap<String, ENSGInfo>();
+		Map<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(null);
 
 		for (ProteinGroup pGroup : identifiedProteinGroups) {
 			if (pGroup.getEvidence() != ProteinEvidence.NONCONCLUSIVE) {
@@ -842,8 +843,8 @@ public class GeneDistributionReader {
 	}
 
 	public Set<String> getChromosomesFromProteinGroup(ProteinGroupOccurrence proteinGroupOccurrence) {
-		Set<String> ret = new HashSet<String>();
-		HashMap<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(null);
+		Set<String> ret = new THashSet<String>();
+		Map<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(null);
 
 		List<String> accessions = proteinGroupOccurrence.getAccessions();
 		for (String acc : accessions) {
@@ -859,8 +860,8 @@ public class GeneDistributionReader {
 	}
 
 	public Set<String> getChromosomesFromProtein(ExtendedIdentifiedProtein protein) {
-		Set<String> ret = new HashSet<String>();
-		HashMap<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(null);
+		Set<String> ret = new THashSet<String>();
+		Map<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(null);
 
 		String acc = protein.getAccession();
 		if (proteinGeneMapping2.containsKey(acc)) {
@@ -883,15 +884,15 @@ public class GeneDistributionReader {
 	 * @param idSet
 	 * @return
 	 */
-	public List<HashMap<String, List<String>>> getGeneAndProteinDistributionByChromosome(IdentificationSet idSet,
+	public List<Map<String, List<String>>> getGeneAndProteinDistributionByChromosome(IdentificationSet idSet,
 			String chrName) {
-		List<HashMap<String, List<String>>> ret = new ArrayList<HashMap<String, List<String>>>();
+		List<Map<String, List<String>>> ret = new ArrayList<Map<String, List<String>>>();
 
-		HashMap<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(chrName);
+		Map<String, List<ENSGInfo>> proteinGeneMapping2 = getProteinGeneMapping(chrName);
 		// Chromosomename-ensGID
-		HashMap<String, List<String>> geneDistribution = new HashMap<String, List<String>>();
+		Map<String, List<String>> geneDistribution = new THashMap<String, List<String>>();
 		// Chromosomename-ProteinACCs
-		HashMap<String, List<String>> proteinDistribution = new HashMap<String, List<String>>();
+		Map<String, List<String>> proteinDistribution = new THashMap<String, List<String>>();
 		Collection<ProteinGroupOccurrence> proteinOccurrenceList = idSet.getProteinGroupOccurrenceList().values();
 		for (ProteinGroupOccurrence proteinGroupOccurrence : proteinOccurrenceList) {
 			if (proteinGroupOccurrence.getEvidence() != ProteinEvidence.NONCONCLUSIVE) {
@@ -940,13 +941,13 @@ public class GeneDistributionReader {
 	 * @return a has map with key=chromosome name and value=list of
 	 *         {@link ENSGInfo}
 	 */
-	public HashMap<String, List<ENSGInfo>> getGeneDistributionByChromosome(String chrName) {
+	public Map<String, List<ENSGInfo>> getGeneDistributionByChromosome(String chrName) {
 		if (chrName == null || "".equals(chrName))
 			throw new IllegalMiapeArgumentException("Chromosome name cannot be null");
 
-		HashMap<String, List<ENSGInfo>> ret = new HashMap<String, List<ENSGInfo>>();
+		Map<String, List<ENSGInfo>> ret = new THashMap<String, List<ENSGInfo>>();
 
-		HashMap<String, List<ENSGInfo>> genes = proteinGeneMappingByChromosome.get(chrName);
+		Map<String, List<ENSGInfo>> genes = proteinGeneMappingByChromosome.get(chrName);
 		for (List<ENSGInfo> engInfos : genes.values()) {
 			for (ENSGInfo ensgInfo : engInfos) {
 				if (ensgInfo.getEnsG_ID() != null)

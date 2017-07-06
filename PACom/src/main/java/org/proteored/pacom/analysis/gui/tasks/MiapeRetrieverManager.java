@@ -4,9 +4,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.SwingWorker.StateValue;
@@ -20,6 +19,10 @@ import org.proteored.miapeapi.webservice.clients.miapeapi.MiapeDatabaseException
 import org.proteored.miapeapi.webservice.clients.miapeapi.MiapeSecurityException_Exception;
 import org.proteored.pacom.analysis.util.FileManager;
 import org.proteored.pacom.gui.tasks.WebservicesLoaderTask;
+
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.set.hash.THashSet;
 
 /**
  * This class manages the miape retriever tasks in a thread safe way
@@ -35,9 +38,9 @@ public class MiapeRetrieverManager implements PropertyChangeListener {
 
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
 
-	private final HashMap<String, MiapeRetrieverTask> miapeRetrievers = new HashMap<String, MiapeRetrieverTask>();
+	private final Map<String, MiapeRetrieverTask> miapeRetrievers = new THashMap<String, MiapeRetrieverTask>();
 	private final List<String> queue = new ArrayList<String>();
-	private final HashMap<Integer, Integer> miapeAssociations = new HashMap<Integer, Integer>();
+	private final TIntObjectHashMap<Integer> miapeAssociations = new TIntObjectHashMap<Integer>();
 
 	private MiapeAPIWebserviceDelegate miapeAPIWebservice;
 
@@ -45,7 +48,7 @@ public class MiapeRetrieverManager implements PropertyChangeListener {
 	private String userName;
 	private String password;
 	private final List<PropertyChangeListener> retrievingListeners = new ArrayList<PropertyChangeListener>();
-	private final Set<String> failedRetrievings = new HashSet<String>();
+	private final Set<String> failedRetrievings = new THashSet<String>();
 
 	private MiapeRetrieverManager(String userName, String password) {
 		this.userName = userName;
@@ -409,7 +412,7 @@ public class MiapeRetrieverManager implements PropertyChangeListener {
 
 	}
 
-	public HashMap<Integer, Integer> getMiapeAssociations() {
+	public TIntObjectHashMap<Integer> getMiapeAssociations() {
 		return miapeAssociations;
 	}
 

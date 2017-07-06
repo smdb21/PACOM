@@ -1,18 +1,17 @@
 package org.proteored.pacom.analysis.util;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
 import org.proteored.miapeapi.webservice.clients.miapeextractor.MiapeExtractorDelegate;
 import org.proteored.pacom.gui.MainFrame;
 import org.proteored.pacom.gui.tasks.WebservicesLoaderTask;
 
+import gnu.trove.map.hash.TIntObjectHashMap;
+
 public class MiapeMSAndMSIAssociator {
 	private static MiapeMSAndMSIAssociator instance;
 	// key = miape MSI identifier
 	// value = miape MS identier
-	private static Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+	private static TIntObjectHashMap<Integer> map = new TIntObjectHashMap<Integer>();
 	private static MiapeExtractorDelegate webservice;
 	private static String userName;
 	private static String pass;
@@ -24,8 +23,8 @@ public class MiapeMSAndMSIAssociator {
 		if (MiapeMSAndMSIAssociator.webservice == null) {
 			try {
 
-				MiapeMSAndMSIAssociator.webservice = WebservicesLoaderTask
-						.getInstace().getMiapeExtractorWebservice(false);
+				MiapeMSAndMSIAssociator.webservice = WebservicesLoaderTask.getInstace()
+						.getMiapeExtractorWebservice(false);
 			} catch (IllegalMiapeArgumentException ex) {
 
 			}
@@ -41,8 +40,7 @@ public class MiapeMSAndMSIAssociator {
 			return map.get(miapeMSIID);
 		else {
 			if (webservice != null) {
-				int miapeRef = webservice.getAssociatedMiapeMS(miapeMSIID,
-						userName, pass);
+				int miapeRef = webservice.getAssociatedMiapeMS(miapeMSIID, userName, pass);
 				if (miapeRef > 0) {
 					map.put(miapeMSIID, miapeRef);
 					return miapeRef;

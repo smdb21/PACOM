@@ -21,9 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
@@ -66,6 +64,8 @@ import org.proteored.pacom.gui.tasks.OntologyLoaderWaiter;
 import org.proteored.pacom.utils.MiapeExtractionParametersUtil;
 import org.proteored.pacom.utils.MiapeExtractionResult;
 import org.proteored.pacom.utils.MiapeExtractionRunParameters;
+
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 /**
  *
@@ -382,6 +382,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 
 		jRatioButtonTabseparatedTextFile = new JRadioButton();
 		jRatioButtonTabseparatedTextFile.addItemListener(new ItemListener() {
+			@Override
 			public void itemStateChanged(ItemEvent e) {
 				jRatioButtonTabseparatedTextFileActionPerformed();
 
@@ -399,6 +400,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 
 		jButtonHelpSeparators = new JButton();
 		jButtonHelpSeparators.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				showTableTextFileHelp();
 			}
@@ -1431,7 +1433,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	private boolean isLoadingProjects; // indicate if the thread
 										// LoadProjectsThread is already loading
 										// or not
-	private final Map<Integer, String> loadedProjects = new HashMap<Integer, String>();
+	private final TIntObjectHashMap<String> loadedProjects = new TIntObjectHashMap<String>();
 	private JRadioButton jRatioButtonTabseparatedTextFile;
 	private JComboBox jComboBoxTableSeparators;
 	private JButton jButtonHelpSeparators;
@@ -1533,7 +1535,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 
 	private void showLoadedProjectTable() {
 		if (showProjectTable) {
-			Map<Integer, String> miapeProjects = getLoadedProjects();
+			TIntObjectHashMap<String> miapeProjects = getLoadedProjects();
 			// this.appendStatus(miapeProjects.size() + " projects
 			// retrieved\n");
 			if (miapeProjects != null && !miapeProjects.isEmpty()) {
@@ -1716,13 +1718,13 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		return true;
 	}
 
-	public void setLoadedProjects(Map<Integer, String> projects) {
+	public void setLoadedProjects(TIntObjectHashMap<String> projects) {
 
 		loadedProjects.clear();
 		loadedProjects.putAll(projects);
 	}
 
-	private Map<Integer, String> getLoadedProjects() {
+	private TIntObjectHashMap<String> getLoadedProjects() {
 		while (isLoadingProjects()) {
 			try {
 				Thread.currentThread();

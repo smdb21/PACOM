@@ -6,8 +6,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,6 +36,8 @@ import edu.scripps.yates.annotations.uniprot.UniprotEntryUtil;
 import edu.scripps.yates.annotations.uniprot.UniprotProteinLocalRetriever;
 import edu.scripps.yates.annotations.uniprot.xml.Entry;
 import edu.scripps.yates.utilities.fasta.FastaParser;
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 
 public class ExporterUtil {
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
@@ -45,8 +45,8 @@ public class ExporterUtil {
 	private static ExporterUtil instance;
 	private static boolean includePeptides;
 	private static boolean includeGeneInfo;
-	private final HashMap<String, List<ENSGInfo>> proteinGeneMapping;
-	private final Set<IdentificationSet> idSets = new HashSet<IdentificationSet>();
+	private final Map<String, List<ENSGInfo>> proteinGeneMapping;
+	private final Set<IdentificationSet> idSets = new THashSet<IdentificationSet>();
 	// Protein Score Order
 	private List<String> proteinScoreNames;
 	// Peptide Score Order
@@ -395,7 +395,7 @@ public class ExporterUtil {
 
 	private String getReplicateNames(PeptideOccurrence peptideOccurrence) {
 		StringBuilder sbReplicatesNames = new StringBuilder();
-		Set<String> replicateNames = new HashSet<String>();
+		Set<String> replicateNames = new THashSet<String>();
 
 		List<ExtendedIdentifiedPeptide> peptides = peptideOccurrence.getItemList();
 		if (peptides != null) {
@@ -424,7 +424,7 @@ public class ExporterUtil {
 
 	private String getReplicateNames(ProteinGroupOccurrence proteinOccurrence) {
 		StringBuilder sbReplicatesNames = new StringBuilder();
-		Set<String> replicateNames = new HashSet<String>();
+		Set<String> replicateNames = new THashSet<String>();
 
 		List<ProteinGroup> proteinGroups = proteinOccurrence.getItemList();
 		if (proteinGroups != null) {
@@ -456,7 +456,7 @@ public class ExporterUtil {
 
 	private String getExperimentName(PeptideOccurrence peptideOccurrence) {
 		StringBuilder sbExperimentNames = new StringBuilder();
-		Set<String> experimentNames = new HashSet<String>();
+		Set<String> experimentNames = new THashSet<String>();
 
 		List<ExtendedIdentifiedPeptide> peptides = peptideOccurrence.getItemList();
 		for (ExtendedIdentifiedPeptide extendedIdentifiedPeptide : peptides) {
@@ -476,7 +476,7 @@ public class ExporterUtil {
 
 	private String getExperimentName(ProteinGroupOccurrence proteinOccurrence) {
 		StringBuilder sbExperimentNames = new StringBuilder();
-		Set<String> experimentNames = new HashSet<String>();
+		Set<String> experimentNames = new THashSet<String>();
 
 		final List<ExtendedIdentifiedProtein> proteins = proteinOccurrence.getProteins();
 		for (ExtendedIdentifiedProtein extendedIdentifiedProtein : proteins) {
@@ -548,7 +548,7 @@ public class ExporterUtil {
 	private String getNumPeptides(PeptideOccurrence peptideOccurrence) {
 		StringBuilder proteinsNumPeps = new StringBuilder();
 
-		HashMap<String, List<IdentifiedPeptide>> hashProteins = new HashMap<String, List<IdentifiedPeptide>>();
+		Map<String, List<IdentifiedPeptide>> hashProteins = new THashMap<String, List<IdentifiedPeptide>>();
 
 		for (ExtendedIdentifiedPeptide pep : peptideOccurrence.getItemList()) {
 			List<IdentifiedProtein> peptideProteins = pep.getIdentifiedProteins();
@@ -575,8 +575,6 @@ public class ExporterUtil {
 	private String getNumPeptides(ProteinGroupOccurrence proteinOccurrence) {
 		StringBuilder proteinsNumPeps = new StringBuilder();
 
-		HashMap<String, List<IdentifiedPeptide>> hashProteins = new HashMap<String, List<IdentifiedPeptide>>();
-
 		int numPeptides = 0;
 
 		for (ProteinGroup proteinGroup : proteinOccurrence.getItemList()) {
@@ -593,7 +591,7 @@ public class ExporterUtil {
 	private String getProteinDiffSeq(PeptideOccurrence peptideOccurrence) {
 		StringBuilder proteinsDiffSeqs = new StringBuilder();
 
-		HashMap<String, List<IdentifiedPeptide>> hashProteins = new HashMap<String, List<IdentifiedPeptide>>();
+		Map<String, List<IdentifiedPeptide>> hashProteins = new THashMap<String, List<IdentifiedPeptide>>();
 
 		for (ExtendedIdentifiedPeptide pep : peptideOccurrence.getItemList()) {
 			List<IdentifiedProtein> peptideProteins = pep.getIdentifiedProteins();
@@ -739,14 +737,14 @@ public class ExporterUtil {
 
 		ArrayList<String> accs = new ArrayList<String>();
 		// Set<String> alreadyPresentGeneClassifications = new
-		// HashSet<String>();
+		// Set<String>();
 		for (ExtendedIdentifiedPeptide pep : peptideOccurrence.getItemList()) {
 			for (IdentifiedProtein protein : pep.getIdentifiedProteins()) {
 				if (!accs.contains(protein.getAccession()))
 					accs.add(protein.getAccession());
 			}
 		}
-		HashSet<String> dicc = new HashSet<String>();
+		Set<String> dicc = new THashSet<String>();
 		for (String acc : accs) {
 			boolean added = false;
 			if (proteinGeneMapping.containsKey(acc)) {
@@ -787,11 +785,11 @@ public class ExporterUtil {
 		StringBuilder gene_classifications = new StringBuilder();
 
 		List<String> accs = proteinOccurrence.getAccessions();
-		Set<String> alreadyPresentGeneClassifications = new HashSet<String>();
+		Set<String> alreadyPresentGeneClassifications = new THashSet<String>();
 		for (String acc : accs) {
 			if (proteinGeneMapping.containsKey(acc)) {
 				List<ENSGInfo> genes = proteinGeneMapping.get(acc);
-				HashSet<String> dicc = new HashSet<String>();
+				Set<String> dicc = new THashSet<String>();
 				for (ENSGInfo gene : genes) {
 					String known = gene.getKnown();
 					if (known != null && !dicc.contains(known)) {
@@ -810,7 +808,7 @@ public class ExporterUtil {
 	}
 
 	private String getResearcher(PeptideOccurrence peptideOccurrence) {
-		HashSet<String> dicc = new HashSet<String>();
+		Set<String> dicc = new THashSet<String>();
 		StringBuilder researchers = new StringBuilder();
 
 		ArrayList<String> accs = new ArrayList<String>();
@@ -844,7 +842,7 @@ public class ExporterUtil {
 	}
 
 	private String getResearcher(ProteinGroupOccurrence proteinOccurrence) {
-		HashSet<String> dicc = new HashSet<String>();
+		Set<String> dicc = new THashSet<String>();
 		StringBuilder researchers = new StringBuilder();
 
 		List<String> accessions = proteinOccurrence.getAccessions();
@@ -889,7 +887,7 @@ public class ExporterUtil {
 	}
 
 	private String getENSGID(List<String> accs) {
-		HashSet<String> dicc = new HashSet<String>();
+		Set<String> dicc = new THashSet<String>();
 		StringBuilder ENSG_IDS = new StringBuilder();
 		for (String acc : accs) {
 			boolean added = false;
@@ -1032,7 +1030,7 @@ public class ExporterUtil {
 	}
 
 	public String getChromosomeName(List<String> accs) {
-		Set<String> dicc = new HashSet<String>();
+		Set<String> dicc = new THashSet<String>();
 		StringBuilder chrNames = new StringBuilder();
 		for (String acc : accs) {
 			boolean added = false;
@@ -1080,7 +1078,7 @@ public class ExporterUtil {
 	}
 
 	private String getProteinEvidenceName(PeptideOccurrence peptideOccurrence) {
-		Set<String> dicc = new HashSet<String>();
+		Set<String> dicc = new THashSet<String>();
 		StringBuilder evidences = new StringBuilder();
 
 		List<String> accs = new ArrayList<String>();
@@ -1111,7 +1109,7 @@ public class ExporterUtil {
 	}
 
 	private String getProteinEvidenceName(ProteinGroupOccurrence proteinOccurrence) {
-		Set<String> dicc = new HashSet<String>();
+		Set<String> dicc = new THashSet<String>();
 		StringBuilder evidences = new StringBuilder();
 
 		List<String> accs = proteinOccurrence.getAccessions();
@@ -1138,7 +1136,7 @@ public class ExporterUtil {
 	private int getNumDifExtendedPeptides(List<ExtendedIdentifiedPeptide> list) {
 		if (list != null) {
 
-			HashSet<String> seqs = new HashSet<String>();
+			Set<String> seqs = new THashSet<String>();
 			for (IdentifiedPeptide pep : list) {
 				String seq = pep.getSequence();
 				if (!seqs.contains(seq))
@@ -1152,7 +1150,7 @@ public class ExporterUtil {
 	private int getNumDifPeptides(List<IdentifiedPeptide> list) {
 		if (list != null) {
 
-			HashSet<String> seqs = new HashSet<String>();
+			Set<String> seqs = new THashSet<String>();
 			for (IdentifiedPeptide pep : list) {
 				String seq = pep.getSequence();
 				if (!seqs.contains(seq))
@@ -1164,7 +1162,7 @@ public class ExporterUtil {
 	}
 
 	private String getCharge(PeptideOccurrence peptideOccurrence) {
-		Set<String> charges = new HashSet<String>();
+		Set<String> charges = new THashSet<String>();
 		for (ExtendedIdentifiedPeptide extendedPeptide : peptideOccurrence.getItemList()) {
 			final String charge = extendedPeptide.getCharge();
 			if (charge != null && !charges.contains(charge)) {
@@ -1175,7 +1173,7 @@ public class ExporterUtil {
 	}
 
 	private String getRt(PeptideOccurrence peptideOccurrence) {
-		Set<String> rts = new HashSet<String>();
+		Set<String> rts = new THashSet<String>();
 		for (ExtendedIdentifiedPeptide extendedPeptide : peptideOccurrence.getItemList()) {
 			final String rt = extendedPeptide.getRetentionTimeInSeconds();
 			if (rt != null && !rts.contains(rt)) {
@@ -1365,7 +1363,7 @@ public class ExporterUtil {
 	 * @return
 	 */
 	public static List<String> getProteinScoreNames(Collection<IdentificationSet> idSets) {
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new THashSet<String>();
 		for (IdentificationSet idSet : idSets) {
 			ret.addAll(idSet.getProteinScoreNames());
 		}
@@ -1379,7 +1377,7 @@ public class ExporterUtil {
 	 * @return
 	 */
 	public static List<String> getPeptideScoreNames(Collection<IdentificationSet> idSets) {
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new THashSet<String>();
 		for (IdentificationSet idSet : idSets) {
 			ret.addAll(idSet.getPeptideScoreNames());
 		}
@@ -1402,7 +1400,7 @@ public class ExporterUtil {
 		if (idSets.isEmpty()) {
 			return Collections.emptySet();
 		}
-		Set<IdentificationSet> ret = new HashSet<IdentificationSet>();
+		Set<IdentificationSet> ret = new THashSet<IdentificationSet>();
 
 		switch (dataLevel) {
 		case LEVEL0:

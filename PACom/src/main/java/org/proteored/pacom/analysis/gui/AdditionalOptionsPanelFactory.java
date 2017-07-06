@@ -10,9 +10,9 @@ import java.awt.event.ItemEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -47,6 +47,9 @@ import org.proteored.pacom.analysis.charts.HeatChart;
 import org.proteored.pacom.analysis.charts.WordCramChart;
 import org.proteored.pacom.analysis.genes.GeneDistributionReader;
 import org.proteored.pacom.analysis.gui.tasks.DatasetFactory;
+
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 
 public class AdditionalOptionsPanelFactory {
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
@@ -84,7 +87,7 @@ public class AdditionalOptionsPanelFactory {
 	public String userPeptideList;
 	private JTextField jTextContaining;
 	private JCheckBox jCheckBoxAsPercentage;
-	private final HashSet<String> proteinsInSample = new HashSet<String>();
+	private final Set<String> proteinsInSample = new THashSet<String>();
 	private JButton jButtonShowInputTextFrame;
 	private JLabel jlabelProteinsInSample;
 	private JComboBox jComboBoxMaximumOccurrence;
@@ -131,7 +134,7 @@ public class AdditionalOptionsPanelFactory {
 	public static final String PSM = "psm";
 	public static final String KNOWN = "known";
 	public static final String UNKNOWN = "unknown";
-	private final HashMap<String, JCheckBox> scoreComparisonJCheckBoxes = new HashMap<String, JCheckBox>();
+	private final Map<String, JCheckBox> scoreComparisonJCheckBoxes = new THashMap<String, JCheckBox>();
 
 	private JCheckBox jCheckBoxShowPSM;
 
@@ -1351,7 +1354,7 @@ public class AdditionalOptionsPanelFactory {
 		return PlotOrientation.VERTICAL;
 	}
 
-	public HashSet<String> getProteinsInSample() {
+	public Set<String> getProteinsInSample() {
 		return proteinsInSample;
 	}
 
@@ -1473,7 +1476,7 @@ public class AdditionalOptionsPanelFactory {
 		return jpanel;
 	}
 
-	public HashMap<String, JCheckBox> getIdSetsJCheckBoxes() {
+	public Map<String, JCheckBox> getIdSetsJCheckBoxes() {
 		return scoreComparisonJCheckBoxes;
 
 	}

@@ -21,7 +21,6 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -52,6 +51,8 @@ import org.proteored.pacom.utils.HttpUtilities;
 import org.proteored.pacom.utils.MiapeExtractionBatchManager;
 import org.proteored.pacom.utils.MiapeExtractionResult;
 
+import gnu.trove.map.hash.TIntObjectHashMap;
+
 /**
  *
  * @author __USER__
@@ -61,7 +62,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 	private final MiapeExtractorDelegate miapeExtractorWebservice = null;
 	private final MiapeAPIWebserviceDelegate miapeAPIWebservice = null;
 	private ControlVocabularyManager cvManager;
-	private final HashMap<Integer, List<JComponent>> miapeExtractionTaskJComponents = new HashMap<Integer, List<JComponent>>();
+	private final TIntObjectHashMap<List<JComponent>> miapeExtractionTaskJComponents = new TIntObjectHashMap<List<JComponent>>();
 	private MiapeExtractionBatchManager miapeExtractorBatchManager;
 	private final int jProgressBarIndex = 2;
 	private final int jButtonStartIndex = 3;
@@ -71,7 +72,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 
 	private final MainFrame parentFrame;
 	private boolean ontologiesLoaded = false;
-	private final HashMap<Integer, MiapeExtractionResult> obtainedResults = new HashMap<Integer, MiapeExtractionResult>();
+	private final TIntObjectHashMap<MiapeExtractionResult> obtainedResults = new TIntObjectHashMap<MiapeExtractionResult>();
 	private static MiapeExtractionBatchFrame instance;
 	private boolean startAllJobsRequested = false;
 
@@ -261,6 +262,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 		jButtonHelp.setRolloverIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON_64_HOVER));
 		jButtonHelp.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		jButtonHelp.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				showHelp();
 			}
@@ -393,7 +395,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 					appendStatus("Cancelling all jobs");
 					miapeExtractorBatchManager.cancelMiapeExtractions();
 				}
-				for (List<JComponent> components : miapeExtractionTaskJComponents.values()) {
+				for (List<JComponent> components : miapeExtractionTaskJComponents.valueCollection()) {
 					components.get(jButtonStartIndex).setEnabled(true);
 					components.get(jButtonStopIndex).setEnabled(false);
 				}
