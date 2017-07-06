@@ -121,7 +121,7 @@ public class GeneralOptionsDialog extends javax.swing.JDialog {
 	private String getCoresToUseText() {
 		final int availableProcessors = Runtime.getRuntime().availableProcessors();
 		if (jCheckBoxProcessInParallel.isSelected()) {
-			final int availableNumSystemCores = edu.scripps.yates.cores.SystemCoreManager
+			final int availableNumSystemCores = edu.scripps.yates.utilities.cores.SystemCoreManager
 					.getAvailableNumSystemCores(MAXIMUM_NUM_CORES);
 			return "Using " + availableNumSystemCores + " out of " + availableProcessors + " cores";
 		} else {
