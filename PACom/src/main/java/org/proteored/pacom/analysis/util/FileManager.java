@@ -878,8 +878,9 @@ public class FileManager {
 
 			if (projectFolders != null) {
 				for (File projectFolder : projectFolders) {
-					if (projectFolder.isDirectory())
+					if (projectFolder.isDirectory()) {
 						ret.add(FilenameUtils.getName(projectFolder.getAbsolutePath()));
+					}
 				}
 			}
 		}
