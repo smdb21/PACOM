@@ -40,7 +40,8 @@ import com.compomics.util.protein.Protein;
 
 import edu.scripps.yates.utilities.fasta.FastaParser;
 import gnu.trove.map.hash.THashMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntDoubleHashMap;
+import gnu.trove.map.hash.TObjectIntHashMap;
 import gnu.trove.set.hash.THashSet;
 import uk.ac.ebi.pridemod.PrideModController;
 import uk.ac.ebi.pridemod.slimmod.model.SlimModCollection;
@@ -123,8 +124,8 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 	@Override
 	protected Void doInBackground() throws Exception {
 		try {
-			Map<String, Integer> indexesByHeaders = new THashMap<String, Integer>();
-			Map<String, Integer> indexesByScoreNames = new THashMap<String, Integer>();
+			TObjectIntHashMap<String> indexesByHeaders = new TObjectIntHashMap<String>();
+			TObjectIntHashMap<String> indexesByScoreNames = new TObjectIntHashMap<String>();
 
 			firePropertyChange(PARSER_STARTS, null, null);
 			BufferedReader dis = new BufferedReader(new FileReader(file));
@@ -192,7 +193,7 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 							peptide = new IdentifiedPeptideImplFromTSV(seq);
 							peptides.put(psmID, peptide);
 							if (FastaParser.somethingExtrangeInSequence(rawSeq)) {
-								TIntObjectHashMap<Double> pTMsByPosition = FastaParser.getPTMsFromSequence(rawSeq);
+								TIntDoubleHashMap pTMsByPosition = FastaParser.getPTMsFromSequence(rawSeq);
 								for (int position : pTMsByPosition.keys()) {
 									String aa = String.valueOf(peptide.getSequence().charAt(position - 1));
 									double deltaMass = pTMsByPosition.get(position);
@@ -386,8 +387,8 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 		return false;
 	}
 
-	private void parseHeader(String[] splittedLine, Map<String, Integer> indexesByHeaders,
-			Map<String, Integer> indexesByScoreNames) {
+	private void parseHeader(String[] splittedLine, TObjectIntHashMap<String> indexesByHeaders,
+			TObjectIntHashMap<String> indexesByScoreNames) {
 		int index = 0;
 		for (String element : splittedLine) {
 			element = element.trim();
