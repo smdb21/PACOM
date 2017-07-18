@@ -5,6 +5,6 @@ Download the latest versions:
  - PACOM tool [here](http://sealion.scripps.edu:8080/hudson/job/PACOM-no-examples/lastSuccessfulBuild/artifact/PACom/target/).
  - PACOM with example data [here](http://sealion.scripps.edu:8080/hudson/job/PACOM_with_examples/lastSuccessfulBuild/artifact/PACom/target/).
   
-For more information and details about the tool, go to (todo)
+For a complete manual and more detailed information about how to use the tool , go to our [**wiki page**](https://github.com/smdb21/PACOM/wiki).
 
-This tool has been developed using the Java MIAPE API. Source code can be fount at this [git hub](https://github.com/smdb21/java-miape-api) web page.
+This tool has been developed using the Java MIAPE API which source code can be fount at this [git hub](https://github.com/smdb21/java-miape-api) web page.
