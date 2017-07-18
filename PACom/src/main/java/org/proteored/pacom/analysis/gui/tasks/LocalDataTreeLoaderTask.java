@@ -39,7 +39,7 @@ public class LocalDataTreeLoaderTask extends SwingWorker<Void, String> {
 				// String project_label = "'" + projectName + "'";
 				String project_label = projectName;
 				// Project project = getProject(idProject, userName, password);
-				log.info("Getting miape documents for local project: " + projectName);
+				log.info("Getting datasets for local project: " + projectName);
 				List<String> miapeList = FileManager.getLocalMiapesByProjectName(projectName);
 
 				if (!miapeList.isEmpty()) {

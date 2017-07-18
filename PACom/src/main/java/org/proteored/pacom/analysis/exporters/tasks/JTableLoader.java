@@ -355,7 +355,7 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 		log.info("Adding colums " + columnsStringList.size() + " columns");
 		if (columnsStringList != null) {
 
-			for (Object columnName : columnsStringList) {
+			for (String columnName : columnsStringList) {
 				defaultModel.addColumn(columnName);
 			}
 			log.info("Added " + this.table.getColumnCount() + " colums");
