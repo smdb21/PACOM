@@ -38,8 +38,7 @@ import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
  * @author __USER__
  */
 public class MiapeMSForms extends javax.swing.JDialog {
-	private static org.apache.log4j.Logger log = org.apache.log4j.Logger
-			.getLogger("log4j.logger.org.proteored");
+	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("log4j.logger.org.proteored");
 
 	private MiapeMSDocument miapeMS;
 	private final ControlVocabularyManager cvManager;
@@ -62,8 +61,7 @@ public class MiapeMSForms extends javax.swing.JDialog {
 	 * 
 	 * @param miapemsChecker
 	 */
-	public MiapeMSForms(MiapeExtractionFrame frame, MIAPEMSChecker miapemsChecker,
-			MiapeMSDocument miapeMS) {
+	public MiapeMSForms(MiapeExtractionFrame frame, MIAPEMSChecker miapemsChecker, MiapeMSDocument miapeMS) {
 		super(frame, true);
 		try {
 			UIManager.setLookAndFeel(new WindowsLookAndFeel());
@@ -83,8 +81,8 @@ public class MiapeMSForms extends javax.swing.JDialog {
 		disableCurrentButton();
 	}
 
-	public MiapeMSForms(MiapeExtractionFrame frame, MIAPEMSChecker miapemsChecker,
-			MiapeMSDocument miapeMS, ControlVocabularyManager cvManager) {
+	public MiapeMSForms(MiapeExtractionFrame frame, MIAPEMSChecker miapemsChecker, MiapeMSDocument miapeMS,
+			ControlVocabularyManager cvManager) {
 		super(frame, true);
 		try {
 			UIManager.setLookAndFeel(new WindowsLookAndFeel());
@@ -185,12 +183,11 @@ public class MiapeMSForms extends javax.swing.JDialog {
 			}
 		});
 
-		jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(
-				javax.swing.BorderFactory.createEtchedBorder(), "MIAPE MS Section"));
+		jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(),
+				"MIAPE MS Section"));
 
 		jButtonSampleInformation.setText("Sample");
-		jButtonSampleInformation
-				.setToolTipText("Go to Sample Information and Additional Information");
+		jButtonSampleInformation.setToolTipText("Go to Sample Information and Additional Information");
 		jButtonSampleInformation.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -283,173 +280,88 @@ public class MiapeMSForms extends javax.swing.JDialog {
 		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 		jPanel1.setLayout(jPanel1Layout);
 		jPanel1Layout
-				.setHorizontalGroup(jPanel1Layout
-						.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanel1Layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												jPanel1Layout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.LEADING)
-														.addGroup(
-																jPanel1Layout
-																		.createSequentialGroup()
-																		.addComponent(
-																				jButtonActivationDissociation)
-																		.addGap(18, 18, 18)
-																		.addComponent(
-																				jButtonDataAcquisition)
-																		.addGap(18, 18, 18)
-																		.addComponent(
-																				jButtonDataAnalysis))
-														.addGroup(
-																jPanel1Layout
-																		.createSequentialGroup()
-																		.addComponent(
-																				jButtonSampleInformation,
-																				javax.swing.GroupLayout.PREFERRED_SIZE,
-																				81,
-																				javax.swing.GroupLayout.PREFERRED_SIZE)
-																		.addGap(18, 18, 18)
-																		.addComponent(
-																				jButtonContact,
-																				javax.swing.GroupLayout.PREFERRED_SIZE,
-																				75,
-																				javax.swing.GroupLayout.PREFERRED_SIZE)
-																		.addGap(18, 18, 18)
-																		.addComponent(
-																				jButtonSpectrometer,
-																				javax.swing.GroupLayout.PREFERRED_SIZE,
-																				103,
-																				javax.swing.GroupLayout.PREFERRED_SIZE)
-																		.addGap(18, 18, 18)
-																		.addComponent(
-																				jButtonIonSources)
-																		.addGap(18, 18, 18)
-																		.addComponent(
-																				jButtonAnalyzer,
-																				javax.swing.GroupLayout.PREFERRED_SIZE,
-																				83,
-																				javax.swing.GroupLayout.PREFERRED_SIZE)
-																		.addGap(18, 18, 18)
-																		.addComponent(
-																				jButtonPrevious)
-																		.addGap(18, 18, 18)
-																		.addComponent(jButtonNext)))
+				.setHorizontalGroup(
+						jPanel1Layout
+								.createParallelGroup(
+										javax.swing.GroupLayout.Alignment.LEADING)
+								.addGroup(jPanel1Layout.createSequentialGroup().addContainerGap()
+										.addGroup(jPanel1Layout
+												.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+												.addGroup(jPanel1Layout.createSequentialGroup()
+														.addComponent(jButtonActivationDissociation)
+														.addGap(18, 18, 18).addComponent(jButtonDataAcquisition)
+														.addGap(18, 18, 18).addComponent(jButtonDataAnalysis))
+												.addGroup(jPanel1Layout.createSequentialGroup()
+														.addComponent(jButtonSampleInformation,
+																javax.swing.GroupLayout.PREFERRED_SIZE, 81,
+																javax.swing.GroupLayout.PREFERRED_SIZE)
+														.addGap(18, 18, 18)
+														.addComponent(jButtonContact,
+																javax.swing.GroupLayout.PREFERRED_SIZE, 75,
+																javax.swing.GroupLayout.PREFERRED_SIZE)
+														.addGap(18, 18, 18)
+														.addComponent(jButtonSpectrometer,
+																javax.swing.GroupLayout.PREFERRED_SIZE, 103,
+																javax.swing.GroupLayout.PREFERRED_SIZE)
+														.addGap(18, 18, 18).addComponent(jButtonIonSources)
+														.addGap(18, 18, 18)
+														.addComponent(jButtonAnalyzer,
+																javax.swing.GroupLayout.PREFERRED_SIZE, 83,
+																javax.swing.GroupLayout.PREFERRED_SIZE)
+														.addGap(18, 18, 18).addComponent(jButtonPrevious)
+														.addGap(18, 18, 18).addComponent(jButtonNext)))
 										.addContainerGap()));
-		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				jPanel1Layout
-						.createSequentialGroup()
-						.addGroup(
-								jPanel1Layout
-										.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.BASELINE)
-										.addComponent(jButtonSampleInformation)
-										.addComponent(jButtonContact)
-										.addComponent(jButtonSpectrometer)
-										.addComponent(jButtonIonSources)
-										.addComponent(jButtonAnalyzer)
-										.addComponent(jButtonPrevious).addComponent(jButtonNext))
+		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel1Layout.createSequentialGroup()
+						.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jButtonSampleInformation).addComponent(jButtonContact)
+								.addComponent(jButtonSpectrometer).addComponent(jButtonIonSources)
+								.addComponent(jButtonAnalyzer).addComponent(jButtonPrevious).addComponent(jButtonNext))
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(
-								jPanel1Layout
-										.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.BASELINE)
-										.addComponent(jButtonActivationDissociation)
-										.addComponent(jButtonDataAcquisition)
-										.addComponent(jButtonDataAnalysis)).addContainerGap()));
+						.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jButtonActivationDissociation).addComponent(jButtonDataAcquisition)
+								.addComponent(jButtonDataAnalysis))
+						.addContainerGap()));
 
-		jLabel2.setText("Configuration name:");
+		jLabel2.setText("MS metadata name:");
 
 		javax.swing.GroupLayout jPanelTopLayout = new javax.swing.GroupLayout(jPanelTop);
 		jPanelTop.setLayout(jPanelTopLayout);
-		jPanelTopLayout
-				.setHorizontalGroup(jPanelTopLayout
+		jPanelTopLayout.setHorizontalGroup(jPanelTopLayout
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanelTopLayout.createSequentialGroup().addContainerGap().addGroup(jPanelTopLayout
 						.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanelTopLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												jPanelTopLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.LEADING)
-														.addGroup(
-																jPanelTopLayout
-																		.createSequentialGroup()
-																		.addGroup(
-																				jPanelTopLayout
-																						.createParallelGroup(
-																								javax.swing.GroupLayout.Alignment.LEADING)
-																						.addGroup(
-																								jPanelTopLayout
-																										.createSequentialGroup()
-																										.addComponent(
-																												jLabel1)
-																										.addPreferredGap(
-																												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																										.addComponent(
-																												jComboBoxConfigurations,
-																												javax.swing.GroupLayout.PREFERRED_SIZE,
-																												235,
-																												javax.swing.GroupLayout.PREFERRED_SIZE)
-																										.addPreferredGap(
-																												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																										.addComponent(
-																												jButtonLoad))
-																						.addComponent(
-																								jPanel1,
-																								javax.swing.GroupLayout.PREFERRED_SIZE,
-																								javax.swing.GroupLayout.DEFAULT_SIZE,
-																								javax.swing.GroupLayout.PREFERRED_SIZE))
-																		.addContainerGap(
-																				javax.swing.GroupLayout.DEFAULT_SIZE,
-																				Short.MAX_VALUE))
-														.addGroup(
-																jPanelTopLayout
-																		.createSequentialGroup()
-																		.addComponent(jLabel2)
-																		.addPreferredGap(
-																				javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																		.addComponent(
-																				jTextFieldConfigurationName,
-																				javax.swing.GroupLayout.DEFAULT_SIZE,
-																				300,
-																				Short.MAX_VALUE)
-																		.addGap(18, 18, 18)
-																		.addComponent(jButtonSave)
-																		.addGap(18, 18, 18)
-																		.addComponent(jButtonFinish)
-																		.addGap(72, 72, 72)))));
-		jPanelTopLayout.setVerticalGroup(jPanelTopLayout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				jPanelTopLayout
-						.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(
-								jPanelTopLayout
-										.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.BASELINE)
-										.addComponent(jLabel1)
-										.addComponent(jComboBoxConfigurations,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addGroup(jPanelTopLayout.createSequentialGroup().addGroup(jPanelTopLayout
+								.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanelTopLayout
+										.createSequentialGroup().addComponent(jLabel1)
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(jComboBoxConfigurations, javax.swing.GroupLayout.PREFERRED_SIZE,
+												235, javax.swing.GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 										.addComponent(jButtonLoad))
+								.addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+								.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+						.addGroup(jPanelTopLayout.createSequentialGroup().addComponent(jLabel2)
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jTextFieldConfigurationName, javax.swing.GroupLayout.DEFAULT_SIZE, 300,
+										Short.MAX_VALUE)
+								.addGap(18, 18, 18).addComponent(jButtonSave).addGap(18, 18, 18)
+								.addComponent(jButtonFinish).addGap(72, 72, 72)))));
+		jPanelTopLayout.setVerticalGroup(jPanelTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanelTopLayout.createSequentialGroup().addContainerGap()
+						.addGroup(jPanelTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jLabel1)
+								.addComponent(jComboBoxConfigurations,
+										javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addComponent(jButtonLoad))
 						.addGap(10, 10, 10)
-						.addGroup(
-								jPanelTopLayout
-										.createParallelGroup(
-												javax.swing.GroupLayout.Alignment.BASELINE)
-										.addComponent(jLabel2)
-										.addComponent(jTextFieldConfigurationName,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addComponent(jButtonSave).addComponent(jButtonFinish))
+						.addGroup(jPanelTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+								.addComponent(jLabel2)
+								.addComponent(jTextFieldConfigurationName, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addComponent(jButtonSave).addComponent(jButtonFinish))
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
 								javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -458,58 +370,41 @@ public class MiapeMSForms extends javax.swing.JDialog {
 		jPanelDown.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
 		jScrollPaneDown.setBorder(null);
-		jScrollPaneDown
-				.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		jScrollPaneDown.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
 		javax.swing.GroupLayout jPanelDownLayout = new javax.swing.GroupLayout(jPanelDown);
 		jPanelDown.setLayout(jPanelDownLayout);
-		jPanelDownLayout.setHorizontalGroup(jPanelDownLayout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				jPanelDownLayout
-						.createSequentialGroup()
-						.addContainerGap()
-						.addComponent(jScrollPaneDown, javax.swing.GroupLayout.DEFAULT_SIZE, 677,
-								Short.MAX_VALUE).addContainerGap()));
-		jPanelDownLayout.setVerticalGroup(jPanelDownLayout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				jPanelDownLayout
-						.createSequentialGroup()
-						.addContainerGap()
-						.addComponent(jScrollPaneDown, javax.swing.GroupLayout.DEFAULT_SIZE, 489,
-								Short.MAX_VALUE).addContainerGap()));
+		jPanelDownLayout.setHorizontalGroup(jPanelDownLayout
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanelDownLayout.createSequentialGroup().addContainerGap()
+						.addComponent(jScrollPaneDown, javax.swing.GroupLayout.DEFAULT_SIZE, 677, Short.MAX_VALUE)
+						.addContainerGap()));
+		jPanelDownLayout.setVerticalGroup(jPanelDownLayout
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanelDownLayout.createSequentialGroup().addContainerGap()
+						.addComponent(jScrollPaneDown, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+						.addContainerGap()));
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				layout.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(
-								layout.createParallelGroup(
-										javax.swing.GroupLayout.Alignment.TRAILING, false)
-										.addComponent(jPanelDown,
-												javax.swing.GroupLayout.Alignment.LEADING,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
-										.addComponent(jPanelTop,
-												javax.swing.GroupLayout.Alignment.LEADING,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE))
-						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-		layout.setVerticalGroup(layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				layout.createSequentialGroup()
-						.addContainerGap()
-						.addComponent(jPanelTop, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13,
+		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout
+				.createSequentialGroup().addContainerGap()
+				.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+						.addComponent(jPanelDown, javax.swing.GroupLayout.Alignment.LEADING,
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
 								Short.MAX_VALUE)
+						.addComponent(jPanelTop, javax.swing.GroupLayout.Alignment.LEADING,
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+								Short.MAX_VALUE))
+				.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup().addContainerGap()
+						.addComponent(jPanelTop, javax.swing.GroupLayout.PREFERRED_SIZE,
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
 						.addComponent(jPanelDown, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE,
-								javax.swing.GroupLayout.PREFERRED_SIZE).addContainerGap()));
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addContainerGap()));
 
 		pack();
 	}// </editor-fold>
@@ -588,17 +483,14 @@ public class MiapeMSForms extends javax.swing.JDialog {
 		final String configurationName = this.jTextFieldConfigurationName.getText();
 		if (!"".equals(configurationName)) {
 			try {
-				final MiapeMSDocument miapemsFromForms = this.miapeMSFormManager
-						.getMIAPEMSFromForms(null);
+				final MiapeMSDocument miapemsFromForms = this.miapeMSFormManager.getMIAPEMSFromForms(null);
 
-				final String metadataFilePath = FileManager.getMetadataFolder() + configurationName
-						+ ".xml";
+				final String metadataFilePath = FileManager.getMetadataFolder() + configurationName + ".xml";
 				miapemsFromForms.toXml().saveAs(metadataFilePath);
 				JOptionPane.showMessageDialog(this, "MIAPE MS file saved at: " + metadataFilePath);
 			} catch (Exception e) {
 				e.printStackTrace();
-				JOptionPane
-						.showMessageDialog(this, "Error saving MIAPE MS file: " + e.getMessage());
+				JOptionPane.showMessageDialog(this, "Error saving MIAPE MS file: " + e.getMessage());
 			}
 		} else {
 			JOptionPane.showMessageDialog(this, "Enter a name for the MIAPE MS data");
@@ -608,11 +500,9 @@ public class MiapeMSForms extends javax.swing.JDialog {
 	private void jButtonFinishActionPerformed(java.awt.event.ActionEvent evt) {
 		String configName = this.jTextFieldConfigurationName.getText();
 		if ("".equals(configName)) {
-			int option = JOptionPane
-					.showConfirmDialog(
-							this,
-							"<html>Current configuration is not saved.<br>Do you want to save it?<br>If YES, put a name on the text field and click 'Save' or 'Finish' again.</html>",
-							"Save before continue?", JOptionPane.YES_NO_OPTION);
+			int option = JOptionPane.showConfirmDialog(this,
+					"<html>Current configuration is not saved.<br>Do you want to save it?<br>If YES, put a name on the text field and click 'Save' or 'Finish' again.</html>",
+					"Save before continue?", JOptionPane.YES_NO_OPTION);
 			if (option == JOptionPane.YES_OPTION)
 				return;
 		} else {
@@ -686,11 +576,9 @@ public class MiapeMSForms extends javax.swing.JDialog {
 		final File metadataFile = FileManager.getMetadataFile(miapeFileName);
 		boolean loadMetadata = true;
 		if (metadataFile != null && this.miapeMS != null) {
-			final int selectedOption = JOptionPane
-					.showConfirmDialog(
-							this,
-							"<html>If you continue, the information of MIAPE MS metadata will be overriten.<br>Do you want to continue?</html>",
-							"Warining", JOptionPane.YES_NO_OPTION);
+			final int selectedOption = JOptionPane.showConfirmDialog(this,
+					"<html>If you continue, the information of MIAPE MS metadata will be overriten.<br>Do you want to continue?</html>",
+					"Warining", JOptionPane.YES_NO_OPTION);
 			if (selectedOption == JOptionPane.NO_OPTION) {
 				loadMetadata = false;
 			}
@@ -698,8 +586,8 @@ public class MiapeMSForms extends javax.swing.JDialog {
 		if (loadMetadata) {
 			String errorMessage = "";
 			try {
-				MiapeMSDocument newMiapeMS = MiapeMSXmlFactory.getFactory().toDocument(
-						new MIAPEMSXmlFile(metadataFile), cvManager, null, null, null);
+				MiapeMSDocument newMiapeMS = MiapeMSXmlFactory.getFactory().toDocument(new MIAPEMSXmlFile(metadataFile),
+						cvManager, null, null, null);
 				this.miapeMS = newMiapeMS;
 				this.miapeMSFormManager.loadMIAPEMS(newMiapeMS, cvManager);
 				showMIAPEdata(this.currentSlide);
@@ -714,8 +602,8 @@ public class MiapeMSForms extends javax.swing.JDialog {
 				e.printStackTrace();
 			}
 			if (!"".equals(errorMessage))
-				JOptionPane.showMessageDialog(this, "<html>Error loading MIAPE MS data:<br>"
-						+ errorMessage + "</html>");
+				JOptionPane.showMessageDialog(this,
+						"<html>Error loading MIAPE MS data:<br>" + errorMessage + "</html>");
 		}
 
 	}
@@ -799,8 +687,7 @@ public class MiapeMSForms extends javax.swing.JDialog {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				new MiapeMSForms(null, null, null, OntologyLoaderTask.getTestCvManager())
-						.setVisible(true);
+				new MiapeMSForms(null, null, null, OntologyLoaderTask.getTestCvManager()).setVisible(true);
 			}
 		});
 	}

@@ -492,8 +492,10 @@ public class FileManager {
 		log.info(projectsFolderName);
 		File projectsFolder = new File(projectsFolderName);
 		if (projectsFolder.exists()) {
-			for (String projectFileName : projectsFolder.list()) {
-				ret.add(FilenameUtils.getBaseName(projectFileName));
+			for (File projectFile : projectsFolder.listFiles()) {
+				if (projectFile.isFile()) {
+					ret.add(FilenameUtils.getBaseName(projectFile.getAbsolutePath()));
+				}
 				// File projectFile = new File(projectsFolderName +
 				// pathSeparator + projectFileName);
 				// try {

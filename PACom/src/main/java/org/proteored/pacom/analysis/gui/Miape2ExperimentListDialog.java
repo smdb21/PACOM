@@ -66,7 +66,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 	private static final int MIAPE_LEVEL = 3;
 	private static final int MIAPE_REPLICATE_LEVEL = 4;
 	private static final int MIAPE_PROJECT_LEVEL = 2;
-	private static final String DEFAULT_PROJECT_NAME = "Comparison project";
+	private static final String DEFAULT_PROJECT_NAME = "Comparison project name";
 	private static final String DEFAULT_EXPERIMENT_NAME = "experiment 1";
 	final static String MIAPE_ID_REGEXP = "Dataset_(?:MS|MSI)_(\\d+).*";
 	final static String LOCAL_MIAPE_ID_REGEXP = "Dataset_(?:MS|MSI)_(\\d+)_.+$";
@@ -342,7 +342,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 		jButtonSave = new javax.swing.JButton();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		setTitle("Inspection projects manager");
+		setTitle("Comparison projects manager");
 
 		jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(),
 				"Individual datasets"));
@@ -450,7 +450,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 						.addContainerGap()));
 
 		jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(),
-				"Inspection Project"));
+				"Comparison Project"));
 
 		jTreeProject.addMouseListener(new java.awt.event.MouseAdapter() {
 			@Override
@@ -516,7 +516,8 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 			}
 		});
 
-		jButtonStartLoading.setText("Reload input data");
+		jButtonStartLoading.setText("Reload datasets and projects");
+		jButtonStartLoading.setToolTipText("Reloads the input datasets and saved projects from the disc");
 		jButtonStartLoading.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -601,7 +602,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 
 		jLabel1.setText("Project Name:");
 
-		jTextProjectName.setToolTipText("Name of the inspection project");
+		jTextProjectName.setToolTipText("Name of the comparison project");
 		jTextProjectName.addKeyListener(new java.awt.event.KeyAdapter() {
 			@Override
 			public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -789,7 +790,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 
 		jButtonAddCuratedExperiment.setText("Add curated experiment");
 		jButtonAddCuratedExperiment.setToolTipText(
-				"<html>\nClick to add a <b>curated experiment</b> to the inspection project.<br>\nCurated experiments are created in the Data Comparison and Inspection Charts<br>\nviewer, usually after applying some filters.<br>\nThis curated projects are lighter than normal projects<br>\nsince filtered-out data is discarted and is not loaded.\n</html>");
+				"<html>\nClick to add a <b>curated experiment</b> to the comparison project.<br>\nCurated experiments are created in the Data Comparison and Inspection Charts<br>\nviewer, usually after applying some filters.<br>\nThis curated projects are lighter than normal projects<br>\nsince filtered-out data is discarted and is not loaded.\n</html>");
 		jButtonAddCuratedExperiment.setEnabled(false);
 		jButtonAddCuratedExperiment.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -840,7 +841,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 		});
 
 		jButtonSave.setText("Save project");
-		jButtonSave.setToolTipText("Click to save current inspection project");
+		jButtonSave.setToolTipText("Click to save current comparison project");
 		jButtonSave.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1044,7 +1045,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 					saved = false;
 				} else {
 					throw new IllegalMiapeArgumentException(
-							"Select an experiment or fraction/band/replicate level in the inspection project.");
+							"Select an experiment or fraction/band/replicate level in the comparison project.");
 				}
 				// increment number template
 				incrementSuffixIfNumber();
@@ -1057,13 +1058,13 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 				final int numMIAPEsInMIAPEProject = jTreeLocalMIAPEMSIs.getSelectedNode().getChildCount();
 				if (numMIAPEsInMIAPEProject > 0) {
 
-					// IF the node 0 is selected in the inspection project
+					// IF the node 0 is selected in the comparison project
 					String localProjectName = jTreeLocalMIAPEMSIs
 							.getStringFromSelection(MIAPE_LOCAL_PROJECT_NAME_REGEXP);
 					final int selectedOption = JOptionPane.showConfirmDialog(this,
 							"<html>Do you want to add all datasets in the project to a new level 1 node called '"
-									+ localProjectName + "' in the inspection project?</html>",
-							"Add datasets to inspection project", JOptionPane.YES_NO_CANCEL_OPTION);
+									+ localProjectName + "' in the comparison project?</html>",
+							"Add datasets to comparison project", JOptionPane.YES_NO_CANCEL_OPTION);
 					if (selectedOption == JOptionPane.YES_OPTION) {
 						DefaultMutableTreeNode projectNode = jTreeProject.getRootNode();
 						CPExperimentList cpExpList = (CPExperimentList) projectNode.getUserObject();
@@ -1180,12 +1181,12 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 		String projectName = (String) jComboBox1.getSelectedItem();
 		if (projectName != null && !"".equals(projectName)) {
 			int option = JOptionPane.showConfirmDialog(this,
-					"<html>The inspection project will be deleted.<br>Are you sure?</html>",
-					"Delete inspection project", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+					"<html>The comparison project will be deleted.<br>Are you sure?</html>",
+					"Delete comparison project", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 			if (option == JOptionPane.YES_OPTION) {
 				boolean deleted = FileManager.removeProjectXMLFile(projectName);
 				if (deleted) {
-					appendStatus("Inspection project '" + projectName + "' deleted");
+					appendStatus("Comparison project '" + projectName + "' deleted");
 					loadProjectCombo();
 				}
 			}
@@ -1258,7 +1259,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 					saved = false;
 				} else {
 					throw new IllegalMiapeArgumentException(
-							"Select an experiment or fraction/band/replicate level in the inspection project.");
+							"Select an experiment or fraction/band/replicate level in the comparison project.");
 				}
 				// increment number template
 				incrementSuffixIfNumber();
@@ -1309,7 +1310,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 		int selectedOption = JOptionPane.showConfirmDialog(this,
 				"<html>Curated experiment '" + curatedExperimentName
 						+ "' will be removed from the disk.<br>Do you really want to continue?</html>",
-				"Add MIAPEs to inspection project", JOptionPane.YES_NO_CANCEL_OPTION);
+				"Add datasets to comparison project", JOptionPane.YES_NO_CANCEL_OPTION);
 		if (selectedOption == JOptionPane.YES_OPTION) {
 			log.info("Removing curated experiment files ... " + curatedExperimentName);
 			jButtonRemoveCuratedExperiment.setEnabled(false);
@@ -1587,7 +1588,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 					saved = false;
 				} else {
 					throw new IllegalMiapeArgumentException(
-							"Select an experiment or fraction/band/replicate level in the inspection project.");
+							"Select an experiment or fraction/band/replicate level in the comparison project.");
 				}
 				// increment number template
 				incrementSuffixIfNumber();
@@ -1600,12 +1601,12 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 				final int numMIAPEsInMIAPEProject = jTreeMIAPEMSIs.getSelectedNode().getChildCount();
 				if (numMIAPEsInMIAPEProject > 0) {
 
-					// IF the node 0 is selected in the inspection project
+					// IF the node 0 is selected in the comparison project
 					String experimentName = jTreeMIAPEMSIs.getStringFromSelection(MIAPE_PROJECT_NAME_REGEXP);
 					final int selectedOption = JOptionPane.showConfirmDialog(this,
-							"<html>Do you want to add all MIAPEs in the MIAPE project to a new level 1 node called '"
-									+ experimentName + "' in the inspection project?</html>",
-							"Add MIAPEs to inspection project", JOptionPane.YES_NO_CANCEL_OPTION);
+							"<html>Do you want to add all datasets to a new level 1 node called '" + experimentName
+									+ "' in the comparison project?</html>",
+							"Add datasets to comparison project", JOptionPane.YES_NO_CANCEL_OPTION);
 					if (selectedOption == JOptionPane.YES_OPTION) {
 						DefaultMutableTreeNode projectNode = jTreeProject.getRootNode();
 						CPExperimentList cpExpList = (CPExperimentList) projectNode.getUserObject();

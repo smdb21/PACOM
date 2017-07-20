@@ -957,7 +957,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		getContentPane().add(jPanelStatus, gridBagConstraints);
 
 		jPanelChartType.setBorder(javax.swing.BorderFactory
-				.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Chart Option"));
+				.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Comparison level"));
 
 		jComboBoxChartOptions.addItemListener(new java.awt.event.ItemListener() {
 			@Override

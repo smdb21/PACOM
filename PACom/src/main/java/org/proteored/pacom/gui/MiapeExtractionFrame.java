@@ -794,7 +794,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	public static String getTextTableFormatText1() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(
-				"<html>PACOM supports text files containing a table with different predifined columns, separated by a symbol (select one in the combo-box).<br>");
+				"<html>PACOM supports text files containing a table with different predefined columns, separated by a symbol (select one in the combo-box).<br>");
 		sb.append(
 				"These files <b>MUST</b> contain a header in which the following <b>header names</b> are allowed at the first row:");
 		sb.append("<ul>");
@@ -802,8 +802,10 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 			sb.append(getHeaderString(columnName));
 		}
 		sb.append("</ul>");
-		sb.append(
-				"Any other header name different than any in that list will be recognized as a <b>new score</b>, and values in that column should be real numbers.<br>");
+		sb.append("Any other header name different than any in that list will be recognized as a <b>new score</b>,"
+				+ " and values in that column should be real numbers.<br>"
+				+ "Here the user could insert any value, being a score or not, that want to evaluate looking to<br>"
+				+ " its distribution and looking how its value change between datasets for the same peptide.");
 		sb.append("Lines starting by '<b>#</b>' will be <b>ignored</b>.");
 		return sb.toString();
 	}
