@@ -186,10 +186,10 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	private static TIntObjectHashMap<String> miapeMSIsRetrieved = new TIntObjectHashMap<String>();
 	private static ChartManagerFrame instance;
 
-	public static final String ONE_SERIES_PER_EXPERIMENT = "One series per level 1 (experiment)";
-	public static final String ONE_SERIES_PER_REPLICATE = "One series per level 2 (fraction/band/replicate)";
-	public static final String ONE_CHART_PER_EXPERIMENT = "One chart per level 1 (experiment)";
-	public static final String ONE_SERIES_PER_EXPERIMENT_LIST = "One serie per level 0 (experiment list)";
+	public static final String ONE_SERIES_PER_EXPERIMENT = "One data series per level 1";
+	public static final String ONE_SERIES_PER_REPLICATE = "One data series per level 2";
+	public static final String ONE_CHART_PER_EXPERIMENT = "One separate chart per level 1";
+	public static final String ONE_SERIES_PER_EXPERIMENT_LIST = "One single data series (level 0) ";
 	private static final String MENU_SEPARATION = "menu separation";
 
 	private final JFrame parentFrame;
