@@ -2,10 +2,8 @@
 **PACOM** is a Java stand alone tool that is able to import, integrate, manage and compare numerous proteomics datasets at the same time, offering a rich set of graphical representation of the most common proteomics data features
 
 #### How to get PACOM:
-Download the latest versions:
- - PACOM tool [here](http://sealion.scripps.edu:8080/hudson/job/PACOM-no-examples/lastSuccessfulBuild/artifact/PACom/target/).
- - PACOM with example data [here](http://sealion.scripps.edu:8080/hudson/job/PACOM_with_examples/lastSuccessfulBuild/artifact/PACom/target/).
-  
+Download the latest versions from [here](sealion.scripps.edu/PACom/).
+
 #### Instructions and Manual:
 For a **complete manual** and more detailed information about how to use the tool, go to our [**wiki page**](https://github.com/smdb21/PACOM/wiki).
    
