@@ -9,6 +9,10 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 public class GraphicPanel extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4605888784577413572L;
 	private JComponent graphicPanel;
 
 	public GraphicPanel() {
@@ -25,7 +29,8 @@ public class GraphicPanel extends JPanel {
 		this.graphicPanel = graphicPanel;
 
 		final GridLayout gridLayout = new java.awt.GridLayout(1, 1);
-		// GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
+		// GridBagConstraints gridBagConstraints = new
+		// java.awt.GridBagConstraints();
 		// gridBagConstraints.fill = GridBagConstraints.BOTH;
 		// gridBagConstraints.gridx = 0;
 		// gridBagConstraints.gridy = 0;
@@ -38,7 +43,7 @@ public class GraphicPanel extends JPanel {
 	public void addGraphicPanel(List<JPanel> chartList) {
 		this.removeAll();
 		// GridLayout gridLayoutManager = null;
-		final int size = chartList.size();
+		// final int size = chartList.size();
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridy = 0;
