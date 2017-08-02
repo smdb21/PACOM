@@ -72,7 +72,7 @@ import org.proteored.miapeapi.experiment.model.filters.FDRFilter;
 import org.proteored.miapeapi.experiment.model.filters.Filter;
 import org.proteored.miapeapi.experiment.model.filters.Filters;
 import org.proteored.miapeapi.experiment.model.filters.PeptideSequenceFilter;
-import org.proteored.miapeapi.experiment.model.filters.ProteinACCFilter;
+import org.proteored.miapeapi.experiment.model.filters.ProteinACCFilterByProteinComparatorKey;
 import org.proteored.miapeapi.experiment.model.filters.ScoreFilter;
 import org.proteored.miapeapi.experiment.model.sort.ProteinComparatorKey;
 import org.proteored.miapeapi.experiment.model.sort.ProteinGroupComparisonType;
@@ -3245,7 +3245,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 					log.info(object.getClass().getName());
 				}
 			}
-			filter = new ProteinACCFilter(keys);
+			filter = new ProteinACCFilterByProteinComparatorKey(keys);
 		} else if (currentChartType.equals(PEPTIDE_OVERLAPING)) {
 			Set<String> sequences = new THashSet<String>();
 			for (Object object : collection) {
@@ -4489,8 +4489,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		List<Filter> filters = filterDialog.getFilters();
 		if (filters != null) {
 			for (Filter filter : filters) {
-				if (filter instanceof ProteinACCFilter) {
-					ProteinACCFilter proteinAccFilter = (ProteinACCFilter) filter;
+				if (filter instanceof ProteinACCFilterByProteinComparatorKey) {
+					ProteinACCFilterByProteinComparatorKey proteinAccFilter = (ProteinACCFilterByProteinComparatorKey) filter;
 					return proteinAccFilter.getSortedAccessions();
 				}
 			}
