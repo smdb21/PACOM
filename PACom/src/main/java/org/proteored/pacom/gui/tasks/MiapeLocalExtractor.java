@@ -1534,6 +1534,7 @@ public class MiapeLocalExtractor {
 							.setReferencedMSDocument(Integer.valueOf(idMiapeMS));
 				}
 			} catch (WrongXMLFormatException ex) {
+				log.info("Error trying to read as mzIdentML 1.0. Trying now as mzIdentML 1.1 or 1.2...");
 				org.proteored.miapeapi.xml.mzidentml_1_1.MiapeMzIdentMLFile xmlFile = new org.proteored.miapeapi.xml.mzidentml_1_1.MiapeMzIdentMLFile(
 						inputMzIdentMLFile);
 				msiDocument = org.proteored.miapeapi.xml.mzidentml_1_1.MSIMiapeFactory.getFactory().toDocument(xmlFile,
