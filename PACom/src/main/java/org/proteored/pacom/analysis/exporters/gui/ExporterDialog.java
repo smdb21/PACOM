@@ -41,6 +41,9 @@ import gnu.trove.set.hash.THashSet;
  * @author __USER__
  */
 public class ExporterDialog extends javax.swing.JDialog implements PropertyChangeListener, ExporterManager {
+	private static final String DATA_LEVEL_TOOLTIP = "<html>When exporting proteins, this option will determine which level of integration you want to export.<br>"
+			+ "Remember that in each level, the proteins are reorganized (PAnalyzer protein grouping algorithm is applied),<br>"
+			+ "and so the protein groups will likely not be the same in different levels of data integration</html>";
 	private final Set<IdentificationSet> idSets = new THashSet<IdentificationSet>();
 	private TSVExporter exporter;
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
@@ -54,13 +57,20 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 	private Boolean distinguisModifiedPeptides;
 	private final ChartManagerFrame chartManagerFrame;
 	private JLabel lblLevelToExport;
+	private DataLevel dataLevel;
 
-	public ExporterDialog(Frame parentFrame, ChartManagerFrame parent, Collection<IdentificationSet> idSets) {
+	public ExporterDialog(Frame parentFrame, ChartManagerFrame parent, Collection<IdentificationSet> idSets,
+			DataLevel dataLevel) {
+		this(parentFrame, parent, idSets, dataLevel, false);
+	}
+
+	public ExporterDialog(Frame parentFrame, ChartManagerFrame parent, Collection<IdentificationSet> idSets,
+			DataLevel dataLevel, boolean exportingSubSetsFromOverlappings) {
 		super(parentFrame, true);
 		this.chartManagerFrame = parent;
 		this.distinguisModifiedPeptides = parent.distinguishModifiedPeptides();
 		this.idSets.addAll(idSets);
-
+		this.dataLevel = dataLevel;
 		initComponents();
 
 		if (!this.idSets.isEmpty() && parent.getFiltersDialog() != null
@@ -70,14 +80,16 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 		} else {
 			isFDRApplied = false;
 		}
-		if (parent.getCurrentChartType().equals(ChartManagerFrame.PROTEIN_OVERLAPING)) {
+		if (exportingSubSetsFromOverlappings
+				&& parent.getCurrentChartType().equals(ChartManagerFrame.PROTEIN_OVERLAPING)) {
 			// disable export peptides
 			this.jCheckBoxCollapsePeptides.setEnabled(false);
 			this.jRadioButtonExportPeptides.setEnabled(false);
 			this.jRadioButtonExportProteins.setSelected(true);
 			this.jCheckBoxCollapseProteins.setEnabled(true);
 		}
-		if (parent.getCurrentChartType().equals(ChartManagerFrame.PEPTIDE_OVERLAPING)) {
+		if (exportingSubSetsFromOverlappings
+				&& parent.getCurrentChartType().equals(ChartManagerFrame.PEPTIDE_OVERLAPING)) {
 			// disable export proteins
 			this.jCheckBoxCollapseProteins.setEnabled(false);
 			this.jRadioButtonExportProteins.setEnabled(false);
@@ -97,6 +109,11 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 		jButtonCancel.setIcon(ImageManager.getImageIcon(ImageManager.STOP));
 		jButtonExport.setIcon(ImageManager.getImageIcon(ImageManager.EXCEL_TABLE));
 		pack();
+
+		if (dataLevel != null) {
+			dataLevelComboBox.setSelectedItem(dataLevel);
+			dataLevelComboBox.setEnabled(false);
+		}
 	}
 
 	public void setFilter(Filters filter) {
@@ -218,9 +235,10 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 			}
 		});
 
-		lblLevelToExport = new JLabel("Level to export:");
-
-		dataLevelComboBox = new JComboBox();
+		lblLevelToExport = new JLabel("Level of integration:");
+		lblLevelToExport.setToolTipText(DATA_LEVEL_TOOLTIP);
+		dataLevelComboBox = new JComboBox<DataLevel>();
+		dataLevelComboBox.setToolTipText(DATA_LEVEL_TOOLTIP);
 		// data levels
 		for (DataLevel dataLevel : DataLevel.values()) {
 			dataLevelComboBox.addItem(dataLevel);
@@ -347,6 +365,14 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 		if (jRadioButtonExportProteins.isSelected()) {
 			jCheckBoxCollapsePeptides.setEnabled(false);
 			jCheckBoxCollapseProteins.setEnabled(true);
+			if (this.dataLevel == null) {
+				dataLevelComboBox.setEnabled(true);
+			}
+			if (isFDRApplied) {
+				jCheckBoxIncludeDecoy.setEnabled(true);
+			}
+			jCheckBoxIncludeGeneInfo.setEnabled(true);
+			jCheckBoxSearchForProteinSequence.setEnabled(true);
 		}
 	}
 
@@ -354,6 +380,10 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 		if (jRadioButtonExportPeptides.isSelected()) {
 			jCheckBoxCollapsePeptides.setEnabled(true);
 			jCheckBoxCollapseProteins.setEnabled(false);
+			dataLevelComboBox.setEnabled(false);
+			jCheckBoxIncludeDecoy.setEnabled(false);
+			jCheckBoxIncludeGeneInfo.setEnabled(false);
+			jCheckBoxSearchForProteinSequence.setEnabled(false);
 		}
 	}
 
@@ -455,7 +485,7 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 	private javax.swing.JRadioButton jRadioButtonExportPeptides;
 	private javax.swing.JRadioButton jRadioButtonExportProteins;
 	private javax.swing.JTextField jTextFieldFilePath;
-	private JComboBox dataLevelComboBox;
+	private JComboBox<DataLevel> dataLevelComboBox;
 	private boolean controlsDisabled = false;
 
 	// End of variables declaration//GEN-END:variables
@@ -471,7 +501,7 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 			jButtonExport.setEnabled(true);
 			jProgressBar1.setValue(0);
 			jProgressBar1.setString("");
-
+			jProgressBar1.setIndeterminate(false);
 		} else if ("progress".equals(evt.getPropertyName())) {
 			int progress = (Integer) evt.getNewValue();
 			jProgressBar1.setValue(progress);
@@ -484,12 +514,13 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 			setControlStatusToPrevious();
 			jButtonCancel.setEnabled(false);
 			jButtonExport.setEnabled(true);
-
+			jProgressBar1.setIndeterminate(false);
 		} else if (TSVExporter.DATA_EXPORTING_CANCELED.equals(evt.getPropertyName())) {
 			jProgressBar1.setValue(0);
 			setControlStatusToPrevious();
 			jButtonCancel.setEnabled(false);
 			jButtonExport.setEnabled(true);
+			jProgressBar1.setIndeterminate(false);
 		} else if (TSVExporter.DATA_EXPORTING_SORTING.equals(evt.getPropertyName())) {
 			int size = (Integer) evt.getNewValue();
 			jProgressBar1.setIndeterminate(true);
@@ -544,7 +575,9 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 		jRadioButtonExportPeptides.setEnabled(b);
 		jButtonExport.setEnabled(b);
 		lblLevelToExport.setEnabled(b);
-		dataLevelComboBox.setEnabled(b);
+		if (dataLevel == null) {
+			dataLevelComboBox.setEnabled(b);
+		}
 	}
 
 	@Override

@@ -458,7 +458,7 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 
 	protected void exportTSV() {
 		ExporterDialog exporterDialog = new ExporterDialog(this, parentFrame,
-				ExporterUtil.getSelectedIdentificationSets(idSets, getDataLevel()));
+				ExporterUtil.getSelectedIdentificationSets(idSets, getDataLevel()), getDataLevel());
 		// disable any modification
 		exporterDialog.setControlsDisabled();
 		exporterDialog.setControlStatusEnabled(false);

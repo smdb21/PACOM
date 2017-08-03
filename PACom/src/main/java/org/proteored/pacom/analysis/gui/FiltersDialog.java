@@ -623,7 +623,7 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 					parent.updateControlStates();
 					// DISABLE THIS LINE BECAUSE THE PREVIOUS ONES ARE THROWING
 					// AN EVENT THAT PAINTS THE CHART!!!
-					parent.startShowingChart();
+					parent.startShowingChart(null);
 
 					parent.clearIdentificationTable();
 				}

@@ -23,7 +23,6 @@ import org.proteored.miapeapi.experiment.model.ProteinGroupOccurrence;
 import org.proteored.miapeapi.experiment.model.filters.Filters;
 import org.proteored.miapeapi.experiment.model.sort.ProteinComparatorKey;
 import org.proteored.miapeapi.experiment.model.sort.ProteinGroupComparisonType;
-import org.proteored.miapeapi.experiment.model.sort.SorterUtil;
 import org.proteored.pacom.analysis.exporters.Exporter;
 import org.proteored.pacom.analysis.exporters.ExporterManager;
 import org.proteored.pacom.analysis.exporters.util.ExportedColumns;
@@ -153,7 +152,7 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 						}
 						firePropertyChange(DATA_EXPORTING_SORTING, null, peptideOccurrenceList.size());
 
-						SorterUtil.sortPeptideOcurrencesByBestPeptideScore(peptideOccurrenceList);
+						// SorterUtil.sortPeptideOcurrencesByBestPeptideScore(peptideOccurrenceList);
 						firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
 						Iterator<PeptideOccurrence> iterator = peptideOccurrenceList.iterator();
 
@@ -197,7 +196,8 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 							peptidelistToExport.add(peptide);
 						}
 						firePropertyChange(DATA_EXPORTING_SORTING, null, peptidelistToExport.size());
-						SorterUtil.sortPeptidesByBestPeptideScore(peptidelistToExport, true);
+						// SorterUtil.sortPeptidesByBestPeptideScore(peptidelistToExport,
+						// true);
 						firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
 
 						int total = peptidelistToExport.size();
@@ -245,7 +245,7 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 
 						firePropertyChange(DATA_EXPORTING_SORTING, null, proteinGroupOccurrenceList.size());
 						try {
-							SorterUtil.sortProteinGroupOcurrencesByBestPeptideScore(proteinGroupOccurrenceList);
+							// SorterUtil.sortProteinGroupOcurrencesByBestPeptideScore(proteinGroupOccurrenceList);
 						} catch (Exception e) {
 
 						}
@@ -290,7 +290,7 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 						}
 						firePropertyChange(DATA_EXPORTING_SORTING, null, proteinGroupsToExport.size());
 
-						SorterUtil.sortProteinGroupsByBestPeptideScore(proteinGroupsToExport);
+						// SorterUtil.sortProteinGroupsByBestPeptideScore(proteinGroupsToExport);
 						firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
 
 						int total = proteinGroupsToExport.size();

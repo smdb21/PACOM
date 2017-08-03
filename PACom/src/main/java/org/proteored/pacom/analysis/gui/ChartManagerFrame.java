@@ -13,7 +13,6 @@ import java.awt.Insets;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -44,6 +43,7 @@ import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JRadioButton;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -89,6 +89,7 @@ import org.proteored.pacom.analysis.gui.tasks.ChartCreatorTask;
 import org.proteored.pacom.analysis.gui.tasks.CuratedExperimentSaver;
 import org.proteored.pacom.analysis.gui.tasks.DataLoaderTask;
 import org.proteored.pacom.analysis.gui.tasks.MemoryCheckerTask;
+import org.proteored.pacom.analysis.util.DataLevel;
 import org.proteored.pacom.analysis.util.ImageUtils;
 import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.gui.MainFrame;
@@ -209,6 +210,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	private Boolean isLocalProcessingInParallel;
 	private boolean errorLoadingData;
 	private String previousMd5Checksum;
+	private Map<Object, Object> previousTogleValues = new THashMap<Object, Object>();
 
 	@Override
 	public void dispose() {
@@ -493,7 +495,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					currentChartType = chartType;
 					addCustomizationControls();
-					startShowingChart();
+					startShowingChart(null);
 				}
 			});
 
@@ -1384,7 +1386,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				filterDialog.setVisible(true);
 			}
 		}
-		startShowingChart();
+		startShowingChart(null);
 	}
 
 	private void jCheckBoxMenuItemPeptideSequenceFilterActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1395,7 +1397,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				filterDialog.setVisible(true);
 			}
 		}
-		startShowingChart();
+		startShowingChart(null);
 	}
 
 	private void jButtonShowTableMouseClicked(java.awt.event.MouseEvent evt) {
@@ -1464,7 +1466,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				filterDialog.setVisible(true);
 			}
 		}
-		startShowingChart();
+		startShowingChart(null);
 	}
 
 	private void jCheckBoxMenuItemPeptideNumberFilterActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1475,7 +1477,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				filterDialog.setVisible(true);
 			}
 		}
-		startShowingChart();
+		startShowingChart(null);
 	}
 
 	private void jCheckBoxMenuItemProteinACCFilterActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1486,7 +1488,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				filterDialog.setVisible(true);
 			}
 		}
-		startShowingChart();
+		startShowingChart(null);
 	}
 
 	private void jCheckBoxMenuItemModificationFilterActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1497,12 +1499,12 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				filterDialog.setVisible(true);
 			}
 		}
-		startShowingChart();
+		startShowingChart(null);
 	}
 
 	private void exportToTSV() {
 
-		ExporterDialog exporterDialog = new ExporterDialog(this, this, toSet(experimentList));
+		ExporterDialog exporterDialog = new ExporterDialog(this, this, toSet(experimentList), null);
 		exporterDialog.setVisible(true);
 	}
 
@@ -1513,14 +1515,16 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	}
 
 	private void jComboBoxChartOptionsItemStateChanged(java.awt.event.ItemEvent evt) {
-		if (evt.getStateChange() == ItemEvent.SELECTED) {
-			if (dataLoader == null || !dataLoader.isDone())
-				return;
-			// add additional customizations
-			addCustomizationControls();
-			// repaint
-			startShowingChart();
-		}
+		// if (evt.getStateChange() == ItemEvent.SELECTED) {
+		if (dataLoader == null || !dataLoader.isDone())
+			return;
+		// add additional customizations
+		addCustomizationControls();
+		// repaint
+		startShowingChart(jComboBoxChartOptions);
+		// } else {
+		// log.info(evt.getStateChange());
+		// }
 	}
 
 	private void jCheckBoxMenuItemOcurrenceFilterActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1531,7 +1535,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				filterDialog.setVisible(true);
 			}
 		}
-		startShowingChart();
+		startShowingChart(null);
 	}
 
 	private void jCheckBoxMenuItemScoreFiltersActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1554,7 +1558,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				}
 			}
 		}
-		startShowingChart();
+		startShowingChart(null);
 	}
 
 	private void jCheckBoxMenuItemFDRFilterActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1587,7 +1591,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				}
 			}
 		}
-		startShowingChart();
+		startShowingChart(null);
 
 	}
 
@@ -1604,7 +1608,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	private void jCheckBoxUniquePeptidesItemStateChanged(java.awt.event.ItemEvent evt) {
 
 		optionsFactory.updatePeptideSequenceList();
-		startShowingChart();
+		startShowingChart(jCheckBoxUniquePeptides);
 
 	}
 
@@ -3230,8 +3234,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				idSets.add(idSet);
 			}
 		}
-
-		ExporterDialog exporterDialog = new ExporterDialog(this, this, idSets);
+		ExporterDialog exporterDialog = new ExporterDialog(this, this, idSets, getDataLevel(), true);
 
 		Filters filter = null;
 		if (currentChartType.equals(PROTEIN_OVERLAPING)) {
@@ -3263,6 +3266,18 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		exporterDialog.setFilter(filter);
 		exporterDialog.setVisible(true);
 
+	}
+
+	private DataLevel getDataLevel() {
+		if (ONE_SERIES_PER_EXPERIMENT.equals(getOptionChart())) {
+			return DataLevel.LEVEL1;
+		} else if (ONE_SERIES_PER_EXPERIMENT_LIST.equals(getOptionChart())) {
+			return DataLevel.LEVEL0;
+		} else if (ONE_CHART_PER_EXPERIMENT.equals(getOptionChart())
+				|| ONE_SERIES_PER_REPLICATE.equals(getOptionChart())) {
+			return DataLevel.LEVEL2;
+		}
+		throw new IllegalArgumentException("Not possible");
 	}
 
 	/**
@@ -3882,21 +3897,56 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			chartCreator.addPropertyChangeListener(this);
 			chartCreator.execute();
 		} else {
-			// log.info("The chart cannot be generated until the previous chart
-			// is finished");
+			log.info("The chart cannot be generated until the previous chart is finished");
 			// this.appendStatus("Wait to finish the chart");
 		}
 	}
 
-	public void startShowingChart() {
+	public void startShowingChart(Object causantComponent) {
+		if (causantComponent != null) {
+			Object currentValue = getcurrentvalueFromComponent(causantComponent);
+			if (currentValue != null) {
+				if (previousTogleValues.containsKey(causantComponent)) {
+					Object previousValuesOfSelection = previousTogleValues.get(causantComponent);
+
+					if (currentValue.equals(previousValuesOfSelection)) {
+						log.info("Component didnt really changed");
+						return;
+					}
+				}
+				previousTogleValues.put(causantComponent, currentValue);
+			}
+		}
 		if (!dataLoader.isDone()) {
 			appendStatus("Datasets have already being loading. Please wait...");
 			return;
 		}
+
 		setEmptyChart();
+
 		updateOptionComboBox();
+
 		applyFilters();
 
+	}
+
+	private Object getcurrentvalueFromComponent(Object causantComponent) {
+		if (causantComponent instanceof JCheckBox) {
+			JCheckBox checkBox = (JCheckBox) causantComponent;
+			return checkBox.isSelected();
+		} else if (causantComponent instanceof JRadioButtonMenuItem) {
+			JRadioButtonMenuItem ratioItem = (JRadioButtonMenuItem) causantComponent;
+			return ratioItem.isSelected();
+		} else if (causantComponent instanceof JComboBox) {
+			JComboBox combo = (JComboBox) causantComponent;
+			return combo.getSelectedItem();
+		} else if (causantComponent instanceof JRadioButton) {
+			JRadioButton combo = (JRadioButton) causantComponent;
+			return combo.isSelected();
+		} else {
+			log.info("Class " + causantComponent.getClass());
+		}
+		return null;
 	}
 
 	/**
@@ -4058,7 +4108,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			// controls)
 			updateControlStates();
 			enableMenus(true);
-			startShowingChart();
+			startShowingChart(null);
 			jButtonShowTable.setEnabled(true);
 			jButtonExport2Excel.setEnabled(true);
 			// jButtonExport2PEX.setEnabled(true);

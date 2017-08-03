@@ -947,8 +947,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 				// get MIAPE ID
 				String miapeID = jTreeLocalMIAPEMSIs.getStringFromSelection(LOCAL_MIAPE_ID_REGEXP);
 				// get MIAPE Name
-				String miapeName = FilenameUtils
-						.getBaseName(jTreeLocalMIAPEMSIs.getStringFromSelection(LOCAL_MIAPE_UNIQUE_NAME_REGEXP));
+				String miapeName = jTreeLocalMIAPEMSIs.getStringFromSelection(LOCAL_MIAPE_UNIQUE_NAME_REGEXP);
 				if ("".equals(miapeName)) {
 					miapeName = "Dataset_" + miapeID;
 				}
@@ -1081,8 +1080,8 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 							DefaultMutableTreeNode miapeMSIChild = (DefaultMutableTreeNode) children.nextElement();
 							String msi_id = ExtendedJTree.getString(LOCAL_MIAPE_ID_REGEXP,
 									(String) miapeMSIChild.getUserObject());
-							String miapeName = FilenameUtils.getBaseName(ExtendedJTree
-									.getString(LOCAL_MIAPE_UNIQUE_NAME_REGEXP, (String) miapeMSIChild.getUserObject()));
+							String miapeName = ExtendedJTree.getString(LOCAL_MIAPE_UNIQUE_NAME_REGEXP,
+									(String) miapeMSIChild.getUserObject());
 							Integer ms_id = getAssociatedLocalMIAPEMSId(Integer.valueOf(msi_id), localProjectName,
 									miapeName);
 							// start retrieving

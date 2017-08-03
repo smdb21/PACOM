@@ -753,7 +753,7 @@ public class FileManager {
 		String path = FileManager.getMiapeLocalDataPath(projectName);
 		// String name = getMiapeMSILocalFileName(miapeLocalID, fileName);
 		// final String finalFileName = path + name;
-		final String finalFileName = path + FilenameUtils.getBaseName(fileName) + ".xml";
+		final String finalFileName = path + fileName + ".xml";
 		return finalFileName;
 	}
 
