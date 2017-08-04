@@ -41,6 +41,7 @@ import org.proteored.miapeapi.experiment.model.sort.SorterUtil;
 import org.proteored.miapeapi.interfaces.ms.Spectrometer;
 import org.proteored.miapeapi.interfaces.msi.Database;
 import org.proteored.miapeapi.interfaces.msi.InputParameter;
+import org.proteored.miapeapi.util.ProteinSequenceRetrieval;
 import org.proteored.pacom.analysis.exporters.util.ExporterUtil;
 import org.proteored.pacom.analysis.genes.ENSGInfo;
 import org.proteored.pacom.analysis.genes.GeneDistributionReader;
@@ -50,6 +51,8 @@ import org.proteored.pacom.analysis.util.FileManager;
 import com.compomics.util.protein.AASequenceImpl;
 import com.compomics.util.protein.Protein;
 
+import edu.scripps.yates.annotations.uniprot.UniprotEntryUtil;
+import edu.scripps.yates.annotations.uniprot.xml.Entry;
 import edu.scripps.yates.utilities.fasta.FastaParser;
 import edu.scripps.yates.utilities.maths.Maths;
 import gnu.trove.map.hash.THashMap;
@@ -146,7 +149,7 @@ public class DatasetFactory {
 	}
 
 	public static CategoryDataset createPeptideNumberInProteinsCategoryDataSet(List<IdentificationSet> idSets,
-			int maximum, boolean differentIdentificationsShown, Boolean countNonConclusiveProteins) {
+			int maximum, boolean psmsOrPeptides, Boolean countNonConclusiveProteins) {
 		// create the dataset...
 
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -159,48 +162,54 @@ public class DatasetFactory {
 				// key: number of peptides - value=number of proteins with that
 				// number of peptides
 				TIntObjectHashMap<Integer> distribution = new TIntObjectHashMap<Integer>();
-				if (differentIdentificationsShown) {
-					Collection<ProteinGroupOccurrence> proteinOccurrenceList = idSet.getProteinGroupOccurrenceList()
-							.values();
-					for (ProteinGroupOccurrence proteinOccurrence : proteinOccurrenceList) {
-						if (proteinOccurrence.getEvidence() == ProteinEvidence.NONCONCLUSIVE
-								&& !countNonConclusiveProteins)
-							continue;
-						List<ExtendedIdentifiedPeptide> peptides = proteinOccurrence.getPeptides();
+				// if (psmsOrPeptides) {
+				Collection<ProteinGroupOccurrence> proteinOccurrenceList = idSet.getProteinGroupOccurrenceList()
+						.values();
+				for (ProteinGroupOccurrence proteinOccurrence : proteinOccurrenceList) {
+					if (proteinOccurrence.getEvidence() == ProteinEvidence.NONCONCLUSIVE && !countNonConclusiveProteins)
+						continue;
+					List<ExtendedIdentifiedPeptide> peptides = proteinOccurrence.getPeptides();
 
-						int numPeptides = getNumDifferentPeptides(peptides);
-						if (numPeptides > maximum)
-							numPeptides = maximum;
-						if (!distribution.containsKey(numPeptides)) {
-							distribution.put(numPeptides, 1);
-						} else {
-							int newNum = distribution.get(numPeptides) + 1;
-							distribution.remove(numPeptides);
-							distribution.put(numPeptides, newNum);
-						}
-
+					int numPeptides = peptides.size();
+					if (!psmsOrPeptides) {
+						numPeptides = getNumDifferentPeptides(peptides);
 					}
-
-				} else {
-					List<ProteinGroup> proteinList = idSet.getIdentifiedProteinGroups();
-					for (ProteinGroup proteinGroup : proteinList) {
-						if (proteinGroup.getEvidence() == ProteinEvidence.NONCONCLUSIVE && !countNonConclusiveProteins)
-							continue;
-
-						List<ExtendedIdentifiedPeptide> peptides = proteinGroup.getPeptides();
-						int numPeptides = getNumDifferentPeptides(peptides);
-						if (numPeptides > maximum)
-							numPeptides = maximum;
-						if (!distribution.containsKey(numPeptides)) {
-							distribution.put(numPeptides, 1);
-						} else {
-							int newNum = distribution.get(numPeptides) + 1;
-							distribution.remove(numPeptides);
-							distribution.put(numPeptides, newNum);
-						}
+					if (numPeptides > maximum)
+						numPeptides = maximum;
+					if (!distribution.containsKey(numPeptides)) {
+						distribution.put(numPeptides, 1);
+					} else {
+						int newNum = distribution.get(numPeptides) + 1;
+						distribution.remove(numPeptides);
+						distribution.put(numPeptides, newNum);
 					}
 
 				}
+
+				// }
+				// else {
+				// List<ProteinGroup> proteinList =
+				// idSet.getIdentifiedProteinGroups();
+				// for (ProteinGroup proteinGroup : proteinList) {
+				// if (proteinGroup.getEvidence() ==
+				// ProteinEvidence.NONCONCLUSIVE && !countNonConclusiveProteins)
+				// continue;
+				//
+				// List<ExtendedIdentifiedPeptide> peptides =
+				// proteinGroup.getPeptides();
+				// int numPeptides = getNumDifferentPeptides(peptides);
+				// if (numPeptides > maximum)
+				// numPeptides = maximum;
+				// if (!distribution.containsKey(numPeptides)) {
+				// distribution.put(numPeptides, 1);
+				// } else {
+				// int newNum = distribution.get(numPeptides) + 1;
+				// distribution.remove(numPeptides);
+				// distribution.put(numPeptides, newNum);
+				// }
+				// }
+				//
+				// }
 				if (!distribution.isEmpty()) {
 					distributions.put(idSet.getFullName(), distribution);
 				} else {
@@ -1307,8 +1316,7 @@ public class DatasetFactory {
 			final List<ProteinGroup> proteinGroups = occurrenceRankingProt.get(numPresent);
 			if (proteinGroups != null)
 				for (ProteinGroup proteinGroup : proteinGroups) {
-					if (proteinGroup.getKey().contains("P01375"))
-						System.out.println("ASDF");
+
 					int identSetIndex = 0;
 					List<String> accs = proteinGroup.getAccessions();
 					String key = "";
@@ -1611,7 +1619,7 @@ public class DatasetFactory {
 		return dataset;
 	}
 
-	public static HistogramDataset createNumPeptidesPerProteinMass(List<IdentificationSet> idSets, int bins,
+	public static HistogramDataset createNumPeptidesPerProteinMassDistribution(List<IdentificationSet> idSets, int bins,
 			HistogramType histogramType, boolean retrieveFromInternet, Boolean countNonConclusiveProteins) {
 		HistogramDataset dataset = new HistogramDataset();
 
@@ -1624,9 +1632,69 @@ public class DatasetFactory {
 		return dataset;
 	}
 
+	public static CategoryDataset createNumPeptidesPerProteinMassHistogram(List<IdentificationSet> idSets, int bins,
+			HistogramType histogramType, boolean retrieveFromInternet, Boolean countNonConclusiveProteins) {
+		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+		for (IdentificationSet idSet : idSets) {
+			retrieveUniprotProteins(idSet);
+			HistogramDataset histogram = new HistogramDataset();
+
+			List<ProteinGroup> identifiedProteinGroups = idSet.getIdentifiedProteinGroups();
+			if (identifiedProteinGroups != null) {
+				double[] massValues = new double[identifiedProteinGroups.size()];
+				int i = 0;
+				for (ProteinGroup proteinGroup : identifiedProteinGroups) {
+					if (proteinGroup.getEvidence() == ProteinEvidence.NONCONCLUSIVE && !countNonConclusiveProteins)
+						continue;
+					ExtendedIdentifiedProtein protein = proteinGroup.get(0);
+					Double mass = getMassFromProtein(protein);
+					if (mass != null) {
+						massValues[i] = mass;
+					}
+					i++;
+				}
+
+				histogram.addSeries(idSet.getName(), massValues, bins);
+			}
+			for (int numBin = 0; numBin < histogram.getItemCount(1); numBin++) {
+				Number rowKey = histogram.getX(0, numBin);
+				// double value=histogram;
+				// dataset.setValue(value, rowKey, idSet.getName());
+			}
+		}
+		return dataset;
+	}
+
+	private static Double getMassFromProtein(ExtendedIdentifiedProtein protein) {
+		String uniprotAcc = FastaParser.getUniProtACC(protein.getAccession());
+		Double mass = protein.getProteinMass();
+		if (mass == null && uniprotAcc != null) {
+			Map<String, Entry> annotatedProtein = FileManager.getUniprotProteinLocalRetriever()
+					.getAnnotatedProtein(null, uniprotAcc);
+			if (annotatedProtein.containsKey(uniprotAcc)) {
+				mass = UniprotEntryUtil.getMolecularWeightInDalton(annotatedProtein.get(uniprotAcc));
+				protein.setProteinMass(mass);
+			}
+		}
+		// if still is null, try with the protein sequence
+		String proteinSequence = protein.getProteinSequence();
+		if (mass == null && proteinSequence == null && uniprotAcc != null) {
+			proteinSequence = ProteinSequenceRetrieval.getProteinSequence(uniprotAcc, true,
+					FileManager.getUniprotProteinLocalRetriever());
+		}
+		if (mass == null && proteinSequence != null) {
+			Protein prot = new Protein(new AASequenceImpl(proteinSequence));
+			mass = prot.getMass();
+			protein.setProteinMass(mass);
+		}
+		return mass;
+	}
+
 	private static double[] getNumPeptidesPerProteinMass(IdentificationSet idSet, boolean retrieveFromInternet,
 			Boolean countNonConclusiveProteins) {
 		List<Double> values = new ArrayList<Double>();
+		retrieveUniprotProteins(idSet);
 		List<ProteinGroup> identifiedProteinGroups = idSet.getIdentifiedProteinGroups();
 		if (identifiedProteinGroups != null) {
 
@@ -1643,17 +1711,18 @@ public class DatasetFactory {
 
 				if (numPeptideList != null && !numPeptideList.isEmpty()) {
 					Double numPeptidesPerProtein = getMeanFromList(numPeptideList);
-					String proteinSequence = proteinGroup.getProteinSequence(retrieveFromInternet,
-							FileManager.getUniprotProteinLocalRetriever());
-					if (proteinSequence != null) {
-						Protein prot = new Protein(new AASequenceImpl(proteinSequence));
-						double mass = prot.getMass();
 
-						double log10 = Math.log(numPeptidesPerProtein / mass);
+					ExtendedIdentifiedProtein protein = proteinGroup.get(0);
+					String uniprotAcc = FastaParser.getUniProtACC(protein.getAccession());
+					Double mass = getMassFromProtein(protein);
+					if (mass != null) {
+						// double log10 = Math.log(numPeptidesPerProtein /
+						// mass);
+						double log2 = Math.log(numPeptidesPerProtein / mass) / Math.log(2);
+
 						// log.info(numPeptidesPerProtein + " " + mass + " "
 						// + log10);
-						values.add(log10);
-
+						values.add(log2);
 					}
 				}
 
@@ -1866,18 +1935,10 @@ public class DatasetFactory {
 			Boolean countNonConclusiveProteins) {
 
 		double[] ret = null;
+		retrieveUniprotProteins(idSet);
 		final Collection<ProteinGroupOccurrence> proteinOccurrences = idSet.getProteinGroupOccurrenceList().values();
 		if (proteinOccurrences != null && !proteinOccurrences.isEmpty()) {
-			// retrieve the information from uniprot first, all at once
-			Set<String> uniprotACCs = new THashSet<String>();
-			for (ProteinGroupOccurrence proteinGroupOccurrence : proteinOccurrences) {
-				for (String acc : proteinGroupOccurrence.getAccessions()) {
-					if (FastaParser.isUniProtACC(acc)) {
-						uniprotACCs.add(acc);
-					}
-				}
-			}
-			FileManager.getUniprotProteinLocalRetriever().getAnnotatedProteins(null, uniprotACCs);
+
 			ret = new double[idSet.getNumDifferentProteinGroups(countNonConclusiveProteins)];
 			int i = 0;
 			for (ProteinGroupOccurrence proteinGroupOccurrence : proteinOccurrences) {
@@ -1898,6 +1959,28 @@ public class DatasetFactory {
 			}
 		}
 		return ret;
+	}
+
+	/**
+	 * Retrieves from Uniprot the proteins in the {@link IdentificationSet}.
+	 * They will be available for later queries in the cache and index.
+	 * 
+	 * @param idSet
+	 */
+	private static void retrieveUniprotProteins(IdentificationSet idSet) {
+		// retrieve the information from uniprot first, all at once
+		Set<String> uniprotACCs = new THashSet<String>();
+		Collection<ProteinGroupOccurrence> collection = idSet.getProteinGroupOccurrenceList().values();
+		for (ProteinGroupOccurrence proteinGroupOccurrence : collection) {
+			for (String acc : proteinGroupOccurrence.getAccessions()) {
+				String uniprotACC = FastaParser.getUniProtACC(acc);
+				if (uniprotACC != null) {
+					uniprotACCs.add(uniprotACC);
+				}
+			}
+		}
+		FileManager.getUniprotProteinLocalRetriever().getAnnotatedProteins(null, uniprotACCs);
+
 	}
 
 	private static double max(double[] vals) {
