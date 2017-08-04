@@ -167,7 +167,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			} else if (ChartManagerFrame.PEPTIDE_PRESENCY_HEATMAP.equals(chartType)) {
 				ret = showPeptidePresencyHeatMapChart();
 			} else if (ChartManagerFrame.PEPTIDE_NUM_PER_PROTEIN_MASS.equals(chartType)) {
-				ret = showPeptidePerProteinMassChart();
+				ret = showPeptidePerProteinMassDistributionChart();
 			} else if (ChartManagerFrame.PROTEIN_NAME_CLOUD.equals(chartType)) {
 				ret = showWordCramChart();
 			} else if (ChartManagerFrame.PEPTIDE_RT.equals(chartType)) {
@@ -522,13 +522,14 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		return null;
 	}
 
-	private Object showPeptidePerProteinMassChart() {
+	private Object showPeptidePerProteinMassDistributionChart() {
 		parent.setInformation1(parent.getCurrentChartType());
 		int bins = optionsFactory.getHistogramBins();
 		HistogramType histogramType = optionsFactory.getHistogramType();
+		boolean totalSerieShown = optionsFactory.isTotalSerieShown();
 		String xAxisLabel;
 
-		xAxisLabel = "log (nº peptides per protein / MW(protein))";
+		xAxisLabel = "log2 (nº pept per protein / protein MW (Da))";
 		boolean retrieveProteinSeqs = false;
 		if (!parent.isProteinSequencesRetrieved()) {
 			final int selectedOption = JOptionPane.showConfirmDialog(parent,
@@ -539,18 +540,19 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				retrieveProteinSeqs = true;
 			parent.setProteinSequencesRetrieved(retrieveProteinSeqs);
 		}
-		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
+		List<IdentificationSet> idSets = getIdentificationSets(null, null, totalSerieShown);
+
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
-			HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMass(idSets, bins, histogramType,
-					retrieveProteinSeqs, countNonConclusiveProteins);
+			HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
+					histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
 			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMass(idSets, bins, histogramType,
-					retrieveProteinSeqs, countNonConclusiveProteins);
+			HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
+					histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
 
 			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel);
@@ -558,8 +560,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMass(idSets, bins, histogramType,
-					retrieveProteinSeqs, countNonConclusiveProteins);
+			HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
+					histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
 			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel);
 			// chart.setXRangeValues(0, 100);
@@ -569,8 +571,74 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			List<JPanel> chartList = new ArrayList<JPanel>();
 			for (Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, true);
-				HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMass(idSets, bins, histogramType,
-						retrieveProteinSeqs, countNonConclusiveProteins);
+				HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
+						histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
+				HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType), experiment.getName(),
+						dataset, xAxisLabel);
+				// chart.setXRangeValues(0, 100);
+				chartList.add(chart.getChartPanel());
+			}
+			return chartList;
+			// this.jPanelChart.addGraphicPanel(chartList);
+		}
+		return null;
+	}
+
+	private Object showPeptidePerProteinMassHistogramChart() {
+		if (true)
+			throw new UnsupportedOperationException();
+		// TODO is not finished
+		parent.setInformation1(parent.getCurrentChartType());
+		int bins = optionsFactory.getHistogramBins();
+		HistogramType histogramType = optionsFactory.getHistogramType();
+		boolean totalSerieShown = optionsFactory.isTotalSerieShown();
+		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
+		String xAxisLabel = "log2 (nº pept per protein / protein MW (Da))";
+		String yAxisLabel = "Avg number of peptides";
+		boolean retrieveProteinSeqs = false;
+		if (!parent.isProteinSequencesRetrieved()) {
+			final int selectedOption = JOptionPane.showConfirmDialog(parent,
+					"<html>In order to build this chart, the program will retrieve the protein sequence from the Internet,<br>which can take several minutes, depending on the number of proteins.<br>Are you sure you want to continue?</html>",
+					"Warning", JOptionPane.YES_NO_OPTION);
+
+			if (selectedOption == JOptionPane.YES_OPTION)
+				retrieveProteinSeqs = true;
+			parent.setProteinSequencesRetrieved(retrieveProteinSeqs);
+		}
+		List<IdentificationSet> idSets = getIdentificationSets(null, null, totalSerieShown);
+
+		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
+			CategoryDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassHistogram(idSets, bins,
+					histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
+			BarChart chart = new BarChart(parent.getChartTitle(chartType), parent.getChartSubtitle(chartType, option),
+					xAxisLabel, yAxisLabel, dataset, plotOrientation);
+
+			// chart.setXRangeValues(0, 100);
+			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
+			return chart.getChartPanel();
+		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
+			HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
+					histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
+
+			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel);
+			// chart.setXRangeValues(0, 100);
+			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
+			return chart.getChartPanel();
+		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
+			HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
+					histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
+			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel);
+			// chart.setXRangeValues(0, 100);
+			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
+			return chart.getChartPanel();
+		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
+			List<JPanel> chartList = new ArrayList<JPanel>();
+			for (Experiment experiment : experimentList.getExperiments()) {
+				idSets = getIdentificationSets(experiment.getName(), null, true);
+				HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
+						histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
 				HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType), experiment.getName(),
 						dataset, xAxisLabel);
 				// chart.setXRangeValues(0, 100);
@@ -834,7 +902,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 						idSets.add(experiment);
 					}
 				} else {
-					log.info("EXP=" + experiment.getFullName());
+					log.debug("EXP=" + experiment.getFullName());
 					idSets.add(experiment);
 				}
 			}
@@ -2496,23 +2564,27 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		final boolean average = optionsFactory.showAverageOverReplicates();
 		final boolean occurrenceFilterEnabled = parent.isOccurrenceFilterEnabled();
 		final boolean isTotalSerieShown = optionsFactory.isTotalSerieShown();
-		final boolean differentIdentificationsShown = optionsFactory.isDifferentIdentificationsShown();
+		final boolean differentIdentificationsShown = !optionsFactory.isDifferentIdentificationsShown();
 		final boolean totalVersusDifferentSelected = optionsFactory.isTotalVersusDifferentSelected();
+		String title = parent.getChartTitle(chartType);
 		if (totalVersusDifferentSelected) {
-			if (plotItem.equals(IdentificationItemEnum.PEPTIDE))
-				yAxisLabel = "# diff peptides / # total peptides";
-			else
+			if (plotItem.equals(IdentificationItemEnum.PEPTIDE)) {
+				yAxisLabel = "# peptides / # PSMs";
+			} else {
 				yAxisLabel = "# diff proteins / # total proteins";
+			}
 		} else if (differentIdentificationsShown) {
-			if (plotItem.equals(IdentificationItemEnum.PEPTIDE))
+			if (plotItem.equals(IdentificationItemEnum.PEPTIDE)) {
 				yAxisLabel = "# different peptides";
-			else
+			} else {
 				yAxisLabel = "# different proteins";
+			}
 		} else {
-			if (plotItem.equals(IdentificationItemEnum.PEPTIDE))
-				yAxisLabel = "# total peptides";
-			else
+			if (plotItem.equals(IdentificationItemEnum.PEPTIDE)) {
+				yAxisLabel = "# PSMs";
+			} else {
 				yAxisLabel = "# total proteins";
+			}
 		}
 
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
@@ -2525,186 +2597,206 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 			if (pieChart) {
 				PieDataset dataset = null;
-				if (totalVersusDifferentSelected)
+				if (totalVersusDifferentSelected) {
 					dataset = DatasetFactory.createTotalVsDifferentNumberIdentificationPieDataSet(idSets, plotItem,
 							parent.distinguishModifiedPeptides(), average, countNonConclusiveProteins);
-				else
+				} else {
 					dataset = DatasetFactory.createNumberIdentificationPieDataSet(idSets, plotItem,
 							parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 							countNonConclusiveProteins);
+				}
 				PieChart chart = new PieChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), dataset);
 				return chart.getChartPanel();
 			} else if (stackedChart) {
 				CategoryDataset dataset = null;
-				if (totalVersusDifferentSelected)
+				if (totalVersusDifferentSelected) {
 					dataset = DatasetFactory.createTotalVsDifferentNumberIdentificationCategoryDataSet(idSets, plotItem,
 							parent.distinguishModifiedPeptides(), average, countNonConclusiveProteins);
-				else
+				} else {
 					dataset = DatasetFactory.createNumberIdentificationCategoryDataSet(idSets, plotItem,
 							parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 							countNonConclusiveProteins);
-
+				}
 				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
-				if (!totalVersusDifferentSelected)
+				if (!totalVersusDifferentSelected) {
 					chart.setIntegerItemLabels();
+				}
 				return chart.getChartPanel();
 			} else {
 				CategoryDataset dataset = null;
 				if (!average) {
-					if (totalVersusDifferentSelected)
+					if (totalVersusDifferentSelected) {
 						dataset = DatasetFactory.createTotalVsDifferentNumberIdentificationCategoryDataSet(idSets,
 								plotItem, parent.distinguishModifiedPeptides(), average, countNonConclusiveProteins);
-					else
+					} else {
 						dataset = DatasetFactory.createNumberIdentificationCategoryDataSet(idSets, plotItem,
 								parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 								countNonConclusiveProteins);
+					}
 				} else {
-					if (totalVersusDifferentSelected)
+					if (totalVersusDifferentSelected) {
 						dataset = DatasetFactory.createTotalVsDifferentNumberIdentificationStatisticalCategoryDataSet(
 								idSets, plotItem, parent.distinguishModifiedPeptides(), countNonConclusiveProteins);
-					else
+					} else {
 
 						dataset = DatasetFactory.createNumberIdentificationStatisticalCategoryDataSet(idSets, plotItem,
 								parent.distinguishModifiedPeptides(), differentIdentificationsShown,
 								countNonConclusiveProteins);
+					}
 				}
 				BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
-				if (totalVersusDifferentSelected)
+				if (totalVersusDifferentSelected) {
 					chart.setNonIntegerItemLabels();
+				}
 				// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
 
 			// System.out.println("sd");
-			if (average)
-				if (plotItem.equals(plotItem.PEPTIDE))
+			if (average) {
+				if (plotItem.equals(plotItem.PEPTIDE)) {
 					yAxisLabel = "average " + yAxisLabel;
-				else
+				} else {
 					yAxisLabel = "average " + yAxisLabel;
+				}
+			}
 			xAxisLabel = "experiment list";
 			if (pieChart) {
 				PieDataset dataset = null;
-				if (totalVersusDifferentSelected)
+				if (totalVersusDifferentSelected) {
 					dataset = DatasetFactory.createTotalVsDifferentNumberIdentificationPieDataSet(idSets, plotItem,
 							parent.distinguishModifiedPeptides(), average, countNonConclusiveProteins);
-				else
+				} else {
 					dataset = DatasetFactory.createNumberIdentificationPieDataSet(idSets, plotItem,
 							parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 							countNonConclusiveProteins);
+				}
 				PieChart chart = new PieChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), dataset);
 				return chart.getChartPanel();
 			} else if (stackedChart) {
 				CategoryDataset dataset = null;
-				if (totalVersusDifferentSelected)
+				if (totalVersusDifferentSelected) {
 					dataset = DatasetFactory.createTotalVsDifferentNumberIdentificationCategoryDataSet(idSets, plotItem,
 							parent.distinguishModifiedPeptides(), average, countNonConclusiveProteins);
-				else
+				} else {
 					dataset = DatasetFactory.createNumberIdentificationCategoryDataSet(idSets, plotItem,
 							parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 							countNonConclusiveProteins);
+				}
 				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
-				if (!totalVersusDifferentSelected)
+				if (!totalVersusDifferentSelected) {
 					chart.setIntegerItemLabels();
-
+				}
 				return chart.getChartPanel();
 			} else {
 				CategoryDataset dataset = null;
 				// if (isOccurrenceByReplicatesEnabled)
 				if (!average) {
-					if (totalVersusDifferentSelected)
+					if (totalVersusDifferentSelected) {
 						dataset = DatasetFactory.createTotalVsDifferentNumberIdentificationCategoryDataSet(idSets,
 								plotItem, parent.distinguishModifiedPeptides(), average, countNonConclusiveProteins);
-					else
+					} else {
 						dataset = DatasetFactory.createNumberIdentificationCategoryDataSet(idSets, plotItem,
 								parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 								countNonConclusiveProteins);
+					}
 				} else {
-					if (totalVersusDifferentSelected)
+					if (totalVersusDifferentSelected) {
 						dataset = DatasetFactory.createTotalVsDifferentNumberIdentificationCategoryDataSet(idSets,
 								plotItem, parent.distinguishModifiedPeptides(), average, countNonConclusiveProteins);
-					else
+					} else {
 						dataset = DatasetFactory.createNumberIdentificationStatisticalCategoryDataSet(idSets, plotItem,
 								parent.distinguishModifiedPeptides(), differentIdentificationsShown,
 								countNonConclusiveProteins);
+					}
 				}
 				BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
-				if (totalVersusDifferentSelected)
+				if (totalVersusDifferentSelected) {
 					chart.setNonIntegerItemLabels();
+				}
 				// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
 
-			if (!pieChart && !stackedChart && idSets.size() > 1 && !occurrenceFilterEnabled && isTotalSerieShown)
+			if (!pieChart && !stackedChart && idSets.size() > 1 && !occurrenceFilterEnabled && isTotalSerieShown) {
 				idSets.add(experimentList);
+			}
 			// System.out.println("sd");
-			if (average)
-				if (plotItem.equals(plotItem.PEPTIDE))
+			if (average) {
+				if (plotItem.equals(plotItem.PEPTIDE)) {
 					yAxisLabel = "average " + yAxisLabel;
-				else
+				} else {
 					yAxisLabel = "average " + yAxisLabel;
+				}
+			}
 			xAxisLabel = "experiment";
 			if (pieChart) {
 				PieDataset dataset = null;
-				if (totalVersusDifferentSelected)
+				if (totalVersusDifferentSelected) {
 					dataset = DatasetFactory.createTotalVsDifferentNumberIdentificationPieDataSet(idSets, plotItem,
 							parent.distinguishModifiedPeptides(), average, countNonConclusiveProteins);
-				else
+				} else {
 					dataset = DatasetFactory.createNumberIdentificationPieDataSet(idSets, plotItem,
 							parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 							countNonConclusiveProteins);
+				}
 				PieChart chart = new PieChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), dataset);
 				return chart.getChartPanel();
 			} else if (stackedChart) {
 				CategoryDataset dataset = null;
-				if (totalVersusDifferentSelected)
+				if (totalVersusDifferentSelected) {
 					dataset = DatasetFactory.createTotalVsDifferentNumberIdentificationCategoryDataSet(idSets, plotItem,
 							parent.distinguishModifiedPeptides(), average, countNonConclusiveProteins);
-				else
+				} else {
 					dataset = DatasetFactory.createNumberIdentificationCategoryDataSet(idSets, plotItem,
 							parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 							countNonConclusiveProteins);
+				}
 				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
-				if (!totalVersusDifferentSelected)
+				if (!totalVersusDifferentSelected) {
 					chart.setIntegerItemLabels();
-
+				}
 				return chart.getChartPanel();
 			} else {
 				CategoryDataset dataset = null;
 				// if (isOccurrenceByReplicatesEnabled)
 				if (!average) {
-					if (totalVersusDifferentSelected)
+					if (totalVersusDifferentSelected) {
 						dataset = DatasetFactory.createTotalVsDifferentNumberIdentificationCategoryDataSet(idSets,
 								plotItem, parent.distinguishModifiedPeptides(), average, countNonConclusiveProteins);
-					else
+					} else {
 						dataset = DatasetFactory.createNumberIdentificationCategoryDataSet(idSets, plotItem,
 								parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 								countNonConclusiveProteins);
+					}
 				} else {
-					if (totalVersusDifferentSelected)
+					if (totalVersusDifferentSelected) {
 						dataset = DatasetFactory.createTotalVsDifferentNumberIdentificationCategoryDataSet(idSets,
 								plotItem, parent.distinguishModifiedPeptides(), average, countNonConclusiveProteins);
-					else
+					} else {
 						dataset = DatasetFactory.createNumberIdentificationStatisticalCategoryDataSet(idSets, plotItem,
 								parent.distinguishModifiedPeptides(), differentIdentificationsShown,
 								countNonConclusiveProteins);
+					}
 				}
 				BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
-				if (totalVersusDifferentSelected)
+				if (totalVersusDifferentSelected) {
 					chart.setNonIntegerItemLabels();
+				}
 				// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 				return chart.getChartPanel();
 			}
@@ -2712,64 +2804,71 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			List<JPanel> chartList = new ArrayList<JPanel>();
 			for (Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, false);
-				if (!pieChart && !stackedChart && idSets.size() > 1 && !occurrenceFilterEnabled && isTotalSerieShown)
+				if (!pieChart && !stackedChart && idSets.size() > 1 && !occurrenceFilterEnabled && isTotalSerieShown) {
 					idSets.add(experiment);
+				}
+
 				xAxisLabel = experiment.getName();
 				if (pieChart) {
 					PieDataset dataset = null;
-					if (totalVersusDifferentSelected)
+					if (totalVersusDifferentSelected) {
 						dataset = DatasetFactory.createTotalVsDifferentNumberIdentificationPieDataSet(idSets, plotItem,
 								parent.distinguishModifiedPeptides(), average, countNonConclusiveProteins);
-					else
+					} else {
 						dataset = DatasetFactory.createNumberIdentificationPieDataSet(idSets, plotItem,
 								parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 								countNonConclusiveProteins);
+					}
 					PieChart chart = new PieChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), dataset);
 
 					chartList.add(chart.getChartPanel());
 				} else if (stackedChart) {
 					CategoryDataset dataset = null;
-					if (totalVersusDifferentSelected)
+					if (totalVersusDifferentSelected) {
 						dataset = DatasetFactory.createTotalVsDifferentNumberIdentificationCategoryDataSet(idSets,
 								plotItem, parent.distinguishModifiedPeptides(), average, countNonConclusiveProteins);
-					else
+					} else {
 						dataset = DatasetFactory.createNumberIdentificationCategoryDataSet(idSets, plotItem,
 								parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 								countNonConclusiveProteins);
+					}
 					StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
 							plotOrientation, asPercentage);
-					if (!totalVersusDifferentSelected)
+					if (!totalVersusDifferentSelected) {
 						chart.setIntegerItemLabels();
-
+					}
 					chartList.add(chart.getChartPanel());
 				} else {
 					CategoryDataset dataset = null;
 					if (!average) {
-						if (totalVersusDifferentSelected)
+						if (totalVersusDifferentSelected) {
 							dataset = DatasetFactory.createTotalVsDifferentNumberIdentificationCategoryDataSet(idSets,
 									plotItem, parent.distinguishModifiedPeptides(), average,
 									countNonConclusiveProteins);
-						else
+						} else {
 							dataset = DatasetFactory.createNumberIdentificationCategoryDataSet(idSets, plotItem,
 									parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 									countNonConclusiveProteins);
+						}
 					} else {
-						if (totalVersusDifferentSelected)
+						if (totalVersusDifferentSelected) {
 							dataset = DatasetFactory.createTotalVsDifferentNumberIdentificationCategoryDataSet(idSets,
 									plotItem, parent.distinguishModifiedPeptides(), average,
 									countNonConclusiveProteins);
-						else
+						} else {
 							dataset = DatasetFactory.createNumberIdentificationStatisticalCategoryDataSet(idSets,
 									plotItem, parent.distinguishModifiedPeptides(), differentIdentificationsShown,
 									countNonConclusiveProteins);
+						}
 					}
 					BarChart chart = new BarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
 							plotOrientation);
-					if (totalVersusDifferentSelected)
+					if (totalVersusDifferentSelected) {
 						chart.setNonIntegerItemLabels();
+					}
 					chartList.add(chart.getChartPanel());
 				}
 			}
@@ -2777,6 +2876,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			// this.jPanelChart.addGraphicPanel(chartList);
 			return chartList;
 		}
+
 		return null;
 	}
 
@@ -2961,14 +3061,14 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		final boolean stackedChart = optionsFactory.showAsStackedChart();
 		final boolean asPercentage = optionsFactory.getAsPercentage();
 		final boolean isTotalSerieShown = optionsFactory.isTotalSerieShown();
-		final boolean differentIdentificationsShown = optionsFactory.isDifferentIdentificationsShown();
+		final boolean showPSMsorPeptides = optionsFactory.isDifferentIdentificationsShown();
 		final boolean occurrenceFilterEnabled = parent.isOccurrenceFilterEnabled();
 		final int maximum = optionsFactory.getMaximumOccurrence();
 
-		if (differentIdentificationsShown)
-			yAxisLabel = "# different proteins";
-		else
-			yAxisLabel = "# proteins";
+		// if (showPSMsorPeptides)
+		yAxisLabel = "# different proteins";
+		// else
+		// yAxisLabel = "# proteins";
 
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
@@ -2981,7 +3081,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			if (stackedChart) {
 				CategoryDataset dataset = null;
 				dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
-						differentIdentificationsShown, countNonConclusiveProteins);
+						showPSMsorPeptides, countNonConclusiveProteins);
 				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
@@ -2991,7 +3091,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				CategoryDataset dataset = null;
 
 				dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
-						differentIdentificationsShown, countNonConclusiveProteins);
+						showPSMsorPeptides, countNonConclusiveProteins);
 				BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				return chart.getChartPanel();
@@ -3007,7 +3107,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				CategoryDataset dataset = null;
 
 				dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
-						differentIdentificationsShown, countNonConclusiveProteins);
+						showPSMsorPeptides, countNonConclusiveProteins);
 				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
@@ -3018,7 +3118,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				// if (isOccurrenceByReplicatesEnabled)
 
 				dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
-						differentIdentificationsShown, countNonConclusiveProteins);
+						showPSMsorPeptides, countNonConclusiveProteins);
 				BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 
@@ -3035,7 +3135,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				CategoryDataset dataset = null;
 
 				dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
-						differentIdentificationsShown, countNonConclusiveProteins);
+						showPSMsorPeptides, countNonConclusiveProteins);
 				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
@@ -3046,7 +3146,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				// if (isOccurrenceByReplicatesEnabled)
 
 				dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
-						differentIdentificationsShown, countNonConclusiveProteins);
+						showPSMsorPeptides, countNonConclusiveProteins);
 				BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 
@@ -3062,7 +3162,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				if (stackedChart) {
 					CategoryDataset dataset = null;
 					dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
-							differentIdentificationsShown, countNonConclusiveProteins);
+							showPSMsorPeptides, countNonConclusiveProteins);
 					StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
 							plotOrientation, asPercentage);
@@ -3074,7 +3174,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 					CategoryDataset dataset = null;
 
 					dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
-							differentIdentificationsShown, countNonConclusiveProteins);
+							showPSMsorPeptides, countNonConclusiveProteins);
 
 					BarChart chart = new BarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
