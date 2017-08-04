@@ -6,6 +6,8 @@ import javax.swing.SwingWorker;
 
 import org.apache.log4j.Logger;
 import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
+import org.proteored.miapeapi.exceptions.MiapeDataInconsistencyException;
+import org.proteored.miapeapi.exceptions.WrongXMLFormatException;
 import org.proteored.miapeapi.experiment.model.ExperimentList;
 import org.proteored.miapeapi.experiment.model.datamanager.DataManager;
 import org.proteored.miapeapi.experiment.model.filters.Filter;
@@ -55,7 +57,16 @@ public class DataLoaderTask extends SwingWorker<ExperimentList, Void> {
 			firePropertyChange(DATA_LOADED_DONE, null, expList);
 
 			return expList;
+		} catch (MiapeDataInconsistencyException e) {
+			firePropertyChange(DATA_LOADED_ERROR, null, e.getMessage());
+			return null;
+		} catch (WrongXMLFormatException e) {
+			firePropertyChange(DATA_LOADED_ERROR, null, e.getMessage());
+			return null;
 		} catch (IllegalMiapeArgumentException e) {
+			firePropertyChange(DATA_LOADED_ERROR, null, e.getMessage());
+			return null;
+		} catch (Exception e) {
 			firePropertyChange(DATA_LOADED_ERROR, null, e.getMessage());
 			return null;
 		}
@@ -63,7 +74,8 @@ public class DataLoaderTask extends SwingWorker<ExperimentList, Void> {
 
 	@Override
 	protected void done() {
-		if (isCancelled())
+		if (isCancelled()) {
 			log.info("Data loading cancelled");
+		}
 	}
 }
