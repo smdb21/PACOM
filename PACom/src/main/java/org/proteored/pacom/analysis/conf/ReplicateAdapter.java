@@ -2,7 +2,6 @@ package org.proteored.pacom.analysis.conf;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,6 +9,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.proteored.miapeapi.cv.ControlVocabularyManager;
 import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
+import org.proteored.miapeapi.exceptions.MiapeDataInconsistencyException;
 import org.proteored.miapeapi.exceptions.MiapeDatabaseException;
 import org.proteored.miapeapi.exceptions.MiapeSecurityException;
 import org.proteored.miapeapi.experiment.model.Replicate;
@@ -83,7 +83,9 @@ public class ReplicateAdapter implements Adapter<Replicate> {
 				if (miapeMSI != null) {
 					miapeMSIs.add(miapeMSI);
 				} else {
-					log.warn("Error reading MIAPE MSI file: " + cpMsi.getName() + " with ID " + cpMsi.getId());
+					String message = "Error reading MIAPE MSI file: " + cpMsi.getName() + " with ID " + cpMsi.getId();
+					log.warn(message);
+					throw new MiapeDataInconsistencyException(message);
 				}
 			}
 		}
@@ -127,7 +129,8 @@ public class ReplicateAdapter implements Adapter<Replicate> {
 			log.warn(e.getMessage());
 			e.printStackTrace();
 		}
-		return null;
+		throw new MiapeDataInconsistencyException("Error reading dataset from file");
+
 	}
 
 	private MiapeMSIDocument getMIAPEMSIFromFile(CPMSI cpMsi) {
@@ -155,11 +158,8 @@ public class ReplicateAdapter implements Adapter<Replicate> {
 		} catch (MiapeSecurityException e) {
 			log.warn(e.getMessage());
 			e.printStackTrace();
-		} catch (Exception e) {
-			log.warn(e.getMessage());
-			e.printStackTrace();
 		}
-		return null;
+		throw new MiapeDataInconsistencyException("Error reading dataset from file");
 	}
 
 	private void addProteinDescriptionFromUniprot(MiapeMSIDocument ret) {

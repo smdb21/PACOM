@@ -8,6 +8,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
+import org.proteored.miapeapi.exceptions.MiapeDataInconsistencyException;
 import org.proteored.miapeapi.experiment.model.Experiment;
 import org.proteored.miapeapi.experiment.model.ExperimentList;
 import org.proteored.miapeapi.experiment.model.filters.Filter;
@@ -61,7 +62,7 @@ public class ExperimentListAdapter implements Adapter<ExperimentList> {
 		} catch (JAXBException e) {
 			log.warn(e.getMessage());
 			// e.printStackTrace();
-			throw new IllegalArgumentException(
+			throw new MiapeDataInconsistencyException(
 					"Error loading " + confFile.getAbsolutePath() + " config file: " + e.getMessage());
 		}
 
@@ -88,6 +89,6 @@ public class ExperimentListAdapter implements Adapter<ExperimentList> {
 					processInParallel);
 			return elist;
 		}
-		return null;
+		throw new MiapeDataInconsistencyException("Experiment list is empty");
 	}
 }
