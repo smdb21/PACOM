@@ -47,7 +47,7 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 	}
 
 	@Override
-	protected String doInBackground() throws Exception {
+	protected String doInBackground() {
 		if (expList != null) {
 			try {
 				parent.appendStatus("Checking integrity of Inspection Project: '" + expList.getName() + "'");
