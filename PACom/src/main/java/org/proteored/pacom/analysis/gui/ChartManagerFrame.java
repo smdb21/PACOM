@@ -13,6 +13,8 @@ import java.awt.Insets;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -490,12 +492,13 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		for (final String chartType : chartTypes) {
 
 			JRadioButtonMenuItem menuItem = new JRadioButtonMenuItem(chartType);
-			menuItem.addActionListener(new java.awt.event.ActionListener() {
+			menuItem.addItemListener(new ItemListener() {
+
 				@Override
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
+				public void itemStateChanged(ItemEvent e) {
 					currentChartType = chartType;
 					addCustomizationControls();
-					startShowingChart(null);
+					startShowingChart(menuItem);
 				}
 			});
 
@@ -561,6 +564,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		proteinFeaturesMenus.add(MENU_SEPARATION); // MENU SEPARATION
 		proteinFeaturesMenus.add(EXCLUSIVE_PROTEIN_NUMBER);
 		proteinFeaturesMenus.add(PROTEIN_REPEATABILITY);
+		proteinFeaturesMenus.add(PEPTIDE_NUM_PER_PROTEIN_MASS);
 		addSubmenus(menuProteinFeatures, proteinFeaturesMenus, radioButtonMenuMap, jMenuChartType);
 
 		// protein coverage as submenu of protein features
@@ -1386,7 +1390,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				filterDialog.setVisible(true);
 			}
 		}
-		startShowingChart(null);
+		startShowingChart(jCheckBoxMenuItemPeptideForMRMFilter);
 	}
 
 	private void jCheckBoxMenuItemPeptideSequenceFilterActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1397,7 +1401,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				filterDialog.setVisible(true);
 			}
 		}
-		startShowingChart(null);
+		startShowingChart(jCheckBoxMenuItemPeptideSequenceFilter);
 	}
 
 	private void jButtonShowTableMouseClicked(java.awt.event.MouseEvent evt) {
@@ -1466,7 +1470,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				filterDialog.setVisible(true);
 			}
 		}
-		startShowingChart(null);
+		startShowingChart(jCheckBoxMenuItemPeptideLenthFilter);
 	}
 
 	private void jCheckBoxMenuItemPeptideNumberFilterActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1477,7 +1481,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				filterDialog.setVisible(true);
 			}
 		}
-		startShowingChart(null);
+		startShowingChart(jCheckBoxMenuItemPeptideNumberFilter);
 	}
 
 	private void jCheckBoxMenuItemProteinACCFilterActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1488,7 +1492,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				filterDialog.setVisible(true);
 			}
 		}
-		startShowingChart(null);
+		startShowingChart(jCheckBoxMenuItemProteinACCFilter);
 	}
 
 	private void jCheckBoxMenuItemModificationFilterActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1499,7 +1503,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				filterDialog.setVisible(true);
 			}
 		}
-		startShowingChart(null);
+		startShowingChart(jCheckBoxMenuItemModificationFilter);
 	}
 
 	private void exportToTSV() {
@@ -1535,7 +1539,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				filterDialog.setVisible(true);
 			}
 		}
-		startShowingChart(null);
+		startShowingChart(jCheckBoxMenuItemOcurrenceFilter);
 	}
 
 	private void jCheckBoxMenuItemScoreFiltersActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1558,7 +1562,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				}
 			}
 		}
-		startShowingChart(null);
+		startShowingChart(jCheckBoxMenuItemScoreFilters);
 	}
 
 	private void jCheckBoxMenuItemFDRFilterActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1591,7 +1595,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				}
 			}
 		}
-		startShowingChart(null);
+		startShowingChart(jCheckBoxMenuItemFDRFilter);
 
 	}
 
@@ -1630,7 +1634,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		} else if (PROTEIN_SCORE_COMPARISON.equals(chartType) || PEPTIDE_SCORE_COMPARISON.equals(chartType)) {
 			addScoreComparisonControls(options);
 		} else if (PEPTIDE_NUMBER_HISTOGRAM.equals(chartType) || PROTEIN_NUMBER_HISTOGRAM.equals(chartType)) {
-			addHistogramBarControls();
+			addHistogramBarControls(PEPTIDE_NUMBER_HISTOGRAM.equals(chartType));
 		} else if (PROTEIN_COVERAGE.equals(chartType)) {
 			addProteinCoverageHistogramBarControls();
 		} else if (PEPTIDE_CHARGE_HISTOGRAM.equals(chartType)) {
@@ -2375,7 +2379,10 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			panel.add(jCheckBox6, c);
 		}
 		// /////////////// ROW7
-		JCheckBox jCheckBox7 = optionsFactory.getShowDifferentIdentificationsCheckBox();
+		JCheckBox jCheckBox7 = optionsFactory.getShowDifferentIdentificationsCheckBox("PSMs or peptides");
+		jCheckBox7.setToolTipText(
+				"<html>If this option is activated, the chart will show the number of proteins having x <b>number of PSMs</b>.<br>"
+						+ "If this option is not activated, the chart will show the number of proteins having x <b>number of peptides</b>.</html>");
 		c.gridx = 0;
 		c.gridy = 6;
 		panel.add(jCheckBox7, c);
@@ -2424,7 +2431,10 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			panel.add(jCheckBox6, c);
 		}
 		// /////////////// ROW7
-		JCheckBox jCheckBox7 = optionsFactory.getShowDifferentIdentificationsCheckBox();
+		JCheckBox jCheckBox7 = optionsFactory.getShowDifferentIdentificationsCheckBox("single hit peptide or PSM");
+		jCheckBox7.setToolTipText(
+				"<html>If this option is activated, the chart will show the number of proteins having just one PSM.<br>"
+						+ "If the option is desactivated, the chart will show the number of proteins having just one peptide.</htm>");
 		c.gridx = 0;
 		c.gridy = 6;
 		panel.add(jCheckBox7, c);
@@ -3719,7 +3729,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		jPanelAddOptions.add(panel, BorderLayout.NORTH);
 	}
 
-	private void addHistogramBarControls() {
+	private void addHistogramBarControls(boolean showPeptideHistogram) {
 		jPanelAddOptions.removeAll();
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -3765,14 +3775,19 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			panel.add(jCheckBox6, c);
 		}
 		// /////////////// ROW7
-		JCheckBox jCheckBox7 = optionsFactory.getShowDifferentIdentificationsCheckBox();
-		c.gridx = 0;
-		c.gridy = 6;
-		panel.add(jCheckBox7, c);
+		if (showPeptideHistogram) {
+			JCheckBox jCheckBox7 = optionsFactory.getShowDifferentIdentificationsCheckBox("PSMs or peptides");
+			jCheckBox7.setToolTipText(
+					"<html>If this option is activated, the histogram will show the <b>number of PSMs</b>.<br>"
+							+ "If this option is desactivated, the histogram will show the <b>number of peptides</b>.</html>");
+			c.gridx = 0;
+			c.gridy = 6;
+			panel.add(jCheckBox7, c);
+		}
 		// /////////////// ROW7
 		JCheckBox jCheckBox8 = optionsFactory.getShowTotalVersusDifferentCheckBox();
 		c.gridx = 0;
-		c.gridy = 7;
+		c.gridy++;
 		panel.add(jCheckBox8, c);
 
 		jPanelAddOptions.setLayout(new BorderLayout());
@@ -3904,20 +3919,29 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 	public void startShowingChart(Object causantComponent) {
 		if (causantComponent != null) {
-			Object currentValue = getcurrentvalueFromComponent(causantComponent);
-			if (currentValue != null) {
-				if (previousTogleValues.containsKey(causantComponent)) {
-					Object previousValuesOfSelection = previousTogleValues.get(causantComponent);
+			try {
+				Object currentValue = getcurrentvalueFromComponent(causantComponent);
+				if (currentValue != null) {
+					if (previousTogleValues.containsKey(causantComponent)) {
+						Object previousValuesOfSelection = previousTogleValues.get(causantComponent);
 
-					if (currentValue.equals(previousValuesOfSelection)) {
-						log.info("Component didnt really changed");
-						return;
+						if (currentValue.equals(previousValuesOfSelection)) {
+							log.debug("Component didnt really changed: " + currentValue + ", causant: "
+									+ causantComponent);
+							return;
+						}
 					}
+					previousTogleValues.put(causantComponent, currentValue);
 				}
-				previousTogleValues.put(causantComponent, currentValue);
+			} catch (IllegalArgumentException e) {
+				// this is because the causant is a menu and it is not selected,
+				// so we dont want it to trigger the chart generator
+				log.debug("component is a menu but it is not selected. Skipping execution of chart creator");
+				previousTogleValues.put(causantComponent, false);
+				return;
 			}
 		}
-		if (!dataLoader.isDone()) {
+		if (dataLoader == null || !dataLoader.isDone()) {
 			appendStatus("Datasets have already being loading. Please wait...");
 			return;
 		}
@@ -3936,6 +3960,10 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			return checkBox.isSelected();
 		} else if (causantComponent instanceof JRadioButtonMenuItem) {
 			JRadioButtonMenuItem ratioItem = (JRadioButtonMenuItem) causantComponent;
+			if (!ratioItem.isSelected()) {
+				throw new IllegalArgumentException(
+						"If the menu is not selected, we shouldnt run the chart creator task");
+			}
 			return ratioItem.isSelected();
 		} else if (causantComponent instanceof JComboBox) {
 			JComboBox combo = (JComboBox) causantComponent;
