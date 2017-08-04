@@ -277,9 +277,10 @@ public class AdditionalOptionsPanelFactory {
 		else
 			jComboBoxMaximumOccurrence.setSelectedItem(selectedNumber);
 
-		jComboBoxMaximumOccurrence.addActionListener(new java.awt.event.ActionListener() {
+		jComboBoxMaximumOccurrence.addItemListener(new ItemListener() {
+
 			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+			public void itemStateChanged(ItemEvent evt) {
 				frame.startShowingChart(evt.getSource());
 			}
 		});
@@ -1864,16 +1865,17 @@ public class AdditionalOptionsPanelFactory {
 
 		if (jCheckBoxShowTotalSerie == null) {
 			jCheckBoxShowTotalSerie = new JCheckBox("Show total series");
+			jCheckBoxShowTotalSerie.setToolTipText("Show the next upper integration level series");
 			// controlList.add(jCheckBoxShowAsPieChart);not add becaouse
 			// sometimes has to be disabled
-		}
 
-		jCheckBoxShowTotalSerie.addItemListener(new java.awt.event.ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent evt) {
-				frame.startShowingChart(evt.getSource());
-			}
-		});
+			jCheckBoxShowTotalSerie.addItemListener(new java.awt.event.ItemListener() {
+				@Override
+				public void itemStateChanged(ItemEvent evt) {
+					frame.startShowingChart(evt.getSource());
+				}
+			});
+		}
 
 		return jCheckBoxShowTotalSerie;
 	}
@@ -1885,13 +1887,14 @@ public class AdditionalOptionsPanelFactory {
 		return false;
 	}
 
-	public JCheckBox getShowDifferentIdentificationsCheckBox() {
+	public JCheckBox getShowDifferentIdentificationsCheckBox(String text) {
 
 		if (jCheckBoxShowDifferentIdentifications == null) {
-			jCheckBoxShowDifferentIdentifications = new JCheckBox("Show different identifications number");
+			jCheckBoxShowDifferentIdentifications = new JCheckBox(text);
 			// controlList.add(jCheckBoxShowAsPieChart);not add becaouse
 			// sometimes has to be disabled
 		}
+		jCheckBoxShowDifferentIdentifications.setText(text);
 		jCheckBoxShowDifferentIdentifications.setSelected(true);
 		jCheckBoxShowDifferentIdentifications.addItemListener(new java.awt.event.ItemListener() {
 			@Override
@@ -1915,7 +1918,7 @@ public class AdditionalOptionsPanelFactory {
 	public JCheckBox getShowTotalVersusDifferentCheckBox() {
 
 		if (jCheckBoxTotalVersusDifferent == null) {
-			jCheckBoxTotalVersusDifferent = new JCheckBox("Show different/total identification ratios");
+			jCheckBoxTotalVersusDifferent = new JCheckBox("Show different/total ratio");
 			// controlList.add(jCheckBoxShowAsPieChart);not add becaouse
 			// sometimes has to be disabled
 		}
@@ -1927,11 +1930,18 @@ public class AdditionalOptionsPanelFactory {
 				AdditionalOptionsPanelFactory.this
 						.enableShowAsStackedChart(!jCheckBoxTotalVersusDifferent.isSelected());
 				AdditionalOptionsPanelFactory.this.enableShowAsPieChart(!jCheckBoxTotalVersusDifferent.isSelected());
+				AdditionalOptionsPanelFactory.this
+						.enableShowAsAverageOfNextLevels(!jCheckBoxTotalVersusDifferent.isSelected());
 				frame.startShowingChart(evt.getSource());
 			}
 		});
 
 		return jCheckBoxTotalVersusDifferent;
+	}
+
+	protected void enableShowAsAverageOfNextLevels(boolean b) {
+		this.jCheckBoxShowAverage.setEnabled(b);
+
 	}
 
 	protected void enableShowTotalVersusDifferent(boolean b) {
