@@ -1053,7 +1053,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 
 			} else if (jTreeLocalMIAPEMSIs.isOnlyOneNodeSelected(MIAPE_PROJECT_LEVEL)) {
 				// if the user clicks on a MIAPE PROJECT
-				log.info("Miape local project selected");
+				log.info("Local dataset project selected");
 				final int numMIAPEsInMIAPEProject = jTreeLocalMIAPEMSIs.getSelectedNode().getChildCount();
 				if (numMIAPEsInMIAPEProject > 0) {
 
@@ -1160,7 +1160,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 			// MiapeMSIDocument miapeDocument =
 			// miapemsiXmlFile.toDocument();
 			miapeMSIHeader = new MiapeHeader(msiFile, false);
-			log.info("referenced MIAPE MS: " + miapeMSIHeader.getMiapeRef());
+			log.debug("referenced MIAPE MS: " + miapeMSIHeader.getMiapeRef());
 			if (miapeMSIHeader.getMiapeRef() != -1)
 				return miapeMSIHeader.getMiapeRef();
 			// }
