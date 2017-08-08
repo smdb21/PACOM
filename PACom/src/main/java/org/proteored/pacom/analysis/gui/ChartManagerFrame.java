@@ -25,6 +25,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -74,6 +75,7 @@ import org.proteored.miapeapi.experiment.model.filters.FDRFilter;
 import org.proteored.miapeapi.experiment.model.filters.Filter;
 import org.proteored.miapeapi.experiment.model.filters.Filters;
 import org.proteored.miapeapi.experiment.model.filters.PeptideSequenceFilter;
+import org.proteored.miapeapi.experiment.model.filters.ProteinACCFilter;
 import org.proteored.miapeapi.experiment.model.filters.ProteinACCFilterByProteinComparatorKey;
 import org.proteored.miapeapi.experiment.model.filters.ScoreFilter;
 import org.proteored.miapeapi.experiment.model.sort.ProteinComparatorKey;
@@ -376,7 +378,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		if (cfgFile != null && !cfgFile.getAbsolutePath().equals(this.cfgFile.getAbsolutePath()))
 			return true;
 		try {
-			String md5Checksum = MD5Checksum.getMD5Checksum(cfgFile.getAbsolutePath());
+			String md5Checksum = MD5Checksum.getMD5ChecksumFromFileName(cfgFile.getAbsolutePath());
 			if (previousMd5Checksum == null || (cfgFile != null && !md5Checksum.equals(previousMd5Checksum))) {
 				previousMd5Checksum = md5Checksum;
 				return true;
@@ -2995,7 +2997,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				}
 			});
 			jPanelAddOptions.add(jbuttonSave);
-			jPanelAddOptions.add(optionsFactory.getJLabelIntersectionsText());
+			JLabel jLabelIntersectionsText = optionsFactory.getJLabelIntersectionsText();
+			jLabelIntersectionsText.setText(null);
+			jPanelAddOptions.add(jLabelIntersectionsText);
 
 			// add the buttons per chart (in chart per experiment there is one
 			// graph per experiment
@@ -3258,7 +3262,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		Filters filter = null;
 		if (currentChartType.equals(PROTEIN_OVERLAPING)) {
 
-			Set<ProteinComparatorKey> keys = new THashSet<ProteinComparatorKey>();
+			Set<Object> keys = new THashSet<Object>();
 			for (Object object : collection) {
 				if (object instanceof ProteinGroupOccurrence) {
 					ProteinGroupOccurrence pgo = (ProteinGroupOccurrence) object;
@@ -3267,7 +3271,20 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 					log.info(object.getClass().getName());
 				}
 			}
-			filter = new ProteinACCFilterByProteinComparatorKey(keys);
+			if (additionalOptionsPanelFactory
+					.getProteinGroupComparisonType() == ProteinGroupComparisonType.SHARE_ONE_PROTEIN) {
+				Set<ProteinComparatorKey> set = new HashSet<ProteinComparatorKey>();
+				for (Object obj : keys) {
+					set.add((ProteinComparatorKey) obj);
+				}
+				filter = new ProteinACCFilterByProteinComparatorKey(set);
+			} else {
+				Set<String> set = new HashSet<String>();
+				for (Object obj : keys) {
+					set.add(obj.toString());
+				}
+				filter = new ProteinACCFilter(set);
+			}
 		} else if (currentChartType.equals(PEPTIDE_OVERLAPING)) {
 			Set<String> sequences = new THashSet<String>();
 			for (Object object : collection) {
@@ -3370,7 +3387,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				}
 			});
 			jPanelAddOptions.add(jbuttonSave);
-			jPanelAddOptions.add(optionsFactory.getJLabelIntersectionsText());
+			JLabel jLabelIntersectionsText = optionsFactory.getJLabelIntersectionsText();
+			jLabelIntersectionsText.setText(null);
+			jPanelAddOptions.add(jLabelIntersectionsText);
 
 			JLabel labelExperiment = new JLabel("Export buttons:");
 			jPanelAddOptions.add(labelExperiment);
@@ -3463,7 +3482,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			});
 			String overlapString = "A,B";
 			jPanelAddOptions.add(jbuttonSave);
-			jPanelAddOptions.add(optionsFactory.getJLabelIntersectionsText());
+			JLabel jLabelIntersectionsText = optionsFactory.getJLabelIntersectionsText();
+			optionsFactory.setIntersectionText(null);
+			jPanelAddOptions.add(jLabelIntersectionsText);
 			JLabel labelExperiment = new JLabel("Export buttons:");
 			jPanelAddOptions.add(labelExperiment);
 			// export just in 1 button
@@ -3952,7 +3973,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			}
 		}
 		if (dataLoader == null || !dataLoader.isDone()) {
-			appendStatus("Datasets are being loaded. Please wait...");
+			// appendStatus("Datasets are being loaded. Please wait...");
 			return;
 		}
 

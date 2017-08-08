@@ -35,7 +35,6 @@ import org.proteored.miapeapi.experiment.model.ProteinGroupOccurrence;
 import org.proteored.miapeapi.experiment.model.datamanager.DataManager;
 import org.proteored.miapeapi.experiment.model.filters.FDRFilter;
 import org.proteored.miapeapi.experiment.model.grouping.ProteinEvidence;
-import org.proteored.miapeapi.experiment.model.sort.ProteinComparatorKey;
 import org.proteored.miapeapi.experiment.model.sort.ProteinGroupComparisonType;
 import org.proteored.miapeapi.experiment.model.sort.SorterUtil;
 import org.proteored.miapeapi.interfaces.ms.Spectrometer;
@@ -3687,8 +3686,7 @@ public class DatasetFactory {
 		DefaultCategoryDataset accumulativeDataSet = new DefaultCategoryDataset();
 
 		try {
-			Map<String, Set<ProteinComparatorKey>> MapKeys = getHashMapKeysForProteins(idSets,
-					proteinGroupComparisonType);
+			Map<String, Set<Object>> mapKeys = getHashMapKeysForProteins(idSets, proteinGroupComparisonType);
 
 			VennData globalVenn = null;
 			Collection<Object> union = null;
@@ -3696,22 +3694,14 @@ public class DatasetFactory {
 			for (int i = 0; i < idSets.size(); i++) {
 				IdentificationSet idSet = idSets.get(i);
 				String idSetName = idSet.getFullName();
-				Set<ProteinComparatorKey> keys = MapKeys.get(idSet.getFullName());
+				Set<Object> keys = mapKeys.get(idSet.getFullName());
 
 				if (accumulativeTrend) {
 					globalVenn = new VennDataForProteins(keys, union, null, proteinGroupComparisonType,
 							countNonConclusiveProteins);
 					union = globalVenn.getUnion12();
-					int num = 0;
-					for (Object obj : union) {
-						ProteinComparatorKey key = (ProteinComparatorKey) obj;
-						if (!countNonConclusiveProteins
-								&& key.getAccessionString().contains(ProteinEvidence.NONCONCLUSIVE.toString()))
-							continue;
-						// if (!key.contains(ProteinEvidence.NONCONCLUSIVE
-						// .toString()))
-						num++;
-					}
+					int num = union.size();
+
 					accumulativeDataSet.addValue(num, "Accumulative # proteins", idSetName);
 				}
 
@@ -3728,7 +3718,7 @@ public class DatasetFactory {
 					moreThanOne = true;
 					final String idSetName2 = idSet2.getFullName();
 					log.info("Comparing " + idSet.getFullName() + " with " + idSetName2);
-					Set<ProteinComparatorKey> keys2 = MapKeys.get(idSet2.getFullName());
+					Set<Object> keys2 = mapKeys.get(idSet2.getFullName());
 					VennData venn = null;
 					if (unique == null) {
 						venn = new VennDataForProteins(keys, keys2, null, proteinGroupComparisonType,
@@ -3768,11 +3758,11 @@ public class DatasetFactory {
 		return ret;
 	}
 
-	private static Map<String, Set<ProteinComparatorKey>> getHashMapKeysForProteins(List<IdentificationSet> idSets,
+	private static Map<String, Set<Object>> getHashMapKeysForProteins(List<IdentificationSet> idSets,
 			ProteinGroupComparisonType proteinGroupComparisonType) {
-		Map<String, Set<ProteinComparatorKey>> ret = new THashMap<String, Set<ProteinComparatorKey>>();
+		Map<String, Set<Object>> ret = new THashMap<String, Set<Object>>();
 		for (IdentificationSet identificationSet : idSets) {
-			final Set<ProteinComparatorKey> proteinAccSet = new THashSet<ProteinComparatorKey>();
+			final Set<Object> proteinAccSet = new THashSet<Object>();
 			for (Object object : identificationSet.getProteinGroupOccurrenceList().values()) {
 				ProteinGroupOccurrence pgo = (ProteinGroupOccurrence) object;
 				// if (pgo.getEvidence() != ProteinEvidence.NONCONCLUSIVE)

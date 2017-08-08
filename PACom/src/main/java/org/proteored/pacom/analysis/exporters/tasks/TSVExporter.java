@@ -21,7 +21,6 @@ import org.proteored.miapeapi.experiment.model.PeptideOccurrence;
 import org.proteored.miapeapi.experiment.model.ProteinGroup;
 import org.proteored.miapeapi.experiment.model.ProteinGroupOccurrence;
 import org.proteored.miapeapi.experiment.model.filters.Filters;
-import org.proteored.miapeapi.experiment.model.sort.ProteinComparatorKey;
 import org.proteored.miapeapi.experiment.model.sort.ProteinGroupComparisonType;
 import org.proteored.pacom.analysis.exporters.Exporter;
 import org.proteored.pacom.analysis.exporters.ExporterManager;
@@ -231,7 +230,7 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 							if (!includeDecoyHits && proteinGroupOccurrence.isDecoy()) {
 								continue;
 							}
-							ProteinComparatorKey key = proteinGroupOccurrence.getKey(this.comparisonType);
+							Object key = proteinGroupOccurrence.getKey(this.comparisonType);
 							if (filter != null && filter.canCheck(key)) {
 								if (!filter.isValid(key)) {
 									continue;
@@ -280,7 +279,7 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 							}
 							ProteinGroupOccurrence proteinOccurrence = new ProteinGroupOccurrence();
 							proteinOccurrence.addOccurrence(proteinGroup);
-							ProteinComparatorKey key = proteinOccurrence.getKey(this.comparisonType);
+							Object key = proteinOccurrence.getKey(this.comparisonType);
 							if (filter != null) {
 								if (filter.canCheck(key) && !filter.isValid(key)) {
 									continue;

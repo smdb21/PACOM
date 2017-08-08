@@ -2,6 +2,7 @@ package org.proteored.pacom.analysis.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -1978,8 +1979,22 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public void setIntersectionText(String text) {
-		getJLabelIntersectionsText().setText("<html>" + text + "</html>");
-		getJLabelIntersectionsText().setToolTipText(getJLabelIntersectionsText().getText());
+		if (text == null) {
+			// getJLabelIntersectionsText().setText(null);
+		} else {
+			getJLabelIntersectionsText().setText("<html>" + text + "</html>");
+			getJLabelIntersectionsText().setToolTipText(getJLabelIntersectionsText().getText());
+		}
+
+		Container parent = getJLabelIntersectionsText().getParent();
+		if (parent != null) {
+			parent.repaint();
+			Container parent2 = parent.getParent();
+			if (parent2 != null) {
+				parent2.repaint();
+			}
+		}
+
 	}
 
 	public JPanel getChr16MappingControls() {

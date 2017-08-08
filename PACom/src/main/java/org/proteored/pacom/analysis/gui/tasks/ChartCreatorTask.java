@@ -2441,7 +2441,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		IdentificationSet idSet3 = null;
 		String label3 = null;
 		final Map<String, JCheckBox> checkBoxControls = optionsFactory.getIdSetsJCheckBoxes();
-
+		// optionsFactory.setIntersectionText(null);
 		ProteinGroupComparisonType proteinSelection = null;
 		if (IdentificationItemEnum.PROTEIN.equals(plotItem)) {
 			proteinSelection = optionsFactory.getProteinGroupComparisonType();
@@ -2547,7 +2547,12 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 					}
 				}
 				if (idSet1 == null || idSet2 == null) {
-					throw new IllegalMiapeArgumentException("Please, select at least 2 datasets to show the diagram");
+					JLabel label = new JLabel("Please, select at least 2 datasets to show the Venn diagram for '"
+							+ experiment.getName() + "'");
+					JPanel panel = new JPanel();
+					panel.add(label);
+					chartList.add(panel);
+					continue;
 				}
 				VennChart chart = new VennChart(parent.getChartTitle(chartType) + " (" + experiment.getName() + ")",
 						idSet1, label1, idSet2, label2, idSet3, label3, plotItem, parent.distinguishModifiedPeptides(),
@@ -2560,6 +2565,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			// this.jPanelChart.addGraphicPanel(chartList);
 			return chartList;
 		}
+
 		return null;
 	}
 

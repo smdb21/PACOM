@@ -515,32 +515,29 @@ public class VennChart {
 		if (name1 != null) {
 			if (!"".equals(sb.toString()))
 				sb.append("<br>");
-			Double just1 = this.vennData.getUniqueTo1Keys().size() * 100.0 / union;
+			Double just1 = this.vennData.getUniqueTo1KeysNum() * 100.0 / union;
 			int overlappedTo1 = this.vennData.getIntersection12Keys().size()
 					+ this.vennData.getIntersection13Keys().size() - this.vennData.getIntersection123Keys().size();
-			sb.append(
-					"Just in A = " + this.vennData.getUniqueTo1Keys().size() + " (" + df.format(just1) + "% of union) ("
-							+ df.format((overlappedTo1) * 100.0 / this.vennData.getSize1()) + "% overlapped)");
+			sb.append("Just in A = " + this.vennData.getUniqueTo1KeysNum() + " (" + df.format(just1) + "% of union) ("
+					+ df.format((overlappedTo1) * 100.0 / this.vennData.getSize1()) + "% overlapped)");
 		}
 		if (name2 != null) {
 			if (!"".equals(sb.toString()))
 				sb.append("<br>");
-			Double just2 = this.vennData.getUniqueTo2Keys().size() * 100.0 / union;
+			Double just2 = this.vennData.getUniqueTo2KeysNum() * 100.0 / union;
 			int overlappedTo2 = this.vennData.getIntersection12().size() + this.vennData.getIntersection23().size()
 					- this.vennData.getIntersection123Keys().size();
-			sb.append(
-					"Just in B = " + this.vennData.getUniqueTo2Keys().size() + " (" + df.format(just2) + "% of union) ("
-							+ df.format((overlappedTo2) * 100.0 / this.vennData.getSize2()) + "% overlapped)");
+			sb.append("Just in B = " + this.vennData.getUniqueTo2KeysNum() + " (" + df.format(just2) + "% of union) ("
+					+ df.format((overlappedTo2) * 100.0 / this.vennData.getSize2()) + "% overlapped)");
 		}
 		if (name3 != null) {
 			if (!"".equals(sb.toString()))
 				sb.append("<br>");
-			Double just3 = this.vennData.getUniqueTo3Keys().size() * 100.0 / union;
+			Double just3 = this.vennData.getUniqueTo3KeysNum() * 100.0 / union;
 			int overlappedTo3 = this.vennData.getIntersection13().size() + this.vennData.getIntersection23().size()
 					- this.vennData.getIntersection123Keys().size();
-			sb.append(
-					"Just in C = " + this.vennData.getUniqueTo3Keys().size() + " (" + df.format(just3) + "% of union) ("
-							+ df.format((overlappedTo3) * 100.0 / this.vennData.getSize3()) + "% overlapped)");
+			sb.append("Just in C = " + this.vennData.getUniqueTo3KeysNum() + " (" + df.format(just3) + "% of union) ("
+					+ df.format((overlappedTo3) * 100.0 / this.vennData.getSize3()) + "% overlapped)");
 		}
 		sb.append("<br><br>");
 
