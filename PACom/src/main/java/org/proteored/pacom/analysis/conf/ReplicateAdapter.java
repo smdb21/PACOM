@@ -9,6 +9,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.proteored.miapeapi.cv.ControlVocabularyManager;
 import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
+import org.proteored.miapeapi.exceptions.InterruptedMIAPEThreadException;
 import org.proteored.miapeapi.exceptions.MiapeDataInconsistencyException;
 import org.proteored.miapeapi.exceptions.MiapeDatabaseException;
 import org.proteored.miapeapi.exceptions.MiapeSecurityException;
@@ -78,7 +79,7 @@ public class ReplicateAdapter implements Adapter<Replicate> {
 					// Para que se pueda interrumpir el proceso
 					Thread.sleep(1L);
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					throw new InterruptedMIAPEThreadException("Task cancelled");
 				}
 				if (miapeMSI != null) {
 					miapeMSIs.add(miapeMSI);
