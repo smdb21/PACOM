@@ -23,6 +23,7 @@ public class GeneralOptionsDialogNoParallel extends javax.swing.JDialog {
 	private Integer previousMinPeptideLength;
 	private Boolean previousGroupAtExperimentListLevel;
 	private final ChartManagerFrame parent;
+	private boolean dataShouldnotBeLoaded;
 
 	public static GeneralOptionsDialogNoParallel getInstance(ChartManagerFrame parent, boolean showDoNotAskAgain) {
 		getInstance(parent);
@@ -75,9 +76,14 @@ public class GeneralOptionsDialogNoParallel extends javax.swing.JDialog {
 		boolean localProcessingInParallel = isLocalProcessingInParallel();
 		final boolean dataShouldBeLoaded = parent.dataShouldBeLoaded(parent.cfgFile, groupAtExperimentListLevel,
 				minPeptideLength, localProcessingInParallel);
-		if (dataShouldBeLoaded)
+		if (dataShouldBeLoaded && !dataShouldnotBeLoaded)
 			parent.loadData(minPeptideLength, groupAtExperimentListLevel, localProcessingInParallel);
+		dataShouldnotBeLoaded = false;
+	}
 
+	public void disposeNotLoadingData() {
+		this.dataShouldnotBeLoaded = true;
+		dispose();
 	}
 
 	public Integer getMinPeptideLength() {
@@ -169,14 +175,14 @@ public class GeneralOptionsDialogNoParallel extends javax.swing.JDialog {
 								javax.swing.GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jLabel2)
 						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-		jPanel2Layout.setVerticalGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanel2Layout.createSequentialGroup().addContainerGap()
-						.addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-								.addComponent(jLabel1)
+		jPanel2Layout
+				.setVerticalGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(jPanel2Layout.createSequentialGroup().addContainerGap().addGroup(jPanel2Layout
+								.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jLabel1)
 								.addComponent(jTextFieldPeptideLength, javax.swing.GroupLayout.PREFERRED_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addComponent(jLabel2))
-						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+								.addComponent(jLabel2))
+								.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(),
 				"Aggregation level"));
@@ -194,11 +200,9 @@ public class GeneralOptionsDialogNoParallel extends javax.swing.JDialog {
 
 		javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
 		jPanel3.setLayout(jPanel3Layout);
-		jPanel3Layout
-				.setHorizontalGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(jPanel3Layout.createSequentialGroup().addContainerGap()
-								.addComponent(jCheckBoxGroupProteinsInExperimentList)
-								.addContainerGap(214, Short.MAX_VALUE)));
+		jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel3Layout.createSequentialGroup().addContainerGap()
+						.addComponent(jCheckBoxGroupProteinsInExperimentList).addContainerGap(214, Short.MAX_VALUE)));
 		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(jPanel3Layout.createSequentialGroup().addContainerGap()
 						.addComponent(jCheckBoxGroupProteinsInExperimentList)
@@ -235,9 +239,9 @@ public class GeneralOptionsDialogNoParallel extends javax.swing.JDialog {
 								.addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING,
 										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
 										Short.MAX_VALUE)
-						.addComponent(jLabelWarning, javax.swing.GroupLayout.Alignment.LEADING,
-								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-								Short.MAX_VALUE)
+								.addComponent(jLabelWarning, javax.swing.GroupLayout.Alignment.LEADING,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
 
 								.addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING,
 										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,

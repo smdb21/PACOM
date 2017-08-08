@@ -2466,6 +2466,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 					}
 				}
 			}
+			if (idSet1 == null || idSet2 == null) {
+				throw new IllegalMiapeArgumentException("Please, select at least 2 datasets to show the diagram");
+			}
 			VennChart chart = new VennChart(parent.getChartTitle(chartType), idSet1, label1, idSet2, label2, idSet3,
 					label3, plotItem, parent.distinguishModifiedPeptides(), countNonConclusiveProteins,
 					proteinSelection);
@@ -2492,6 +2495,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 					}
 				}
 			}
+			if (idSet1 == null || idSet2 == null) {
+				throw new IllegalMiapeArgumentException("Please, select at least 2 datasets to show the diagram");
+			}
 			VennChart chart = new VennChart(parent.getChartTitle(chartType), idSet1, label1, idSet2, label2, idSet3,
 					label3, plotItem, parent.distinguishModifiedPeptides(), countNonConclusiveProteins,
 					proteinSelection);
@@ -2502,6 +2508,10 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
 			idSet1 = experimentList;
 			label1 = experimentList.getName();
+			if (idSet1 == null) {
+				throw new IllegalMiapeArgumentException(
+						"Please, select another comparison level to have at least 2 datasets to show the diagram");
+			}
 			VennChart chart = new VennChart(parent.getChartTitle(chartType), idSet1, label1, idSet2, label2, idSet3,
 					label3, plotItem, parent.distinguishModifiedPeptides(), countNonConclusiveProteins,
 					proteinSelection);
@@ -2535,6 +2545,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 							label3 = replicate.getName();
 						}
 					}
+				}
+				if (idSet1 == null || idSet2 == null) {
+					throw new IllegalMiapeArgumentException("Please, select at least 2 datasets to show the diagram");
 				}
 				VennChart chart = new VennChart(parent.getChartTitle(chartType) + " (" + experiment.getName() + ")",
 						idSet1, label1, idSet2, label2, idSet3, label3, plotItem, parent.distinguishModifiedPeptides(),

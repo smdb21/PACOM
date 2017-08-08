@@ -213,6 +213,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	private boolean errorLoadingData;
 	private String previousMd5Checksum;
 	private Map<Object, Object> previousTogleValues = new THashMap<Object, Object>();
+	private long t1;
 
 	@Override
 	public void dispose() {
@@ -247,7 +248,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			parentFrame.setEnabled(true);
 			parentFrame.setVisible(true);
 		}
-		GeneralOptionsDialogNoParallel.getInstance(this).dispose();
+		errorLoadingData = true;
 		super.dispose();
 	}
 
@@ -309,10 +310,18 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	}
 
 	public static ChartManagerFrame getInstance(Miape2ExperimentListDialog parentDialog, File cfgFile) {
+		return getInstance(parentDialog, cfgFile, null);
+	}
+
+	public static ChartManagerFrame getInstance(Miape2ExperimentListDialog parentDialog, File cfgFile,
+			Boolean resetErrorLoadingData) {
 
 		if (instance == null)
 			instance = new ChartManagerFrame(parentDialog, cfgFile);
 		instance.cfgFile = cfgFile;
+		if (resetErrorLoadingData != null && resetErrorLoadingData) {
+			instance.errorLoadingData = false;
+		}
 		GeneralOptionsDialogNoParallel generalOptionsDialog = GeneralOptionsDialogNoParallel.getInstance(instance,
 				true);
 		boolean group = generalOptionsDialog.groupProteinsAtExperimentListLevel();
@@ -1640,9 +1649,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		} else if (PEPTIDE_CHARGE_HISTOGRAM.equals(chartType)) {
 			addChargeHistogramBarControls();
 		} else if (PEPTIDE_OVERLAPING.equals(chartType) || PROTEIN_OVERLAPING.equals(chartType)) {
-			addOverlapingControls(options, 3, false);
+			addOverlapingControls(options, 0, false);
 		} else if (EXCLUSIVE_PROTEIN_NUMBER.equals(chartType) || EXCLUSIVE_PEPTIDE_NUMBER.equals(chartType)) {
-			addOverlapingControls(options, null, true);
+			addOverlapingControls(options, null, false);
 		} else if (PEPTIDES_PER_PROTEIN_HEATMAP.equals(chartType) || PSMS_PER_PEPTIDE_HEATMAP.equals(chartType)
 				|| PSMS_PER_PROTEIN_HEATMAP.equals(chartType)) {
 			addHeatMapControls(false);
@@ -2973,7 +2982,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		}
 		jPanelAddOptions.add(new JLabel("<html><br></html>"));
 		jPanelAddOptions.add(new JLabel("Select from the following checkBoxes:"));
-		jPanelAddOptions.add(optionsFactory.getReplicatesCheckboxes(true, selectAllCheckBoxes, 2));
+		jPanelAddOptions.add(optionsFactory.getReplicatesCheckboxes(true, selectAllCheckBoxes, 0));
 
 		if (!numberOfSelectedCheckBoxes.equals(Integer.MAX_VALUE)
 				&& !PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
@@ -3349,7 +3358,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		jPanelAddOptions.add(new JLabel("<html><br></html>"));
 		jPanelAddOptions.add(new JLabel("Select from the following checkBoxes:"));
 
-		jPanelAddOptions.add(optionsFactory.getReplicatesCheckboxes(false, selectAllCheckBoxes, 2));
+		jPanelAddOptions.add(optionsFactory.getReplicatesCheckboxes(false, selectAllCheckBoxes, 0));
 		if (!numberOfSelectedCheckBoxes.equals(Integer.MAX_VALUE)
 				&& !PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
 			// Add save image button
@@ -3441,7 +3450,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 		jPanelAddOptions.add(new JLabel("<html><br></html>"));
 		jPanelAddOptions.add(new JLabel("Select from the following checkBoxes:"));
-		jPanelAddOptions.add(optionsFactory.getExperimentsCheckboxes(selectAllCheckBoxes, 3));
+		jPanelAddOptions.add(optionsFactory.getExperimentsCheckboxes(selectAllCheckBoxes, 0));
 		if (!numberOfSelectedCheckBoxes.equals(Integer.MAX_VALUE)
 				&& !PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
 			// Add save image button
@@ -3911,6 +3920,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			chartCreator = new ChartCreatorTask(this, chartType, option, experimentList);
 			chartCreator.addPropertyChangeListener(this);
 			chartCreator.execute();
+			t1 = System.currentTimeMillis();
 		} else {
 			log.info("The chart cannot be generated until the previous chart is finished");
 			// this.appendStatus("Wait to finish the chart");
@@ -3942,7 +3952,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			}
 		}
 		if (dataLoader == null || !dataLoader.isDone()) {
-			appendStatus("Datasets have already being loading. Please wait...");
+			appendStatus("Datasets are being loaded. Please wait...");
 			return;
 		}
 
@@ -4146,9 +4156,16 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			errorLoadingData = true;
 			String erromessage = (String) evt.getNewValue();
 			setProgressBarIndeterminate(false);
-
+			GridBagConstraints c = new GridBagConstraints();
+			c.anchor = GridBagConstraints.WEST;
+			c.gridx = 0;
+			c.gridy = 0;
+			JLabel label = new JLabel(erromessage);
+			JPanel panel = new JPanel();
+			panel.add(label, c);
+			jPanelChart.add(panel);
 			JOptionPane.showMessageDialog(this, erromessage);
-
+			appendStatus(erromessage);
 			dispose();
 		} else if (ChartCreatorTask.CHART_GENERATED.equals(evt.getPropertyName())
 				|| ChartCreatorTask.CHART_ERROR_GENERATED.equals(evt.getPropertyName())) {
@@ -4209,7 +4226,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 						.format(new Date(System.currentTimeMillis()));
 				setNumIdentificationsLabel();
 				setFDRLabel();
-				appendStatus("Chart created at '" + formatedDate + "'");
+				double t2 = System.currentTimeMillis() * 1.0;
+				appendStatus("Chart created at '" + formatedDate + "' in "
+						+ DatesUtil.getDescriptiveTimeFromMillisecs(t2 - t1));
 				if (currentChartType.equals(PROTEIN_NAME_CLOUD)) {
 					appendStatus("Wait some seconds for the cloud loading...");
 				}

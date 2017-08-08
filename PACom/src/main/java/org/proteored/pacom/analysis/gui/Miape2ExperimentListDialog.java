@@ -2420,8 +2420,8 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 
 		if (showChartManager) {
 			setVisible(false);
-			ChartManagerFrame chartManager = ChartManagerFrame.getInstance(this, currentCgfFile);
-			chartManager.setErrorLoadingData(false);
+			boolean resetErrorLoadingData = true;
+			ChartManagerFrame chartManager = ChartManagerFrame.getInstance(this, currentCgfFile, resetErrorLoadingData);
 			chartManager.setVisible(true);
 		}
 	}

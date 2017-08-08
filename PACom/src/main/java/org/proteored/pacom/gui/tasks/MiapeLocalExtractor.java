@@ -1524,17 +1524,6 @@ public class MiapeLocalExtractor {
 					inputMzIdentMLFile = FileManager.saveLocalFile(inputMzIdentMLFile, projectName);
 					LocalFilesIndex.getInstance().indexFileByProjectName(projectName, inputMzIdentMLFile);
 				}
-				MiapeMzIdentMLFile xmlFile = new MiapeMzIdentMLFile(inputMzIdentMLFile);
-				msiDocument = org.proteored.miapeapi.xml.mzidentml.MSIMiapeFactory.getFactory().toDocument(xmlFile,
-						null, getControlVocabularyManager(), userName, password, projectName, processInParallel);
-				((org.proteored.miapeapi.xml.mzidentml.MiapeMSIDocumentImpl) msiDocument)
-						.setAttachedFileURL(inputMzIdentMLFile.getAbsolutePath());
-				if (idMiapeMS > 0) {
-					((org.proteored.miapeapi.xml.mzidentml.MiapeMSIDocumentImpl) msiDocument)
-							.setReferencedMSDocument(Integer.valueOf(idMiapeMS));
-				}
-			} catch (WrongXMLFormatException ex) {
-				log.info("Error trying to read as mzIdentML 1.0. Trying now as mzIdentML 1.1 or 1.2...");
 				org.proteored.miapeapi.xml.mzidentml_1_1.MiapeMzIdentMLFile xmlFile = new org.proteored.miapeapi.xml.mzidentml_1_1.MiapeMzIdentMLFile(
 						inputMzIdentMLFile);
 				msiDocument = org.proteored.miapeapi.xml.mzidentml_1_1.MSIMiapeFactory.getFactory().toDocument(xmlFile,
@@ -1543,6 +1532,18 @@ public class MiapeLocalExtractor {
 						.setAttachedFileURL(inputMzIdentMLFile.getAbsolutePath());
 				if (idMiapeMS > 0) {
 					((org.proteored.miapeapi.xml.mzidentml_1_1.MiapeMSIDocumentImpl) msiDocument)
+							.setReferencedMSDocument(Integer.valueOf(idMiapeMS));
+				}
+			} catch (WrongXMLFormatException ex) {
+				log.info("Error trying to read as mzIdentML 1.2 or 1.1. Trying now as mzIdentML 1.0...");
+
+				MiapeMzIdentMLFile xmlFile = new MiapeMzIdentMLFile(inputMzIdentMLFile);
+				msiDocument = org.proteored.miapeapi.xml.mzidentml.MSIMiapeFactory.getFactory().toDocument(xmlFile,
+						null, getControlVocabularyManager(), userName, password, projectName, processInParallel);
+				((org.proteored.miapeapi.xml.mzidentml.MiapeMSIDocumentImpl) msiDocument)
+						.setAttachedFileURL(inputMzIdentMLFile.getAbsolutePath());
+				if (idMiapeMS > 0) {
+					((org.proteored.miapeapi.xml.mzidentml.MiapeMSIDocumentImpl) msiDocument)
 							.setReferencedMSDocument(Integer.valueOf(idMiapeMS));
 				}
 			}
