@@ -119,6 +119,7 @@ public class CuratedExperimentSaver extends SwingWorker<Void, Void> {
 
 			firePropertyChange(CURATED_EXP_SAVER_END, null, null);
 		} catch (Exception e) {
+			log.error(e);
 			firePropertyChange(CURATED_EXP_SAVER_ERROR, null, e.getMessage());
 		}
 		return null;
