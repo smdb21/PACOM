@@ -22,7 +22,6 @@ import org.proteored.miapeapi.experiment.model.IdentificationSet;
 import org.proteored.miapeapi.experiment.model.PeptideOccurrence;
 import org.proteored.miapeapi.experiment.model.ProteinGroup;
 import org.proteored.miapeapi.experiment.model.ProteinGroupOccurrence;
-import org.proteored.miapeapi.experiment.model.sort.SorterUtil;
 import org.proteored.pacom.analysis.exporters.Exporter;
 import org.proteored.pacom.analysis.exporters.ExporterManager;
 import org.proteored.pacom.analysis.exporters.gui.MyIdentificationTable;
@@ -88,7 +87,6 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 		}
 
 		if (this.retrieveProteinSequences || includeGeneInfo) {
-			firePropertyChange(PROTEIN_SEQUENCE_RETRIEVAL, null, null);
 
 			Set<String> uniprotAccs = new THashSet<String>();
 			for (IdentificationSet identificationSet : idSets) {
@@ -102,7 +100,10 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 			}
 			// get all sequences at once first
 			if (!uniprotAccs.isEmpty()) {
+
 				try {
+					firePropertyChange(PROTEIN_SEQUENCE_RETRIEVAL, null, null);
+
 					firePropertyChange(MESSAGE, null, "Retrieving protein sequences from " + uniprotAccs.size()
 							+ " different proteins in UniprotKB");
 					UniprotProteinLocalRetriever upr = FileManager.getUniprotProteinLocalRetriever();
@@ -193,7 +194,8 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 
 						firePropertyChange(DATA_EXPORTING_SORTING, null, identifiedPeptides.size());
 
-						SorterUtil.sortPeptidesByBestPeptideScore(identifiedPeptides, true);
+						// SorterUtil.sortPeptidesByBestPeptideScore(identifiedPeptides,
+						// true);
 						firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
 
 						int i = 1;
@@ -249,7 +251,7 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 
 						firePropertyChange(DATA_EXPORTING_SORTING, null, proteinOccurrenceList.size());
 						try {
-							SorterUtil.sortProteinGroupOcurrencesByBestPeptideScore(proteinOccurrenceList);
+							// SorterUtil.sortProteinGroupOcurrencesByBestPeptideScore(proteinOccurrenceList);
 						} catch (Exception e) {
 							log.info(e.getMessage());
 						}
@@ -300,7 +302,7 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 
 						firePropertyChange(DATA_EXPORTING_SORTING, null, proteinGroups.size());
 
-						SorterUtil.sortProteinGroupsByBestPeptideScore(proteinGroups);
+						// SorterUtil.sortProteinGroupsByBestPeptideScore(proteinGroups);
 						firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
 
 						int i = 1;
