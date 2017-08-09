@@ -1941,7 +1941,9 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	protected void enableShowAsAverageOfNextLevels(boolean b) {
-		this.jCheckBoxShowAverage.setEnabled(b);
+		if (jCheckBoxShowAverage != null) {
+			this.jCheckBoxShowAverage.setEnabled(b);
+		}
 
 	}
 
