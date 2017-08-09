@@ -219,31 +219,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 	@Override
 	public void dispose() {
-		if (dataLoader != null && dataLoader.getState() == StateValue.STARTED) {
-			boolean canceled = dataLoader.cancel(true);
-			while (!canceled) {
-				try {
-					log.info("Waiting for cancelling data loader");
-					Thread.sleep(100);
-					canceled = dataLoader.cancel(true);
-				} catch (InterruptedException e) {
-				}
-			}
-
-		}
-		if (chartCreator != null && chartCreator.getState() == StateValue.STARTED) {
-			boolean canceled = chartCreator.cancel(true);
-			while (!canceled) {
-				try {
-					log.info("Waiting for cancelling chartCreator");
-					Thread.sleep(100);
-					canceled = chartCreator.cancel(true);
-
-				} catch (InterruptedException e) {
-				}
-			}
-
-		}
+		cancelDataLoader();
+		cancelChartCreator();
 		if (memoryChecker != null)
 			memoryChecker.cancel(true);
 		if (parentFrame != null) {
@@ -470,27 +447,24 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	private void loadButtonIcons() {
 		// STAR
 		jButtonSaveAsFiltered.setIcon(ImageManager.getImageIcon(ImageManager.STAR));
-		// STAR CLICKED
 		jButtonSaveAsFiltered.setPressedIcon(ImageManager.getImageIcon(ImageManager.STAR_CLICKED));
 
 		// FUNNEL
 		jButtonSeeAppliedFilters.setIcon(ImageManager.getImageIcon(ImageManager.FUNNEL));
-		// FUNNEL CLICKED
 		jButtonSeeAppliedFilters.setPressedIcon(ImageManager.getImageIcon(ImageManager.FUNNEL_CLICKED));
-
-		// TRASH
-		jButtonDiscardFilteredData.setIcon(ImageManager.getImageIcon(ImageManager.TRASH));
-		// TRASH CLICKED
-		jButtonDiscardFilteredData.setPressedIcon(ImageManager.getImageIcon(ImageManager.TRASH_CLICKED));
 
 		// TABLE
 		jButtonShowTable.setIcon(ImageManager.getImageIcon(ImageManager.TABLE));
-		// TABLE CLICKED
 		jButtonShowTable.setPressedIcon(ImageManager.getImageIcon(ImageManager.TABLE_CLICKED));
-
+		// EXCEL
 		jButtonExport2Excel.setIcon(ImageManager.getImageIcon(ImageManager.EXCEL_TABLE));
-
+		jButtonExport2Excel.setPressedIcon(ImageManager.getImageIcon(ImageManager.EXCEL_TABLE_CLICKED));
+		// PRIDE
 		jButtonExport2PRIDE.setIcon(ImageManager.getImageIcon(ImageManager.PRIDE_LOGO));
+		jButtonExport2PRIDE.setPressedIcon(ImageManager.getImageIcon(ImageManager.PRIDE_LOGO_CLICKED));
+		// cancel
+		jButtonCancel.setIcon(ImageManager.getImageIcon(ImageManager.STOP));
+		jButtonCancel.setPressedIcon(ImageManager.getImageIcon(ImageManager.STOP_CLICKED));
 	}
 
 	public AdditionalOptionsPanelFactory getOptionsFactory() {
@@ -900,7 +874,6 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		jLabelInformation2 = new javax.swing.JLabel();
 		jLabelInformation3 = new javax.swing.JLabel();
 		jButtonSeeAppliedFilters = new javax.swing.JButton();
-		jButtonDiscardFilteredData = new javax.swing.JButton();
 		jButtonShowTable = new javax.swing.JButton();
 		jButtonSaveAsFiltered = new javax.swing.JButton();
 		jButtonExport2PRIDE = new javax.swing.JButton();
@@ -969,7 +942,6 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 1;
-		gridBagConstraints.gridwidth = 2;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
 		getContentPane().add(jPanelStatus, gridBagConstraints);
 
@@ -1013,7 +985,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		jPanelPeptideCounting.setBorder(
 				new TitledBorder(null, "Peptide counting", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 
-		jCheckBoxUniquePeptides.setText("distinguish mod. and unmod. peptides");
+		jCheckBoxUniquePeptides.setText("distinguish modified peptides");
 		jCheckBoxUniquePeptides.setToolTipText(
 				"<html>If this option is not selected:<br>\nA peptide identified as unmodified and for<br>\ninstance containing an oxidized Methionine is<br>\ncounted as one.<br>\n</html>");
 		jCheckBoxUniquePeptides.addItemListener(new java.awt.event.ItemListener() {
@@ -1037,7 +1009,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 		jButtonSeeAppliedFilters.setIcon(new javax.swing.ImageIcon(
 				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\funnel.png")); // NOI18N
-		jButtonSeeAppliedFilters.setToolTipText("<html>Show defined filters</html>");
+		jButtonSeeAppliedFilters.setToolTipText("<html>Show current filters</html>");
 		jButtonSeeAppliedFilters.setEnabled(false);
 		jButtonSeeAppliedFilters.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -1046,21 +1018,10 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			}
 		});
 
-		jButtonDiscardFilteredData.setIcon(new javax.swing.ImageIcon(
-				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\trash.png")); // NOI18N
-		jButtonDiscardFilteredData.setToolTipText(
-				"<html>Discard proteins and peptides that <br>\n      have not been passed the filters.</html>");
-		jButtonDiscardFilteredData.setEnabled(false);
-		jButtonDiscardFilteredData.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButtonDiscardFilteredDataActionPerformed(evt);
-			}
-		});
-
 		jButtonShowTable.setIcon(new javax.swing.ImageIcon(
 				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\table.png")); // NOI18N
-		jButtonShowTable.setToolTipText("<html>Show dataset in a table.</html>");
+		jButtonShowTable.setToolTipText(
+				"<html>Show the whole dataset in a table.<br>You will be able to sort and filter data quickly.</html>");
 		jButtonShowTable.setEnabled(false);
 		jButtonShowTable.addMouseListener(new java.awt.event.MouseAdapter() {
 			@Override
@@ -1078,7 +1039,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		jButtonSaveAsFiltered.setIcon(new javax.swing.ImageIcon(
 				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\star.png")); // NOI18N
 		jButtonSaveAsFiltered.setToolTipText(
-				"<html>Save the experiments of the project as <b>curated experiments</b>.<br>\nThis will save the experiments containing just the peptides<br> and proteins that has passed the filters.<br>\nThey will be saved individually in a separate location.</html>");
+				"<html>Save the experiments of the project as <b>curated experiments</b>.<br>\r\nThis will save the experiments containing just the peptides<br> and proteins that have passed the filters.<br>\r\nThey will be saved individually in a separate location.</html>");
 		jButtonSaveAsFiltered.setEnabled(false);
 		jButtonSaveAsFiltered.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -1090,7 +1051,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		jButtonExport2PRIDE.setIcon(new javax.swing.ImageIcon(
 				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\pride_logo_peq.jpg")); // NOI18N
 		jButtonExport2PRIDE.setToolTipText(
-				"<html>Export current data to PRIDE XML.<br>\nA PRIDE XML file will be created for each one<br>experiment/level 1 node.</html>");
+				"<html>Export current data to PRIDE XML.<br>\r\nA PRIDE XML file will be created for each one<br>level 1 node,<br>\r\nintegrating all information in that node in a single file.</html>");
 		jButtonExport2PRIDE.setEnabled(false);
 		jButtonExport2PRIDE.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -1102,7 +1063,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		jButtonExport2Excel.setIcon(new javax.swing.ImageIcon(
 				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\excel_table.png")); // NOI18N
 		jButtonExport2Excel.setToolTipText(
-				"<html>Export current data to a Tab Separated Values file<br>that can be opened by Excel.</html>");
+				"<html>Export current data to a Tab Separated Values (TSV) file<br>that can be opened by Excel.</html>");
 		jButtonExport2Excel.setEnabled(false);
 		jButtonExport2Excel.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -1111,17 +1072,27 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			}
 		});
 
+		jButtonCancel = new JButton();
+		jButtonCancel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cancelTask();
+			}
+		});
+		jButtonCancel.setToolTipText(
+				"<html>Cancel current task.<br>\r\nClick here to cancel data loading or chart creation.</html>");
+		jButtonCancel.setEnabled(false);
+
 		javax.swing.GroupLayout jPanelInformationLayout = new javax.swing.GroupLayout(jPanelInformation);
 		jPanelInformationLayout
-				.setHorizontalGroup(
-						jPanelInformationLayout.createParallelGroup(Alignment.LEADING).addGroup(jPanelInformationLayout
-								.createSequentialGroup().addContainerGap().addGroup(jPanelInformationLayout
-										.createParallelGroup(Alignment.LEADING)
+				.setHorizontalGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(jPanelInformationLayout.createSequentialGroup().addContainerGap()
+								.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
 										.addComponent(jLabelInformation3, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE,
-												258, Short.MAX_VALUE)
+												292, Short.MAX_VALUE)
 										.addComponent(jLabelInformation2, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE,
-												258, Short.MAX_VALUE)
-										.addComponent(jLabelInformation1, GroupLayout.DEFAULT_SIZE, 258,
+												292, Short.MAX_VALUE)
+										.addComponent(jLabelInformation1, GroupLayout.DEFAULT_SIZE, 292,
 												Short.MAX_VALUE)
 										.addGroup(jPanelInformationLayout.createSequentialGroup()
 												.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
@@ -1130,20 +1101,24 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 																		GroupLayout.PREFERRED_SIZE, 47,
 																		GroupLayout.PREFERRED_SIZE)
 																.addPreferredGap(ComponentPlacement.RELATED)
-																.addComponent(jButtonDiscardFilteredData,
+																.addComponent(jButtonSaveAsFiltered,
 																		GroupLayout.PREFERRED_SIZE, 47,
 																		GroupLayout.PREFERRED_SIZE))
 														.addComponent(jButtonExport2PRIDE, GroupLayout.DEFAULT_SIZE,
-																100, Short.MAX_VALUE))
+																101, Short.MAX_VALUE))
 												.addPreferredGap(ComponentPlacement.RELATED)
-												.addComponent(jButtonSaveAsFiltered, GroupLayout.PREFERRED_SIZE, 47,
-														GroupLayout.PREFERRED_SIZE)
-												.addPreferredGap(ComponentPlacement.RELATED)
-												.addComponent(jButtonShowTable, GroupLayout.PREFERRED_SIZE, 47,
-														GroupLayout.PREFERRED_SIZE)
-												.addPreferredGap(ComponentPlacement.RELATED)
-												.addComponent(jButtonExport2Excel, GroupLayout.PREFERRED_SIZE, 46,
-														GroupLayout.PREFERRED_SIZE)))
+												.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
+														.addGroup(jPanelInformationLayout.createSequentialGroup()
+																.addComponent(jButtonShowTable,
+																		GroupLayout.PREFERRED_SIZE, 47,
+																		GroupLayout.PREFERRED_SIZE)
+																.addPreferredGap(ComponentPlacement.RELATED)
+																.addComponent(jButtonExport2Excel,
+																		GroupLayout.PREFERRED_SIZE, 46,
+																		GroupLayout.PREFERRED_SIZE))
+														.addComponent(jButtonCancel, GroupLayout.PREFERRED_SIZE, 101,
+																GroupLayout.PREFERRED_SIZE))
+												.addGap(54)))
 								.addContainerGap()));
 		jPanelInformationLayout.setVerticalGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(jPanelInformationLayout.createSequentialGroup()
@@ -1151,20 +1126,19 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addComponent(jLabelInformation2, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(jLabelInformation3, GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE)
+						.addComponent(jLabelInformation3, GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(jButtonExport2Excel, 0, 0, Short.MAX_VALUE)
-								.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING, false)
-										.addComponent(jButtonSeeAppliedFilters, GroupLayout.DEFAULT_SIZE,
-												GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(jButtonDiscardFilteredData, GroupLayout.DEFAULT_SIZE,
-												GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+								.addComponent(jButtonShowTable, GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
+								.addComponent(jButtonSeeAppliedFilters, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 								.addComponent(jButtonSaveAsFiltered, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
 										Short.MAX_VALUE)
-								.addComponent(jButtonShowTable, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE))
-						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jButtonExport2PRIDE)
+								.addComponent(jButtonExport2Excel, 0, 0, Short.MAX_VALUE))
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(jButtonExport2PRIDE).addComponent(jButtonCancel,
+										GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE))
 						.addContainerGap()));
 		jPanelInformation.setLayout(jPanelInformationLayout);
 
@@ -1371,12 +1345,52 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		setBounds((screenSize.width - 935) / 2, (screenSize.height - 836) / 2, 935, 836);
 	}// </editor-fold>
 
-	private void jMenuItemGeneralOptionsActionPerformed(java.awt.event.ActionEvent evt) {
-		GeneralOptionsDialogNoParallel.getInstance(this, false).setVisible(true);
+	protected void cancelTask() {
+		if (this.dataLoader != null && this.dataLoader.getState() == StateValue.STARTED) {
+			log.info("Cancelling data loader");
+			appendStatus("Cancelling data loader...");
+			cancelDataLoader();
+		}
+		if (this.chartCreator != null && this.chartCreator.getState() == StateValue.STARTED) {
+			log.info("Cancelling chart creator");
+			appendStatus("Cancelling chart creator");
+			cancelChartCreator();
+		}
 	}
 
-	private void jButtonDiscardFilteredDataActionPerformed(java.awt.event.ActionEvent evt) {
-		discardFilteredData();
+	private void cancelDataLoader() {
+		if (dataLoader != null && dataLoader.getState() == StateValue.STARTED) {
+			boolean canceled = dataLoader.cancel(true);
+			while (!canceled) {
+				try {
+					log.info("Waiting for cancelling data loader");
+					Thread.sleep(100);
+					canceled = dataLoader.cancel(true);
+				} catch (InterruptedException e) {
+				}
+			}
+
+		}
+	}
+
+	private void cancelChartCreator() {
+		if (chartCreator != null && chartCreator.getState() == StateValue.STARTED) {
+			boolean canceled = chartCreator.cancel(true);
+			while (!canceled) {
+				try {
+					log.info("Waiting for cancelling chartCreator");
+					Thread.sleep(100);
+					canceled = chartCreator.cancel(true);
+
+				} catch (InterruptedException e) {
+				}
+			}
+
+		}
+	}
+
+	private void jMenuItemGeneralOptionsActionPerformed(java.awt.event.ActionEvent evt) {
+		GeneralOptionsDialogNoParallel.getInstance(this, false).setVisible(true);
 	}
 
 	private void jButtonExport2ExcelActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1449,28 +1463,6 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	private void showAppliedFiltersDialog() {
 		filtersDialog = new AppliedFiltersDialog(this, true, filterDialog.getFilters());
 		filtersDialog.setVisible(true);
-	}
-
-	public void discardFilteredData() {
-
-		// String message =
-		// "<html>Proteins and peptides that have not passed the filters<br>"
-		// + "are going to be permanently discarted.<br>"
-		// + "If you permanently discard these data, you will not able:<br>"
-		// + "<ul><li>to see discarted peptides and proteins</li>"
-		// + "<li>to add/remove/modify some filter</li></ul>"
-		// + "In the other hand, <b>you will save some extra memory</b><br>"
-		// + "which can improve the performance for large datasets.<br>"
-		// + "Are you sure do you want to discart the data?</html>";
-		// int selectedOption = JOptionPane.showConfirmDialog(this, message,
-		// "Warning discarting filtered-out data!",
-		// JOptionPane.YES_NO_CANCEL_OPTION);
-		// if (selectedOption == JOptionPane.YES_OPTION) {
-
-		Runtime.getRuntime().gc();
-		jMenuFilters.show(false);
-		jButtonDiscardFilteredData.setEnabled(false);
-		// }
 	}
 
 	private void jCheckBoxMenuItemPeptideLenthFilterActionPerformed(java.awt.event.ActionEvent evt) {
@@ -4046,7 +4038,6 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	private javax.swing.ButtonGroup buttonGroup2;
 	private javax.swing.ButtonGroup buttonGroupDecoyPrefix;
 	private javax.swing.ButtonGroup buttonGroupThresholds;
-	private javax.swing.JButton jButtonDiscardFilteredData;
 	private javax.swing.JButton jButtonExport2Excel;
 	private javax.swing.JButton jButtonExport2PRIDE;
 	private javax.swing.JButton jButtonSaveAsFiltered;
@@ -4089,6 +4080,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	private javax.swing.JSeparator jSeparator2;
 	private javax.swing.JTextArea jTextAreaStatus;
 	private AdditionalOptionsPanelFactory additionalOptionsPanelFactory;
+	private JButton jButtonCancel;
 
 	// End of variables declaration//GEN-END:variables
 
@@ -4141,12 +4133,14 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			String notificacion = evt.getNewValue().toString();
 			appendStatus(notificacion);
 		} else if (DataLoaderTask.DATA_LOADED_START.equals(evt.getPropertyName())) {
+			jButtonCancel.setEnabled(true);
 			appendStatus("Reading project data...");
-			appendStatus("Depending on the size of the data, it can take a few minutes...");
+			appendStatus("Depending on the size of the data, it can take a few seconds or a couple of minutes...");
 			setEmptyChart();
 			disableControls(false);
 			setProgressBarIndeterminate(true);
 		} else if (DataLoaderTask.DATA_LOADED_DONE.equals(evt.getPropertyName())) {
+			jButtonCancel.setEnabled(false);
 			errorLoadingData = false;
 			disableControls(true);
 			if (experimentList != null)
@@ -4174,6 +4168,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			jButtonExport2PRIDE.setEnabled(true);
 
 		} else if (DataLoaderTask.DATA_LOADED_ERROR.equals(evt.getPropertyName())) {
+			jButtonCancel.setEnabled(false);
 			errorLoadingData = true;
 			String erromessage = (String) evt.getNewValue();
 			setProgressBarIndeterminate(false);
@@ -4190,6 +4185,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			dispose();
 		} else if (ChartCreatorTask.CHART_GENERATED.equals(evt.getPropertyName())
 				|| ChartCreatorTask.CHART_ERROR_GENERATED.equals(evt.getPropertyName())) {
+			jButtonCancel.setEnabled(false);
 			jPanelChart.removeAll();
 			jPanelChart.setLayout(new GridBagLayout());
 			GridBagConstraints c = new GridBagConstraints();
@@ -4261,12 +4257,10 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			disableControls(true);
 			updateControlStates();
 			if (!filterDialog.getFilters().isEmpty()) {
-				jButtonDiscardFilteredData.setEnabled(true);
 				jButtonSeeAppliedFilters.setEnabled(true);
 				jButtonSaveAsFiltered.setEnabled(true);
 
 			} else {
-				jButtonDiscardFilteredData.setEnabled(false);
 				jButtonSeeAppliedFilters.setEnabled(false);
 				jButtonSaveAsFiltered.setEnabled(false);
 			}
@@ -4281,10 +4275,12 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			String memoryUsage = (String) evt.getNewValue();
 			jProgressBarMemoryUsage.setString("Memory usage: " + memoryUsage);
 		} else if (CuratedExperimentSaver.CURATED_EXP_SAVER_START.equals(evt.getPropertyName())) {
+			jButtonCancel.setEnabled(true);
 			appendStatus("Saving experiment(s) as curated...");
 			appendStatus("This task will be performed in background");
 			jButtonSaveAsFiltered.setEnabled(false);
 		} else if (CuratedExperimentSaver.CURATED_EXP_SAVER_END.equals(evt.getPropertyName())) {
+			jButtonCancel.setEnabled(false);
 			setProgressBarIndeterminate(false);
 			jProgressBar.setString("");
 			jProgressBar.setValue(0);
@@ -4292,6 +4288,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			jButtonSaveAsFiltered.setEnabled(true);
 
 		} else if (CuratedExperimentSaver.CURATED_EXP_SAVER_ERROR.equals(evt.getPropertyName())) {
+			jButtonCancel.setEnabled(false);
 			setProgressBarIndeterminate(false);
 			jProgressBar.setString("");
 			appendStatus("Error saving curated experiments: " + evt.getNewValue());

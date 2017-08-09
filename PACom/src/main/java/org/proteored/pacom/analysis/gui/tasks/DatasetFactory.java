@@ -2996,8 +2996,6 @@ public class DatasetFactory {
 
 				}
 			}
-			if (chromosomeName.equals("16"))
-				log.info(numProteinsToCount + " proteins valid in chr16");
 
 			numGenes = genes.size();
 
@@ -3024,8 +3022,9 @@ public class DatasetFactory {
 			}
 		}
 		if (onlyOneIdSet && totalNum == 0)
-			throw new IllegalMiapeArgumentException(
-					"<html>No proteins have been mapped to any human chromosome.<br>Note that this mapping is made from uniprot entries<br>so check if your proteins has the uniprot accession or not.</html>");
+			throw new IllegalMiapeArgumentException("<html>No proteins have been mapped to any human chromosome.<br>"
+					+ "Note that this mapping is made from uniprot entries<br>"
+					+ "so check if your proteins has the uniprot accession and are human proteins.</html>");
 
 		return dataset;
 	}

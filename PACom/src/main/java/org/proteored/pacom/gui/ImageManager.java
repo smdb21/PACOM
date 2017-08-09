@@ -53,7 +53,7 @@ public class ImageManager {
 	public static final String PEX = "pex.png";
 	public static final String FOLDER = "folder.png";
 	public static final String EXCEL_TABLE = "excel_table.png";
-
+	public static final String EXCEL_TABLE_CLICKED = "excel_table_clicked.png";
 	private static final ClassLoader cl = ImageManager.class.getClassLoader();
 	public static final String SPECTRUM = "spectrum.jpg";
 	public static final String PRIDE = "pride_logo_muypeq.jpg";

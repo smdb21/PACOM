@@ -28,6 +28,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker.StateValue;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.TitledBorder;
 
 import org.apache.log4j.Logger;
 import org.jfree.ui.RefineryUtilities;
@@ -391,7 +392,7 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
 						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
-		jPanelStatus.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+		jPanelStatus.setBorder(new TitledBorder(null, "Status", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 
 		jScrollPane3.setToolTipText("Status");
 		jScrollPane3.setAutoscrolls(true);
@@ -408,52 +409,50 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 		jProgressBar1.setStringPainted(true);
 
 		javax.swing.GroupLayout jPanelStatusLayout = new javax.swing.GroupLayout(jPanelStatus);
-		jPanelStatus.setLayout(jPanelStatusLayout);
-		jPanelStatusLayout.setHorizontalGroup(jPanelStatusLayout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelStatusLayout.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(jPanelStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-								.addComponent(jProgressBar1, javax.swing.GroupLayout.Alignment.LEADING,
-										javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
-								.addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING,
-										javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE))
+		jPanelStatusLayout.setHorizontalGroup(jPanelStatusLayout.createParallelGroup(Alignment.TRAILING)
+				.addGroup(jPanelStatusLayout.createSequentialGroup().addContainerGap()
+						.addGroup(jPanelStatusLayout.createParallelGroup(Alignment.TRAILING)
+								.addComponent(jScrollPane3, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 231,
+										Short.MAX_VALUE)
+								.addComponent(jProgressBar1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 231,
+										Short.MAX_VALUE))
 						.addContainerGap()));
-		jPanelStatusLayout
-				.setVerticalGroup(jPanelStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(jPanelStatusLayout.createSequentialGroup().addContainerGap()
-								.addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 22,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+		jPanelStatusLayout.setVerticalGroup(jPanelStatusLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(jPanelStatusLayout.createSequentialGroup().addContainerGap()
+						.addComponent(jScrollPane3, GroupLayout.PREFERRED_SIZE, 149, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(jProgressBar1, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+		jPanelStatus.setLayout(jPanelStatusLayout);
 
 		javax.swing.GroupLayout jPanelLeftLayout = new javax.swing.GroupLayout(jPanelLeft);
-		jPanelLeftLayout.setHorizontalGroup(jPanelLeftLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanelLeftLayout.createSequentialGroup()
-						.addGroup(jPanelLeftLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(jPanelOptions, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)
-								.addComponent(jPanelStatus, GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
-								.addGroup(Alignment.TRAILING,
-										jPanelLeftLayout.createSequentialGroup().addContainerGap().addComponent(
-												jPanelFilterByColumn, GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)))
+		jPanelLeftLayout.setHorizontalGroup(
+				jPanelLeftLayout.createParallelGroup(Alignment.TRAILING).addGroup(jPanelLeftLayout
+						.createSequentialGroup().addGroup(jPanelLeftLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(jPanelLeftLayout.createSequentialGroup().addContainerGap()
+										.addComponent(jPanelOptions, GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE))
+								.addGroup(jPanelLeftLayout.createSequentialGroup().addContainerGap()
+										.addGroup(jPanelLeftLayout.createParallelGroup(Alignment.LEADING)
+												.addComponent(jPanelStatus, Alignment.TRAILING,
+														GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
+												.addComponent(jPanelFilterByColumn, GroupLayout.DEFAULT_SIZE, 259,
+														Short.MAX_VALUE))))
 						.addContainerGap()));
 		jPanelLeftLayout.setVerticalGroup(jPanelLeftLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanelLeftLayout.createSequentialGroup().addGap(13)
+				.addGroup(jPanelLeftLayout.createSequentialGroup().addContainerGap()
 						.addComponent(jPanelOptions, GroupLayout.PREFERRED_SIZE, 314, GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addComponent(jPanelFilterByColumn, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 								GroupLayout.PREFERRED_SIZE)
-						.addGap(32)
-						.addComponent(jPanelStatus, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addGap(104)));
+						.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(jPanelStatus, GroupLayout.PREFERRED_SIZE, 170, GroupLayout.PREFERRED_SIZE)
+						.addContainerGap()));
 		jPanelLeft.setLayout(jPanelLeftLayout);
 
 		getContentPane().add(jPanelLeft, java.awt.BorderLayout.WEST);
 
 		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds((screenSize.width - 863) / 2, (screenSize.height - 618) / 2, 299, 624);
+		setBounds((screenSize.width - 863) / 2, (screenSize.height - 618) / 2, 301, 567);
 	}// </editor-fold>
 
 	protected void exportTSV() {
@@ -652,8 +651,9 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 			jProgressBar1.setValue(0);
 			scrollablePanel.initializeSorter();
 			scrollablePanel.getTable().repaint();
-			appendStatus("Loading cancelled.");
 			appendStatus(num + " rows where loaded.");
+			appendStatus("Table loading cancelled.");
+
 			applyFilters();
 		} else if (evt.getPropertyName().equals(JTableLoader.PROTEIN_SEQUENCE_RETRIEVAL)) {
 			appendStatus("Retrieving information from uniprotKB...");

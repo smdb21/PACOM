@@ -313,7 +313,7 @@ public class FileManager {
 	 * @return
 	 */
 	public static String getMiapeMSICuratedXMLFilePathFromMiapeInformation(CPMSI cpMsi) {
-		return getMiapeMSICuratedXMLFilePathFromFullName(cpMsi.getLocalProjectName(), cpMsi.getName());
+		return getMiapeMSICuratedXMLFilePathFromMiapeInformation(cpMsi.getLocalProjectName(), cpMsi.getName());
 	}
 
 	public static String getMiapeMSICuratedXMLFilePathFromMiapeInformation(String projectName, String name) {

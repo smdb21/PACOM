@@ -82,6 +82,7 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 			}
 			running = true;
 		}
+		firePropertyChange(DATA_EXPORTING_STARTING, null, null);
 		if (this.idSets.isEmpty()) {
 			return this.table;
 		}
@@ -238,7 +239,6 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 					for (IdentificationSet idSet : idSets) {
 						total += idSet.getProteinGroupOccurrenceList().size();
 					}
-					firePropertyChange(DATA_EXPORTING_STARTING, null, total);
 					for (IdentificationSet idSet : idSets) {
 						final Collection<ProteinGroupOccurrence> proteinOccurrenceSet = idSet
 								.getProteinGroupOccurrenceList().values();

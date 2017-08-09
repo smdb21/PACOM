@@ -962,6 +962,14 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 				if (jTreeProject.isOnlyOneNodeSelected(REPLICATE_LEVEL)) {
 
 					DefaultMutableTreeNode replicateNode = jTreeProject.getSelectedNode();
+					// check if the experiment node is curated. If so, throw
+					// exception
+					CPExperiment experiment = (CPExperiment) ((DefaultMutableTreeNode) replicateNode.getParent())
+							.getUserObject();
+					if (experiment.isCurated()) {
+						throw new IllegalMiapeArgumentException(
+								"A non curated dataset cannot be added to a curated experiment");
+					}
 					CPReplicate cpReplicate = (CPReplicate) replicateNode.getUserObject();
 					// String miapeNodeName = getMIAPENodeNameFromTemplate();
 
@@ -1002,9 +1010,10 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 				} else if (jTreeProject.isOnlyOneNodeSelected(EXPERIMENT_LEVEL)) {
 					DefaultMutableTreeNode experimentNode = jTreeProject.getSelectedNode();
 					CPExperiment cpExp = (CPExperiment) experimentNode.getUserObject();
-					if (cpExp.isCurated())
+					if (cpExp.isCurated()) {
 						throw new IllegalMiapeArgumentException(
 								"A non curated dataset cannot be added to a curated experiment");
+					}
 					// add replicate node
 					String defaultReplicateName = getMIAPENodeNameFromTemplate();
 					CPReplicate cpRep = new CPReplicate();
