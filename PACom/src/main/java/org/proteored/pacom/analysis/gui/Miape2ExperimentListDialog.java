@@ -1937,8 +1937,8 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 			}
 
 		}
-		log.info("Released:'" + newExpName + "'");
-		log.info("Char = " + keyChar + " CODE = " + keyCode);
+		log.debug("Released:'" + newExpName + "'");
+		log.debug("Char = " + keyChar + " CODE = " + keyCode);
 	}
 
 	private void jButtonAddReplicateActionPerformed(java.awt.event.ActionEvent evt) {

@@ -5,6 +5,7 @@
 package org.proteored.pacom.analysis.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -19,18 +20,19 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -81,6 +83,7 @@ import org.proteored.miapeapi.experiment.model.filters.ScoreFilter;
 import org.proteored.miapeapi.experiment.model.sort.ProteinComparatorKey;
 import org.proteored.miapeapi.experiment.model.sort.ProteinGroupComparisonType;
 import org.proteored.miapeapi.experiment.model.sort.SorterUtil;
+import org.proteored.pacom.analysis.charts.VennChart;
 import org.proteored.pacom.analysis.charts.WordCramChart;
 import org.proteored.pacom.analysis.conf.ExperimentListAdapter;
 import org.proteored.pacom.analysis.conf.jaxb.CPExperimentList;
@@ -94,6 +97,7 @@ import org.proteored.pacom.analysis.gui.tasks.CuratedExperimentSaver;
 import org.proteored.pacom.analysis.gui.tasks.DataLoaderTask;
 import org.proteored.pacom.analysis.gui.tasks.MemoryCheckerTask;
 import org.proteored.pacom.analysis.util.DataLevel;
+import org.proteored.pacom.analysis.util.DoSomethingToChangeColorInChart;
 import org.proteored.pacom.analysis.util.ImageUtils;
 import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.gui.MainFrame;
@@ -1739,13 +1743,13 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		c.gridy++;
 
 		if (options.equals(ChartManagerFrame.ONE_CHART_PER_EXPERIMENT)) {
-			jPanelAddOptions.add(optionsFactory.getExperimentsCheckboxes(false, 2), c);
+			jPanelAddOptions.add(optionsFactory.getExperimentsCheckboxes(false, 2, false, null), c);
 		} else if (options.equals(ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT)) {
-			jPanelAddOptions.add(optionsFactory.getExperimentsCheckboxes(false, 2), c);
+			jPanelAddOptions.add(optionsFactory.getExperimentsCheckboxes(false, 2, false, null), c);
 		} else if (options.equals(ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST)) {
-			jPanelAddOptions.add(optionsFactory.getExperimentsCheckboxes(false, 2), c);
+			jPanelAddOptions.add(optionsFactory.getExperimentsCheckboxes(false, 2, false, null), c);
 		} else if (options.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
-			jPanelAddOptions.add(optionsFactory.getReplicatesCheckboxes(false, false, 2), c);
+			jPanelAddOptions.add(optionsFactory.getReplicatesCheckboxes(false, false, 2, false, null), c);
 		}
 
 		jPanelAddOptions.repaint();
@@ -1823,11 +1827,11 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			panel.add(label, c);
 			JPanel checkboxesPanel = null;
 			if (ONE_CHART_PER_EXPERIMENT.equals(options)) {
-				checkboxesPanel = optionsFactory.getReplicatesCheckboxes(true, false, 2);
+				checkboxesPanel = optionsFactory.getReplicatesCheckboxes(true, false, 2, false, null);
 			} else if (ONE_SERIES_PER_EXPERIMENT.equals(options)) {
-				checkboxesPanel = optionsFactory.getExperimentsCheckboxes(false, 2);
+				checkboxesPanel = optionsFactory.getExperimentsCheckboxes(false, 2, false, null);
 			} else if (ONE_SERIES_PER_REPLICATE.equals(options)) {
-				checkboxesPanel = optionsFactory.getReplicatesCheckboxes(false, false, 2);
+				checkboxesPanel = optionsFactory.getReplicatesCheckboxes(false, false, 2, false, null);
 			}
 
 			c.gridy++;
@@ -1863,11 +1867,11 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			panel.add(label, c);
 			JPanel checkboxesPanel = null;
 			if (ONE_CHART_PER_EXPERIMENT.equals(options)) {
-				checkboxesPanel = optionsFactory.getReplicatesCheckboxes(true, false, 2);
+				checkboxesPanel = optionsFactory.getReplicatesCheckboxes(true, false, 2, false, null);
 			} else if (ONE_SERIES_PER_EXPERIMENT.equals(options)) {
-				checkboxesPanel = optionsFactory.getExperimentsCheckboxes(false, 2);
+				checkboxesPanel = optionsFactory.getExperimentsCheckboxes(false, 2, false, null);
 			} else if (ONE_SERIES_PER_REPLICATE.equals(options)) {
-				checkboxesPanel = optionsFactory.getReplicatesCheckboxes(false, false, 2);
+				checkboxesPanel = optionsFactory.getReplicatesCheckboxes(false, false, 2, false, null);
 			}
 
 			c.gridy++;
@@ -2062,11 +2066,11 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			panel.add(label, c);
 			JPanel checkboxesPanel = null;
 			if (ONE_CHART_PER_EXPERIMENT.equals(options)) {
-				checkboxesPanel = optionsFactory.getReplicatesCheckboxes(true, false, 3);
+				checkboxesPanel = optionsFactory.getReplicatesCheckboxes(true, false, 3, false, null);
 			} else if (ONE_SERIES_PER_EXPERIMENT.equals(options)) {
-				checkboxesPanel = optionsFactory.getExperimentsCheckboxes(false, 3);
+				checkboxesPanel = optionsFactory.getExperimentsCheckboxes(false, 3, false, null);
 			} else if (ONE_SERIES_PER_REPLICATE.equals(options)) {
-				checkboxesPanel = optionsFactory.getReplicatesCheckboxes(false, false, 3);
+				checkboxesPanel = optionsFactory.getReplicatesCheckboxes(false, false, 3, false, null);
 			}
 
 			if (checkboxesPanel != null) {
@@ -2331,11 +2335,11 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			panel.add(label, c);
 			JPanel checkboxesPanel = null;
 			if (ONE_CHART_PER_EXPERIMENT.equals(options)) {
-				checkboxesPanel = optionsFactory.getReplicatesCheckboxes(true, false, 3);
+				checkboxesPanel = optionsFactory.getReplicatesCheckboxes(true, false, 3, false, null);
 			} else if (ONE_SERIES_PER_EXPERIMENT.equals(options)) {
-				checkboxesPanel = optionsFactory.getExperimentsCheckboxes(false, 3);
+				checkboxesPanel = optionsFactory.getExperimentsCheckboxes(false, 3, false, null);
 			} else if (ONE_SERIES_PER_REPLICATE.equals(options)) {
-				checkboxesPanel = optionsFactory.getReplicatesCheckboxes(false, false, 3);
+				checkboxesPanel = optionsFactory.getReplicatesCheckboxes(false, false, 3, false, null);
 			}
 
 			if (checkboxesPanel != null) {
@@ -2843,11 +2847,11 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			panel.add(label, c);
 			JPanel checkboxesPanel = null;
 			if (ONE_CHART_PER_EXPERIMENT.equals(options)) {
-				checkboxesPanel = optionsFactory.getReplicatesCheckboxes(true, false, 3);
+				checkboxesPanel = optionsFactory.getReplicatesCheckboxes(true, false, 3, false, null);
 			} else if (ONE_SERIES_PER_EXPERIMENT.equals(options)) {
-				checkboxesPanel = optionsFactory.getExperimentsCheckboxes(false, 3);
+				checkboxesPanel = optionsFactory.getExperimentsCheckboxes(false, 3, false, null);
 			} else if (ONE_SERIES_PER_REPLICATE.equals(options)) {
-				checkboxesPanel = optionsFactory.getReplicatesCheckboxes(false, false, 3);
+				checkboxesPanel = optionsFactory.getReplicatesCheckboxes(false, false, 3, false, null);
 			}
 
 			c.gridy++;
@@ -2948,8 +2952,14 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 	private void addOverlappingControlsChartPerExperiment(Integer numberOfSelectedCheckBoxes,
 			boolean selectAllCheckBoxes) {
-		jPanelAddOptions.setLayout(new BoxLayout(jPanelAddOptions, BoxLayout.PAGE_AXIS));
-
+		// jPanelAddOptions.setLayout(new BoxLayout(jPanelAddOptions,
+		// BoxLayout.PAGE_AXIS));
+		jPanelAddOptions.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.WEST;
+		c.insets = new Insets(5, 0, 5, 0);
+		c.gridx = 0;
+		c.gridy = 0;
 		// Just in case of proteins
 
 		log.info("Creating list of replicates...");
@@ -2959,24 +2969,32 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		if (numberOfSelectedCheckBoxes.equals(Integer.MAX_VALUE)) {
 			JLabel label = new JLabel(
 					"<html>Number of identifications that are detected <b>just</b> <br>in each set.</html>");
-			jPanelAddOptions.add(label);
+			jPanelAddOptions.add(label, c);
+			c.gridy++;
 		}
 		if (PROTEIN_OVERLAPING.equals(currentChartType) || EXCLUSIVE_PROTEIN_NUMBER.equals(currentChartType)
 				|| PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
-			jPanelAddOptions.add(new JLabel("Two groups are equals if (select one option):"));
+			jPanelAddOptions.add(new JLabel("Two groups are equals if (select one option):"), c);
+			c.gridy++;
 			// take into account just one protein per group
-			jPanelAddOptions.add(optionsFactory.getJcheckBoxOneProteinPerGroup());
+			jPanelAddOptions.add(optionsFactory.getJcheckBoxOneProteinPerGroup(), c);
+			c.gridy++;
 		}
 		if (EXCLUSIVE_PROTEIN_NUMBER.equals(currentChartType) || EXCLUSIVE_PEPTIDE_NUMBER.equals(currentChartType)) {
-			jPanelAddOptions.add(optionsFactory.getAccumulativeTrendCheckBox());
+			jPanelAddOptions.add(optionsFactory.getAccumulativeTrendCheckBox(), c);
+			c.gridy++;
 		}
 		if (PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
-			jPanelAddOptions.add(optionsFactory.getBinsPanel());
-			jPanelAddOptions.add(optionsFactory.getHistogramTypePanel());
+			jPanelAddOptions.add(optionsFactory.getBinsPanel(), c);
+			c.gridy++;
+			jPanelAddOptions.add(optionsFactory.getHistogramTypePanel(), c);
+			c.gridy++;
 		}
-		jPanelAddOptions.add(new JLabel("<html><br></html>"));
-		jPanelAddOptions.add(new JLabel("Select from the following checkBoxes:"));
-		jPanelAddOptions.add(optionsFactory.getReplicatesCheckboxes(true, selectAllCheckBoxes, 0));
+		jPanelAddOptions.add(new JLabel("Select from the following checkBoxes:"), c);
+		c.gridy++;
+		jPanelAddOptions.add(optionsFactory.getReplicatesCheckboxes(true, selectAllCheckBoxes, 0, true,
+				getMethodToUpdateColorInChart()), c);
+		c.gridy++;
 
 		if (!numberOfSelectedCheckBoxes.equals(Integer.MAX_VALUE)
 				&& !PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
@@ -2988,76 +3006,110 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 					saveOverlappingImages();
 				}
 			});
-			jPanelAddOptions.add(jbuttonSave);
+			jPanelAddOptions.add(jbuttonSave, c);
+			c.gridy++;
 			JLabel jLabelIntersectionsText = optionsFactory.getJLabelIntersectionsText();
 			jLabelIntersectionsText.setText(null);
-			jPanelAddOptions.add(jLabelIntersectionsText);
+			jPanelAddOptions.add(jLabelIntersectionsText, c);
+			c.gridy++;
 
 			// add the buttons per chart (in chart per experiment there is one
 			// graph per experiment
-			String option = (String) jComboBoxChartOptions.getSelectedItem();
 			List<String> experimentNames = new ArrayList<String>();
-			if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-				for (Experiment experiment : experimentList.getExperiments()) {
-					experimentNames.add(experiment.getFullName());
-				}
-			} else {
-				// add null
-				experimentNames.add(null);
+			Map<String, Integer> numReplicatesPerExperiment = new HashMap<String, Integer>();
+
+			for (Experiment experiment : experimentList.getExperiments()) {
+				experimentNames.add(experiment.getFullName());
+				numReplicatesPerExperiment.put(experiment.getFullName(), experiment.getNumReplicates());
 			}
+
+			String overlapString = null;
 			// loop over the experiment names
 			for (String experimentName : experimentNames) {
-				String labelString = "Export buttons:";
-				if (experimentName != null) {
-					labelString = "Export buttons for '" + experimentName + "':";
-				}
-				JLabel labelExperiment = new JLabel(labelString);
-				jPanelAddOptions.add(labelExperiment);
-				String overlapString = "A,B";
-				// export just in 1 button
-				JButton jbuttonExportJustIn1 = new JButton("Export just in A");
-				jbuttonExportJustIn1.addActionListener(new java.awt.event.ActionListener() {
-					@Override
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						exportJustIn1(experimentName);
+				int numDatasets = numReplicatesPerExperiment.get(experimentName);
+				if (numDatasets > 1) {
+					String labelString = "Export buttons:";
+					if (experimentName != null) {
+						labelString = "Export buttons for '" + experimentName + "':";
 					}
-				});
-				jPanelAddOptions.add(jbuttonExportJustIn1);
-				// export just in 2 button
-				JButton jbuttonExportJustIn2 = new JButton("Export just in B");
-				jbuttonExportJustIn2.addActionListener(new java.awt.event.ActionListener() {
-					@Override
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						exportJustIn2(experimentName);
-					}
-				});
-				jPanelAddOptions.add(jbuttonExportJustIn2);
-
-				if (numberOfSelectedCheckBoxes > 2) {
-					overlapString += ",C";
-					// export just in 3 button
-					JButton jbuttonExportJustIn3 = new JButton("Export just in C");
-					jbuttonExportJustIn3.addActionListener(new java.awt.event.ActionListener() {
+					JLabel labelExperiment = new JLabel(labelString);
+					jPanelAddOptions.add(labelExperiment, c);
+					c.gridy++;
+					overlapString = "A,B";
+					// export just in 1 button
+					JButton jbuttonExportJustIn1 = new JButton("Export just in A");
+					jbuttonExportJustIn1.addActionListener(new java.awt.event.ActionListener() {
 						@Override
 						public void actionPerformed(java.awt.event.ActionEvent evt) {
-							exportJustIn3(experimentName);
+							exportJustIn1(experimentName);
 						}
 					});
-					jPanelAddOptions.add(jbuttonExportJustIn3);
+					jPanelAddOptions.add(jbuttonExportJustIn1, c);
+					c.gridy++;
+					// export just in 2 button
+					JButton jbuttonExportJustIn2 = new JButton("Export just in B");
+					jbuttonExportJustIn2.addActionListener(new java.awt.event.ActionListener() {
+						@Override
+						public void actionPerformed(java.awt.event.ActionEvent evt) {
+							exportJustIn2(experimentName);
+						}
+					});
+					jPanelAddOptions.add(jbuttonExportJustIn2, c);
+					c.gridy++;
 				}
-				// export overlapped button
-				JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
-				jbuttonExportOverlap.addActionListener(new java.awt.event.ActionListener() {
-					@Override
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						exportOverlapped(experimentName);
+				if (numDatasets > 2) {
+					if (numberOfSelectedCheckBoxes > 2) {
+						overlapString += ",C";
+						// export just in 3 button
+						JButton jbuttonExportJustIn3 = new JButton("Export just in C");
+						jbuttonExportJustIn3.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent evt) {
+								exportJustIn3(experimentName);
+							}
+						});
+						jPanelAddOptions.add(jbuttonExportJustIn3, c);
+						c.gridy++;
 					}
-				});
-				jPanelAddOptions.add(jbuttonExportOverlap);
+					// export overlapped button
+					JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
+					jbuttonExportOverlap.addActionListener(new java.awt.event.ActionListener() {
+						@Override
+						public void actionPerformed(java.awt.event.ActionEvent evt) {
+							exportOverlapped(experimentName);
+						}
+					});
+					jPanelAddOptions.add(jbuttonExportOverlap, c);
+					c.gridy++;
+				}
 			}
 		}
 
 		jPanelAddOptions.repaint();
+	}
+
+	private DoSomethingToChangeColorInChart getMethodToUpdateColorInChart() {
+		DoSomethingToChangeColorInChart ret = new DoSomethingToChangeColorInChart() {
+
+			@Override
+			public Void doSomething(String experimentName, String idSetName, Color color) {
+				VennChart vennChart = chartCreator.getVennChart(experimentName);
+				if (vennChart != null) {
+					// set color
+					vennChart.setColorToSeries(idSetName, color);
+					// change venn diagram with the new colors
+					try {
+						vennChart.updateChart();
+
+					} catch (MalformedURLException e) {
+						e.printStackTrace();
+						throw new IllegalMiapeArgumentException(e.getMessage());
+					}
+				}
+				return null;
+			}
+		};
+		return ret;
 	}
 
 	/**
@@ -3337,8 +3389,14 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 	private void addOverlappingControlsSeriePerReplicate(Integer numberOfSelectedCheckBoxes,
 			boolean selectAllCheckBoxes) {
-		jPanelAddOptions.setLayout(new BoxLayout(jPanelAddOptions, BoxLayout.PAGE_AXIS));
-
+		// jPanelAddOptions.setLayout(new BoxLayout(jPanelAddOptions,
+		// BoxLayout.PAGE_AXIS));
+		jPanelAddOptions.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.WEST;
+		c.insets = new Insets(5, 0, 5, 0);
+		c.gridx = 0;
+		c.gridy = 0;
 		log.info("Creating list of replicates...");
 
 		if (numberOfSelectedCheckBoxes == null)
@@ -3346,28 +3404,38 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		if (numberOfSelectedCheckBoxes.equals(Integer.MAX_VALUE)) {
 			JLabel label = new JLabel(
 					"<html>Number of identifications that are detected<br><b>just</b> in each set.</html>");
-			jPanelAddOptions.add(label);
+			jPanelAddOptions.add(label, c);
+			c.gridy++;
 		}
 		// Just in case of proteins
 		if (PROTEIN_OVERLAPING.equals(currentChartType) || EXCLUSIVE_PROTEIN_NUMBER.equals(currentChartType)
 				|| PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
-			jPanelAddOptions.add(new JLabel("Two groups are equals if (select one option):"));
+			jPanelAddOptions.add(new JLabel("Two groups are equals if (select one option):"), c);
+			c.gridy++;
 			// take into account just one protein per group
-			jPanelAddOptions.add(optionsFactory.getJcheckBoxOneProteinPerGroup());
+			jPanelAddOptions.add(optionsFactory.getJcheckBoxOneProteinPerGroup(), c);
+			c.gridy++;
 		}
 		if (EXCLUSIVE_PROTEIN_NUMBER.equals(currentChartType) || EXCLUSIVE_PEPTIDE_NUMBER.equals(currentChartType)) {
-			jPanelAddOptions.add(optionsFactory.getAccumulativeTrendCheckBox());
+			jPanelAddOptions.add(optionsFactory.getAccumulativeTrendCheckBox(), c);
+			c.gridy++;
 		}
 
 		if (PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
-			jPanelAddOptions.add(optionsFactory.getBinsPanel());
-			jPanelAddOptions.add(optionsFactory.getHistogramTypePanel());
+			jPanelAddOptions.add(optionsFactory.getBinsPanel(), c);
+			c.gridy++;
+			jPanelAddOptions.add(optionsFactory.getHistogramTypePanel(), c);
+			c.gridy++;
 		}
 
-		jPanelAddOptions.add(new JLabel("<html><br></html>"));
-		jPanelAddOptions.add(new JLabel("Select from the following checkBoxes:"));
+		// jPanelAddOptions.add(new JLabel("<html><br></html>"), c);
+		// c.gridy++;
+		jPanelAddOptions.add(new JLabel("Select from the following checkBoxes:"), c);
+		c.gridy++;
 
-		jPanelAddOptions.add(optionsFactory.getReplicatesCheckboxes(false, selectAllCheckBoxes, 0));
+		jPanelAddOptions.add(optionsFactory.getReplicatesCheckboxes(false, selectAllCheckBoxes, 0, true,
+				getMethodToUpdateColorInChart()), c);
+		c.gridy++;
 		if (!numberOfSelectedCheckBoxes.equals(Integer.MAX_VALUE)
 				&& !PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
 			// Add save image button
@@ -3378,53 +3446,71 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 					saveOverlappingImage();
 				}
 			});
-			jPanelAddOptions.add(jbuttonSave);
-			JLabel jLabelIntersectionsText = optionsFactory.getJLabelIntersectionsText();
-			jLabelIntersectionsText.setText(null);
-			jPanelAddOptions.add(jLabelIntersectionsText);
+			jPanelAddOptions.add(jbuttonSave, c);
+			c.gridy++;
 
-			JLabel labelExperiment = new JLabel("Export buttons:");
-			jPanelAddOptions.add(labelExperiment);
-			String overlapString = "A,B";
-			// export just in 1 button
-			JButton jbuttonExportJustIn1 = new JButton("Export just in A");
-			jbuttonExportJustIn1.addActionListener(new java.awt.event.ActionListener() {
-				@Override
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					exportJustIn1(null);
-				}
-			});
-			jPanelAddOptions.add(jbuttonExportJustIn1);
-			// export just in 2 button
-			JButton jbuttonExportJustIn2 = new JButton("Export just in B");
-			jbuttonExportJustIn2.addActionListener(new java.awt.event.ActionListener() {
-				@Override
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					exportJustIn2(null);
-				}
-			});
-			jPanelAddOptions.add(jbuttonExportJustIn2);
-			if (numberOfSelectedCheckBoxes > 2) {
-				overlapString += ",C";
-				// export just in 3 button
-				JButton jbuttonExportJustIn3 = new JButton("Export just in C");
-				jbuttonExportJustIn3.addActionListener(new java.awt.event.ActionListener() {
+			int numDatasets = 0;
+			for (Experiment experiment : experimentList.getExperiments()) {
+				numDatasets += experiment.getNumReplicates();
+			}
+			if (numDatasets > 1) {
+				String overlapString = "A,B";
+
+				JLabel jLabelIntersectionsText = optionsFactory.getJLabelIntersectionsText();
+				jLabelIntersectionsText.setText(null);
+				jPanelAddOptions.add(jLabelIntersectionsText, c);
+				c.gridy++;
+
+				JLabel labelExperiment = new JLabel("Export buttons:");
+				jPanelAddOptions.add(labelExperiment, c);
+				c.gridy++;
+				// export just in 1 button
+				JButton jbuttonExportJustIn1 = new JButton("Export just in A");
+				jbuttonExportJustIn1.addActionListener(new java.awt.event.ActionListener() {
 					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						exportJustIn3(null);
+						exportJustIn1(null);
 					}
 				});
-				jPanelAddOptions.add(jbuttonExportJustIn3);
-			}
-			// export overlapped button
-			JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
-			jbuttonExportOverlap.addActionListener(new java.awt.event.ActionListener() {
-				@Override
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					exportOverlapped(null);
+				jPanelAddOptions.add(jbuttonExportJustIn1, c);
+				c.gridy++;
+				// export just in 2 button
+				JButton jbuttonExportJustIn2 = new JButton("Export just in B");
+				jbuttonExportJustIn2.addActionListener(new java.awt.event.ActionListener() {
+					@Override
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						exportJustIn2(null);
+					}
+				});
+				jPanelAddOptions.add(jbuttonExportJustIn2, c);
+				c.gridy++;
+
+				if (numDatasets > 2) {
+					if (numberOfSelectedCheckBoxes > 2) {
+						overlapString += ",C";
+						// export just in 3 button
+						JButton jbuttonExportJustIn3 = new JButton("Export just in C");
+						jbuttonExportJustIn3.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent evt) {
+								exportJustIn3(null);
+							}
+						});
+						jPanelAddOptions.add(jbuttonExportJustIn3, c);
+						c.gridy++;
+					}
+					// export overlapped button
+					JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
+					jbuttonExportOverlap.addActionListener(new java.awt.event.ActionListener() {
+						@Override
+						public void actionPerformed(java.awt.event.ActionEvent evt) {
+							exportOverlapped(null);
+						}
+					});
+					jPanelAddOptions.add(jbuttonExportOverlap, c);
+					c.gridy++;
 				}
-			});
-			jPanelAddOptions.add(jbuttonExportOverlap);
+			}
 		}
 
 		jPanelAddOptions.repaint();
@@ -3432,36 +3518,51 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 	private void addOverlappingControlsSeriePerExperiment(Integer numberOfSelectedCheckBoxes,
 			boolean selectAllCheckBoxes) {
-		jPanelAddOptions.setLayout(new BoxLayout(jPanelAddOptions, BoxLayout.PAGE_AXIS));
-
+		// jPanelAddOptions.setLayout(new BoxLayout(jPanelAddOptions,
+		// BoxLayout.PAGE_AXIS));
+		jPanelAddOptions.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.WEST;
+		c.insets = new Insets(5, 0, 5, 0);
+		c.gridx = 0;
+		c.gridy = 0;
 		log.info("Creating list of replicates...");
 		if (numberOfSelectedCheckBoxes == null)
 			numberOfSelectedCheckBoxes = Integer.MAX_VALUE;
 		if (numberOfSelectedCheckBoxes.equals(Integer.MAX_VALUE)) {
 			JLabel label = new JLabel(
 					"<html>Number of identifications that are detected<br><b>just</b> in each set.</html>");
-			jPanelAddOptions.add(label);
+			jPanelAddOptions.add(label, c);
+			c.gridy++;
 		}
 
 		// Just in case of proteins
 		if (PROTEIN_OVERLAPING.equals(currentChartType) || EXCLUSIVE_PROTEIN_NUMBER.equals(currentChartType)
 				|| PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
-			jPanelAddOptions.add(new JLabel("Two groups are equals if (select one option):"));
+			jPanelAddOptions.add(new JLabel("Two groups are equals if (select one option):"), c);
+			c.gridy++;
 			// take into account just one protein per group
-			jPanelAddOptions.add(optionsFactory.getJcheckBoxOneProteinPerGroup());
+			jPanelAddOptions.add(optionsFactory.getJcheckBoxOneProteinPerGroup(), c);
+			c.gridy++;
 		}
 		if (EXCLUSIVE_PROTEIN_NUMBER.equals(currentChartType) || EXCLUSIVE_PEPTIDE_NUMBER.equals(currentChartType)) {
-			jPanelAddOptions.add(optionsFactory.getAccumulativeTrendCheckBox());
+			jPanelAddOptions.add(optionsFactory.getAccumulativeTrendCheckBox(), c);
+			c.gridy++;
 		}
 
 		if (PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
-			jPanelAddOptions.add(optionsFactory.getBinsPanel());
-			jPanelAddOptions.add(optionsFactory.getHistogramTypePanel());
+			jPanelAddOptions.add(optionsFactory.getBinsPanel(), c);
+			c.gridy++;
+			jPanelAddOptions.add(optionsFactory.getHistogramTypePanel(), c);
+			c.gridy++;
 		}
 
-		jPanelAddOptions.add(new JLabel("<html><br></html>"));
-		jPanelAddOptions.add(new JLabel("Select from the following checkBoxes:"));
-		jPanelAddOptions.add(optionsFactory.getExperimentsCheckboxes(selectAllCheckBoxes, 0));
+		jPanelAddOptions.add(new JLabel("Select from the following checkBoxes:"), c);
+		c.gridy++;
+		jPanelAddOptions.add(
+				optionsFactory.getExperimentsCheckboxes(selectAllCheckBoxes, 0, true, getMethodToUpdateColorInChart()),
+				c);
+		c.gridy++;
 		if (!numberOfSelectedCheckBoxes.equals(Integer.MAX_VALUE)
 				&& !PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
 			// Add save image button
@@ -3472,52 +3573,66 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 					saveOverlappingImage();
 				}
 			});
+
+			int numDatasets = experimentList.getNumExperiments();
 			String overlapString = "A,B";
-			jPanelAddOptions.add(jbuttonSave);
-			JLabel jLabelIntersectionsText = optionsFactory.getJLabelIntersectionsText();
-			optionsFactory.setIntersectionText(null);
-			jPanelAddOptions.add(jLabelIntersectionsText);
-			JLabel labelExperiment = new JLabel("Export buttons:");
-			jPanelAddOptions.add(labelExperiment);
-			// export just in 1 button
-			JButton jbuttonExportJustIn1 = new JButton("Export just in A");
-			jbuttonExportJustIn1.addActionListener(new java.awt.event.ActionListener() {
-				@Override
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					exportJustIn1(null);
-				}
-			});
-			jPanelAddOptions.add(jbuttonExportJustIn1);
-			// export just in 2 button
-			JButton jbuttonExportJustIn2 = new JButton("Export just in B");
-			jbuttonExportJustIn2.addActionListener(new java.awt.event.ActionListener() {
-				@Override
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					exportJustIn2(null);
-				}
-			});
-			jPanelAddOptions.add(jbuttonExportJustIn2);
-			if (numberOfSelectedCheckBoxes > 2) {
-				overlapString += ",C";
-				// export just in 3 button
-				JButton jbuttonExportJustIn3 = new JButton("Export just in C");
-				jbuttonExportJustIn3.addActionListener(new java.awt.event.ActionListener() {
+			if (numDatasets > 1) {
+				jPanelAddOptions.add(jbuttonSave, c);
+				c.gridy++;
+				JLabel jLabelIntersectionsText = optionsFactory.getJLabelIntersectionsText();
+				optionsFactory.setIntersectionText(null);
+				jPanelAddOptions.add(jLabelIntersectionsText, c);
+				c.gridy++;
+				JLabel labelExperiment = new JLabel("Export buttons:");
+				jPanelAddOptions.add(labelExperiment, c);
+				c.gridy++;
+				// export just in 1 button
+				JButton jbuttonExportJustIn1 = new JButton("Export just in A");
+				jbuttonExportJustIn1.addActionListener(new java.awt.event.ActionListener() {
 					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						exportJustIn3(null);
+						exportJustIn1(null);
 					}
 				});
-				jPanelAddOptions.add(jbuttonExportJustIn3);
-			}
-			// export overlapped button
-			JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
-			jbuttonExportOverlap.addActionListener(new java.awt.event.ActionListener() {
-				@Override
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					exportOverlapped(null);
+				jPanelAddOptions.add(jbuttonExportJustIn1, c);
+				c.gridy++;
+				// export just in 2 button
+				JButton jbuttonExportJustIn2 = new JButton("Export just in B");
+				jbuttonExportJustIn2.addActionListener(new java.awt.event.ActionListener() {
+					@Override
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						exportJustIn2(null);
+					}
+				});
+				jPanelAddOptions.add(jbuttonExportJustIn2, c);
+				c.gridy++;
+
+				if (numDatasets > 2) {
+					if (numberOfSelectedCheckBoxes > 2) {
+						overlapString += ",C";
+						// export just in 3 button
+						JButton jbuttonExportJustIn3 = new JButton("Export just in C");
+						jbuttonExportJustIn3.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent evt) {
+								exportJustIn3(null);
+							}
+						});
+						jPanelAddOptions.add(jbuttonExportJustIn3, c);
+						c.gridy++;
+					}
+					// export overlapped button
+					JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
+					jbuttonExportOverlap.addActionListener(new java.awt.event.ActionListener() {
+						@Override
+						public void actionPerformed(java.awt.event.ActionEvent evt) {
+							exportOverlapped(null);
+						}
+					});
+					jPanelAddOptions.add(jbuttonExportOverlap, c);
+					c.gridy++;
 				}
-			});
-			jPanelAddOptions.add(jbuttonExportOverlap);
+			}
 		}
 
 		jPanelAddOptions.repaint();

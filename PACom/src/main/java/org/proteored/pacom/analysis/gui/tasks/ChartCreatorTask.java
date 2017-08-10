@@ -63,7 +63,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	private String error;
 	private final AdditionalOptionsPanelFactory optionsFactory;
 	private final boolean countNonConclusiveProteins;
-	private final Map<String, VennData> vennDataMap = new THashMap<String, VennData>();
+	private final Map<String, VennChart> vennChartMap = new THashMap<String, VennChart>();
 
 	public ChartCreatorTask(ChartManagerFrame parent, String chartType, String optionParam,
 			ExperimentList experimentList) {
@@ -2432,7 +2432,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	// }
 
 	private Object showOverlappingChart(IdentificationItemEnum plotItem) {
-		this.vennDataMap.clear();
+		this.vennChartMap.clear();
 		parent.setInformation1(parent.getCurrentChartType() + " / " + plotItem);
 		IdentificationSet idSet1 = null;
 		String label1 = null;
@@ -2440,6 +2440,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		String label2 = null;
 		IdentificationSet idSet3 = null;
 		String label3 = null;
+		Color color1 = null;
+		Color color2 = null;
+		Color color3 = null;
 		final Map<String, JCheckBox> checkBoxControls = optionsFactory.getIdSetsJCheckBoxes();
 		// optionsFactory.setIntersectionText(null);
 		ProteinGroupComparisonType proteinSelection = null;
@@ -2456,12 +2459,18 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 						if (idSet1 == null) {
 							idSet1 = replicate;
 							label1 = replicate.getName();
+							color1 = optionsFactory.getIdSetsColors().get(repName);
 						} else if (idSet2 == null) {
 							idSet2 = replicate;
 							label2 = replicate.getName();
+							color2 = optionsFactory.getIdSetsColors().get(repName);
 						} else if (idSet3 == null) {
 							idSet3 = replicate;
 							label3 = replicate.getName();
+							color3 = optionsFactory.getIdSetsColors().get(repName);
+						} else {
+							throw new IllegalMiapeArgumentException(
+									"PACom can only represent Venn diagrams for up to 3 datasets");
 						}
 					}
 				}
@@ -2471,8 +2480,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			}
 			VennChart chart = new VennChart(parent.getChartTitle(chartType), idSet1, label1, idSet2, label2, idSet3,
 					label3, plotItem, parent.distinguishModifiedPeptides(), countNonConclusiveProteins,
-					proteinSelection);
-			this.vennDataMap.put(null, chart.getVennData());
+					proteinSelection, color1, color2, color3);
+
+			this.vennChartMap.put(null, chart);
 			String intersectionsText = chart.getIntersectionsText(null);
 			optionsFactory.setIntersectionText(intersectionsText);
 			return chart.getChartPanel();
@@ -2486,12 +2496,18 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 					if (idSet1 == null) {
 						idSet1 = experiment;
 						label1 = expName;
+						color1 = optionsFactory.getIdSetsColors().get(expName);
 					} else if (idSet2 == null) {
 						idSet2 = experiment;
 						label2 = expName;
+						color2 = optionsFactory.getIdSetsColors().get(expName);
 					} else if (idSet3 == null) {
 						idSet3 = experiment;
 						label3 = expName;
+						color3 = optionsFactory.getIdSetsColors().get(expName);
+					} else {
+						throw new IllegalMiapeArgumentException(
+								"PACom can only represent Venn diagrams for up to 3 datasets");
 					}
 				}
 			}
@@ -2500,22 +2516,24 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			}
 			VennChart chart = new VennChart(parent.getChartTitle(chartType), idSet1, label1, idSet2, label2, idSet3,
 					label3, plotItem, parent.distinguishModifiedPeptides(), countNonConclusiveProteins,
-					proteinSelection);
-			this.vennDataMap.put(null, chart.getVennData());
+					proteinSelection, color1, color2, color3);
+			this.vennChartMap.put(null, chart);
 			optionsFactory.setIntersectionText(chart.getIntersectionsText(null));
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
 			idSet1 = experimentList;
 			label1 = experimentList.getName();
+			color1 = optionsFactory.getIdSetsColors().get(idSet1.getFullName());
+
 			if (idSet1 == null) {
 				throw new IllegalMiapeArgumentException(
 						"Please, select another comparison level to have at least 2 datasets to show the diagram");
 			}
 			VennChart chart = new VennChart(parent.getChartTitle(chartType), idSet1, label1, idSet2, label2, idSet3,
 					label3, plotItem, parent.distinguishModifiedPeptides(), countNonConclusiveProteins,
-					proteinSelection);
-			this.vennDataMap.put(null, chart.getVennData());
+					proteinSelection, color1, color2, color3);
+			this.vennChartMap.put(null, chart);
 			optionsFactory.setIntersectionText(chart.getIntersectionsText(null));
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
@@ -2537,12 +2555,18 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 						if (idSet1 == null) {
 							idSet1 = replicate;
 							label1 = replicate.getName();
+							color1 = optionsFactory.getIdSetsColors().get(repName);
 						} else if (idSet2 == null) {
 							idSet2 = replicate;
 							label2 = replicate.getName();
+							color3 = optionsFactory.getIdSetsColors().get(repName);
 						} else if (idSet3 == null) {
 							idSet3 = replicate;
 							label3 = replicate.getName();
+							color3 = optionsFactory.getIdSetsColors().get(repName);
+						} else {
+							throw new IllegalMiapeArgumentException(
+									"PACom can only represent Venn diagrams for up to 3 datasets");
 						}
 					}
 				}
@@ -2556,8 +2580,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				}
 				VennChart chart = new VennChart(parent.getChartTitle(chartType) + " (" + experiment.getName() + ")",
 						idSet1, label1, idSet2, label2, idSet3, label3, plotItem, parent.distinguishModifiedPeptides(),
-						countNonConclusiveProteins, proteinSelection);
-				this.vennDataMap.put(experiment.getName(), chart.getVennData());
+						countNonConclusiveProteins, proteinSelection, color1, color2, color3);
+				this.vennChartMap.put(experiment.getName(), chart);
+
 				intersectionText += chart.getIntersectionsText(experiment.getName());
 				chartList.add(chart.getChartPanel());
 			}
@@ -3912,7 +3937,16 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	 * 
 	 */
 	public VennData getVennData(String experimentName) {
-		return this.vennDataMap.get(experimentName);
+		return this.vennChartMap.get(experimentName).getVennData();
+	}
+
+	/**
+	 * @param experimentName
+	 * @return
+	 * 
+	 */
+	public VennChart getVennChart(String experimentName) {
+		return this.vennChartMap.get(experimentName);
 	}
 
 	/**

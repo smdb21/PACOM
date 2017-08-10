@@ -1,6 +1,9 @@
 package org.proteored.pacom.analysis.charts;
 
+import java.awt.Color;
+import java.awt.Container;
 import java.awt.Image;
+import java.awt.Window;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +35,8 @@ import org.proteored.miapeapi.experiment.model.ProteinGroup;
 import org.proteored.miapeapi.experiment.model.sort.ProteinGroupComparisonType;
 import org.proteored.pacom.analysis.util.ImageUtils;
 
+import edu.scripps.yates.utilities.colors.ColorGenerator;
+
 public class VennChart {
 	private static final Logger log = Logger.getLogger("log4j.logger.org.proteored");
 	private Image image;
@@ -49,26 +54,36 @@ public class VennChart {
 	// };
 
 	private final org.proteored.miapeapi.experiment.VennData vennData;
+	private Color color1 = ColorGenerator.hex2Rgb("FF6342");
+	private Color color2 = ColorGenerator.hex2Rgb("ADDE63");
+	private Color color3 = ColorGenerator.hex2Rgb("63C6DE");
+	private String title;
+	private String label1;
+	private String label2;
+	private String label3;
 
 	public VennChart(String title, IdentificationSet idset1, String label1, IdentificationSet idset2, String label2,
 			IdentificationSet idset3, String label3, IdentificationItemEnum plotItem, Boolean distModPep,
-			Boolean countNonConclusiveProteins, ProteinGroupComparisonType proteinGroupComparisonType) {
+			Boolean countNonConclusiveProteins, ProteinGroupComparisonType proteinGroupComparisonType, Color color1,
+			Color color2, Color color3) {
 
 		if (title != null)
-			title = title.replace(" ", "%20");
+			this.title = title.replace(" ", "%20");
 		if (label1 != null)
-			label1 = label1.replace(" ", "%20");
+			this.label1 = label1.replace(" ", "%20");
 		if (label2 != null)
-			label2 = label2.replace(" ", "%20");
+			this.label2 = label2.replace(" ", "%20");
 		if (label3 != null)
-			label3 = label3.replace(" ", "%20");
+			this.label3 = label3.replace(" ", "%20");
 		if (idset1 != null)
 			name1 = idset1.getFullName();
 		if (idset2 != null)
 			name2 = idset2.getFullName();
 		if (idset3 != null)
 			name3 = idset3.getFullName();
-
+		setColor1(color1);
+		setColor2(color2);
+		setColor3(color3);
 		// experiment set
 		if (plotItem.equals(IdentificationItemEnum.PROTEIN)) {
 
@@ -83,10 +98,9 @@ public class VennChart {
 				proteinGroupOccurrenceList3 = idset3.getProteinGroupOccurrenceList().values();
 			this.vennData = new VennDataForProteins(proteinGroupOccurrenceList1, proteinGroupOccurrenceList2,
 					proteinGroupOccurrenceList3, proteinGroupComparisonType, countNonConclusiveProteins);
-			URL url;
+
 			try {
-				url = createChartURL(title, label1, label2, label3);
-				addPicture(url);
+				updateChart();
 				return;
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
@@ -105,18 +119,19 @@ public class VennChart {
 				pepList3 = idset3.getPeptideOccurrenceList(distModPep).values();// getPeptideHash(idset3,
 			// distModPep);
 			this.vennData = new VennDataForPeptides(pepList1, pepList2, pepList3);
-			URL url;
 			try {
-				// url = createChartURL(title, label1, list1, label2, list2,
-				// label3, list3);
-				url = createChartURL(title, label1, label2, label3);
-				addPicture(url);
+				updateChart();
 				return;
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 				throw new IllegalMiapeArgumentException(e.getMessage());
 			}
 		}
+	}
+
+	public void updateChart() throws MalformedURLException {
+		URL url = createChartURL(title, label1, label2, label3);
+		addPicture(url);
 	}
 
 	public Collection<Object> getJustIn1() {
@@ -165,6 +180,23 @@ public class VennChart {
 		sb.append("&chtt=" + title);
 		sb.append("&chds=0," + vennData.getMaxCollection().size());
 		sb.append("&chdlp=b&chma=|10,10");
+		// colors:
+		sb.append("&chco=");
+		if (label1 != null) {
+			sb.append(getRGBHEX(getColor1()));
+		}
+		if (label2 != null) {
+			if (label1 != null) {
+				sb.append(",");
+			}
+			sb.append(getRGBHEX(getColor2()));
+		}
+		if (label3 != null) {
+			if (label2 != null || label3 != null) {
+				sb.append(",");
+			}
+			sb.append(getRGBHEX(getColor3()));
+		}
 		log.info("URL created=" + sb.toString());
 		return new URL(sb.toString());
 		// return new URL(
@@ -172,6 +204,27 @@ public class VennChart {
 		// +
 		// "&cht=v&chl=Hello|World|asdf&chtt=Titulo");
 		// }
+	}
+
+	private String getRGBHEX(Color color) {
+
+		int transparency = color.getAlpha();
+		String format = String.format("%02x", transparency);
+		String replace = ColorGenerator.getHexString(color).replace("#", "");
+		String string = replace + format;
+		return string;
+	}
+
+	private Color getColor1() {
+		return color1;
+	}
+
+	private Color getColor2() {
+		return color2;
+	}
+
+	private Color getColor3() {
+		return color3;
 	}
 
 	private String getListString(String label, Collection list) {
@@ -255,19 +308,22 @@ public class VennChart {
 		Integer size3 = vennData.getSize3();
 		if (size1 != null) {
 			sb.append(size1);
+		} else {
+			sb.append(0);
 		}
+		sb.append(",");
 		if (size2 != null) {
-			if (size1 != null) {
-				sb.append(",");
-			}
 			sb.append(size2);
+		} else {
+			sb.append(0);
 		}
+		sb.append(",");
 		if (size3 != null) {
-			if (size1 != null || size2 != null) {
-				sb.append(",");
-			}
 			sb.append(size3);
+		} else {
+			sb.append(0);
 		}
+
 		// The fourth value specifies the size of the intersection of A and B.
 		if (size1 != null && size2 != null) {
 			this.intersection12 = vennData.getIntersection12Keys().size();
@@ -389,10 +445,20 @@ public class VennChart {
 		// this.pictureScrollPane = new JScrollPane(picture);
 		// this.pictureScrollPane.setPreferredSize(new Dimension(500, 500));
 		// this.pictureScrollPane.setViewportBorder(BorderFactory.createLineBorder(Color.black));
-
+		this.chartPanel.removeAll();
 		JLabel label = new JLabel();
 		label.setIcon(imageIcon);
 		this.chartPanel.add(label);
+		Container parent = chartPanel.getParent();
+		while (!(parent instanceof Window)) {
+			if (parent == null) {
+				break;
+			}
+			parent = parent.getParent();
+		}
+		if (parent != null) {
+			((Window) parent).pack();
+		}
 	}
 
 	private Image getImageFromURL(URL url) {
@@ -591,4 +657,30 @@ public class VennChart {
 		return this.vennData;
 	}
 
+	public void setColor1(Color color1) {
+		if (color1 != null)
+			this.color1 = color1;
+	}
+
+	public void setColor2(Color color2) {
+		if (color2 != null)
+			this.color2 = color2;
+	}
+
+	public void setColor3(Color color3) {
+		if (color3 != null)
+			this.color3 = color3;
+	}
+
+	public void setColorToSeries(String seriesName, Color color) {
+		if (this.name1 != null && name1.equals(seriesName)) {
+			setColor1(color);
+		}
+		if (this.name2 != null && name2.equals(seriesName)) {
+			setColor2(color);
+		}
+		if (this.name3 != null && name3.equals(seriesName)) {
+			setColor3(color);
+		}
+	}
 }

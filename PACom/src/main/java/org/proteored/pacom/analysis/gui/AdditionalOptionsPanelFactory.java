@@ -3,12 +3,16 @@ package org.proteored.pacom.analysis.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,8 +25,10 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -48,7 +54,9 @@ import org.proteored.miapeapi.experiment.model.sort.SorterUtil;
 import org.proteored.pacom.analysis.charts.HeatChart;
 import org.proteored.pacom.analysis.charts.WordCramChart;
 import org.proteored.pacom.analysis.genes.GeneDistributionReader;
+import org.proteored.pacom.analysis.gui.components.JLabelColor;
 import org.proteored.pacom.analysis.gui.tasks.DatasetFactory;
+import org.proteored.pacom.analysis.util.DoSomethingToChangeColorInChart;
 
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.set.hash.THashSet;
@@ -136,7 +144,8 @@ public class AdditionalOptionsPanelFactory {
 	public static final String PSM = "psm";
 	public static final String KNOWN = "known";
 	public static final String UNKNOWN = "unknown";
-	private final Map<String, JCheckBox> scoreComparisonJCheckBoxes = new THashMap<String, JCheckBox>();
+	private final Map<String, JCheckBox> idSetsJCheckBoxes = new THashMap<String, JCheckBox>();
+	private final Map<String, Color> idSetsColors = new THashMap<String, Color>();
 
 	private JCheckBox jCheckBoxShowPSM;
 
@@ -1068,9 +1077,10 @@ public class AdditionalOptionsPanelFactory {
 			jComboBoxColorScale.setSelectedItem(getPreviousColorScale());
 
 		if (jComboBoxHighColorScale == null) {
-			jComboBoxHighColorScale = new JComboBox(getColors());
+			jComboBoxHighColorScale = new JComboBox(getColors().toArray());
 			controlList.add(jComboBoxHighColorScale);
 			jComboBoxHighColorScale.addItemListener(new java.awt.event.ItemListener() {
+
 				@Override
 				public void itemStateChanged(ItemEvent evt) {
 					if (evt.getStateChange() == ItemEvent.SELECTED) {
@@ -1082,7 +1092,7 @@ public class AdditionalOptionsPanelFactory {
 			});
 		}
 		if (jComboBoxLowColorScale == null) {
-			jComboBoxLowColorScale = new JComboBox(getColors());
+			jComboBoxLowColorScale = new JComboBox(getColors().toArray());
 			controlList.add(jComboBoxLowColorScale);
 			jComboBoxLowColorScale.addItemListener(new java.awt.event.ItemListener() {
 				@Override
@@ -1096,6 +1106,7 @@ public class AdditionalOptionsPanelFactory {
 			});
 		}
 		jPanelAdditional1.setLayout(new GridBagLayout());
+
 		GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.NORTHWEST;
 		c.gridx = 0;
@@ -1164,23 +1175,25 @@ public class AdditionalOptionsPanelFactory {
 		return null;
 	}
 
-	private Object[] getColors() {
+	private List<String> getColors() {
 		List<String> colors = new ArrayList<String>();
 		colors.add("select a color...");
-		colors.add("black");
 		colors.add("blue");
+		colors.add("yellow");
+		colors.add("green");
 		colors.add("cyan");
 		colors.add("darkGray");
 		colors.add("gray");
-		colors.add("green");
 		colors.add("lightGray");
 		colors.add("magenta");
 		colors.add("orange");
 		colors.add("pink");
 		colors.add("red");
 		colors.add("white");
-		colors.add("yellow");
-		return colors.toArray();
+
+		colors.add("black");
+
+		return colors;
 	}
 
 	public JPanel getHeatMapThresholdPanel(boolean occurrenceThreshold) {
@@ -1456,17 +1469,26 @@ public class AdditionalOptionsPanelFactory {
 		for (JComponent component : controlList) {
 			component.setEnabled(b);
 		}
-		for (JCheckBox checkbox : scoreComparisonJCheckBoxes.values()) {
+		for (JCheckBox checkbox : idSetsJCheckBoxes.values()) {
 			checkbox.setEnabled(b);
 		}
 
 	}
 
-	public JPanel getExperimentsCheckboxes(boolean selectAll, int numSelected) {
+	public JPanel getExperimentsCheckboxes(boolean selectAll, int numSelected, boolean addColorChooser,
+			DoSomethingToChangeColorInChart methodToChangeColorInChart) {
 		log.info("Creating list of replicates...");
 		JPanel jpanel = new JPanel();
-		jpanel.setLayout(new BoxLayout(jpanel, BoxLayout.PAGE_AXIS));
-		scoreComparisonJCheckBoxes.clear();
+		// jpanel.setLayout(new BoxLayout(jpanel, BoxLayout.PAGE_AXIS));
+		jpanel.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.WEST;
+		c.gridx = 0;
+		c.gridy = 0;
+		idSetsJCheckBoxes.clear();
+		idSetsColors.clear();
+		List<String> colors = getColors();
+		int colorIndex = 1; // starts with 1, cause the 0 in not a color
 		int numExperiment = 1;
 		for (Experiment experiment : frame.experimentList.getExperiments()) {
 			final String experimentName = experiment.getName();
@@ -1481,8 +1503,51 @@ public class AdditionalOptionsPanelFactory {
 				}
 			});
 
-			scoreComparisonJCheckBoxes.put(experimentName, checkBox);
-			jpanel.add(checkBox);
+			idSetsJCheckBoxes.put(experimentName, checkBox);
+			jpanel.add(checkBox, c);
+
+			if (addColorChooser) {
+				c.gridx = 1;
+				Color initialColor = getColor(colors.get(colorIndex++ % colors.size()));
+				JLabelColor colorChooser = new JLabelColor("<html>&nbsp;&nbsp;&nbsp;</html>",
+						new JColorChooser(initialColor), idSetsColors, null, experimentName,
+						methodToChangeColorInChart);
+				colorChooser.addMouseListener(new MouseListener() {
+
+					@Override
+					public void mouseReleased(MouseEvent e) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void mousePressed(MouseEvent e) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void mouseExited(MouseEvent e) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void mouseEntered(MouseEvent e) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						openColorChooser(colorChooser.getJColorChooser());
+
+					}
+				});
+				jpanel.add(colorChooser, c);
+				c.gridx = 0;
+			}
+			c.gridy++;
 			numExperiment++;
 
 		}
@@ -1490,21 +1555,43 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public Map<String, JCheckBox> getIdSetsJCheckBoxes() {
-		return scoreComparisonJCheckBoxes;
-
+		return idSetsJCheckBoxes;
 	}
 
-	public JPanel getReplicatesCheckboxes(boolean separateExperiments, boolean selectAll, int numSelected) {
+	public Map<String, Color> getIdSetsColors() {
+		return idSetsColors;
+	}
+
+	public JPanel getReplicatesCheckboxes(boolean separateExperiments, boolean selectAll, int numSelected,
+			boolean addColorChooser, DoSomethingToChangeColorInChart methodToChangeColorInChart) {
 		log.info("Creating list of replicates...");
 		JPanel jpanel = new JPanel();
-		jpanel.setLayout(new BoxLayout(jpanel, BoxLayout.PAGE_AXIS));
-		scoreComparisonJCheckBoxes.clear();
+		// jpanel.setLayout(new BoxLayout(jpanel, BoxLayout.PAGE_AXIS));
+		jpanel.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.WEST;
+		c.gridx = 0;
+		c.gridy = 0;
+		// c.insets = new Insets(10, 0, 10, 5);
+		idSetsJCheckBoxes.clear();
+		idSetsColors.clear();
 		int numReplicates = 1;
+		List<String> colors = getColors();
+		int colorIndex = 1;
 		for (Experiment experiment : frame.experimentList.getExperiments()) {
 			JLabel labelExperiment = new JLabel(experiment.getName() + ":");
-			jpanel.add(labelExperiment);
-			if (separateExperiments)
+
+			c.gridwidth = 2;
+			if (c.gridy > 0) {
+				c.gridy++;
+			}
+			c.gridwidth = 2;
+			jpanel.add(labelExperiment, c);
+			c.gridy++;
+			if (separateExperiments) {
 				numReplicates = 1;
+				colorIndex = 1;
+			}
 			for (Object idSet : experiment.getNextLevelIdentificationSetList()) {
 				Replicate replicate = (Replicate) idSet;
 				boolean selected = false;
@@ -1518,13 +1605,70 @@ public class AdditionalOptionsPanelFactory {
 						frame.startShowingChart(evt.getSource());
 					}
 				});
-				scoreComparisonJCheckBoxes.put(replicate.getFullName(), checkBox);
-				jpanel.add(checkBox);
+				idSetsJCheckBoxes.put(replicate.getFullName(), checkBox);
+				c.gridy++;
+				c.gridwidth = 1;
+
+				jpanel.add(checkBox, c);
+				if (addColorChooser) {
+					c.gridx = 1;
+					Color initialColor = getColor(colors.get(colorIndex++ % colors.size()));
+					String vennDataName = separateExperiments ? experiment.getName() : null;
+					JLabelColor colorChooser = new JLabelColor("<html>&nbsp;&nbsp;&nbsp;</html>",
+							new JColorChooser(initialColor), idSetsColors, vennDataName, replicate.getFullName(),
+							methodToChangeColorInChart);
+					colorChooser.addMouseListener(new MouseListener() {
+
+						@Override
+						public void mouseReleased(MouseEvent e) {
+							// TODO Auto-generated method stub
+
+						}
+
+						@Override
+						public void mousePressed(MouseEvent e) {
+							// TODO Auto-generated method stub
+
+						}
+
+						@Override
+						public void mouseExited(MouseEvent e) {
+							// TODO Auto-generated method stub
+
+						}
+
+						@Override
+						public void mouseEntered(MouseEvent e) {
+							// TODO Auto-generated method stub
+
+						}
+
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							openColorChooser(colorChooser.getJColorChooser());
+
+						}
+					});
+					jpanel.add(colorChooser, c);
+					c.gridx = 0;
+				}
 				numReplicates++;
 			}
 
 		}
 		return jpanel;
+	}
+
+	protected void openColorChooser(JColorChooser colorChooser) {
+		JDialog d = new JDialog(frame);
+		d.add(colorChooser);
+		d.pack();
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Dimension screenSize = toolkit.getScreenSize();
+		int x = (screenSize.width - d.getWidth()) / 2;
+		int y = (screenSize.height - d.getHeight()) / 2;
+		d.setLocation(x, y);
+		d.setVisible(true);
 	}
 
 	public String[] getSelectedModifications() {
@@ -2047,6 +2191,7 @@ public class AdditionalOptionsPanelFactory {
 			notAssigned.setToolTipText("Show genes or protein products not assigned to any research group");
 			notAssigned.setSelected(true);
 			notAssigned.addItemListener(new java.awt.event.ItemListener() {
+
 				@Override
 				public void itemStateChanged(ItemEvent evt) {
 					frame.startShowingChart(evt.getSource());
@@ -2100,10 +2245,12 @@ public class AdditionalOptionsPanelFactory {
 		JLabel label = new JLabel("<html><br><br>Click here for just filter Chr16 proteins</html>");
 		JButton button = new JButton("Filter Chr16 proteins");
 		button.addActionListener(new java.awt.event.ActionListener() {
+
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				frame.exportChr16Proteins();
 			}
+
 		});
 		// c.gridy++;
 		c.gridx = 0;
@@ -2574,6 +2721,7 @@ public class AdditionalOptionsPanelFactory {
 			jCheckBoxShowPeptideFDR = new JCheckBox("show FDR at peptide level");
 			controlList.add(jCheckBoxShowPeptideFDR);
 			jCheckBoxShowPeptideFDR.addItemListener(new java.awt.event.ItemListener() {
+
 				@Override
 				public void itemStateChanged(ItemEvent evt) {
 					frame.startShowingChart(evt.getSource());
@@ -2596,6 +2744,7 @@ public class AdditionalOptionsPanelFactory {
 		panel.add(jCheckBoxShowPSMFDR, c);
 
 		return panel;
+
 	}
 
 	public boolean showProteinFDRLevel() {
