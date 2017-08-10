@@ -485,8 +485,10 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 				@Override
 				public void itemStateChanged(ItemEvent e) {
-					currentChartType = chartType;
-					addCustomizationControls();
+					if (e.getStateChange() == ItemEvent.SELECTED) {
+						currentChartType = chartType;
+						addCustomizationControls();
+					}
 					startShowingChart(menuItem);
 				}
 			});
@@ -1406,9 +1408,14 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	}
 
 	private void exportToPEX() {
-		// if (this.pexSubmissionDialog == null)
-		pexSubmissionDialog = new PEXBulkSubmissionSummaryFileCreatorDialog(this, experimentList);
-		pexSubmissionDialog.setVisible(true);
+		// do not do it if data loading or char creator are running
+		if ((dataLoader != null && dataLoader.getState() == StateValue.STARTED)
+				|| (chartCreator != null && chartCreator.getState() == StateValue.STARTED)) {
+			appendStatus("Please, wait until task is done.");
+		} else {
+			pexSubmissionDialog = new PEXBulkSubmissionSummaryFileCreatorDialog(this, experimentList);
+			pexSubmissionDialog.setVisible(true);
+		}
 	}
 
 	private void jCheckBoxMenuItemPeptideForMRMFilterActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1453,10 +1460,15 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	}
 
 	private void showIdentificationTable() {
-		log.info("Showing identification table");
-		// if (this.identificationTable == null)
-		identificationTable = IdentificationTableFrame.getInstance(this, toSet(experimentList));
-		identificationTable.setVisible(true);
+		if ((dataLoader != null && dataLoader.getState() == StateValue.STARTED)
+				|| (chartCreator != null && chartCreator.getState() == StateValue.STARTED)) {
+			appendStatus("Please, wait until task is done.");
+		} else {
+			log.info("Showing identification table");
+			// if (this.identificationTable == null)
+			identificationTable = IdentificationTableFrame.getInstance(this, toSet(experimentList));
+			identificationTable.setVisible(true);
+		}
 
 	}
 
@@ -1514,15 +1526,23 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	}
 
 	private void exportToTSV() {
-
-		ExporterDialog exporterDialog = new ExporterDialog(this, this, toSet(experimentList), null);
-		exporterDialog.setVisible(true);
+		if ((dataLoader != null && dataLoader.getState() == StateValue.STARTED)
+				|| (chartCreator != null && chartCreator.getState() == StateValue.STARTED)) {
+			appendStatus("Please, wait until task is done.");
+		} else {
+			ExporterDialog exporterDialog = new ExporterDialog(this, this, toSet(experimentList), null);
+			exporterDialog.setVisible(true);
+		}
 	}
 
 	private void exportToPRIDE() {
-
-		ExporterToPRIDEDialog exporterDialog = new ExporterToPRIDEDialog(this, experimentList);
-		exporterDialog.setVisible(true);
+		if ((dataLoader != null && dataLoader.getState() == StateValue.STARTED)
+				|| (chartCreator != null && chartCreator.getState() == StateValue.STARTED)) {
+			appendStatus("Please, wait until task is done.");
+		} else {
+			ExporterToPRIDEDialog exporterDialog = new ExporterToPRIDEDialog(this, experimentList);
+			exporterDialog.setVisible(true);
+		}
 	}
 
 	private void jComboBoxChartOptionsItemStateChanged(java.awt.event.ItemEvent evt) {
@@ -1647,9 +1667,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		} else if (PEPTIDE_CHARGE_HISTOGRAM.equals(chartType)) {
 			addChargeHistogramBarControls();
 		} else if (PEPTIDE_OVERLAPING.equals(chartType) || PROTEIN_OVERLAPING.equals(chartType)) {
-			addOverlapingControls(options, 0, false);
+			addOverlapingControls(options, 0, false, true);
 		} else if (EXCLUSIVE_PROTEIN_NUMBER.equals(chartType) || EXCLUSIVE_PEPTIDE_NUMBER.equals(chartType)) {
-			addOverlapingControls(options, null, false);
+			addOverlapingControls(options, null, false, false);
 		} else if (PEPTIDES_PER_PROTEIN_HEATMAP.equals(chartType) || PSMS_PER_PEPTIDE_HEATMAP.equals(chartType)
 				|| PSMS_PER_PROTEIN_HEATMAP.equals(chartType)) {
 			addHeatMapControls(false);
@@ -2937,21 +2957,21 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 	}
 
-	private void addOverlapingControls(String options, Integer numberOfSelectedCheckBoxes,
-			boolean selectAllCheckBoxes) {
+	private void addOverlapingControls(String options, Integer numberOfSelectedCheckBoxes, boolean selectAllCheckBoxes,
+			boolean addColorChooser) {
 		if (options == null)
 			options = ChartManagerFrame.ONE_CHART_PER_EXPERIMENT;
 		if (ONE_CHART_PER_EXPERIMENT.equals(options)) {
-			addOverlappingControlsChartPerExperiment(numberOfSelectedCheckBoxes, selectAllCheckBoxes);
+			addOverlappingControlsChartPerExperiment(numberOfSelectedCheckBoxes, selectAllCheckBoxes, addColorChooser);
 		} else if (ONE_SERIES_PER_EXPERIMENT.equals(options)) {
-			addOverlappingControlsSeriePerExperiment(numberOfSelectedCheckBoxes, selectAllCheckBoxes);
+			addOverlappingControlsSeriePerExperiment(numberOfSelectedCheckBoxes, selectAllCheckBoxes, addColorChooser);
 		} else if (ONE_SERIES_PER_REPLICATE.equals(options)) {
-			addOverlappingControlsSeriePerReplicate(numberOfSelectedCheckBoxes, selectAllCheckBoxes);
+			addOverlappingControlsSeriePerReplicate(numberOfSelectedCheckBoxes, selectAllCheckBoxes, addColorChooser);
 		}
 	}
 
 	private void addOverlappingControlsChartPerExperiment(Integer numberOfSelectedCheckBoxes,
-			boolean selectAllCheckBoxes) {
+			boolean selectAllCheckBoxes, boolean addColorChooser) {
 		// jPanelAddOptions.setLayout(new BoxLayout(jPanelAddOptions,
 		// BoxLayout.PAGE_AXIS));
 		jPanelAddOptions.setLayout(new GridBagLayout());
@@ -2992,7 +3012,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		}
 		jPanelAddOptions.add(new JLabel("Select from the following checkBoxes:"), c);
 		c.gridy++;
-		jPanelAddOptions.add(optionsFactory.getReplicatesCheckboxes(true, selectAllCheckBoxes, 0, true,
+		jPanelAddOptions.add(optionsFactory.getReplicatesCheckboxes(true, selectAllCheckBoxes, 0, addColorChooser,
 				getMethodToUpdateColorInChart()), c);
 		c.gridy++;
 
@@ -3388,7 +3408,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	}
 
 	private void addOverlappingControlsSeriePerReplicate(Integer numberOfSelectedCheckBoxes,
-			boolean selectAllCheckBoxes) {
+			boolean selectAllCheckBoxes, boolean addColorChooser) {
 		// jPanelAddOptions.setLayout(new BoxLayout(jPanelAddOptions,
 		// BoxLayout.PAGE_AXIS));
 		jPanelAddOptions.setLayout(new GridBagLayout());
@@ -3433,7 +3453,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		jPanelAddOptions.add(new JLabel("Select from the following checkBoxes:"), c);
 		c.gridy++;
 
-		jPanelAddOptions.add(optionsFactory.getReplicatesCheckboxes(false, selectAllCheckBoxes, 0, true,
+		jPanelAddOptions.add(optionsFactory.getReplicatesCheckboxes(false, selectAllCheckBoxes, 0, addColorChooser,
 				getMethodToUpdateColorInChart()), c);
 		c.gridy++;
 		if (!numberOfSelectedCheckBoxes.equals(Integer.MAX_VALUE)
@@ -3517,7 +3537,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	}
 
 	private void addOverlappingControlsSeriePerExperiment(Integer numberOfSelectedCheckBoxes,
-			boolean selectAllCheckBoxes) {
+			boolean selectAllCheckBoxes, boolean addColorChooser) {
 		// jPanelAddOptions.setLayout(new BoxLayout(jPanelAddOptions,
 		// BoxLayout.PAGE_AXIS));
 		jPanelAddOptions.setLayout(new GridBagLayout());
@@ -3559,9 +3579,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 		jPanelAddOptions.add(new JLabel("Select from the following checkBoxes:"), c);
 		c.gridy++;
-		jPanelAddOptions.add(
-				optionsFactory.getExperimentsCheckboxes(selectAllCheckBoxes, 0, true, getMethodToUpdateColorInChart()),
-				c);
+		jPanelAddOptions.add(optionsFactory.getExperimentsCheckboxes(selectAllCheckBoxes, 0, addColorChooser,
+				getMethodToUpdateColorInChart()), c);
 		c.gridy++;
 		if (!numberOfSelectedCheckBoxes.equals(Integer.MAX_VALUE)
 				&& !PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
@@ -4040,9 +4059,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		}
 		if ((chartCreator == null || chartCreator.getState().equals(StateValue.DONE))
 				&& filterDialog.isFilterTaskFinished()) {
-			String formatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG)
-					.format(new Date(System.currentTimeMillis()));
-			appendStatus("Creating chart '" + chartType + " (" + option + ") " + "' at '" + formatedDate + "'...");
+
+			appendStatus("Creating chart '" + chartType + " (" + option + ")...");
 			setProgressBarIndeterminate(true);
 			disableControls(false);
 			chartCreator = new ChartCreatorTask(this, chartType, option, experimentList);
@@ -4354,13 +4372,10 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			}
 			jPanelChart.repaint();
 			if (ChartCreatorTask.CHART_GENERATED.equals(evt.getPropertyName())) {
-				String formatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG)
-						.format(new Date(System.currentTimeMillis()));
 				setNumIdentificationsLabel();
 				setFDRLabel();
 				double t2 = System.currentTimeMillis() * 1.0;
-				appendStatus("Chart created at '" + formatedDate + "' in "
-						+ DatesUtil.getDescriptiveTimeFromMillisecs(t2 - t1));
+				appendStatus("Chart created in " + DatesUtil.getDescriptiveTimeFromMillisecs(t2 - t1));
 				if (currentChartType.equals(PROTEIN_NAME_CLOUD)) {
 					appendStatus("Wait some seconds for the cloud loading...");
 				}
@@ -4464,7 +4479,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	}
 
 	public void appendStatus(String notificacion) {
-		jTextAreaStatus.append(notificacion + "\n");
+		String formatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG)
+				.format(new Date(System.currentTimeMillis()));
+		jTextAreaStatus.append(formatedDate + ": " + notificacion + "\n");
 		jTextAreaStatus.setCaretPosition(jTextAreaStatus.getText().length() - 1);
 
 	}

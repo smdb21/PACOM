@@ -2539,7 +2539,7 @@ public class AdditionalOptionsPanelFactory {
 					frame.startShowingChart(evt.getSource());
 				}
 			});
-
+			this.controlList.add(jradioButtonAllProteinsPerGroup);
 			jradioButtonFirstProteinPerGroup = new JRadioButton("share the protein with more evidence");
 			jradioButtonFirstProteinPerGroup.addActionListener(new java.awt.event.ActionListener() {
 				@Override
@@ -2547,7 +2547,7 @@ public class AdditionalOptionsPanelFactory {
 					frame.startShowingChart(evt.getSource());
 				}
 			});
-
+			this.controlList.add(jradioButtonFirstProteinPerGroup);
 			jradioButtonBestProteinPerGroup = new JRadioButton("share the best protein per group");
 			jradioButtonBestProteinPerGroup.addItemListener(new java.awt.event.ItemListener() {
 				@Override
@@ -2562,7 +2562,7 @@ public class AdditionalOptionsPanelFactory {
 					frame.startShowingChart(evt.getSource());
 				}
 			});
-
+			controlList.add(jradioButtonShareOneProtein);
 			ButtonGroup group = new ButtonGroup();
 			group.add(jradioButtonAllProteinsPerGroup);
 			group.add(jradioButtonBestProteinPerGroup);
