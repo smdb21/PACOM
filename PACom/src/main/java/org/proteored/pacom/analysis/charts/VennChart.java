@@ -161,9 +161,9 @@ public class VennChart {
 		sb.append("&cht=v");
 
 		sb.append("&chdl=");
-		final String listString1 = getListString(label1, vennData.getCollection1());
-		final String listString2 = getListString(label2, vennData.getCollection2());
-		final String listString3 = getListString(label3, vennData.getCollection3());
+		final String listString1 = getListString(label1, vennData.getSize1());
+		final String listString2 = getListString(label2, vennData.getSize2());
+		final String listString3 = getListString(label3, vennData.getSize3());
 		sb.append(listString1);
 		if (!"".equals(listString1) && !"".equals(listString2))
 			sb.append("|");
@@ -178,7 +178,7 @@ public class VennChart {
 		// + "("
 		// + this.list2.size() + ")|" + label3 + "(" + this.list3.size() + ")");
 		sb.append("&chtt=" + title);
-		sb.append("&chds=0," + vennData.getMaxCollection().size());
+		sb.append("&chds=0," + vennData.getMaxCollectionSize());
 		sb.append("&chdlp=b&chma=|10,10");
 		// colors:
 		sb.append("&chco=");
@@ -227,75 +227,11 @@ public class VennChart {
 		return color3;
 	}
 
-	private String getListString(String label, Collection list) {
-		if (list != null)
-			return label + "(" + list.size() + ")";
+	private String getListString(String label, Integer size) {
+		if (size != null)
+			return label + "(" + size + ")";
 		return "";
 	}
-
-	private int max(Set<String> list1, Set<String> list2, Set<String> list3) {
-		int maximum = 0;
-		int int1 = 0;
-		int int2 = 0;
-		int int3 = 0;
-		if (list1 != null)
-			int1 = list1.size();
-		if (list2 != null)
-			int2 = list2.size();
-		if (list3 != null)
-			int3 = list3.size();
-
-		maximum = Math.max(int1, int2);
-		maximum = Math.max(maximum, int3);
-
-		return maximum;
-	}
-
-	// private String getDataString(Set<String> list1, Set<String> list2,
-	// Set<String> list3) {
-	// StringBuilder sb = new StringBuilder();
-	// // The first three values specify the sizes of three circles: A, B, and
-	// // C. For a chart with
-	// // only two circles, specify zero for the third value.
-	// int size1 = 0;
-	// if (list1 != null)
-	// size1 = list1.size();
-	// int size2 = 0;
-	// if (list2 != null)
-	// size2 = list2.size();
-	// int size3 = 0;
-	// if (list3 != null)
-	// size3 = list3.size();
-	// sb.append(size1 + "," + size2 + "," + size3);
-	// // The fourth value specifies the size of the intersection of A and B.
-	// this.intersection12 = VenData.getIntersection(list1, list2, null)
-	// .size();
-	// sb.append("," + intersection12);
-	// // The fifth value specifies the size of the intersection of A and C.
-	// // For a chart with only
-	// // two circles, do not specify a value here.
-	// if (list3 != null) {
-	// this.intersection13 = VenData.getIntersection(list1, list3, null)
-	// .size();
-	// sb.append("," + intersection13);
-	// }
-	// // The sixth value specifies the size of the intersection of B and C.
-	// // For a chart with only
-	// // two circles, do not specify a value here.
-	// if (list3 != null) {
-	// this.intersection23 = getIntersection(list2, list3);
-	// sb.append("," + intersection23);
-	// }
-	// // The seventh value specifies the size of the common intersection of A,
-	// // B, and C. For a
-	// // chart with only two circles, do not specify a value here.
-	// if (list1 != null && list2 != null && list3 != null) {
-	// this.intersection123 = VenData.getIntersection(list1, list2, list3)
-	// .size();
-	// sb.append("," + intersection123);
-	// }
-	// return sb.toString();
-	// }
 
 	private String getDataString(VennData vennData) {
 		StringBuilder sb = new StringBuilder();
@@ -326,28 +262,28 @@ public class VennChart {
 
 		// The fourth value specifies the size of the intersection of A and B.
 		if (size1 != null && size2 != null) {
-			this.intersection12 = vennData.getIntersection12Keys().size();
+			this.intersection12 = vennData.getIntersection12Size();
 			sb.append("," + intersection12);
 		}
 		// The fifth value specifies the size of the intersection of A and C.
 		// For a chart with only
 		// two circles, do not specify a value here.
 		if (size1 != null && size3 != null) {
-			this.intersection13 = vennData.getIntersection13Keys().size();
+			this.intersection13 = vennData.getIntersection13Size();
 			sb.append("," + intersection13);
 		}
 		// The sixth value specifies the size of the intersection of B and C.
 		// For a chart with only
 		// two circles, do not specify a value here.
 		if (size2 != null && size3 != null) {
-			this.intersection23 = vennData.getIntersection23Keys().size();
+			this.intersection23 = vennData.getIntersection23Size();
 			sb.append("," + intersection23);
 		}
 
 		// The seventh value specifies the size of the common intersection of A,
 		// B, and C. For a
 		// chart with only two circles, do not specify a value here.
-		this.intersection123 = vennData.getIntersection123Keys().size();
+		this.intersection123 = vennData.getIntersection123Size();
 		if (this.intersection123 > 0)
 			sb.append("," + intersection123);
 
@@ -556,7 +492,7 @@ public class VennChart {
 
 		if (experiment != null)
 			sb.append("<b>" + experiment + "</b><br>");
-		int union = this.vennData.getUnion123Keys().size();
+		int union = this.vennData.getUnion123Size();
 
 		if (name1 != null)
 			sb.append("<br> A -> " + name1 + " = " + this.vennData.getSize1() + " ("
@@ -574,8 +510,8 @@ public class VennChart {
 			if (!"".equals(sb.toString()))
 				sb.append("<br>");
 			Double intersection12Percentage = 0.0;
-			if (this.vennData.getUnion12().size() > 0) {
-				intersection12Percentage = intersection12 * 100.0 / this.vennData.getUnion12().size();
+			if (this.vennData.getUnion12Size() > 0) {
+				intersection12Percentage = intersection12 * 100.0 / this.vennData.getUnion12Size();
 			}
 			sb.append("Overlap (A,B) = " + intersection12 + " (" + df.format(intersection12Percentage) + "% of union)");
 		}
@@ -583,8 +519,8 @@ public class VennChart {
 			if (!"".equals(sb.toString()))
 				sb.append("<br>");
 			double intersection13Percentage = 0.0;
-			if (vennData.getUnion13().size() > 0) {
-				intersection13Percentage = intersection13 * 100.0 / this.vennData.getUnion13().size();
+			if (vennData.getUnion13Size() > 0) {
+				intersection13Percentage = intersection13 * 100.0 / this.vennData.getUnion13Size();
 			}
 			sb.append("Overlap (A,C) = " + intersection13 + " (" + df.format(intersection13Percentage) + "% of union)");
 		}
@@ -592,8 +528,8 @@ public class VennChart {
 			if (!"".equals(sb.toString()))
 				sb.append("<br>");
 			double intersection23Percentage = 0.0;
-			if (vennData.getUnion23().size() > 0) {
-				intersection23Percentage = intersection23 * 100.0 / this.vennData.getUnion23().size();
+			if (vennData.getUnion23Size() > 0) {
+				intersection23Percentage = intersection23 * 100.0 / this.vennData.getUnion23Size();
 			}
 			sb.append("Overlap (B,C) = " + intersection23 + " (" + df.format(intersection23Percentage) + "% of union)");
 		}
@@ -607,27 +543,27 @@ public class VennChart {
 		if (name1 != null) {
 			if (!"".equals(sb.toString()))
 				sb.append("<br>");
-			Double just1 = this.vennData.getUniqueTo1KeysNum() * 100.0 / union;
-			int overlappedTo1 = this.vennData.getIntersection12Keys().size()
-					+ this.vennData.getIntersection13Keys().size() - this.vennData.getIntersection123Keys().size();
+			Double just1 = this.vennData.getUniqueTo1Num() * 100.0 / union;
+			int overlappedTo1 = this.vennData.getIntersection12Size() + this.vennData.getIntersection13Size()
+					- this.vennData.getIntersection123Size();
 			double overlappedTo1Percentage = 0.0;
 			if (this.vennData.getSize1() > 0) {
 				overlappedTo1Percentage = overlappedTo1 * 100.0 / this.vennData.getSize1();
 			}
-			sb.append("Just in A = " + this.vennData.getUniqueTo1KeysNum() + " (" + df.format(just1) + "% of union) ("
+			sb.append("Just in A = " + this.vennData.getUniqueTo1Num() + " (" + df.format(just1) + "% of union) ("
 					+ df.format(overlappedTo1Percentage) + "% overlapped)");
 		}
 		if (name2 != null) {
 			if (!"".equals(sb.toString()))
 				sb.append("<br>");
-			Double just2 = this.vennData.getUniqueTo2KeysNum() * 100.0 / union;
-			int overlappedTo2 = this.vennData.getIntersection12().size() + this.vennData.getIntersection23().size()
-					- this.vennData.getIntersection123Keys().size();
+			Double just2 = this.vennData.getUniqueTo2Num() * 100.0 / union;
+			int overlappedTo2 = this.vennData.getIntersection12Size() + this.vennData.getIntersection23Size()
+					- this.vennData.getIntersection123Size();
 			double overlappedTo2Percentage = 0.0;
 			if (this.vennData.getSize2() > 0) {
 				overlappedTo2Percentage = overlappedTo2 * 100.0 / this.vennData.getSize2();
 			}
-			sb.append("Just in B = " + this.vennData.getUniqueTo2KeysNum() + " (" + df.format(just2) + "% of union) ("
+			sb.append("Just in B = " + this.vennData.getUniqueTo2Num() + " (" + df.format(just2) + "% of union) ("
 					+ df.format(overlappedTo2Percentage) + "% overlapped)");
 		}
 		if (name3 != null)
@@ -635,14 +571,14 @@ public class VennChart {
 		{
 			if (!"".equals(sb.toString()))
 				sb.append("<br>");
-			Double just3 = this.vennData.getUniqueTo3KeysNum() * 100.0 / union;
-			int overlappedTo3 = this.vennData.getIntersection13().size() + this.vennData.getIntersection23().size()
-					- this.vennData.getIntersection123Keys().size();
+			Double just3 = this.vennData.getUniqueTo3Num() * 100.0 / union;
+			int overlappedTo3 = this.vennData.getIntersection13Size() + this.vennData.getIntersection23Size()
+					- this.vennData.getIntersection123Size();
 			double overlappedTo3Percentage = 0.0;
 			if (this.vennData.getSize3() > 0) {
 				overlappedTo3Percentage = overlappedTo3 * 100.0 / this.vennData.getSize3();
 			}
-			sb.append("Just in C = " + this.vennData.getUniqueTo3KeysNum() + " (" + df.format(just3) + "% of union) ("
+			sb.append("Just in C = " + this.vennData.getUniqueTo3Num() + " (" + df.format(just3) + "% of union) ("
 					+ df.format(overlappedTo3Percentage) + "% overlapped)");
 		}
 		sb.append("<br><br>");

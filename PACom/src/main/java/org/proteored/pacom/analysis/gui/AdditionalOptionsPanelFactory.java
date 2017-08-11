@@ -240,7 +240,7 @@ public class AdditionalOptionsPanelFactory {
 		PlotOrientation[] plotOrientations = { PlotOrientation.VERTICAL, PlotOrientation.HORIZONTAL };
 		if (jComboBoxPlotOrientation == null) {
 			jComboBoxPlotOrientation = new JComboBox(plotOrientations);
-			controlList.add(jComboBoxPlotOrientation);
+			getControlList().add(jComboBoxPlotOrientation);
 		}
 		if (getPreviousPlotOrientation() != null)
 			jComboBoxPlotOrientation.setSelectedItem(getPreviousPlotOrientation());
@@ -280,7 +280,7 @@ public class AdditionalOptionsPanelFactory {
 				occurrences[i] = i + 1;
 			}
 			jComboBoxMaximumOccurrence = new JComboBox(occurrences);
-			controlList.add(jComboBoxMaximumOccurrence);
+			getControlList().add(jComboBoxMaximumOccurrence);
 		}
 		if (getPreviousMaximumOccurrence() != null)
 			jComboBoxMaximumOccurrence.setSelectedItem(getPreviousMaximumOccurrence());
@@ -314,7 +314,7 @@ public class AdditionalOptionsPanelFactory {
 				occurrences[i] = i + 1;
 			}
 			jComboBoxMinimumOccurrence = new JComboBox(occurrences);
-			controlList.add(jComboBoxMinimumOccurrence);
+			getControlList().add(jComboBoxMinimumOccurrence);
 		}
 		if (getPreviousMinimumOccurrence() != null)
 			jComboBoxMinimumOccurrence.setSelectedItem(getPreviousMinimumOccurrence());
@@ -433,7 +433,7 @@ public class AdditionalOptionsPanelFactory {
 
 		if (jButtonShowInputTextFrame == null) {
 			jButtonShowInputTextFrame = new JButton("Define/show proteins in sample");
-			controlList.add(jButtonShowInputTextFrame);
+			getControlList().add(jButtonShowInputTextFrame);
 		}
 
 		jButtonShowInputTextFrame.addActionListener(new java.awt.event.ActionListener() {
@@ -470,7 +470,7 @@ public class AdditionalOptionsPanelFactory {
 	public JCheckBox getCheckBoxSensitivity() {
 		if (jCheckBoxSensitivity == null) {
 			jCheckBoxSensitivity = new JCheckBox("Sensitivity");
-			controlList.add(jCheckBoxSensitivity);
+			getControlList().add(jCheckBoxSensitivity);
 			jCheckBoxSensitivity.setToolTipText(
 					"<html>Sensitivity relates to the test's ability to identify positive results<br>Sensitivity or True Positive Rate = TP/(TP+FN)</html>");
 			jCheckBoxSensitivity.setSelected(true);
@@ -487,7 +487,7 @@ public class AdditionalOptionsPanelFactory {
 	public JCheckBox getCheckBoxAccuracy() {
 		if (jCheckBoxAccuracy == null) {
 			jCheckBoxAccuracy = new JCheckBox("Accuracy");
-			controlList.add(jCheckBoxAccuracy);
+			getControlList().add(jCheckBoxAccuracy);
 			jCheckBoxAccuracy.setToolTipText(
 					"<html>Accuracy is the proportion of true results (True Positives and True Negatives) in the identified proteins.<br>Accuracy = (TP+TN)/(TP+TN+FP+FN)</html>");
 			jCheckBoxAccuracy.setSelected(true);
@@ -504,7 +504,7 @@ public class AdditionalOptionsPanelFactory {
 	public JCheckBox getCheckBoxSpecificity() {
 		if (jCheckBoxSpecificity == null) {
 			jCheckBoxSpecificity = new JCheckBox("Specificity");
-			controlList.add(jCheckBoxSpecificity);
+			getControlList().add(jCheckBoxSpecificity);
 			jCheckBoxSpecificity.setToolTipText(
 					"<html>Specificity or True Negative Rate, relates to the ability to identify negative results.<br>Specificity = TN/(FP+TN) = 1-FPR</html>");
 			jCheckBoxSpecificity.setSelected(true);
@@ -521,7 +521,7 @@ public class AdditionalOptionsPanelFactory {
 	public JCheckBox getCheckBoxPrecision() {
 		if (jCheckBoxPrecision == null) {
 			jCheckBoxPrecision = new JCheckBox("Precision");
-			controlList.add(jCheckBoxPrecision);
+			getControlList().add(jCheckBoxPrecision);
 			jCheckBoxPrecision.setToolTipText(
 					"<html>Precision is the fraction of True Positives over proteins reported as positives.<br>Precision = TP/(TP+FP)</html>");
 		}
@@ -537,7 +537,7 @@ public class AdditionalOptionsPanelFactory {
 	public JCheckBox getCheckBoxNPV() {
 		if (jCheckBoxNPV == null) {
 			jCheckBoxNPV = new JCheckBox("NPV");
-			controlList.add(jCheckBoxNPV);
+			getControlList().add(jCheckBoxNPV);
 			jCheckBoxNPV.setToolTipText(
 					"<html>NPV is the fraction of True Negatives over proteins reported as negatives.<br>Negative Predictive Value (NPV) = TN/(TN+FN)</html>");
 		}
@@ -553,7 +553,7 @@ public class AdditionalOptionsPanelFactory {
 	public JCheckBox getCheckBoxFDR() {
 		if (jCheckBoxFDR == null) {
 			jCheckBoxFDR = new JCheckBox("FDR");
-			controlList.add(jCheckBoxFDR);
+			getControlList().add(jCheckBoxFDR);
 			jCheckBoxFDR.setToolTipText("<html>Error rate.<br>False Discovery Rate (FDR) = FP/(FP+TP)</html>");
 		}
 		jCheckBoxFDR.addItemListener(new java.awt.event.ItemListener() {
@@ -571,7 +571,7 @@ public class AdditionalOptionsPanelFactory {
 
 		if (jCheckBoxOverReplicates == null) {
 			jCheckBoxOverReplicates = new JCheckBox("Repeatibility over next level");
-			controlList.add(jCheckBoxOverReplicates);
+			getControlList().add(jCheckBoxOverReplicates);
 		}
 		jCheckBoxOverReplicates.addItemListener(new java.awt.event.ItemListener() {
 			@Override
@@ -652,12 +652,12 @@ public class AdditionalOptionsPanelFactory {
 			num = String.valueOf(peptides.length);
 		if (jlabelPeptideListHeader == null) {
 			jlabelPeptideListHeader = new JLabel(num + " peptide sequences:");
-			controlList.add(jlabelPeptideListHeader);
+			getControlList().add(jlabelPeptideListHeader);
 		} else
 			jlabelPeptideListHeader.setText(num + " peptide sequences:");
 		if (jListPeptides == null) {
 			jListPeptides = new MyJPanelList();
-			controlList.add(jListPeptides);
+			getControlList().add(jListPeptides);
 			jListPeptides.jListPeptides.setListData(peptides);
 		} else {
 			jListPeptides.jListPeptides.setListData(peptides);
@@ -696,7 +696,7 @@ public class AdditionalOptionsPanelFactory {
 		if (jTextAreaUserPeptideList == null) {
 			jTextAreaUserPeptideList = new JTextArea();
 			jTextAreaUserPeptideList.setFont(new JTextField().getFont());
-			controlList.add(jTextAreaUserPeptideList);
+			getControlList().add(jTextAreaUserPeptideList);
 		}
 		jTextAreaUserPeptideList.setColumns(22);
 		jTextAreaUserPeptideList.setLineWrap(false);
@@ -722,7 +722,7 @@ public class AdditionalOptionsPanelFactory {
 			JButton jbuttonAddToPlot = new JButton("Select on peptide list");
 			jbuttonAddToPlot.setToolTipText(
 					"Click here to automatically select the inserted peptides in the peptide list (if present)");
-			controlList.add(jbuttonAddToPlot);
+			getControlList().add(jbuttonAddToPlot);
 			jbuttonAddToPlot.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -732,7 +732,7 @@ public class AdditionalOptionsPanelFactory {
 
 			if (jTextContaining == null) {
 				jTextContaining = new JTextField(10);
-				controlList.add(jTextContaining);
+				getControlList().add(jTextContaining);
 			}
 
 			c.gridx = 0;
@@ -867,12 +867,12 @@ public class AdditionalOptionsPanelFactory {
 			num = String.valueOf(modifications.length);
 		if (jLabelModificationListHeader == null) {
 			jLabelModificationListHeader = new JLabel(num + " PMTs:");
-			controlList.add(jLabelModificationListHeader);
+			getControlList().add(jLabelModificationListHeader);
 		} else
 			jLabelModificationListHeader.setText(num + " PMTs:");
 		if (jListModifications == null) {
 			jListModifications = new JList(modifications);
-			controlList.add(jListModifications);
+			getControlList().add(jListModifications);
 		} else
 			jListModifications.setListData(modifications);
 		jListModifications.setSelectionMode(selectionModel);
@@ -957,7 +957,7 @@ public class AdditionalOptionsPanelFactory {
 		JLabel jlabel3 = new JLabel("Protein score:");
 		if (jComboBoxProteinScoreNames == null) {
 			jComboBoxProteinScoreNames = new JComboBox(proteinScoreNames);
-			controlList.add(jComboBoxProteinScoreNames);
+			getControlList().add(jComboBoxProteinScoreNames);
 		}
 		jComboBoxProteinScoreNames = new JComboBox(proteinScoreNames);
 		jComboBoxProteinScoreNames.setSelectedIndex(0); // select the
@@ -982,7 +982,7 @@ public class AdditionalOptionsPanelFactory {
 
 		if (jComboBoxPeptideScoreNames == null) {
 			jComboBoxPeptideScoreNames = new JComboBox(peptideScoreNames);
-			controlList.add(jComboBoxPeptideScoreNames);
+			getControlList().add(jComboBoxPeptideScoreNames);
 			// Select the first score
 			jComboBoxPeptideScoreNames.setSelectedIndex(0);
 		}
@@ -1005,7 +1005,7 @@ public class AdditionalOptionsPanelFactory {
 		JPanel jPanelAdditional5 = new JPanel();
 		if (jCheckBoxAddRegressionLine == null) {
 			jCheckBoxAddRegressionLine = new JCheckBox("Show regression line");
-			controlList.add(jCheckBoxAddRegressionLine);
+			getControlList().add(jCheckBoxAddRegressionLine);
 			jCheckBoxAddRegressionLine.setSelected(true);
 		}
 
@@ -1024,7 +1024,7 @@ public class AdditionalOptionsPanelFactory {
 		JPanel jPanelAdditional6 = new JPanel();
 		if (jCheckBoxAddDiagonalLine == null) {
 			jCheckBoxAddDiagonalLine = new JCheckBox("Show diagonal line");
-			controlList.add(jCheckBoxAddDiagonalLine);
+			getControlList().add(jCheckBoxAddDiagonalLine);
 			jCheckBoxAddDiagonalLine.setSelected(true);
 		}
 
@@ -1057,7 +1057,7 @@ public class AdditionalOptionsPanelFactory {
 		String[] scaleTypes = { LINEAR_SCALE, LOGARITHMIC_SCALE, EXPONENTIAL_SCALE };
 		if (jComboBoxColorScale == null) {
 			jComboBoxColorScale = new JComboBox(scaleTypes);
-			controlList.add(jComboBoxColorScale);
+			getControlList().add(jComboBoxColorScale);
 
 			jComboBoxColorScale.addItemListener(new java.awt.event.ItemListener() {
 				@Override
@@ -1069,7 +1069,7 @@ public class AdditionalOptionsPanelFactory {
 					}
 				}
 			});
-			controlList.add(jComboBoxColorScale);
+			getControlList().add(jComboBoxColorScale);
 		}
 		if (alwaysEnabled)
 			jComboBoxColorScale.setEnabled(true);
@@ -1078,7 +1078,7 @@ public class AdditionalOptionsPanelFactory {
 
 		if (jComboBoxHighColorScale == null) {
 			jComboBoxHighColorScale = new JComboBox(getColors().toArray());
-			controlList.add(jComboBoxHighColorScale);
+			getControlList().add(jComboBoxHighColorScale);
 			jComboBoxHighColorScale.addItemListener(new java.awt.event.ItemListener() {
 
 				@Override
@@ -1093,7 +1093,7 @@ public class AdditionalOptionsPanelFactory {
 		}
 		if (jComboBoxLowColorScale == null) {
 			jComboBoxLowColorScale = new JComboBox(getColors().toArray());
-			controlList.add(jComboBoxLowColorScale);
+			getControlList().add(jComboBoxLowColorScale);
 			jComboBoxLowColorScale.addItemListener(new java.awt.event.ItemListener() {
 				@Override
 				public void itemStateChanged(ItemEvent evt) {
@@ -1214,7 +1214,7 @@ public class AdditionalOptionsPanelFactory {
 		jlabel2.setToolTipText(text);
 		if (jTextHeatMapThreshold == null) {
 			jTextHeatMapThreshold = new JTextField("2", 4);
-			controlList.add(jTextHeatMapThreshold);
+			getControlList().add(jTextHeatMapThreshold);
 		}
 		jTextHeatMapThreshold.setToolTipText(text);
 
@@ -1269,7 +1269,7 @@ public class AdditionalOptionsPanelFactory {
 				HistogramType.SCALE_AREA_TO_1 };
 		if (jComboBoxHistogramType == null) {
 			jComboBoxHistogramType = new JComboBox(histogramTypes);
-			controlList.add(jComboBoxHistogramType);
+			getControlList().add(jComboBoxHistogramType);
 		}
 		if (getPreviousHistogramType() != null)
 			jComboBoxHistogramType.setSelectedItem(getPreviousHistogramType());
@@ -1304,7 +1304,7 @@ public class AdditionalOptionsPanelFactory {
 		JLabel jlabel2 = new JLabel("Bins:");
 		if (jTextHistogramBin == null) {
 			jTextHistogramBin = new JTextField("30", 4);
-			controlList.add(jTextHistogramBin);
+			getControlList().add(jTextHistogramBin);
 		}
 		jTextHistogramBin.addFocusListener(new java.awt.event.FocusAdapter() {
 			private String previousNumber = "";
@@ -1339,7 +1339,7 @@ public class AdditionalOptionsPanelFactory {
 		JLabel jlabel3 = new JLabel("Mass type:");
 		if (jComboBoxMOverZ == null) {
 			jComboBoxMOverZ = new JComboBox(new String[] { M, MOVERZ });
-			controlList.add(jComboBoxMOverZ);
+			getControlList().add(jComboBoxMOverZ);
 		}
 		jComboBoxMOverZ.setSelectedIndex(0); // select
 												// the
@@ -1466,7 +1466,7 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public void disableAdditionalOptionControls(boolean b) {
-		for (JComponent component : controlList) {
+		for (JComponent component : getControlList()) {
 			component.setEnabled(b);
 		}
 		for (JCheckBox checkbox : idSetsJCheckBoxes.values()) {
@@ -1857,7 +1857,7 @@ public class AdditionalOptionsPanelFactory {
 		// Add save image buttion
 		if (jbuttonSaveImage == null) {
 			jbuttonSaveImage = new JButton("Save image");
-			controlList.add(jbuttonSaveImage);
+			getControlList().add(jbuttonSaveImage);
 			jbuttonSaveImage.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1922,7 +1922,7 @@ public class AdditionalOptionsPanelFactory {
 				"<html>Select two modifications from the following<br> comboboxes in order to show the number<br>of peptides that have been detected<br>containing the two variants:</html>");
 		if (jComboBoxModificationA == null) {
 			jComboBoxModificationA = new JComboBox();
-			controlList.add(jComboBoxModificationA);
+			getControlList().add(jComboBoxModificationA);
 		}
 		final String[] modifications = getModifications();
 		jComboBoxModificationA.removeAllItems();
@@ -1942,7 +1942,7 @@ public class AdditionalOptionsPanelFactory {
 
 		if (jComboBoxModificationB == null) {
 			jComboBoxModificationB = new JComboBox();
-			controlList.add(jComboBoxModificationB);
+			getControlList().add(jComboBoxModificationB);
 		}
 		jComboBoxModificationB.removeAllItems();
 		jComboBoxModificationB.addItem(NO_MODIFICATION);
@@ -2119,7 +2119,7 @@ public class AdditionalOptionsPanelFactory {
 	public JLabel getJLabelIntersectionsText() {
 		if (jLabelIntersectionsText == null) {
 			jLabelIntersectionsText = new JLabel();
-			controlList.add(jLabelIntersectionsText);
+			getControlList().add(jLabelIntersectionsText);
 		}
 		return jLabelIntersectionsText;
 	}
@@ -2306,7 +2306,7 @@ public class AdditionalOptionsPanelFactory {
 			jCheckBoxShowPSM = new JCheckBox("Show PSMs");
 			jCheckBoxShowPSM.setSelected(true);
 
-			controlList.add(jCheckBoxShowPSM);
+			getControlList().add(jCheckBoxShowPSM);
 		}
 
 		jCheckBoxShowPSM.addItemListener(new java.awt.event.ItemListener() {
@@ -2325,7 +2325,7 @@ public class AdditionalOptionsPanelFactory {
 			jCheckBoxShowPeptides = new JCheckBox("Show Peptides");
 			jCheckBoxShowPeptides.setSelected(true);
 
-			controlList.add(jCheckBoxShowPeptides);
+			getControlList().add(jCheckBoxShowPeptides);
 		}
 
 		jCheckBoxShowPeptides.addItemListener(new java.awt.event.ItemListener() {
@@ -2344,7 +2344,7 @@ public class AdditionalOptionsPanelFactory {
 			jCheckBoxShowPeptidesPlusCharge = new JCheckBox("Show Peptides (diff by Z)");
 			jCheckBoxShowPeptidesPlusCharge.setSelected(true);
 
-			controlList.add(jCheckBoxShowPeptidesPlusCharge);
+			getControlList().add(jCheckBoxShowPeptidesPlusCharge);
 		}
 
 		jCheckBoxShowPeptidesPlusCharge.addItemListener(new java.awt.event.ItemListener() {
@@ -2362,7 +2362,7 @@ public class AdditionalOptionsPanelFactory {
 		if (jCheckBoxShowProteins == null) {
 			jCheckBoxShowProteins = new JCheckBox("Show Proteins");
 			jCheckBoxShowProteins.setSelected(true);
-			controlList.add(jCheckBoxShowProteins);
+			getControlList().add(jCheckBoxShowProteins);
 		}
 
 		jCheckBoxShowProteins.addItemListener(new ItemListener() {
@@ -2381,7 +2381,7 @@ public class AdditionalOptionsPanelFactory {
 		if (jCheckBoxShowScoreVsFDR == null) {
 			jCheckBoxShowScoreVsFDR = new JCheckBox("Show Score vs Num. proteins");
 			jCheckBoxShowScoreVsFDR.setSelected(true);
-			controlList.add(jCheckBoxShowScoreVsFDR);
+			getControlList().add(jCheckBoxShowScoreVsFDR);
 		}
 
 		jCheckBoxShowScoreVsFDR.addItemListener(new java.awt.event.ItemListener() {
@@ -2466,7 +2466,7 @@ public class AdditionalOptionsPanelFactory {
 			jcheckBoxHeatMapBinary.setToolTipText(
 					"If checked, the heatmap will show only two different values: present (red) or not present (green)");
 		}
-		controlList.add(jcheckBoxHeatMapBinary);
+		getControlList().add(jcheckBoxHeatMapBinary);
 		return jcheckBoxHeatMapBinary;
 	}
 
@@ -2539,7 +2539,7 @@ public class AdditionalOptionsPanelFactory {
 					frame.startShowingChart(evt.getSource());
 				}
 			});
-			this.controlList.add(jradioButtonAllProteinsPerGroup);
+			this.getControlList().add(jradioButtonAllProteinsPerGroup);
 			jradioButtonFirstProteinPerGroup = new JRadioButton("share the protein with more evidence");
 			jradioButtonFirstProteinPerGroup.addActionListener(new java.awt.event.ActionListener() {
 				@Override
@@ -2547,7 +2547,7 @@ public class AdditionalOptionsPanelFactory {
 					frame.startShowingChart(evt.getSource());
 				}
 			});
-			this.controlList.add(jradioButtonFirstProteinPerGroup);
+			this.getControlList().add(jradioButtonFirstProteinPerGroup);
 			jradioButtonBestProteinPerGroup = new JRadioButton("share the best protein per group");
 			jradioButtonBestProteinPerGroup.addItemListener(new java.awt.event.ItemListener() {
 				@Override
@@ -2555,6 +2555,7 @@ public class AdditionalOptionsPanelFactory {
 					frame.startShowingChart(evt.getSource());
 				}
 			});
+			this.getControlList().add(jradioButtonBestProteinPerGroup);
 			jradioButtonShareOneProtein = new JRadioButton("share any protein");
 			jradioButtonShareOneProtein.addItemListener(new java.awt.event.ItemListener() {
 				@Override
@@ -2562,7 +2563,7 @@ public class AdditionalOptionsPanelFactory {
 					frame.startShowingChart(evt.getSource());
 				}
 			});
-			controlList.add(jradioButtonShareOneProtein);
+			getControlList().add(jradioButtonShareOneProtein);
 			ButtonGroup group = new ButtonGroup();
 			group.add(jradioButtonAllProteinsPerGroup);
 			group.add(jradioButtonBestProteinPerGroup);
@@ -2655,7 +2656,7 @@ public class AdditionalOptionsPanelFactory {
 		if (jcheckBoxAccumulativeTrend == null) {
 			jcheckBoxAccumulativeTrend = new JCheckBox("show accumulative trend");
 			jcheckBoxAccumulativeTrend.setSelected(true);
-			controlList.add(jcheckBoxAccumulativeTrend);
+			getControlList().add(jcheckBoxAccumulativeTrend);
 			jcheckBoxAccumulativeTrend.addItemListener(new java.awt.event.ItemListener() {
 				@Override
 				public void itemStateChanged(ItemEvent evt) {
@@ -2679,7 +2680,7 @@ public class AdditionalOptionsPanelFactory {
 			jCheckBoxTakeGeneFromFirstProtein.setToolTipText("<html>Protein groups may be mapped to multiple genes.<br>"
 					+ "If this option is selected, only one gene per protein group will be used in the chart.</html>");
 			jCheckBoxTakeGeneFromFirstProtein.setSelected(true);
-			controlList.add(jCheckBoxTakeGeneFromFirstProtein);
+			getControlList().add(jCheckBoxTakeGeneFromFirstProtein);
 			jCheckBoxTakeGeneFromFirstProtein.addItemListener(new java.awt.event.ItemListener() {
 				@Override
 				public void itemStateChanged(ItemEvent evt) {
@@ -2704,7 +2705,7 @@ public class AdditionalOptionsPanelFactory {
 
 		if (jCheckBoxShowProteinFDR == null) {
 			jCheckBoxShowProteinFDR = new JCheckBox("show FDR at protein level");
-			controlList.add(jCheckBoxShowProteinFDR);
+			getControlList().add(jCheckBoxShowProteinFDR);
 			jCheckBoxShowProteinFDR.setSelected(true);
 
 			jCheckBoxShowProteinFDR.addItemListener(new java.awt.event.ItemListener() {
@@ -2719,7 +2720,7 @@ public class AdditionalOptionsPanelFactory {
 		panel.add(jCheckBoxShowProteinFDR, c);
 		if (jCheckBoxShowPeptideFDR == null) {
 			jCheckBoxShowPeptideFDR = new JCheckBox("show FDR at peptide level");
-			controlList.add(jCheckBoxShowPeptideFDR);
+			getControlList().add(jCheckBoxShowPeptideFDR);
 			jCheckBoxShowPeptideFDR.addItemListener(new java.awt.event.ItemListener() {
 
 				@Override
@@ -2732,7 +2733,7 @@ public class AdditionalOptionsPanelFactory {
 		panel.add(jCheckBoxShowPeptideFDR, c);
 		if (jCheckBoxShowPSMFDR == null) {
 			jCheckBoxShowPSMFDR = new JCheckBox("show FDR at PSM level");
-			controlList.add(jCheckBoxShowPSMFDR);
+			getControlList().add(jCheckBoxShowPSMFDR);
 			jCheckBoxShowPSMFDR.addItemListener(new java.awt.event.ItemListener() {
 				@Override
 				public void itemStateChanged(ItemEvent evt) {
@@ -2769,7 +2770,7 @@ public class AdditionalOptionsPanelFactory {
 		if (jComboBoxFont == null) {
 			jComboBoxFont = new JComboBox();
 
-			controlList.add(jComboBoxFont);
+			getControlList().add(jComboBoxFont);
 			jComboBoxFont.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2791,7 +2792,7 @@ public class AdditionalOptionsPanelFactory {
 	public JTextField getMaxNumberWordsText() {
 		if (jTextFieldMaxNumberWords == null) {
 			jTextFieldMaxNumberWords = new JTextField(10);
-			controlList.add(jTextFieldMaxNumberWords);
+			getControlList().add(jTextFieldMaxNumberWords);
 			jTextFieldMaxNumberWords.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2817,7 +2818,7 @@ public class AdditionalOptionsPanelFactory {
 	public JTextField getMinWordLengthText() {
 		if (jTextFieldMinWordLength == null) {
 			jTextFieldMinWordLength = new JTextField(10);
-			controlList.add(jTextFieldMinWordLength);
+			getControlList().add(jTextFieldMinWordLength);
 			jTextFieldMinWordLength.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2852,7 +2853,7 @@ public class AdditionalOptionsPanelFactory {
 					sb.append(string + "\n");
 			}
 			jTextAreaSkipWords.setText(sb.toString());
-			controlList.add(jTextAreaSkipWords);
+			getControlList().add(jTextAreaSkipWords);
 		}
 		jTextAreaSkipWords.setRows(5);
 		return jTextAreaSkipWords;
@@ -2875,7 +2876,7 @@ public class AdditionalOptionsPanelFactory {
 	public JButton getDrawWordCramButton() {
 		if (jButtonDrawWordCram == null) {
 			jButtonDrawWordCram = new JButton("Redraw");
-			controlList.add(jButtonDrawWordCram);
+			getControlList().add(jButtonDrawWordCram);
 			jButtonDrawWordCram.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2889,7 +2890,7 @@ public class AdditionalOptionsPanelFactory {
 	public JButton getSaveDrawWordCramButton() {
 		if (jButtonSaveDrawWordCram == null) {
 			jButtonSaveDrawWordCram = new JButton("Save image to file");
-			controlList.add(jButtonSaveDrawWordCram);
+			getControlList().add(jButtonSaveDrawWordCram);
 			jButtonSaveDrawWordCram.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2904,7 +2905,7 @@ public class AdditionalOptionsPanelFactory {
 	public JLabel getJLabelSelectedWord() {
 		if (jLabelSelectedWord == null) {
 			jLabelSelectedWord = new JLabel("(selected word)");
-			controlList.add(jLabelSelectedWord);
+			getControlList().add(jLabelSelectedWord);
 		}
 		final Font previousFont = jLabelSelectedWord.getFont();
 		jLabelSelectedWord.setFont(new Font(previousFont.getName(), Font.BOLD, previousFont.getSize()));
@@ -2914,7 +2915,7 @@ public class AdditionalOptionsPanelFactory {
 	public JLabel getJLabelSelectedProteins() {
 		if (jLabelSelectedProteins == null) {
 			jLabelSelectedProteins = new JLabel("(proteins containing selected word)");
-			controlList.add(jLabelSelectedProteins);
+			getControlList().add(jLabelSelectedProteins);
 
 		}
 		final Font previousFont = jLabelSelectedProteins.getFont();
@@ -2932,7 +2933,7 @@ public class AdditionalOptionsPanelFactory {
 					frame.startShowingChart(evt.getSource());
 				}
 			});
-			controlList.add(jCheckBoxApplyLog);
+			getControlList().add(jCheckBoxApplyLog);
 		}
 		return jCheckBoxApplyLog;
 	}
@@ -2954,7 +2955,7 @@ public class AdditionalOptionsPanelFactory {
 					frame.startShowingChart(evt.getSource());
 				}
 			});
-			controlList.add(jCheckBoxSeparatedDecoyHits);
+			getControlList().add(jCheckBoxSeparatedDecoyHits);
 		}
 		return jCheckBoxSeparatedDecoyHits;
 	}
@@ -2977,7 +2978,7 @@ public class AdditionalOptionsPanelFactory {
 				}
 			});
 			jCheckBoxShowInMinutes.setSelected(true);
-			controlList.add(jCheckBoxShowInMinutes);
+			getControlList().add(jCheckBoxShowInMinutes);
 		}
 		return jCheckBoxShowInMinutes;
 	}
@@ -3002,7 +3003,7 @@ public class AdditionalOptionsPanelFactory {
 				}
 			});
 			jCheckBoxIsPSMorPeptide.setSelected(true);
-			controlList.add(jCheckBoxIsPSMorPeptide);
+			getControlList().add(jCheckBoxIsPSMorPeptide);
 		}
 		return jCheckBoxIsPSMorPeptide;
 	}
@@ -3014,5 +3015,9 @@ public class AdditionalOptionsPanelFactory {
 	 */
 	public boolean isPSMs() {
 		return jCheckBoxIsPSMorPeptide.isSelected();
+	}
+
+	public List<JComponent> getControlList() {
+		return controlList;
 	}
 }

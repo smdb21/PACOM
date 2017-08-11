@@ -14,6 +14,7 @@ import java.util.Set;
 import javax.swing.SwingWorker;
 
 import org.apache.log4j.Logger;
+import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
 import org.proteored.miapeapi.experiment.model.ExtendedIdentifiedPeptide;
 import org.proteored.miapeapi.experiment.model.ExtendedIdentifiedProtein;
 import org.proteored.miapeapi.experiment.model.IdentificationSet;
@@ -128,27 +129,9 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 				// return;
 				if (this.showPeptides) {
 					if (this.showBestPeptides) {
-						final Map<String, PeptideOccurrence> peptideOccurrenceHashMap = idSet
-								.getPeptideOccurrenceList(true);
-						// sort if there is a FDR Filter activated that tells us
-						// which is the score sort
 
-						ArrayList<PeptideOccurrence> peptideOccurrenceList = new ArrayList<PeptideOccurrence>();
-						for (PeptideOccurrence peptideOccurrence : peptideOccurrenceHashMap.values()) {
-							if (!includeDecoyHits && peptideOccurrence.isDecoy()) {
-								continue;
-							}
-							if (filter != null) {
-								String sequence = peptideOccurrence.getFirstOccurrence()
-										.getKey(distinguisModificatedPeptides);
+						Collection<PeptideOccurrence> peptideOccurrenceList = getPeptideOccurrenceListToExport(idSet);
 
-								if (filter.canCheck(sequence) && !filter.isValid(sequence)) {
-									continue;
-								}
-
-							}
-							peptideOccurrenceList.add(peptideOccurrence);
-						}
 						firePropertyChange(DATA_EXPORTING_SORTING, null, peptideOccurrenceList.size());
 
 						// SorterUtil.sortPeptideOcurrencesByBestPeptideScore(peptideOccurrenceList);
@@ -171,29 +154,13 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 							progress++;
 
 							final int percentage = progress * 100 / total;
-							log.info(percentage + " %");
+							log.debug(percentage + " %");
 							setProgress(percentage);
 						}
 					} else {
-						final List<ExtendedIdentifiedPeptide> identifiedPeptides = idSet.getIdentifiedPeptides();
+						final Collection<ExtendedIdentifiedPeptide> peptidelistToExport = getPeptideListToExport(idSet);
 						// sort if there is a FDR Filter activated that tells us
 						// which is the score sort
-						List<ExtendedIdentifiedPeptide> peptidelistToExport = new ArrayList<ExtendedIdentifiedPeptide>();
-
-						for (ExtendedIdentifiedPeptide peptide : identifiedPeptides) {
-							Thread.sleep(1);
-							if (!includeDecoyHits && peptide.isDecoy()) {
-								continue;
-							}
-							String peptideKey = peptide.getKey(distinguisModificatedPeptides);
-							if (filter != null && filter.canCheck(peptideKey)) {
-								if (!filter.isValid(peptideKey)) {
-									continue;
-								}
-
-							}
-							peptidelistToExport.add(peptide);
-						}
 						firePropertyChange(DATA_EXPORTING_SORTING, null, peptidelistToExport.size());
 						// SorterUtil.sortPeptidesByBestPeptideScore(peptidelistToExport,
 						// true);
@@ -215,29 +182,15 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 
 							progress++;
 							final int percentage = progress * 100 / total;
-							log.info(percentage + " %");
+							log.debug(percentage + " %");
 							setProgress(percentage);
 						}
 					}
 				} else {
 					// JUST PROTEINS
 					if (this.showBestProteins) {
-						List<ProteinGroupOccurrence> proteinGroupOccurrenceList = new ArrayList<ProteinGroupOccurrence>();
-
-						final Collection<ProteinGroupOccurrence> proteinOccurrenceSet = idSet
-								.getProteinGroupOccurrenceList().values();
-						for (ProteinGroupOccurrence proteinGroupOccurrence : proteinOccurrenceSet) {
-							if (!includeDecoyHits && proteinGroupOccurrence.isDecoy()) {
-								continue;
-							}
-							Object key = proteinGroupOccurrence.getKey(this.comparisonType);
-							if (filter != null && filter.canCheck(key)) {
-								if (!filter.isValid(key)) {
-									continue;
-								}
-							}
-							proteinGroupOccurrenceList.add(proteinGroupOccurrence);
-						}
+						Collection<ProteinGroupOccurrence> proteinGroupOccurrenceList = getProteinGroupOccurrenceToExport(
+								idSet);
 
 						// sort if there is a FDR Filter activated that tells us
 						// which is the score sort
@@ -269,24 +222,9 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 							setProgress(percentage);
 						}
 					} else {
-						final List<ProteinGroup> proteinGroups = idSet.getIdentifiedProteinGroups();
+						final List<ProteinGroup> proteinGroupsToExport = getProteinGroupsToExport(idSet);
 						// sort if there is a FDR Filter activated that tells us
 						// which is the score sort
-						List<ProteinGroup> proteinGroupsToExport = new ArrayList<ProteinGroup>();
-						for (ProteinGroup proteinGroup : proteinGroups) {
-							if (!includeDecoyHits && proteinGroup.isDecoy()) {
-								continue;
-							}
-							ProteinGroupOccurrence proteinOccurrence = new ProteinGroupOccurrence();
-							proteinOccurrence.addOccurrence(proteinGroup);
-							Object key = proteinOccurrence.getKey(this.comparisonType);
-							if (filter != null) {
-								if (filter.canCheck(key) && !filter.isValid(key)) {
-									continue;
-								}
-							}
-							proteinGroupsToExport.add(proteinGroup);
-						}
 						firePropertyChange(DATA_EXPORTING_SORTING, null, proteinGroupsToExport.size());
 
 						// SorterUtil.sortProteinGroupsByBestPeptideScore(proteinGroupsToExport);
@@ -334,6 +272,115 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 				this.cancel(true);
 			}
 		}
+
+	}
+
+	private Collection<PeptideOccurrence> getPeptideOccurrenceListToExport(IdentificationSet idSet) {
+		Collection<PeptideOccurrence> peptideOccurrences = idSet.getPeptideOccurrenceList(distinguisModificatedPeptides)
+				.values();
+		if (this.filter == null && includeDecoyHits) {
+			return peptideOccurrences;
+		}
+		List<PeptideOccurrence> ret = new ArrayList<PeptideOccurrence>();
+		for (PeptideOccurrence peptideOccurrence : peptideOccurrences) {
+			if (!includeDecoyHits && peptideOccurrence.isDecoy()) {
+				continue;
+			}
+			if (filter != null) {
+				String key = peptideOccurrence.getKey();
+				if (filter.canCheck(key)) {
+					if (!filter.isValid(key)) {
+						continue;
+					}
+				} else {
+					throw new IllegalMiapeArgumentException("Filter " + filter + " cannot check peptide sequences");
+				}
+			}
+			ret.add(peptideOccurrence);
+		}
+		return ret;
+
+	}
+
+	private Collection<ExtendedIdentifiedPeptide> getPeptideListToExport(IdentificationSet idSet) {
+		if (this.filter == null && includeDecoyHits) {
+			return idSet.getIdentifiedPeptides();
+		}
+		List<ExtendedIdentifiedPeptide> peptidelistToExport = new ArrayList<ExtendedIdentifiedPeptide>();
+
+		List<ExtendedIdentifiedPeptide> identifiedPeptides = idSet.getIdentifiedPeptides();
+		for (ExtendedIdentifiedPeptide extendedIdentifiedPeptide : identifiedPeptides) {
+			if (!includeDecoyHits && extendedIdentifiedPeptide.isDecoy()) {
+				continue;
+			}
+			if (filter != null) {
+				String key = extendedIdentifiedPeptide.getKey(distinguisModificatedPeptides);
+				if (filter.canCheck(key)) {
+					if (!filter.isValid(key)) {
+						continue;
+					}
+				} else {
+					throw new IllegalMiapeArgumentException("Filter " + filter + " cannot check peptide sequences");
+				}
+			}
+			peptidelistToExport.add(extendedIdentifiedPeptide);
+		}
+		return peptidelistToExport;
+	}
+
+	private List<ProteinGroup> getProteinGroupsToExport(IdentificationSet idSet) {
+		List<ProteinGroup> identifiedProteinGroups = idSet.getIdentifiedProteinGroups();
+		if (filter == null && includeDecoyHits) {
+			return identifiedProteinGroups;
+		}
+
+		List<ProteinGroup> ret = new ArrayList<ProteinGroup>();
+		for (ProteinGroup proteinGroup : identifiedProteinGroups) {
+			if (!includeDecoyHits && proteinGroup.isDecoy()) {
+				continue;
+			}
+			ProteinGroupOccurrence proteinOccurrence = new ProteinGroupOccurrence();
+			proteinOccurrence.addOccurrence(proteinGroup);
+			Object key = proteinOccurrence.getKey(comparisonType);
+			if (filter != null) {
+				if (filter.canCheck(key)) {
+					if (!filter.isValid(key)) {
+						continue;
+					}
+				} else {
+					throw new IllegalMiapeArgumentException("Filter " + filter + " cannot check protein keys");
+				}
+			}
+			ret.add(proteinGroup);
+		}
+		return ret;
+
+	}
+
+	private Collection<ProteinGroupOccurrence> getProteinGroupOccurrenceToExport(IdentificationSet idSet) {
+		Collection<ProteinGroupOccurrence> proteinGroupOccurrences = idSet.getProteinGroupOccurrenceList().values();
+		if (filter == null && includeDecoyHits) {
+			return proteinGroupOccurrences;
+		}
+
+		List<ProteinGroupOccurrence> ret = new ArrayList<ProteinGroupOccurrence>();
+		for (ProteinGroupOccurrence proteinOccurrence : proteinGroupOccurrences) {
+			if (!includeDecoyHits && proteinOccurrence.isDecoy()) {
+				continue;
+			}
+			if (filter != null) {
+				Object key = proteinOccurrence.getKey(comparisonType);
+				if (filter.canCheck(key)) {
+					if (!filter.isValid(key)) {
+						continue;
+					}
+				} else {
+					throw new IllegalMiapeArgumentException("Filter " + filter + " cannot check protein keys");
+				}
+			}
+			ret.add(proteinOccurrence);
+		}
+		return ret;
 
 	}
 

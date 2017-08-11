@@ -1751,7 +1751,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		c.gridy++;
 		jPanelAddOptions.add(optionsFactory.getHistogramTypePanel(), c);
 		c.gridy++;
-		jPanelAddOptions.add(new JLabel("Two groups are equals if (select one option):"), c);
+		jPanelAddOptions.add(new JLabel("Protein groups are equal if (select one option):"), c);
 		// take into account just one protein per group
 		c.gridy++;
 		jPanelAddOptions.add(optionsFactory.getJcheckBoxOneProteinPerGroup(), c);
@@ -2994,7 +2994,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		}
 		if (PROTEIN_OVERLAPING.equals(currentChartType) || EXCLUSIVE_PROTEIN_NUMBER.equals(currentChartType)
 				|| PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
-			jPanelAddOptions.add(new JLabel("Two groups are equals if (select one option):"), c);
+			jPanelAddOptions.add(new JLabel("Protein groups are equal if (select one option):"), c);
 			c.gridy++;
 			// take into account just one protein per group
 			jPanelAddOptions.add(optionsFactory.getJcheckBoxOneProteinPerGroup(), c);
@@ -3026,11 +3026,13 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 					saveOverlappingImages();
 				}
 			});
+			optionsFactory.getControlList().add(jbuttonSave);
 			jPanelAddOptions.add(jbuttonSave, c);
 			c.gridy++;
 			JLabel jLabelIntersectionsText = optionsFactory.getJLabelIntersectionsText();
 			jLabelIntersectionsText.setText(null);
 			jPanelAddOptions.add(jLabelIntersectionsText, c);
+			optionsFactory.getControlList().add(jLabelIntersectionsText);
 			c.gridy++;
 
 			// add the buttons per chart (in chart per experiment there is one
@@ -3054,6 +3056,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 					}
 					JLabel labelExperiment = new JLabel(labelString);
 					jPanelAddOptions.add(labelExperiment, c);
+					optionsFactory.getControlList().add(labelExperiment);
 					c.gridy++;
 					overlapString = "A,B";
 					// export just in 1 button
@@ -3065,6 +3068,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 						}
 					});
 					jPanelAddOptions.add(jbuttonExportJustIn1, c);
+					optionsFactory.getControlList().add(jbuttonExportJustIn1);
 					c.gridy++;
 					// export just in 2 button
 					JButton jbuttonExportJustIn2 = new JButton("Export just in B");
@@ -3075,6 +3079,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 						}
 					});
 					jPanelAddOptions.add(jbuttonExportJustIn2, c);
+					optionsFactory.getControlList().add(jbuttonExportJustIn2);
+
 					c.gridy++;
 				}
 				if (numDatasets > 2) {
@@ -3089,6 +3095,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 							}
 						});
 						jPanelAddOptions.add(jbuttonExportJustIn3, c);
+						optionsFactory.getControlList().add(jbuttonExportJustIn3);
+
 						c.gridy++;
 					}
 					// export overlapped button
@@ -3100,6 +3108,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 						}
 					});
 					jPanelAddOptions.add(jbuttonExportOverlap, c);
+					optionsFactory.getControlList().add(jbuttonExportOverlap);
+
 					c.gridy++;
 				}
 			}
@@ -3225,7 +3235,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		if (chartCreator != null) {
 			VennData vennData = chartCreator.getVennData(experimentName);
 			if (vennData != null) {
-				log.info(vennData.getUniqueTo2Keys().size() + " just in 2");
+				log.info(vennData.getUniqueTo2().size() + " just in 2");
 				IdentificationSet idSet = getSelectedIdentificationSetsForVennChart(experimentName)[1];
 				String datasetName = null;
 				if (idSet != null) {
@@ -3430,7 +3440,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		// Just in case of proteins
 		if (PROTEIN_OVERLAPING.equals(currentChartType) || EXCLUSIVE_PROTEIN_NUMBER.equals(currentChartType)
 				|| PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
-			jPanelAddOptions.add(new JLabel("Two groups are equals if (select one option):"), c);
+			jPanelAddOptions.add(new JLabel("Protein groups are equal if (select one option):"), c);
 			c.gridy++;
 			// take into account just one protein per group
 			jPanelAddOptions.add(optionsFactory.getJcheckBoxOneProteinPerGroup(), c);
@@ -3559,7 +3569,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		// Just in case of proteins
 		if (PROTEIN_OVERLAPING.equals(currentChartType) || EXCLUSIVE_PROTEIN_NUMBER.equals(currentChartType)
 				|| PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
-			jPanelAddOptions.add(new JLabel("Two groups are equals if (select one option):"), c);
+			jPanelAddOptions.add(new JLabel("Protein groups are equal if (select one option):"), c);
 			c.gridy++;
 			// take into account just one protein per group
 			jPanelAddOptions.add(optionsFactory.getJcheckBoxOneProteinPerGroup(), c);
@@ -3592,7 +3602,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 					saveOverlappingImage();
 				}
 			});
-
+			optionsFactory.getControlList().add(jbuttonSave);
 			int numDatasets = experimentList.getNumExperiments();
 			String overlapString = "A,B";
 			if (numDatasets > 1) {
@@ -3627,19 +3637,19 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				c.gridy++;
 
 				if (numDatasets > 2) {
-					if (numberOfSelectedCheckBoxes > 2) {
-						overlapString += ",C";
-						// export just in 3 button
-						JButton jbuttonExportJustIn3 = new JButton("Export just in C");
-						jbuttonExportJustIn3.addActionListener(new java.awt.event.ActionListener() {
-							@Override
-							public void actionPerformed(java.awt.event.ActionEvent evt) {
-								exportJustIn3(null);
-							}
-						});
-						jPanelAddOptions.add(jbuttonExportJustIn3, c);
-						c.gridy++;
-					}
+					// if (numberOfSelectedCheckBoxes > 2) {
+					overlapString += ",C";
+					// export just in 3 button
+					JButton jbuttonExportJustIn3 = new JButton("Export just in C");
+					jbuttonExportJustIn3.addActionListener(new java.awt.event.ActionListener() {
+						@Override
+						public void actionPerformed(java.awt.event.ActionEvent evt) {
+							exportJustIn3(null);
+						}
+					});
+					jPanelAddOptions.add(jbuttonExportJustIn3, c);
+					c.gridy++;
+					// }
 					// export overlapped button
 					JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
 					jbuttonExportOverlap.addActionListener(new java.awt.event.ActionListener() {

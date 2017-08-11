@@ -13,6 +13,7 @@ import java.util.Set;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -281,8 +282,8 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 						.addGap(27)));
 		jPanelOptions.setLayout(jPanelOptionsLayout);
 
-		jButtonExport.setIcon(new javax.swing.ImageIcon(
-				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\excel_table.png")); // NOI18N
+		jButtonExport.setIcon(new javax.swing.ImageIcon(ImageManager.EXCEL_TABLE)); // NOI18N
+		jButtonExport.setPressedIcon(new ImageIcon(ImageManager.EXCEL_TABLE_CLICKED));
 		jButtonExport.setText("Export");
 		jButtonExport.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -293,8 +294,8 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 
 		jProgressBar1.setStringPainted(true);
 
-		jButtonCancel.setIcon(new javax.swing.ImageIcon(
-				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\stop.png")); // NOI18N
+		jButtonCancel.setIcon(new ImageIcon(ImageManager.STOP)); // NOI18N
+		jButtonCancel.setPressedIcon(new ImageIcon(ImageManager.STOP_CLICKED));
 		jButtonCancel.setText("Cancel");
 		jButtonCancel.setEnabled(false);
 		jButtonCancel.addActionListener(new java.awt.event.ActionListener() {
@@ -506,7 +507,7 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 			int progress = (Integer) evt.getNewValue();
 			jProgressBar1.setValue(progress);
 			jProgressBar1.setString("Exporting..." + progress + "%");
-			jButtonExport.setEnabled(true);
+			jButtonExport.setEnabled(false);
 
 		} else if (TSVExporter.DATA_EXPORTING_ERROR.equals(evt.getPropertyName())) {
 			JOptionPane.showMessageDialog(this, "Error exporting data: " + evt.getNewValue(), "Error exporting data",
@@ -521,6 +522,9 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 			jButtonCancel.setEnabled(false);
 			jButtonExport.setEnabled(true);
 			jProgressBar1.setIndeterminate(false);
+			jProgressBar1.setString("Export cancelled");
+			jProgressBar1.setStringPainted(true);
+
 		} else if (TSVExporter.DATA_EXPORTING_SORTING.equals(evt.getPropertyName())) {
 			int size = (Integer) evt.getNewValue();
 			jProgressBar1.setIndeterminate(true);
