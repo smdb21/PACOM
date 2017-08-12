@@ -930,6 +930,8 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 				// setProgress(50);
 				convertFile2MIAPE();
 
+			} catch (RuntimeException e) {
+				e.printStackTrace();
 			} catch (Exception e) {
 				e.printStackTrace();
 				if (!isCancelled())
@@ -937,7 +939,7 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 							new MiapeExtractionResult(identifier,
 									e.getMessage()
 											+ "\nThere was a problem.\nCheck if the format was correct. Try again and if the problem persists,"
-											+ " contact support at smartinez@proteored.org"));
+											+ " contact support at salvador@scripps.edu"));
 				// this.cancel(true);
 			} finally {
 				// setProgress(100);
