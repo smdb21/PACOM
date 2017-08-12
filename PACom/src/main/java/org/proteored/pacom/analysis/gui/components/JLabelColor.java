@@ -28,7 +28,7 @@ public class JLabelColor extends JLabel implements ChangeListener {
 		this.colorChooser = colorChooser;
 		// add transparency to the color
 		Color selectedColor = colorChooser.getSelectionModel().getSelectedColor();
-		if (selectedColor.getAlpha() == 0) {
+		if (selectedColor != null && selectedColor.getAlpha() == 0) {
 			int alpha = 127;
 			Color newColor = new Color(selectedColor.getRed(), selectedColor.getGreen(), selectedColor.getBlue(),
 					alpha);

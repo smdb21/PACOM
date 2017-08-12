@@ -1172,7 +1172,7 @@ public class AdditionalOptionsPanelFactory {
 			return Color.white;
 		if ("yellow".equals(selectedItem))
 			return Color.yellow;
-		return null;
+		return Color.blue;
 	}
 
 	private List<String> getColors() {

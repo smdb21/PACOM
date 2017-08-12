@@ -3084,21 +3084,21 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 					c.gridy++;
 				}
 				if (numDatasets > 2) {
-					if (numberOfSelectedCheckBoxes > 2) {
-						overlapString += ",C";
-						// export just in 3 button
-						JButton jbuttonExportJustIn3 = new JButton("Export just in C");
-						jbuttonExportJustIn3.addActionListener(new java.awt.event.ActionListener() {
-							@Override
-							public void actionPerformed(java.awt.event.ActionEvent evt) {
-								exportJustIn3(experimentName);
-							}
-						});
-						jPanelAddOptions.add(jbuttonExportJustIn3, c);
-						optionsFactory.getControlList().add(jbuttonExportJustIn3);
+					// if (numberOfSelectedCheckBoxes > 2) {
+					overlapString += ",C";
+					// export just in 3 button
+					JButton jbuttonExportJustIn3 = new JButton("Export just in C");
+					jbuttonExportJustIn3.addActionListener(new java.awt.event.ActionListener() {
+						@Override
+						public void actionPerformed(java.awt.event.ActionEvent evt) {
+							exportJustIn3(experimentName);
+						}
+					});
+					jPanelAddOptions.add(jbuttonExportJustIn3, c);
+					optionsFactory.getControlList().add(jbuttonExportJustIn3);
 
-						c.gridy++;
-					}
+					c.gridy++;
+					// }
 					// export overlapped button
 					JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
 					jbuttonExportOverlap.addActionListener(new java.awt.event.ActionListener() {
@@ -3516,19 +3516,19 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				c.gridy++;
 
 				if (numDatasets > 2) {
-					if (numberOfSelectedCheckBoxes > 2) {
-						overlapString += ",C";
-						// export just in 3 button
-						JButton jbuttonExportJustIn3 = new JButton("Export just in C");
-						jbuttonExportJustIn3.addActionListener(new java.awt.event.ActionListener() {
-							@Override
-							public void actionPerformed(java.awt.event.ActionEvent evt) {
-								exportJustIn3(null);
-							}
-						});
-						jPanelAddOptions.add(jbuttonExportJustIn3, c);
-						c.gridy++;
-					}
+					// if (numberOfSelectedCheckBoxes > 2) {
+					overlapString += ",C";
+					// export just in 3 button
+					JButton jbuttonExportJustIn3 = new JButton("Export just in C");
+					jbuttonExportJustIn3.addActionListener(new java.awt.event.ActionListener() {
+						@Override
+						public void actionPerformed(java.awt.event.ActionEvent evt) {
+							exportJustIn3(null);
+						}
+					});
+					jPanelAddOptions.add(jbuttonExportJustIn3, c);
+					c.gridy++;
+					// }
 					// export overlapped button
 					JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
 					jbuttonExportOverlap.addActionListener(new java.awt.event.ActionListener() {
