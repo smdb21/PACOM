@@ -16,7 +16,7 @@ public class MiapeExtractorSoftware implements Software {
 
 	@Override
 	public String getVersion() {
-		return MainFrame.getVersion();
+		return MainFrame.getVersion().toString();
 	}
 
 	@Override
