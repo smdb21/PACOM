@@ -3,7 +3,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.proteored</groupId>
    <artifactId>pacom</artifactId>
-   <version>1.32</version>
+   <version>1.33</version>
    <distributionManagement>
       <repository>
          <id>internal</id>
@@ -168,6 +168,34 @@
                </execution>
             </executions>
          </plugin>
+         <plugin>
+	        <groupId>org.codehaus.mojo</groupId>
+	        <artifactId>properties-maven-plugin</artifactId>
+	        <version>1.0.0</version>
+	        <executions>
+	          <execution>
+	            <phase>generate-resources</phase>
+	            <goals>
+	              <goal>write-project-properties</goal>
+	            </goals>
+	            <configuration>
+	              <outputFile>
+	                ${project.build.outputDirectory}/app.properties
+	              </outputFile>
+	              <properties>
+                    <property>
+                        <name>revision</name>
+                        <value>${revision}</value>
+                    </property>
+                    <property>
+                        <name>buildnumber</name>
+                        <value>${buildnumber}</value>
+                    </property>
+                </properties>
+	            </configuration>
+	          </execution>
+	        </executions>
+	      </plugin>
       </plugins>
    </build>
    <profiles>

@@ -53,7 +53,6 @@ import org.proteored.miapeapi.experiment.model.sort.ProteinGroupComparisonType;
 import org.proteored.miapeapi.experiment.model.sort.SorterUtil;
 import org.proteored.pacom.analysis.charts.HeatChart;
 import org.proteored.pacom.analysis.charts.WordCramChart;
-import org.proteored.pacom.analysis.genes.GeneDistributionReader;
 import org.proteored.pacom.analysis.gui.components.JLabelColor;
 import org.proteored.pacom.analysis.gui.tasks.DatasetFactory;
 import org.proteored.pacom.analysis.util.DoSomethingToChangeColorInChart;
@@ -2141,124 +2140,6 @@ public class AdditionalOptionsPanelFactory {
 			}
 		}
 
-	}
-
-	public JPanel getChr16MappingControls() {
-		JPanel jPanel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
-		c.anchor = GridBagConstraints.NORTHWEST;
-
-		c.gridwidth = 2;
-		c.gridy = 0;
-		jPanel.add(new JLabel("<html><b>Note</b>: This chart is specially designed for the<br>"
-				+ "spanish participants in the HPP consortium that<br>" + "analyse the Human Chromosome 16." + "<br>"
-				+ "<b>Note 2</b>: Number of genes can be different from<br>"
-				+ "number of proteins, since isoforms are considered<br>" + "as different proteins<br><br>"
-				+ "</html>"), c);
-
-		c.gridwidth = 1;
-		c.gridy++;
-		c.gridx = 0;
-
-		JPanel proteinOrGeneSelectorPanel = getProteinOrGeneSelector();
-
-		jPanel.add(proteinOrGeneSelectorPanel, c);
-
-		c.gridx = 0;
-		c.gridwidth = 1;
-
-		c.gridy++;
-		JLabel jLabel2 = new JLabel("Show known/unknown:");
-		String text2 = "Show just the genes or proteins classified by the SHPP as known, as unknown or both";
-		jLabel2.setToolTipText(text2);
-		jPanel.add(jLabel2, c);
-		if (known_unknown == null) {
-			known_unknown = new JComboBox(new DefaultComboBoxModel(new String[] { BOTH, KNOWN, UNKNOWN }));
-			known_unknown.setToolTipText(text2);
-			known_unknown.addActionListener(new java.awt.event.ActionListener() {
-				@Override
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					frame.startShowingChart(evt.getSource());
-				}
-			});
-		}
-		c.gridx = 1;
-		jPanel.add(known_unknown, c);
-
-		c.gridx = 0;
-		if (notAssigned == null) {
-			notAssigned = new JCheckBox("show not assigned");
-			notAssigned.setToolTipText("Show genes or protein products not assigned to any research group");
-			notAssigned.setSelected(true);
-			notAssigned.addItemListener(new java.awt.event.ItemListener() {
-
-				@Override
-				public void itemStateChanged(ItemEvent evt) {
-					frame.startShowingChart(evt.getSource());
-				}
-			});
-		}
-		c.gridy++;
-
-		jPanel.add(notAssigned, c);
-
-		c.gridy++;
-
-		jPanel.add(getTakeGeneFromFirstProteinCheckbox(), c);
-
-		c.gridx = 0;
-		c.gridwidth = 2;
-		c.gridy++;
-		jPanel.add(new JLabel("Groups:"), c);
-
-		if (assignedGroups.isEmpty()) {
-			List<String> assignedGroupsStrings = GeneDistributionReader.getInstance().getAssignedGroupsNames();
-
-			for (String group : assignedGroupsStrings) {
-				JCheckBox checkBox = new JCheckBox(group);
-				checkBox.setSelected(true);
-				checkBox.addItemListener(new java.awt.event.ItemListener() {
-					@Override
-					public void itemStateChanged(ItemEvent evt) {
-						frame.startShowingChart(evt.getSource());
-					}
-				});
-				assignedGroups.add(checkBox);
-			}
-		}
-		c.gridwidth = 1;
-		boolean left = true;
-		for (JCheckBox jcheckBox : assignedGroups) {
-
-			if (left) {
-				c.gridy++;
-				c.gridx = 0;
-			} else {
-				c.gridx = 1;
-			}
-			left = !left;
-			jPanel.add(jcheckBox, c);
-		}
-		c.gridx = 1;
-		c.gridwidth = 2;
-		// Filter button
-		JLabel label = new JLabel("<html><br><br>Click here for just filter Chr16 proteins</html>");
-		JButton button = new JButton("Filter Chr16 proteins");
-		button.addActionListener(new java.awt.event.ActionListener() {
-
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				frame.exportChr16Proteins();
-			}
-
-		});
-		// c.gridy++;
-		c.gridx = 0;
-		jPanel.add(label, c);
-		c.gridy++;
-		jPanel.add(button, c);
-
-		return jPanel;
 	}
 
 	public List<String> getGroupToShow() {

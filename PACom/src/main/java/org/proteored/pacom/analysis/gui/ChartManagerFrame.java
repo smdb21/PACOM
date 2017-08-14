@@ -2270,17 +2270,6 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		jPanelAddOptions.repaint();
 	}
 
-	private void addChr16MappingControls() {
-		jPanelAddOptions.removeAll();
-		GridBagConstraints c = new GridBagConstraints();
-		c.anchor = GridBagConstraints.NORTH;
-		jPanelAddOptions.setLayout(new GridBagLayout());
-		c.gridx = 0;
-		c.gridy = 0;
-
-		jPanelAddOptions.add(optionsFactory.getChr16MappingControls(), c);
-	}
-
 	protected void exportHumanProteins(String chr) {
 		Set<String> filterProteinACC = GeneDistributionReader.getInstance().getProteinGeneMapping(chr).keySet();
 

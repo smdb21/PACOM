@@ -45,6 +45,8 @@ import org.proteored.pacom.gui.tasks.OntologyLoaderWaiter;
 import org.proteored.pacom.utils.MiapeExtractorSoftware;
 import org.proteored.pacom.utils.PropertiesReader;
 
+import edu.scripps.yates.utilities.util.versioning.AppVersion;
+
 /**
  *
  * @author __USER__
@@ -66,7 +68,7 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 
 	// by default:
 	public static String ftpPath = "ftp://proteo.cnb.csic.es/pub/tmp/";
-	private static String version;
+	private static AppVersion version;
 	public static boolean emailNotifications;
 	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("log4j.logger.org.proteored");
 	private OntologyLoaderTask ontologyLoader;
@@ -80,8 +82,10 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 
 	public static final boolean parallelProcessingOnExtraction = true;
 
-	private final boolean checkUpdates = false;
-	public static boolean localWorkflow = false;
+	private static final String APP_PROPERTIES = "app.properties";
+
+	private final boolean checkUpdates = true;
+	public static boolean localWorkflow = true;
 
 	public static File currentFolder = new File(".");
 
@@ -109,16 +113,6 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 			e.printStackTrace();
 		}
 
-		try {
-			version = PropertiesReader.getProperties().getProperty(PropertiesReader.PACOM_VERSION);
-			if (version != null) {
-				String suffix = " (v" + version + ")";
-				if (!getTitle().endsWith(suffix))
-					setTitle(getTitle() + suffix);
-			}
-		} catch (Exception e1) {
-		}
-
 		// set icon image
 		setIconImage(ImageManager.getImageIcon(ImageManager.PACOM_LOGO).getImage());
 
@@ -138,6 +132,16 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 			}
 			initializeProperties();
 			initComponents();
+
+			try {
+				version = getVersion();
+				if (version != null) {
+					String suffix = " (v" + version.toString() + ")";
+					if (!getTitle().endsWith(suffix))
+						setTitle(getTitle() + suffix);
+				}
+			} catch (Exception e1) {
+			}
 
 			// load ontologies
 			loadOntologies();
@@ -486,6 +490,7 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 
 		loadButton.setFocusable(false);
 		loadButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				startDataImport();
 
@@ -509,6 +514,7 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 
 		batchLoadButton.setFocusable(false);
 		batchLoadButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				showBatchMiapeExtractionFrame();
 
@@ -532,6 +538,7 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 		inspectButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		inspectButton.setFocusable(false);
 		inspectButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				startProjectComparison();
 			}
@@ -743,14 +750,16 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 		return software;
 	}
 
-	public static String getVersion() {
+	public static AppVersion getVersion() {
 		if (version == null) {
 			try {
-
-				version = PropertiesReader.getProperties().getProperty(PropertiesReader.PACOM_VERSION);
-
+				String tmp = PropertiesReader.getProperties(APP_PROPERTIES).getProperty("assembly.dir");
+				if (tmp.contains("v")) {
+					version = new AppVersion(tmp.split("v")[1]);
+				} else {
+					version = new AppVersion(tmp);
+				}
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

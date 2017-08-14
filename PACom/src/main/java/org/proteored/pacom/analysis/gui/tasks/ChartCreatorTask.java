@@ -1164,48 +1164,6 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		return null;
 	}
 
-	private Object showChr16MappingBarChart() {
-
-		parent.setInformation1(parent.getCurrentChartType());
-		String xAxisLabel;
-
-		String yAxisLabel = "# proteins / # genes";
-
-		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
-
-		xAxisLabel = "researcher";
-		List<String> groupsToShow = optionsFactory.getGroupToShow();
-		boolean showNotAssigned = optionsFactory.isNotAssignedShowed();
-		String proteinOrGene = optionsFactory.getProteinOrGene();
-		String knownUnknown = optionsFactory.getChr16KnownOrUnknown();
-		final boolean takeGeneFromFirstProteinSelected = optionsFactory.isTakeGeneFromFirstProteinSelected();
-		if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			CategoryDataset dataset = DatasetFactory.createChr16MappingCategoryDataSet(experimentList, groupsToShow,
-					showNotAssigned, proteinOrGene, knownUnknown, takeGeneFromFirstProteinSelected,
-					countNonConclusiveProteins);
-
-			BarChart chart = new BarChart(parent.getChartTitle(chartType), parent.getChartSubtitle(chartType, option),
-					xAxisLabel, yAxisLabel, dataset, plotOrientation);
-			return chart.getChartPanel();
-
-		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
-
-				CategoryDataset dataset = DatasetFactory.createChr16MappingCategoryDataSet(experiment, groupsToShow,
-						showNotAssigned, proteinOrGene, knownUnknown, takeGeneFromFirstProteinSelected,
-						countNonConclusiveProteins);
-
-				BarChart chart = new BarChart(parent.getChartTitle(chartType), experiment.getName(), xAxisLabel,
-						yAxisLabel, dataset, plotOrientation);
-				chartList.add(chart.getChartPanel());
-
-			}
-			return chartList;
-		}
-		return null;
-	}
-
 	private Object shotPSMPEPPROT_LineChart() {
 		parent.setInformation1(parent.getCurrentChartType());
 

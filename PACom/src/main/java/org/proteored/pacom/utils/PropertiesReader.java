@@ -9,10 +9,9 @@ public class PropertiesReader {
 	// public static final String ENSEMBL_UNIPROT_MAPPING_FILE =
 	// "ensembl_uniprot_mapping_file";
 	public static final String ENSEMBL_UNIPROT_MAPPING_FILE = "ensembl_uniprot_mapping_file";
-	public static final String UNIPROT_TREMBL_HUMAN_CHR16_FILE = "uniprot_trembl_human_chr16_FileName";
-	public static final String UNIPROT_SPROT_HUMAN_CHR16_FILE = "uniprot_sprot_human_chr16_FileName";
-	public static final String PACOM_VERSION = "pacom.version";
-	public static final String PACOM_WEBSITE = "miapeextractor.website";
+
+	public static final String PACOM_DOWNLOAD_WEBSITE = "pacom.download.website";
+	public static final String PACOM_CHECK_VERSION_WEBSITE = "pacom.check.version.website";
 	public static final String MIAPE_EXTRACTOR_WEBSERVICE_ENDPOINT = "miapeextractor.webservice.endpoint";
 	public static final String MIAPE_API_WEBSERVICE_ENDPOINT = "miapeapi.webservice.endpoint";
 	public static final String MIAPE_API_WEBSERVICE_SERVICENAME = "miapeapi.webservice.servicename";
@@ -32,6 +31,24 @@ public class PropertiesReader {
 		is = cl.getResourceAsStream(PACOM_PROPERTIES_FILE);
 		if (is == null)
 			throw new IllegalArgumentException(PACOM_PROPERTIES_FILE + " file not found");
+
+		Properties prop = new Properties();
+		try {
+			prop.load(is);
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new IllegalArgumentException(e);
+		}
+		return prop;
+	}
+
+	public static Properties getProperties(String classPathFileName) {
+		ClassLoader cl = PropertiesReader.class.getClassLoader();
+		InputStream is;
+
+		is = cl.getResourceAsStream(classPathFileName);
+		if (is == null)
+			throw new IllegalArgumentException(classPathFileName + " file not found");
 
 		Properties prop = new Properties();
 		try {

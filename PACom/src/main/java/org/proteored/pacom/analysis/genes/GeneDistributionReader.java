@@ -1,17 +1,13 @@
 package org.proteored.pacom.analysis.genes;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,16 +19,10 @@ import org.apache.log4j.Logger;
 import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
 import org.proteored.miapeapi.experiment.model.ExtendedIdentifiedProtein;
 import org.proteored.miapeapi.experiment.model.IdentificationSet;
-import org.proteored.miapeapi.experiment.model.IdentifierParser;
 import org.proteored.miapeapi.experiment.model.ProteinGroup;
 import org.proteored.miapeapi.experiment.model.ProteinGroupOccurrence;
 import org.proteored.miapeapi.experiment.model.grouping.ProteinEvidence;
-import org.proteored.miapeapi.zip.ZipManager;
 import org.proteored.pacom.utils.PropertiesReader;
-
-import com.compomics.dbtoolkit.io.implementations.FASTADBLoader;
-import com.compomics.util.protein.Header;
-import com.compomics.util.protein.Protein;
 
 import edu.scripps.yates.utilities.fasta.FastaParser;
 import gnu.trove.map.hash.THashMap;
@@ -42,12 +32,7 @@ public class GeneDistributionReader {
 	public static final String[] chromosomeNames = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
 			"13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "MT", "X", "Y" };
 	// private static final String chromosomeFileName = "nextprot_chromosome_";
-	private static final String distributionFileName = "repartoCH16.tsv";
 	private final InputStream uniprotEnsemblMapInputStream;
-	private static final String uniprot_sprot_human_chr16_FileName = PropertiesReader.getProperties()
-			.getProperty(PropertiesReader.UNIPROT_SPROT_HUMAN_CHR16_FILE);
-	private static final String uniprot_trembl_human_chr16_FileName = PropertiesReader.getProperties()
-			.getProperty(PropertiesReader.UNIPROT_TREMBL_HUMAN_CHR16_FILE);
 	// private static final String ensg2uniprotFileName =
 	// "Chr16_EnsG2Uniprot.tsv";
 	// private static final String ensg2uniprotChr16FileName =
@@ -96,172 +81,8 @@ public class GeneDistributionReader {
 		return instance;
 	}
 
-	private Map<String, ENSGInfo> geneInfo;
 	private Map<String, List<ENSGInfo>> proteinGeneMapping;
 	private Map<String, Map<String, List<ENSGInfo>>> proteinGeneMappingByChromosome;
-
-	/**
-	 * Gets a list of names of the groups which some proteins has been assigned
-	 * to, from the Chr16 (SPHPP).<br>
-	 * Gets the names of the repartoCH16.tsv file.
-	 * 
-	 * @return
-	 */
-	public List<String> getAssignedGroupsNames() {
-		List<String> ret = new ArrayList<String>();
-
-		ClassLoader cl = this.getClass().getClassLoader();
-		final InputStream fstream = cl.getResourceAsStream(distributionFileName);
-		if (fstream != null) {
-
-			// FileInputStream fstream = new FileInputStream(resource.);
-			// Get the object of DataInputStream
-			DataInputStream in = new DataInputStream(fstream);
-
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			String strLine;
-			int numLines = 0;
-			try {
-				while ((strLine = br.readLine()) != null) {
-					if (numLines > 0)
-						if (strLine.contains("\t")) {
-							final String[] split = strLine.split("\t");
-
-							if (split.length == 21) {
-								Researcher researcher = new Researcher(split[0]);
-								String name = researcher.getName();
-								if (!ret.contains(name))
-									ret.add(name);
-							}
-						}
-					numLines++;
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		log.info("returning " + ret.size() + " groups");
-		return ret;
-	}
-
-	/**
-	 * Gets a Map: key=ENSGid - value=ENSGinfo object, from the
-	 * 'repartoCH16.tsv' file.
-	 * 
-	 * @return
-	 */
-	private Map<String, ENSGInfo> getGeneInfoFromProteoRedDistribution() {
-		if (geneInfo != null)
-			return geneInfo;
-		Map<String, ENSGInfo> ret = new THashMap<String, ENSGInfo>();
-		ClassLoader cl = this.getClass().getClassLoader();
-		try {
-			final InputStream fstream = cl.getResourceAsStream(distributionFileName);
-
-			if (fstream != null) {
-
-				// FileInputStream fstream = new FileInputStream(resource.);
-				// Get the object of DataInputStream
-				DataInputStream in = new DataInputStream(fstream);
-				try {
-					BufferedReader br = new BufferedReader(new InputStreamReader(in));
-					String strLine;
-					int numLines = 0;
-					while ((strLine = br.readLine()) != null) {
-						numLines++;
-						if (numLines > 1) {
-							String ensG_ID;
-							String known;
-							Researcher researcher;
-							String external_gene_id;
-							String description;
-							String chrName;
-							String band;
-							int transcriptCount;
-							String geneBiotype;
-							String status;
-							boolean uniprot;
-							boolean uniprot_protEvidence;
-							boolean gpmdb;
-							boolean gpmdb_lt_minus_5;
-							boolean gpmdb_lt_minus_2;
-							double loge;
-							boolean hpa;
-							boolean nappa;
-							if (strLine.contains("\t")) {
-								final String[] split = strLine.split("\t");
-
-								if (split.length == 21) {
-									researcher = new Researcher(split[0]);
-									known = split[1].equalsIgnoreCase("known") ? ENSGInfo.KNOWN : ENSGInfo.UNKNOWN;
-									ensG_ID = split[2];
-									external_gene_id = split[3];
-									description = split[4];
-									chrName = split[5];
-									band = split[7];
-									transcriptCount = Integer.valueOf(split[8]);
-									geneBiotype = split[9];
-									status = split[10];
-									uniprot = split[11].equals("1") ? true : false;
-									uniprot_protEvidence = split[12].equals("1") ? true : false;
-									gpmdb = split[13].equals("1") ? true : false;
-									gpmdb_lt_minus_5 = split[14].equals("1") ? true : false;
-									gpmdb_lt_minus_2 = split[15].equals("1") ? true : false;
-									loge = Double.valueOf(split[16]);
-									hpa = split[17].equals("1") ? true : false;
-									nappa = split[18].equals("1") ? true : false;
-									researcher.setGroupID(split[20]);
-
-									ENSGInfo gene = new ENSGInfo();
-									gene.setAssigned(true);
-									gene.setBand(band);
-									gene.setChrName(chrName);
-									gene.setDescription(description);
-									gene.setEnsG_ID(ensG_ID);
-									// if (ensG_ID.equals("ENSG00000170537"))
-									// System.out.println("hola");
-									gene.setGeneName(external_gene_id);
-									gene.setGeneBiotype(geneBiotype);
-									gene.setGpmdb(gpmdb);
-									gene.setGpmdb_lt_minus_2(gpmdb_lt_minus_2);
-									gene.setGpmdb_lt_minus_5(gpmdb_lt_minus_5);
-									gene.setHpa(hpa);
-									gene.setKnown(known);
-									gene.setLoge(loge);
-									gene.setNapa(nappa);
-									gene.setResearcher(researcher);
-									gene.setStatus(status);
-									gene.setTranscriptCount(transcriptCount);
-									gene.setUniprot(uniprot);
-									gene.setUniprot_protEvidence(uniprot_protEvidence);
-
-									if (!ret.containsKey(gene.getEnsG_ID()))
-										ret.put(gene.getEnsG_ID(), gene);
-									else
-										log.error("The gene ID is repeated!");
-								}
-							} else {
-								log.warn("The file doesn't contain tabs");
-							}
-						}
-					}
-				} finally {
-					in.close();
-				}
-			} else {
-				throw new IllegalMiapeArgumentException(distributionFileName + " not found");
-			}
-		} catch (FileNotFoundException e) {
-			log.info(e.getMessage());
-			throw new IllegalMiapeArgumentException(e.getMessage());
-		} catch (IOException e) {
-			log.info(e.getMessage());
-			throw new IllegalMiapeArgumentException(e.getMessage());
-		}
-		geneInfo = ret;
-		return ret;
-	}
 
 	/**
 	 * Gets a hasMap with keys=uniprotACC and values=List of {@link ENSGInfo}
@@ -568,167 +389,6 @@ public class GeneDistributionReader {
 	// }
 	// }
 	// }
-
-	/**
-	 * 
-	 * @param assignedGenes
-	 * @param chrName
-	 */
-	private void addChr16InfoFromOtherFiles(Map<String, ENSGInfo> assignedGenes, String chrName) {
-
-		if (chrName != null && !"16".equals(chrName))
-			return;
-
-		ClassLoader cl = this.getClass().getClassLoader();
-		List<String> fileNames = new ArrayList<String>();
-		fileNames.add(uniprot_sprot_human_chr16_FileName);
-		fileNames.add(uniprot_trembl_human_chr16_FileName);
-		for (String fileName : fileNames) {
-
-			final InputStream fstream = cl.getResourceAsStream(fileName);
-
-			File fastaFile = getTempFileFromStream(fstream);
-			if (fastaFile != null) {
-				FASTADBLoader fastaLoader = new FASTADBLoader();
-				try {
-					fastaLoader.load(fastaFile.getAbsolutePath());
-
-					final long countNumberOfEntries = fastaLoader.countNumberOfEntries();
-					for (int i = 0; i < countNumberOfEntries; i++) {
-						final Protein nextProtein = fastaLoader.nextProtein();
-						if (nextProtein == null)
-							break;
-						Header header = nextProtein.getHeader();
-						String uniprotACC = header.getAccession();
-
-						IdentifierParser.setRemove_acc_version(true);
-						String canonicalUniprotACC = IdentifierParser.parseACC(uniprotACC);
-
-						// if the uniprotACC whitout isoform "-2" is already
-						// seen in the proteinMapping, add a new entry mapping
-						// the
-						// isoform to the gene
-
-						String ENSG = getProteinENSGFromFastaHeader(nextProtein);
-						// System.out.println(uniprotACC + " " + ENSG);
-						if (ENSG == null || "".equals(ENSG)) {
-							// log.info(j++ + " " + header);
-
-						}
-						String proteinEvidence = getProteinEvidenceFromFastaHeader(nextProtein);
-						String geneName = getGeneNameFromFastaHeader(nextProtein);
-
-						if (ENSG == null || "".equals(ENSG)) {
-						} else {
-							ENSGInfo ensgInfo = null;
-							if (assignedGenes.containsKey(ENSG)) {
-								// log.info("Assigned Chr16 gene: " + ENSG);
-								ensgInfo = assignedGenes.get(ENSG);
-								ensgInfo.addProteinACC(uniprotACC);
-							} else {
-								// log.info("Not assigned Chr16 gene: " + ENSG);
-								ensgInfo = new ENSGInfo();
-								ensgInfo.addProteinACC(uniprotACC);
-								ensgInfo.setAssigned(false);
-								ensgInfo.setChrName("16");
-								ensgInfo.setEnsG_ID(ENSG);
-								ensgInfo.setGeneName(geneName);
-								ensgInfo.setProteinEvidence(proteinEvidence);
-								ensgInfo.setUniprot(true);
-							}
-
-							if (proteinGeneMapping.containsKey(uniprotACC)) {
-								final List<ENSGInfo> geneList = proteinGeneMapping.get(uniprotACC);
-								boolean found = false;
-								for (ENSGInfo ensgInfo2 : geneList) {
-									if (ensgInfo2.getEnsG_ID().equals(ensgInfo.getEnsG_ID()))
-										found = true;
-								}
-								if (!found) {
-									System.out.println(uniprotACC + ": " + ENSG + "," + geneList.get(0).getEnsG_ID());
-									proteinGeneMapping.get(uniprotACC).add(ensgInfo);
-								}
-							} else if (proteinGeneMapping.containsKey(canonicalUniprotACC)) {
-								final List<ENSGInfo> canonicalGeneList = proteinGeneMapping.get(canonicalUniprotACC);
-								boolean found = false;
-								for (ENSGInfo ensgInfo2 : canonicalGeneList) {
-									if (ensgInfo2.getEnsG_ID().equals(ensgInfo.getEnsG_ID()))
-										found = true;
-								}
-								if (!found) { // the isoform comes from a
-												// different gen than the
-												// canonical form:
-									List<ENSGInfo> geneList2 = new ArrayList<ENSGInfo>();
-									geneList2.add(ensgInfo);
-									proteinGeneMapping.put(uniprotACC, geneList2);
-								} else {
-									proteinGeneMapping.put(uniprotACC, canonicalGeneList);
-								}
-							} else {
-								List<ENSGInfo> geneList2 = new ArrayList<ENSGInfo>();
-								geneList2.add(ensgInfo);
-								proteinGeneMapping.put(uniprotACC, geneList2);
-							}
-						}
-					}
-					log.info(
-							proteinGeneMapping.size() + " proteins mapped to some gene after reading from " + fileName);
-					// log.info(numSeqInDB + " " + countNumberOfEntries +
-					// " proteins readed in "
-					// + fileName);
-				} catch (IOException e) {
-					e.printStackTrace();
-					return;
-				}
-			}
-		}
-	}
-
-	private File getTempFileFromStream(InputStream fstream) {
-		try {
-			File temFile = File.createTempFile("temp", "tmp");
-			temFile.deleteOnExit();
-			OutputStream os = new FileOutputStream(temFile);
-			BufferedOutputStream bos = new BufferedOutputStream(os);
-			BufferedInputStream bis = new BufferedInputStream(fstream);
-			ZipManager.copyInputStream(bis, bos);
-			return temFile;
-		} catch (IOException e) {
-			log.warn("Error copying stream: " + e.getMessage());
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	private String getProteinEvidenceFromFastaHeader(Protein protein) {
-		final String desc = protein.getHeader().getDescription();
-		if (desc.contains("PE=")) {
-			final String[] split = desc.split("PE=");
-			String PE = split[1].substring(0, split[1].indexOf(" "));
-			return PE;
-		}
-		return null;
-	}
-
-	private String getGeneNameFromFastaHeader(Protein protein) {
-		final String desc = protein.getHeader().getDescription();
-		if (desc.contains("GN=")) {
-			final String[] split = desc.split("GN=");
-			String GN = split[1].substring(0, split[1].indexOf(" "));
-			return GN;
-		}
-		return null;
-	}
-
-	private String getProteinENSGFromFastaHeader(Protein protein) {
-		final String desc = protein.getHeader().getDescription();
-		if (desc.contains("Gene=")) {
-			final String[] split = desc.split("Gene=");
-			String ENSG = split[1].substring(0, split[1].indexOf(" "));
-			return ENSG;
-		}
-		return null;
-	}
 
 	public static void main(String args[]) {
 		final Map<String, List<ENSGInfo>> proteinGeneMapping = GeneDistributionReader.getInstance()
