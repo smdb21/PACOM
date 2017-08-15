@@ -152,7 +152,7 @@ public class GeneralOptionsDialogNoParallel extends javax.swing.JDialog {
 				"<html>Peptides with short sequences can be somehow problematic, <br> since short decoy sequences could have similar identification <br> scores than a non decoy short sequence.</html>");
 
 		jTextFieldPeptideLength.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-		jTextFieldPeptideLength.setText("7");
+		jTextFieldPeptideLength.setText(String.valueOf(DataManager.DEFAULT_MIN_PEPTIDE_LENGTH));
 		jTextFieldPeptideLength.setToolTipText(
 				"<html>Peptides with short sequences can be somehow problematic, <br>\nsince short decoy sequences could have similar identification <br>\nscores than a non decoy short sequence.</html>");
 		jTextFieldPeptideLength.addKeyListener(new java.awt.event.KeyAdapter() {
