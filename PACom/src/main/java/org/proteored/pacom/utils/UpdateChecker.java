@@ -86,7 +86,11 @@ public class UpdateChecker {
 				// take the latest
 				AppVersion newest = versions.get(versions.size() - 1);
 				if (!newest.equals(version)) {
-					toUpdate = true;
+					// see what is
+					int compareTo = version.compareTo(newest);
+					if (compareTo == -1) {
+						toUpdate = true;
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -96,7 +100,6 @@ public class UpdateChecker {
 				try {
 					reader.close();
 				} catch (IOException e) {
-					log.warn("Failed to check for updates");
 				}
 			}
 		}
