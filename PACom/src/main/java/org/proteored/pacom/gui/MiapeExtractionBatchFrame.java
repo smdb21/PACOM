@@ -17,7 +17,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,17 +39,13 @@ import javax.swing.border.TitledBorder;
 import org.jfree.ui.RefineryUtilities;
 import org.proteored.miapeapi.cv.ControlVocabularyManager;
 import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
-import org.proteored.miapeapi.util.MiapeReportsLinkGenerator;
-import org.proteored.miapeapi.webservice.clients.miapeapi.MiapeAPIWebserviceDelegate;
-import org.proteored.miapeapi.webservice.clients.miapeapi.MiapeDatabaseException_Exception;
-import org.proteored.miapeapi.webservice.clients.miapeapi.MiapeSecurityException_Exception;
-import org.proteored.miapeapi.webservice.clients.miapeextractor.MiapeExtractorDelegate;
 import org.proteored.pacom.gui.tasks.MiapeExtractionTask;
 import org.proteored.pacom.gui.tasks.OntologyLoaderWaiter;
 import org.proteored.pacom.utils.HttpUtilities;
 import org.proteored.pacom.utils.MiapeExtractionBatchManager;
 import org.proteored.pacom.utils.MiapeExtractionResult;
 
+import edu.scripps.yates.utilities.util.versioning.AppVersion;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
 /**
@@ -59,8 +54,6 @@ import gnu.trove.map.hash.TIntObjectHashMap;
  */
 public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements PropertyChangeListener {
 	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("log4j.logger.org.proteored");
-	private final MiapeExtractorDelegate miapeExtractorWebservice = null;
-	private final MiapeAPIWebserviceDelegate miapeAPIWebservice = null;
 	private ControlVocabularyManager cvManager;
 	private final TIntObjectHashMap<List<JComponent>> miapeExtractionTaskJComponents = new TIntObjectHashMap<List<JComponent>>();
 	private MiapeExtractionBatchManager miapeExtractorBatchManager;
@@ -97,6 +90,12 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 
 		RefineryUtilities.centerFrameOnScreen(this);
 		jTextAreaStatus.setFont(new JLabel().getFont());
+
+		AppVersion version = MainFrame.getVersion();
+		if (version != null) {
+			String suffix = " (v" + version.toString() + ")";
+			this.setTitle(getTitle() + suffix);
+		}
 	}
 
 	public static MiapeExtractionBatchFrame getInstace(MainFrame mainFrame) {
@@ -435,8 +434,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 
 	private void startMiapeExtractionBatchManager(File file) {
 		try {
-			miapeExtractorBatchManager = new MiapeExtractionBatchManager(file, this, miapeExtractorWebservice,
-					miapeAPIWebservice, cvManager);
+			miapeExtractorBatchManager = new MiapeExtractionBatchManager(file, this, cvManager);
 			List<MiapeExtractionTask> miapeExtractionQueue = miapeExtractorBatchManager.getMiapeExtractionQueue();
 			loadJobQueuePanel(miapeExtractionQueue);
 			updateButtonsState();
@@ -476,11 +474,9 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 		log.info("Getting components from task: " + miapeExtractionTask.getRunIdentifier());
 
 		String labelText = "";
-		if (miapeExtractionTask.getParameters().isLocalProcessing()) {
-			labelText = "Job '" + miapeExtractionTask.getRunIdentifier() + "'";
-		} else {
-			labelText = "Job '" + miapeExtractionTask.getRunIdentifier() + "' (upload to server)";
-		}
+
+		labelText = "Job '" + miapeExtractionTask.getRunIdentifier() + "'";
+
 		// job id label
 		JLabel label = new JLabel(labelText);
 		componentList.add(label);
@@ -542,33 +538,17 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 					MiapeExtractionResult miapeExtractionResult = obtainedResults.get(runIdentifier);
 					Integer miapeID = miapeExtractionResult.getMiapeMS_Identifier();
 					if (miapeID != null) {
-						if (!miapeExtractionTask.isLocalMIAPEExtraction()) {
-							String miapeType = "MS";
-							int userId = getUserID();
-							URL directLink = MiapeReportsLinkGenerator.getMiapePublicLink(userId, miapeID, miapeType);
-							if (directLink != null) {
-								Object[] dialog_options = { "Yes, open browser", "No, close this dialog" };
-								int selected_option = JOptionPane.showOptionDialog(MiapeExtractionBatchFrame.this,
-										"Click on yes to open a browser to go directly to the MIAPE " + miapeType
-												+ " document report." + "\n",
-										"Show MIAPE " + miapeType + " report", JOptionPane.YES_NO_CANCEL_OPTION,
-										JOptionPane.QUESTION_MESSAGE, null, dialog_options, dialog_options[1]);
-								if (selected_option == 0) { // Yes
-									HttpUtilities.openURL(directLink.toString());
-								}
-							}
-						} else {
-							File directLink = obtainedResults.get(runIdentifier).getDirectLinkToMIAPEMS();
-							if (directLink != null) {
 
-								Object[] dialog_options = { "Yes, open data file", "No, close this dialog" };
-								int selected_option = JOptionPane.showOptionDialog(MiapeExtractionBatchFrame.this,
-										"Click on yes to open the data file." + "\n", "Show data file",
-										JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-										dialog_options, dialog_options[1]);
-								if (selected_option == 0) { // Yes
-									HttpUtilities.openURL(directLink.toString());
-								}
+						File directLink = obtainedResults.get(runIdentifier).getDirectLinkToMIAPEMS();
+						if (directLink != null) {
+
+							Object[] dialog_options = { "Yes, open data file", "No, close this dialog" };
+							int selected_option = JOptionPane.showOptionDialog(MiapeExtractionBatchFrame.this,
+									"Click on yes to open the data file." + "\n", "Show data file",
+									JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+									dialog_options, dialog_options[1]);
+							if (selected_option == 0) { // Yes
+								HttpUtilities.openURL(directLink.toString());
 							}
 						}
 
@@ -590,39 +570,22 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 					Integer miapeID = miapeExtractionResult.getMiapeMSI_Identifier();
 					if (miapeID != null) {
 
-						if (!miapeExtractionTask.isLocalMIAPEExtraction()) {
-							String miapeType = "MSI";
-							int userId = getUserID();
-							URL directLink = MiapeReportsLinkGenerator.getMiapePublicLink(userId, miapeID, miapeType);
-							if (directLink != null) {
-								Object[] dialog_options = { "Yes, open browser", "No, close this dialog" };
-								int selected_option = JOptionPane.showOptionDialog(MiapeExtractionBatchFrame.this,
-										"Click on yes to open a browser to go directly to the dataset " + miapeType
-												+ " document report." + "\n",
-										"Show MIAPE " + miapeType + " report", JOptionPane.YES_NO_CANCEL_OPTION,
-										JOptionPane.QUESTION_MESSAGE, null, dialog_options, dialog_options[1]);
-								if (selected_option == 0) { // Yes
-									HttpUtilities.openURL(directLink.toString());
-								}
-							}
-						} else {
-							File directLink = obtainedResults.get(runIdentifier).getDirectLinkToMIAPEMSI();
-							if (directLink != null) {
-								Object[] dialog_options = { "Yes, open data file", "No, close this dialog" };
-								int selected_option = JOptionPane.showOptionDialog(MiapeExtractionBatchFrame.this,
-										"Click on yes to open the data file." + "\n", "Show data file",
-										JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-										dialog_options, dialog_options[1]);
-								if (selected_option == 0) { // Yes
-									Desktop desktop = Desktop.getDesktop();
+						File directLink = obtainedResults.get(runIdentifier).getDirectLinkToMIAPEMSI();
+						if (directLink != null) {
+							Object[] dialog_options = { "Yes, open data file", "No, close this dialog" };
+							int selected_option = JOptionPane.showOptionDialog(MiapeExtractionBatchFrame.this,
+									"Click on yes to open the data file." + "\n", "Show data file",
+									JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+									dialog_options, dialog_options[1]);
+							if (selected_option == 0) { // Yes
+								Desktop desktop = Desktop.getDesktop();
 
-									try {
-										desktop.open(directLink);
-									} catch (IOException e1) {
-										e1.printStackTrace();
-									}
-
+								try {
+									desktop.open(directLink);
+								} catch (IOException e1) {
+									e1.printStackTrace();
 								}
+
 							}
 						}
 
@@ -631,10 +594,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 			}
 		});
 		msiReportButton.setEnabled(false);
-		if (miapeExtractionTask.isLocalMIAPEExtraction())
-			msiReportButton.setToolTipText("Show imported dataset file in your local folder");
-		else
-			msiReportButton.setToolTipText("Show MIAPE MSI report in the online MIAPE Generator tool");
+		msiReportButton.setToolTipText("Show imported dataset file in your local folder");
 		componentList.add(msiReportButton);
 
 		miapeExtractionTaskJComponents.put(miapeExtractionTask.getRunIdentifier(), componentList);
@@ -645,18 +605,6 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 	private void appendStatus(String text) {
 		jTextAreaStatus.append(text + "\n");
 		jTextAreaStatus.setCaretPosition(jTextAreaStatus.getText().length() - 1);
-	}
-
-	private int getUserID() {
-		try {
-			if (MainFrame.userName != null && MainFrame.password != null)
-				return miapeAPIWebservice.getUserId(MainFrame.userName, MainFrame.password);
-		} catch (MiapeDatabaseException_Exception e) {
-			e.printStackTrace();
-		} catch (MiapeSecurityException_Exception e) {
-			e.printStackTrace();
-		}
-		return -1;
 	}
 
 	/**

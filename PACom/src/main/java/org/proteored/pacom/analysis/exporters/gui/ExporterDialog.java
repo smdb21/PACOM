@@ -204,13 +204,13 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 				"<html>\nThis option will retrieve genes associated with the proteins from the UniprotKB.\nDepending on the number of proteins you\n<br>have, it can take several minutes.</html>");
 
 		jCheckBoxCollapsePeptides.setSelected(true);
-		jCheckBoxCollapsePeptides.setText("export just the best peptides");
+		jCheckBoxCollapsePeptides.setText("hide redundant peptides");
 		jCheckBoxCollapsePeptides.setToolTipText(
 				"<html>\nIf this option is activated, if the same peptide has been detected\n<br>\nmore than once, it will appear only once in the exported table and\n<br>\nthe score will be the best score of all occurrences.</html>");
 		jCheckBoxCollapsePeptides.setEnabled(false);
 
 		jCheckBoxCollapseProteins.setSelected(true);
-		jCheckBoxCollapseProteins.setText("export just the best proteins");
+		jCheckBoxCollapseProteins.setText("hide redundant proteins");
 		jCheckBoxCollapseProteins.setToolTipText(
 				"<html>\nIf this option is activated, if the same protein has been detected\n<br>\nmore than once, it will appear only once in the exported table and\n<br>\nthe score will be the best score of all occurrences.</html>");
 
@@ -449,8 +449,9 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 				filename = filename + ".tsv";
 			}
 			log.info("Selected File: " + filename);
-		} else
-			filename = "null";
+		} else {
+			filename = "";
+		}
 		return filename;
 	}
 
@@ -525,13 +526,6 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 			jProgressBar1.setString("Export cancelled");
 			jProgressBar1.setStringPainted(true);
 
-		} else if (TSVExporter.DATA_EXPORTING_SORTING.equals(evt.getPropertyName())) {
-			int size = (Integer) evt.getNewValue();
-			jProgressBar1.setIndeterminate(true);
-			jProgressBar1.setString("Sorting " + size + " items by score...");
-			jProgressBar1.setStringPainted(true);
-		} else if (TSVExporter.DATA_EXPORTING_SORTING_DONE.equals(evt.getPropertyName())) {
-			jProgressBar1.setIndeterminate(false);
 		} else if (evt.getPropertyName().equals(JTableLoader.PROTEIN_SEQUENCE_RETRIEVAL)) {
 			jProgressBar1.setString("Retrieving protein sequences from uniprotKB...");
 			jProgressBar1.setIndeterminate(true);
@@ -541,8 +535,6 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 			jProgressBar1.setString("Protein sequences retrieved");
 			jProgressBar1.setIndeterminate(false);
 			jProgressBar1.setStringPainted(true);
-		} else if (evt.getPropertyName().equals(JTableLoader.MESSAGE)) {
-			jProgressBar1.setString(evt.getNewValue().toString());
 		}
 	}
 

@@ -1,6 +1,7 @@
 package org.proteored.pacom.analysis.util;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,6 +16,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.proteored.miapeapi.cv.ControlVocabularyManager;
+import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
 import org.proteored.miapeapi.exceptions.MiapeDatabaseException;
 import org.proteored.miapeapi.exceptions.MiapeSecurityException;
 import org.proteored.miapeapi.exceptions.WrongXMLFormatException;
@@ -44,15 +46,10 @@ public class FileManager {
 	// "manual_id_sets";
 	public static final String PATH_SEPARATOR = System.getProperty("file.separator");
 
-	private static final String MIAPE_PREFIX = "MIAPE_";
 	private static final String MIAPE_LOCAL_PREFIX = "Dataset_";
 
-	private static final String MIAPE_MSI_PREFIX = MIAPE_PREFIX + "MSI_";
 	public static final String MIAPE_MSI_LOCAL_PREFIX = MIAPE_LOCAL_PREFIX + "MSI_";
-	private static final String MIAPE_MS_PREFIX = MIAPE_PREFIX + "MS_";
 	private static final String MIAPE_MS_LOCAL_PREFIX = MIAPE_LOCAL_PREFIX + "MS_";
-	private static final String MIAPE_GE_PREFIX = MIAPE_PREFIX + "GE_";
-	private static final String MIAPE_GI_PREFIX = MIAPE_PREFIX + "GI_";
 
 	private static final String UNIPROT_FOLDER = "uniprot";
 
@@ -316,26 +313,13 @@ public class FileManager {
 		return getMiapeMSICuratedXMLFilePathFromMiapeInformation(cpMsi.getLocalProjectName(), cpMsi.getName());
 	}
 
-	public static String getMiapeMSICuratedXMLFilePathFromMiapeInformation(String projectName, String name) {
+	public static String getMiapeMSICuratedXMLFilePathFromMiapeInformation(String projectName, String fileName) {
 		String path = FileManager.getCuratedExperimentFolderPath(projectName);
-		// String name = getMiapeMSILocalFileName(miapeLocalID, fileName);
-		// final String finalFileName = path + name;
-		final String finalFileName = path + MIAPE_MSI_LOCAL_PREFIX + FilenameUtils.getBaseName(name) + ".xml";
+		final String finalFileName = path + FilenameUtils.getBaseName(fileName) + ".xml";
+		// final String finalFileName = path + MIAPE_MSI_LOCAL_PREFIX +
+		// FilenameUtils.getBaseName(fileName) + ".xml";
 		return finalFileName;
 
-		// String curatedExperimentDataPath =
-		// FileManager.getCuratedExperimentXMLFilePath(projectName);
-		// if (curatedExperimentDataPath != null) {
-		// if (fileName == null) {
-		// return FilenameUtils.getFullPath(curatedExperimentDataPath) +
-		// MIAPE_MSI_PREFIX + miapeID + ".xml";
-		// } else {
-		// return FilenameUtils.getFullPath(curatedExperimentDataPath) +
-		// MIAPE_MSI_PREFIX + miapeID + "_"
-		// + fileName + ".xml";
-		// }
-		// }
-		// return null;
 	}
 
 	// /**
@@ -356,42 +340,6 @@ public class FileManager {
 	// return null;
 	// }
 
-	/**
-	 * Gets the full file path APP_FOLDER/user_data/miape_data/MIAPE_GE_??.XML
-	 *
-	 * @return
-	 */
-	public static String getMiapeGEXMLFilePath(int miapeID) {
-
-		String projectsDataPath = FileManager.getMiapeDataPath();
-		if (projectsDataPath != null)
-			return projectsDataPath + MIAPE_GE_PREFIX + miapeID + ".xml";
-		else {
-			projectsDataPath = FileManager.getMiapeDataPath();
-			if (projectsDataPath != null)
-				return projectsDataPath + getMiapeGEFileName(miapeID);
-		}
-		return null;
-	}
-
-	/**
-	 * Gets the full file path APP_FOLDER/user_data/miape_data/MIAPE_GI_??.XML
-	 *
-	 * @return
-	 */
-	public static String getMiapeGIXMLFilePath(int miapeID) {
-
-		String projectsDataPath = FileManager.getMiapeDataPath();
-		if (projectsDataPath != null)
-			return projectsDataPath + MIAPE_GI_PREFIX + miapeID + ".xml";
-		else {
-			projectsDataPath = FileManager.getMiapeDataPath();
-			if (projectsDataPath != null)
-				return projectsDataPath + getMiapeGIFileName(miapeID);
-		}
-		return null;
-	}
-
 	// public static String getMiapeMSIFileName(int miapeID) {
 	// return MIAPE_MSI_PREFIX + miapeID + ".xml";
 	// }
@@ -410,23 +358,42 @@ public class FileManager {
 		return string;
 	}
 
-	public static String getMiapeMSLocalFileName(int miapeID, String name) {
+	public static Integer getMiapeMSIdentifierFromName(String name) {
+		if (name.startsWith(MIAPE_MS_LOCAL_PREFIX)) {
+			try {
 
-		String string = MIAPE_MS_LOCAL_PREFIX + miapeID;
-		if (name != null) {
-			string += "_" + name;
+				String substring = name.substring(name.indexOf(MIAPE_MS_LOCAL_PREFIX) + MIAPE_MS_LOCAL_PREFIX.length());
+				Integer ret = Integer.valueOf(substring);
+				return ret;
+			} catch (NumberFormatException e) {
+
+			}
 		}
-		string += ".xml";
+		return null;
+	}
+
+	public static Integer getMiapeMSIIdentifierFromName(String name) {
+		if (name.startsWith(MIAPE_MSI_LOCAL_PREFIX)) {
+			try {
+				String substring = name
+						.substring(name.indexOf(MIAPE_MSI_LOCAL_PREFIX) + MIAPE_MSI_LOCAL_PREFIX.length());
+				if (substring.contains("_")) {
+					substring = substring.substring(0, substring.indexOf("_"));
+				}
+				Integer ret = Integer.valueOf(substring);
+				return ret;
+			} catch (NumberFormatException e) {
+
+			}
+		}
+		return null;
+	}
+
+	public static String getMiapeMSLocalFileName(int miapeID) {
+
+		String string = MIAPE_MS_LOCAL_PREFIX + miapeID + ".xml";
 		return string;
 
-	}
-
-	public static String getMiapeGEFileName(int miapeID) {
-		return MIAPE_GE_PREFIX + miapeID + ".xml";
-	}
-
-	public static String getMiapeGIFileName(int miapeID) {
-		return MIAPE_GI_PREFIX + miapeID + ".xml";
 	}
 
 	/**
@@ -733,8 +700,6 @@ public class FileManager {
 			String fileName) {
 
 		String path = FileManager.getMiapeLocalDataPath(projectName);
-		// String name = getMiapeMSILocalFileName(miapeLocalID, fileName);
-		// final String finalFileName = path + name;
 		final String finalFileName = path + MIAPE_MSI_LOCAL_PREFIX + miapeLocalID + "_"
 				+ FilenameUtils.getBaseName(fileName) + ".xml";
 		return finalFileName;
@@ -748,12 +713,30 @@ public class FileManager {
 	 * @param projectName
 	 * @return
 	 */
-	public static String getMiapeXMLFileLocalPathFromFullName(String projectName, String fileName) {
+	public static String getMiapeMSXMLFileLocalPathFromMiapeInformation(String projectName, int miapeLocalID) {
 
 		String path = FileManager.getMiapeLocalDataPath(projectName);
+		final String finalFileName = path + MIAPE_MS_LOCAL_PREFIX + miapeLocalID + ".xml";
+		return finalFileName;
+	}
+
+	/**
+	 * gets
+	 * APP_FOLDER/user_data/miape_local_data/project_Name/LOCAL_MIAPE_MSI_id.xml
+	 *
+	 * @param miapeLocalID
+	 * @param projectName
+	 * @return
+	 */
+	public static String getMiapeXMLFileLocalPathFromFullName(String projectName, String fileName) {
+		if (projectName == null || "".equals(projectName)) {
+			throw new IllegalMiapeArgumentException(
+					"'local_project_name' attribute in project is null or empty. Project file seems to be malformed");
+		}
+		String path = getMiapeLocalDataPath(projectName);
 		// String name = getMiapeMSILocalFileName(miapeLocalID, fileName);
 		// final String finalFileName = path + name;
-		final String finalFileName = path + fileName + ".xml";
+		final String finalFileName = path + FilenameUtils.getBaseName(fileName) + ".xml";
 		return finalFileName;
 	}
 
@@ -783,9 +766,9 @@ public class FileManager {
 	 * @param projectName
 	 * @return
 	 */
-	public static String getMiapeMSXMLFileLocalPath(int miapeLocalID, String projectName, String dataName) {
+	public static String getMiapeMSXMLFileLocalPath(int miapeLocalID, String projectName) {
 		String path = FileManager.getMiapeLocalDataPath(projectName);
-		String name = getMiapeMSLocalFileName(miapeLocalID, dataName);
+		String name = getMiapeMSLocalFileName(miapeLocalID);
 		final String finalFileName = path + name;
 
 		return finalFileName;
@@ -800,14 +783,14 @@ public class FileManager {
 	 * @param projectName
 	 * @throws IOException
 	 */
-	public static void saveLocalMiapeMSI(int miapeID, MIAPEMSIXmlFile miapeXML, String projectName, String dataName)
+	public static File saveLocalMiapeMSI(int miapeID, MIAPEMSIXmlFile miapeXML, String projectName, String dataName)
 			throws IOException {
 		log.info("saving local  MIAPE MSI:");
-
-		String name = getMiapeMSILocalFileName(miapeID, dataName);
-		String path = FileManager.getMiapeLocalDataPath(projectName);
-		final String finalFileName = path + name;
-		miapeXML.saveAs(finalFileName);
+		String finalFileName = getMiapeMSIXMLFileLocalPathFromMiapeInformation(projectName, miapeID, dataName);
+		// String name = getMiapeMSILocalFileName(miapeID, dataName);
+		// String path = FileManager.getMiapeLocalDataPath(projectName);
+		// final String finalFileName = path + name;
+		return miapeXML.saveAs(finalFileName);
 
 	}
 
@@ -820,14 +803,14 @@ public class FileManager {
 	 * @param projectName
 	 * @throws IOException
 	 */
-	public static void saveLocalMiapeMS(int miapeID, MIAPEMSXmlFile miapeXML, String projectName, String dataName)
-			throws IOException {
+	public static File saveLocalMiapeMS(int miapeID, MIAPEMSXmlFile miapeXML, String projectName) throws IOException {
 		log.info("saving local MIAPE MS");
 
-		String name = getMiapeMSLocalFileName(miapeID, dataName);
-		String path = FileManager.getMiapeLocalDataPath(projectName);
-		final String finalFileName = path + name;
-		miapeXML.saveAs(finalFileName);
+		String finalFileName = getMiapeMSXMLFileLocalPathFromMiapeInformation(projectName, miapeID);
+		// String name = getMiapeMSLocalFileName(miapeID, dataName);
+		// String path = FileManager.getMiapeLocalDataPath(projectName);
+		// final String finalFileName = path + name;
+		return miapeXML.saveAs(finalFileName);
 
 	}
 
@@ -842,14 +825,23 @@ public class FileManager {
 	 * @throws IOException
 	 */
 	public static File saveLocalFile(File file, String projectName) throws IOException {
-		String fileName = FilenameUtils.getBaseName(file.getAbsolutePath());
-		String extension = FilenameUtils.getExtension(file.getAbsolutePath());
+		if (file != null) {
+			String fileName = FilenameUtils.getBaseName(file.getAbsolutePath());
+			String extension = FilenameUtils.getExtension(file.getAbsolutePath());
 
-		File outputFile = new File(getMiapeLocalDataPath(projectName) + fileName + "." + extension);
-		FileUtils.copyFile(file, outputFile);
+			String pathname = getMiapeLocalDataPath(projectName) + fileName;
+			if (extension != null && !"".equals(extension)) {
+				pathname += "." + extension;
+			}
+			File outputFile = new File(pathname);
+			FileUtils.copyFile(file, outputFile);
 
-		log.info("File copied to " + outputFile.getAbsolutePath());
-		return outputFile;
+			log.info("File "
+					+ edu.scripps.yates.utilities.files.FileUtils.getDescriptiveSizeFromBytes(outputFile.length())
+					+ " copied to " + outputFile.getAbsolutePath());
+			return outputFile;
+		}
+		throw new FileNotFoundException("file to copy is null");
 	}
 
 	/**

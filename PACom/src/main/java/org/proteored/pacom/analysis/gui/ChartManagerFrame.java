@@ -102,9 +102,11 @@ import org.proteored.pacom.analysis.util.ImageUtils;
 import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.gui.MainFrame;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
+import org.proteored.pacom.utils.PACOMSoftware;
 
 import edu.scripps.yates.utilities.checksum.MD5Checksum;
 import edu.scripps.yates.utilities.dates.DatesUtil;
+import edu.scripps.yates.utilities.util.versioning.AppVersion;
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.set.hash.THashSet;
@@ -142,7 +144,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	public static final String PROTEIN_COVERAGE = "Protein coverage";
 	public static final String PEPTIDE_CHARGE_HISTOGRAM = "Peptide charge distribution";
 	public static final String SINGLE_HIT_PROTEINS = "Single hit proteins";
-	public static final String PEPTIDE_NUMBER_IN_PROTEINS = "Number of different peptides per protein";
+	public static final String PEPTIDE_NUMBER_IN_PROTEINS = "Number of proteins with x peptides";
 	public static final String DELTA_MZ_OVER_MZ = "Peptide mass error";
 	public static final String PSM_PEP_PROT = "PSMs/Peptides/Proteins";
 	public static final String FDR_VS_SCORE = "FDRs vs Score & num. proteins vs Score";
@@ -215,6 +217,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	private Long previousCfgFileSize;
 	private Integer minPeptideLength;
 	private Boolean groupProteinsAtExperimentListLevel;
+	private Boolean doNotGroupNonConclusiveProteins;
+	private Boolean separateNonConclusiveProteins;
 	private Boolean isLocalProcessingInParallel;
 	private boolean errorLoadingData;
 	private String previousMd5Checksum;
@@ -247,10 +251,6 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		if (parentFrame != null)
 			parentFrame.setVisible(false);
 
-		// try {
-		// UIManager.setLookAndFeel(new WindowsLookAndFeel());
-		// } catch (UnsupportedLookAndFeelException e) {
-		// }
 		initComponents();
 		// set icon image
 		setIconImage(ImageManager.getImageIcon(ImageManager.PACOM_LOGO).getImage());
@@ -290,6 +290,12 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 		jTextAreaStatus.setFont(new JTextField().getFont());
 
+		AppVersion version = MainFrame.getVersion();
+		if (version != null) {
+			String suffix = " (v" + version.toString() + ")";
+			this.setTitle(getTitle() + suffix);
+		}
+
 	}
 
 	public static ChartManagerFrame getInstance(Miape2ExperimentListDialog parentDialog, File cfgFile) {
@@ -305,9 +311,10 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		if (resetErrorLoadingData != null && resetErrorLoadingData) {
 			instance.errorLoadingData = false;
 		}
-		GeneralOptionsDialogNoParallel generalOptionsDialog = GeneralOptionsDialogNoParallel.getInstance(instance,
-				true);
+		GeneralOptionsDialog generalOptionsDialog = GeneralOptionsDialog.getInstance(instance, true);
 		boolean group = generalOptionsDialog.groupProteinsAtExperimentListLevel();
+		boolean donotGroupNonConclusiveProteins = generalOptionsDialog.isDoNotGroupNonConclusiveProteins();
+		boolean separateNonConclusiveProteins = generalOptionsDialog.isSeparateNonConclusiveProteins();
 		int pepLength = generalOptionsDialog.getMinPeptideLength();
 		boolean parallel = generalOptionsDialog.isLocalProcessingInParallel();
 
@@ -318,8 +325,10 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		}
 		log.info("now=" + cfgFile.length() + " previous=" + instance.previousCfgFileSize);
 
-		if (instance.dataShouldBeLoaded(cfgFile, group, pepLength, parallel)) {
-			instance.loadData(pepLength, group, cfgFile, parallel);
+		if (instance.dataShouldBeLoaded(cfgFile, group, donotGroupNonConclusiveProteins, separateNonConclusiveProteins,
+				pepLength, parallel)) {
+			instance.loadData(pepLength, group, donotGroupNonConclusiveProteins, separateNonConclusiveProteins, cfgFile,
+					parallel);
 		}
 
 		return instance;
@@ -342,15 +351,15 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	}
 
 	/**
-	 * Checks if something has changed on the
-	 * {@link GeneralOptionsDialogNoParallel}. If yes, the data it will return
-	 * true. It also checks if the cgfFile is different and it will return true.
-	 * Otherwise, it will return false.
+	 * Checks if something has changed on the {@link GeneralOptionsDialog}. If
+	 * yes, the data it will return true. It also checks if the cgfFile is
+	 * different and it will return true. Otherwise, it will return false.
 	 *
 	 *
 	 * @return
 	 */
-	protected boolean dataShouldBeLoaded(File cfgFile, boolean groupingAtExperimentListLevel, int minPeptideLength,
+	protected boolean dataShouldBeLoaded(File cfgFile, boolean groupingAtExperimentListLevel,
+			boolean doNotGroupNonConclusiveProteins, boolean separateNonConclusiveProteins, int minPeptideLength,
 			boolean processInparallel) {
 
 		if (errorLoadingData) {
@@ -368,42 +377,59 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			e.printStackTrace();
 		}
 
-		if (previousCfgFileSize == null || (cfgFile != null && cfgFile.length() != previousCfgFileSize))
+		if (previousCfgFileSize == null || (cfgFile != null && cfgFile.length() != previousCfgFileSize)) {
 			return true;
-		if (this.minPeptideLength == null || minPeptideLength != this.minPeptideLength)
+		}
+		if (this.minPeptideLength == null || minPeptideLength != this.minPeptideLength) {
 			return true;
-		if (groupProteinsAtExperimentListLevel == null || !String.valueOf(groupingAtExperimentListLevel)
-				.equals(String.valueOf(groupProteinsAtExperimentListLevel)))
+		}
+		if (groupProteinsAtExperimentListLevel == null
+				|| Boolean.compare(groupingAtExperimentListLevel, groupProteinsAtExperimentListLevel) != 0) {
 			return true;
+		}
+		if (this.doNotGroupNonConclusiveProteins == null
+				|| Boolean.compare(doNotGroupNonConclusiveProteins, this.doNotGroupNonConclusiveProteins) != 0) {
+			return true;
+		}
+		if (this.separateNonConclusiveProteins == null
+				|| Boolean.compare(separateNonConclusiveProteins, this.separateNonConclusiveProteins) != 0) {
+			return true;
+		}
 		if (isLocalProcessingInParallel == null
-				|| !String.valueOf(processInparallel).equals(String.valueOf(isLocalProcessingInParallel)))
+				|| !String.valueOf(processInparallel).equals(String.valueOf(isLocalProcessingInParallel))) {
 			return true;
-		if (experimentList == null)
+		}
+		if (experimentList == null) {
 			return true;
-
+		}
 		return false;
 	}
 
 	/**
 	 * Loads the data with the parameters taken from the
-	 * {@link GeneralOptionsDialogNoParallel}
+	 * {@link GeneralOptionsDialog}
 	 */
 	private void loadData() {
-		GeneralOptionsDialogNoParallel generalOptionsDialog = GeneralOptionsDialogNoParallel.getInstance(instance,
-				true);
+		GeneralOptionsDialog generalOptionsDialog = GeneralOptionsDialog.getInstance(instance, true);
 		boolean groupingAtExperimentListLevel = generalOptionsDialog.groupProteinsAtExperimentListLevel();
+		boolean doNotGroupNonConclusiveProteins = generalOptionsDialog.isDoNotGroupNonConclusiveProteins();
+		boolean separateNonConclusiveProteins = generalOptionsDialog.isSeparateNonConclusiveProteins();
 		int minPeptideLength = generalOptionsDialog.getMinPeptideLength();
 
-		this.loadData(minPeptideLength, groupingAtExperimentListLevel, cfgFile, isLocalProcessingInParallel);
+		this.loadData(minPeptideLength, groupingAtExperimentListLevel, doNotGroupNonConclusiveProteins,
+				separateNonConclusiveProteins, cfgFile, isLocalProcessingInParallel);
 
 	}
 
-	private void loadData(Integer minPeptideLength, boolean groupingAtExperimentListLevel, File cfgFile,
+	private void loadData(Integer minPeptideLength, boolean groupingAtExperimentListLevel,
+			boolean doNotGroupNonConclusiveProteins, boolean separateNonConclusiveProteins, File cfgFile,
 			boolean processInParallel) {
 
 		this.cfgFile = cfgFile;
 		this.minPeptideLength = minPeptideLength;
-		groupProteinsAtExperimentListLevel = groupingAtExperimentListLevel;
+		this.groupProteinsAtExperimentListLevel = groupingAtExperimentListLevel;
+		this.doNotGroupNonConclusiveProteins = doNotGroupNonConclusiveProteins;
+		this.separateNonConclusiveProteins = separateNonConclusiveProteins;
 		previousCfgFileSize = this.cfgFile.length();
 		isLocalProcessingInParallel = processInParallel;
 		CPExperimentList cpExpList = getCPExperimentList(cfgFile);
@@ -432,13 +458,15 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	}
 
 	protected void loadData(Integer minPeptideLength, boolean groupingAtExperimentListLevel,
-			boolean processInParallel) {
-		loadData(minPeptideLength, groupingAtExperimentListLevel, cfgFile, processInParallel);
+			boolean donotGroupNonConclusiveProteins, boolean separateNonConclusiveProteins, boolean processInParallel) {
+		loadData(minPeptideLength, groupingAtExperimentListLevel, donotGroupNonConclusiveProteins,
+				separateNonConclusiveProteins, cfgFile, processInParallel);
 	}
 
 	private CPExperimentList getCPExperimentList(File cfgFile) {
-		CPExperimentList cpExpList = new ExperimentListAdapter(cfgFile, isAnnotateProteinsInUniprot())
-				.getCpExperimentList();
+		CPExperimentList cpExpList = new ExperimentListAdapter(cfgFile, isAnnotateProteinsInUniprot(),
+				GeneralOptionsDialog.getInstance(this).isDoNotGroupNonConclusiveProteins(),
+				GeneralOptionsDialog.getInstance(this).isSeparateNonConclusiveProteins()).getCpExperimentList();
 		return cpExpList;
 	}
 
@@ -669,7 +697,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				.getFirstGenesFromProteinGroup(experimentList.getIdentifiedProteinGroups()).size();
 		log.debug((System.currentTimeMillis() - t1) + " msg");
 
-		String ret = "<html>Peptides: " + numPeptides + " (" + numDifferentPeptides + " uniques)<br>";
+		String ret = "<html>PSMs: " + numPeptides + " (" + numDifferentPeptides + " unique peptides)<br>";
 		ret += "Protein groups: " + numProteins;
 		if (numDifferentProteins != numProteins) {
 			ret += " (" + numDifferentProteins + " uniques)";
@@ -859,9 +887,6 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	private void initComponents() {
 		java.awt.GridBagConstraints gridBagConstraints;
 
-		buttonGroup1 = new javax.swing.ButtonGroup();
-		buttonGroupThresholds = new javax.swing.ButtonGroup();
-		buttonGroupDecoyPrefix = new javax.swing.ButtonGroup();
 		buttonGroup2 = new javax.swing.ButtonGroup();
 		jPanelStatus = new javax.swing.JPanel();
 		jScrollPane3 = new javax.swing.JScrollPane();
@@ -1396,7 +1421,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	}
 
 	private void jMenuItemGeneralOptionsActionPerformed(java.awt.event.ActionEvent evt) {
-		GeneralOptionsDialogNoParallel.getInstance(this, false).setVisible(true);
+		GeneralOptionsDialog.getInstance(this, false).setVisible(true);
 	}
 
 	private void jButtonExport2ExcelActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1449,7 +1474,10 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	}
 
 	private void saveAsCuratedExperiment() {
-		curatedExperimentSaver = new CuratedExperimentSaver(this, experimentList, OntologyLoaderTask.getCvManager());
+		curatedExperimentSaver = new CuratedExperimentSaver(this, this.cfgFile, experimentList,
+				OntologyLoaderTask.getCvManager(),
+				GeneralOptionsDialog.getInstance(this).isDoNotGroupNonConclusiveProteins(),
+				GeneralOptionsDialog.getInstance(this).isSeparateNonConclusiveProteins());
 		curatedExperimentSaver.addPropertyChangeListener(this);
 		curatedExperimentSaver.execute();
 
@@ -3087,20 +3115,20 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 					optionsFactory.getControlList().add(jbuttonExportJustIn3);
 
 					c.gridy++;
-					// }
-					// export overlapped button
-					JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
-					jbuttonExportOverlap.addActionListener(new java.awt.event.ActionListener() {
-						@Override
-						public void actionPerformed(java.awt.event.ActionEvent evt) {
-							exportOverlapped(experimentName);
-						}
-					});
-					jPanelAddOptions.add(jbuttonExportOverlap, c);
-					optionsFactory.getControlList().add(jbuttonExportOverlap);
-
-					c.gridy++;
 				}
+				// export overlapped button
+				JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
+				jbuttonExportOverlap.addActionListener(new java.awt.event.ActionListener() {
+					@Override
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						exportOverlapped(experimentName);
+					}
+				});
+				jPanelAddOptions.add(jbuttonExportOverlap, c);
+				optionsFactory.getControlList().add(jbuttonExportOverlap);
+
+				c.gridy++;
+
 			}
 		}
 
@@ -3326,27 +3354,32 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		if (currentChartType.equals(PROTEIN_OVERLAPING)) {
 
 			Set<Object> keys = new THashSet<Object>();
+			ProteinGroupComparisonType proteinGroupComparisonType = additionalOptionsPanelFactory
+					.getProteinGroupComparisonType();
 			for (Object object : collection) {
 				if (object instanceof ProteinGroupOccurrence) {
 					ProteinGroupOccurrence pgo = (ProteinGroupOccurrence) object;
-					keys.add(pgo.getKey(additionalOptionsPanelFactory.getProteinGroupComparisonType()));
+					keys.add(pgo.getKey(proteinGroupComparisonType));
 				} else {
 					log.info(object.getClass().getName());
 				}
 			}
-			if (additionalOptionsPanelFactory
-					.getProteinGroupComparisonType() == ProteinGroupComparisonType.SHARE_ONE_PROTEIN) {
+			if (proteinGroupComparisonType == ProteinGroupComparisonType.SHARE_ONE_PROTEIN) {
 				Set<ProteinComparatorKey> set = new HashSet<ProteinComparatorKey>();
 				for (Object obj : keys) {
 					set.add((ProteinComparatorKey) obj);
 				}
-				filter = new ProteinACCFilterByProteinComparatorKey(set);
+				filter = new ProteinACCFilterByProteinComparatorKey(set,
+						GeneralOptionsDialog.getInstance(this).isDoNotGroupNonConclusiveProteins(),
+						GeneralOptionsDialog.getInstance(this).isSeparateNonConclusiveProteins());
 			} else {
 				Set<String> set = new HashSet<String>();
 				for (Object obj : keys) {
 					set.add(obj.toString());
 				}
-				filter = new ProteinACCFilter(set);
+				filter = new ProteinACCFilter(set,
+						GeneralOptionsDialog.getInstance(this).isDoNotGroupNonConclusiveProteins(),
+						GeneralOptionsDialog.getInstance(this).isSeparateNonConclusiveProteins());
 			}
 		} else if (currentChartType.equals(PEPTIDE_OVERLAPING)) {
 			Set<String> sequences = new THashSet<String>();
@@ -3360,7 +3393,10 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 					log.info(object.getClass().getName() + "");
 				}
 			}
-			filter = new PeptideSequenceFilter(sequences, true, null);
+			filter = new PeptideSequenceFilter(sequences, true,
+					GeneralOptionsDialog.getInstance(this).isDoNotGroupNonConclusiveProteins(),
+					GeneralOptionsDialog.getInstance(this).isSeparateNonConclusiveProteins(),
+					PACOMSoftware.getInstance());
 		}
 		exporterDialog.setFilter(filter);
 		exporterDialog.setVisible(true);
@@ -3517,18 +3553,18 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 					});
 					jPanelAddOptions.add(jbuttonExportJustIn3, c);
 					c.gridy++;
-					// }
-					// export overlapped button
-					JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
-					jbuttonExportOverlap.addActionListener(new java.awt.event.ActionListener() {
-						@Override
-						public void actionPerformed(java.awt.event.ActionEvent evt) {
-							exportOverlapped(null);
-						}
-					});
-					jPanelAddOptions.add(jbuttonExportOverlap, c);
-					c.gridy++;
 				}
+				// export overlapped button
+				JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
+				jbuttonExportOverlap.addActionListener(new java.awt.event.ActionListener() {
+					@Override
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						exportOverlapped(null);
+					}
+				});
+				jPanelAddOptions.add(jbuttonExportOverlap, c);
+				c.gridy++;
+
 			}
 		}
 
@@ -3638,18 +3674,18 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 					});
 					jPanelAddOptions.add(jbuttonExportJustIn3, c);
 					c.gridy++;
-					// }
-					// export overlapped button
-					JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
-					jbuttonExportOverlap.addActionListener(new java.awt.event.ActionListener() {
-						@Override
-						public void actionPerformed(java.awt.event.ActionEvent evt) {
-							exportOverlapped(null);
-						}
-					});
-					jPanelAddOptions.add(jbuttonExportOverlap, c);
-					c.gridy++;
 				}
+				// export overlapped button
+				JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
+				jbuttonExportOverlap.addActionListener(new java.awt.event.ActionListener() {
+					@Override
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						exportOverlapped(null);
+					}
+				});
+				jPanelAddOptions.add(jbuttonExportOverlap, c);
+				c.gridy++;
+
 			}
 		}
 
@@ -4132,44 +4168,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		return null;
 	}
 
-	/**
-	 * @param args
-	 *            the command line arguments
-	 */
-	public static void main(String args[]) {
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				// Create the miape_api webservice proxy
-				// Get properties from resource file
-				// File cfgfile = new File(
-				// "C:\\Users\\Salva\\Workspace\\miape-extractor\\user_data\\projects\\PME6
-				// CSIC-UAB vs PCM.xml");
-				File cfgfile = new File(
-						"C:\\Users\\Salva\\workspace\\miape-extractor\\user_data\\projects\\Comparison project.xml");
-				MainFrame mainFrame = new MainFrame();
-				mainFrame.userName = "smartinez@cnb.csic.es";
-				mainFrame.password = "test";
-
-				ChartManagerFrame dialog = new ChartManagerFrame(null, cfgfile);
-				dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-					@Override
-					public void windowClosing(java.awt.event.WindowEvent e) {
-						System.exit(0);
-					}
-				});
-				dialog.setVisible(true);
-
-			}
-		});
-	}
-
 	// GEN-BEGIN:variables
 	// Variables declaration - do not modify
-	private javax.swing.ButtonGroup buttonGroup1;
 	private javax.swing.ButtonGroup buttonGroup2;
-	private javax.swing.ButtonGroup buttonGroupDecoyPrefix;
-	private javax.swing.ButtonGroup buttonGroupThresholds;
 	private javax.swing.JButton jButtonExport2Excel;
 	private javax.swing.JButton jButtonExport2PRIDE;
 	private javax.swing.JButton jButtonSaveAsFiltered;
@@ -4226,17 +4227,6 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		// jCheckBoxCountNonConclusiveProteins.setEnabled(b);
 		optionsFactory.disableAdditionalOptionControls(b);
 		// log.info("Finish disabling/enabling");
-	}
-
-	@Override
-	public String getUserName() {
-		return MainFrame.userName;
-	}
-
-	@Override
-	public String getPassword() {
-		return MainFrame.password;
-
 	}
 
 	@Override
@@ -4434,7 +4424,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			jProgressBar.setIndeterminate(false);
 			CPExperimentList cpExpList = getCPExperimentList(cfgFile);
 			dataLoader = new DataLoaderTask(cpExpList, minPeptideLength, groupProteinsAtExperimentListLevel, null,
-					isLocalProcessingInParallel, isAnnotateProteinsInUniprot());
+					isLocalProcessingInParallel, isAnnotateProteinsInUniprot(),
+					GeneralOptionsDialog.getInstance(this).isDoNotGroupNonConclusiveProteins(),
+					GeneralOptionsDialog.getInstance(this).isSeparateNonConclusiveProteins());
 			// filters);
 			dataLoader.addPropertyChangeListener(this);
 			dataLoader.execute();
@@ -4723,8 +4715,10 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	}
 
 	public boolean countNonConclusiveProteins() {
-		// return jCheckBoxCountNonConclusiveProteins.isSelected();
-		return false;
+		// now we count them, because it will depend on the user when selecting
+		// the option to separate the subset (nonconclusive) proteins in
+		// different groups or not
+		return true;
 	}
 
 	public void setErrorLoadingData(boolean b) {

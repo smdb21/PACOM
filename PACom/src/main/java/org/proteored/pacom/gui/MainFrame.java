@@ -11,15 +11,12 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
@@ -27,22 +24,15 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker.StateValue;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import org.proteored.miapeapi.interfaces.Software;
-import org.proteored.miapeapi.webservice.clients.miapeapi.MiapeAPIWebserviceDelegate;
-import org.proteored.miapeapi.webservice.clients.miapeextractor.MiapeExtractorDelegate;
 import org.proteored.pacom.analysis.gui.Miape2ExperimentListDialog;
-import org.proteored.pacom.analysis.gui.tasks.MiapeRetrieverManager;
 import org.proteored.pacom.gui.tasks.CheckUpdateTask;
-import org.proteored.pacom.gui.tasks.LoginTask;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 import org.proteored.pacom.gui.tasks.OntologyLoaderWaiter;
-import org.proteored.pacom.utils.MiapeExtractorSoftware;
 import org.proteored.pacom.utils.PropertiesReader;
 
 import edu.scripps.yates.utilities.util.versioning.AppVersion;
@@ -51,30 +41,24 @@ import edu.scripps.yates.utilities.util.versioning.AppVersion;
  *
  * @author __USER__
  */
-public class MainFrame extends javax.swing.JFrame implements PropertyChangeListener {
-	private LoginDialog loginFrame;
+public class MainFrame extends javax.swing.JFrame {
 
-	public static String userName;
-	public static String password;
-	public int userID;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4998871134548349223L;
 	// by default
 	public static String miapetool_access_script = "http://www.proteored.org/acceso.asp?pmArea=8";
 
-	private static final String URL_MIAPE_EXTRACTOR_TUTORIAL = "http://legacy.proteored.org/miape/MIAPE%20Extractor%20Tutorial.pdf";
-	private static final String URL_MIAPE_EXTRACTOR_BATCH_TUTORIAL = "http://legacy.proteored.org/miape/Batch%20MIAPE%20Extraction_Tutorial.pdf";
-
-	private static MiapeExtractorDelegate miapeExtractorWebservice;
-	private static MiapeAPIWebserviceDelegate miapeAPIWebservice;
+	private static final String URL_MIAPE_EXTRACTOR_TUTORIAL = "https://github.com/smdb21/PACOM/wiki";
+	private static final String URL_MIAPE_EXTRACTOR_BATCH_TUTORIAL = "https://github.com/smdb21/PACOM/wiki/How-to-import-datasets#importing-multiple-datasets-with-batch-import";
 
 	// by default:
-	public static String ftpPath = "ftp://proteo.cnb.csic.es/pub/tmp/";
 	private static AppVersion version;
-	public static boolean emailNotifications;
 	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("log4j.logger.org.proteored");
 	private OntologyLoaderTask ontologyLoader;
 	private CheckUpdateTask updateTask;
 	private Miape2ExperimentListDialog miape2experimentListDialog;
-	private static Boolean unattendedRetrieverEnabled;
 	private MiapeExtractionBatchFrame miapeExtractionBatchFrame;
 	private final static String dataInspectionTooltip = "<html><br><ul><li>Inspect your data creating your own inspection projects.</li><li>Compare complex experiments in an intuitive way.</li><li>Get a lot of charts representing qualitative data from your experiments.</li><li>Filter data applying several filters (FDR, score thresholds, etc...)</li><li>Export your data into PRIDE XML format</li></ul><br></html>";
 	private final static String dataImportToolTip = "<html><br>Extract and import datasets from input data files such as:<br><ul><li>mzIdentML</li><li>mzML</li><li>PRIDE XML</li><li>X!Tandem output XML</li> <li>DTASelect output</li><li>Separated values tables</li></ul><br></html>";
@@ -85,7 +69,6 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 	private static final String APP_PROPERTIES = "app.properties";
 
 	private final boolean checkUpdates = true;
-	public static boolean localWorkflow = true;
 
 	public static File currentFolder = new File(".");
 
@@ -103,13 +86,8 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 		 */
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
+		} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException
+				| IllegalAccessException e) {
 			e.printStackTrace();
 		}
 
@@ -127,10 +105,8 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 				// this has to be modified
 				// TODO
 				updateTask = new CheckUpdateTask();
-				updateTask.addPropertyChangeListener(this);
 				updateTask.execute();
 			}
-			initializeProperties();
 			initComponents();
 
 			try {
@@ -146,10 +122,6 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 			// load ontologies
 			loadOntologies();
 
-			// show login dialog at startup
-			if (!localWorkflow) {
-				jMenuItemLoginActionPerformed(null);
-			}
 		} catch (Exception e) {
 			String message = "";
 			if (e.getMessage().startsWith("XML reader error") || e.getMessage().contains("Failed to access")) {
@@ -165,37 +137,6 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 	private void loadOntologies() {
 		// OntologyLoaderTask.getCvManager();
 		new OntologyLoaderWaiter().execute();
-	}
-
-	private static void initializeProperties() throws Exception {
-		if (localWorkflow) {
-			return;
-		}
-		// Get properties from resource file
-		Properties prop = PropertiesReader.getProperties();
-
-		ftpPath = prop.getProperty(PropertiesReader.FTP_PATH);
-		log.info("Reading properties file: ftpPath: " + ftpPath);
-
-		emailNotifications = Boolean.parseBoolean(prop.getProperty(PropertiesReader.EMAIL_NOTIFICATIONS));
-		log.info("Reading properties file: " + PropertiesReader.EMAIL_NOTIFICATIONS + ": " + emailNotifications);
-
-		// instrumentResourceFileURL = prop
-		// .getProperty("instruments.information.file");
-		// log.info("Reading properties file: instruments.information.file: "
-		// + instrumentResourceFileURL);
-
-		miapetool_access_script = prop.getProperty(PropertiesReader.MIAPE_TOOL_ACCESS_SCRIPT);
-		log.info("Reading properties file: " + PropertiesReader.MIAPE_TOOL_ACCESS_SCRIPT + ": "
-				+ miapetool_access_script);
-
-		unattendedRetrieverEnabled = Boolean
-				.valueOf(prop.getProperty(PropertiesReader.MIAPE_EXTRACTOR_UNATENDEDRETRIEVER));
-		log.info("Unattended retriver enabled=" + unattendedRetrieverEnabled);
-
-		localWorkflow = Boolean.valueOf(prop.getProperty(PropertiesReader.LOCAL_WORKFLOW));
-		log.info("Local workflow = " + localWorkflow);
-
 	}
 
 	private void writeErrorMessage(String message) {
@@ -231,41 +172,7 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 		if (updateTask != null)
 			updateTask.cancel(true);
 
-		int miapesBeingLoaded = MiapeRetrieverManager.getInstance(userName, password).getSize();
-		if (miapesBeingLoaded > 0) {
-			int option = JOptionPane.showConfirmDialog(this,
-					"<html>Some MIAPE MSIs (" + miapesBeingLoaded
-							+ ") are being downloaded in background for its use in the comparisons.<br>"
-							+ "If you close the tool these downloadings will be interrupted.<br>"
-							+ "Do you want to close the tool and interrupt the downloading?</html>",
-					"MIAPE MSI document being downloaded", JOptionPane.YES_NO_CANCEL_OPTION);
-			if (option != JOptionPane.YES_OPTION)
-				return;
-		}
 		super.dispose();
-	}
-
-	public static MiapeExtractorDelegate getMiapeExtractorWebservice() {
-		if (miapeExtractorWebservice == null)
-			try {
-				initializeProperties();
-				return miapeExtractorWebservice;
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		return miapeExtractorWebservice;
-	}
-
-	public static MiapeAPIWebserviceDelegate getMiapeAPIWebservice() {
-		if (miapeAPIWebservice == null)
-			try {
-				initializeProperties();
-				return miapeAPIWebservice;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		return miapeAPIWebservice;
 	}
 
 	// GEN-BEGIN:initComponents
@@ -275,17 +182,12 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 		jPanel1 = new javax.swing.JPanel();
 		jMenuBar1 = new javax.swing.JMenuBar();
 		jMenu1 = new javax.swing.JMenu();
-		jMenuItemLogin = new javax.swing.JMenuItem();
 		jMenuItemExit = new javax.swing.JMenuItem();
 		jMenu2 = new javax.swing.JMenu();
 		jMenuItemStandard2MIAPE = new javax.swing.JMenuItem();
 		jMenuItemBatchMiapeExtraction = new javax.swing.JMenuItem();
 		jMenu3 = new javax.swing.JMenu();
 		jMenuItemStartProjectComparison = new javax.swing.JMenuItem();
-		jMenuBrowseMIAPEs = new javax.swing.JMenu();
-		jMenuItemBrowseMIAPEs = new javax.swing.JMenuItem();
-		jMenu4 = new javax.swing.JMenu();
-		jMenuItemShowQueries = new javax.swing.JMenuItem();
 		jMenuHelp = new javax.swing.JMenu();
 		jMenuItemMIAPEExtractionTutorial = new javax.swing.JMenuItem();
 		jMenuItemMIAPEExtractionBatchTutorial = new javax.swing.JMenuItem();
@@ -294,21 +196,8 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 		setTitle("PACOM - Proteomics Assay COMparator");
 		setResizable(false);
 
-		if (!localWorkflow) {
-			jMenu1.setText("Login");
-			jMenuItemLogin.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L,
-					java.awt.event.InputEvent.ALT_MASK));
-			jMenuItemLogin.setText("Login");
-			jMenuItemLogin.addActionListener(new java.awt.event.ActionListener() {
-				@Override
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					jMenuItemLoginActionPerformed(evt);
-				}
-			});
-			jMenu1.add(jMenuItemLogin);
-		} else {
-			jMenu1.setText("Exit");
-		}
+		jMenu1.setText("Exit");
+
 		jMenuItemExit.setAccelerator(
 				javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
 		jMenuItemExit.setText("Exit");
@@ -367,47 +256,6 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 
 		jMenuBar1.add(jMenu3);
 
-		if (!localWorkflow) {
-			jMenuBrowseMIAPEs.setText("MIAPE repository browser");
-			jMenuBrowseMIAPEs.setEnabled(false);
-
-			jMenuItemBrowseMIAPEs.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R,
-					java.awt.event.InputEvent.ALT_MASK));
-			jMenuItemBrowseMIAPEs.setText("Browse over MIAPE repository");
-			jMenuItemBrowseMIAPEs.setToolTipText(
-					"<html>Browser over accesible MIAPE projects<br>\nfrom the ProteoRed MIAPE repository:<br>\n<ul>\n<li>Show MIAPE reports.</li>\n<li>Delete projects and documents.</li>\n</ul>\n</html>");
-			jMenuItemBrowseMIAPEs.setEnabled(false);
-			jMenuItemBrowseMIAPEs.addActionListener(new java.awt.event.ActionListener() {
-				@Override
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					jMenuItemBrowseMIAPEsActionPerformed(evt);
-				}
-			});
-			jMenuBrowseMIAPEs.add(jMenuItemBrowseMIAPEs);
-
-			jMenuBar1.add(jMenuBrowseMIAPEs);
-
-			jMenu4.setText("Queries");
-			jMenu4.setToolTipText(
-					"<html>\n<b>This is a <font color='red'>beta</font> version</b>.<br>\nMake queries in the ProteoRed MIAPE repository.<br>\nExamples:<br>\n<ul>\n<li>get all peptides identified with a certain sequence</li>\n<li>get all peptides identified from a certain protein accession</li>\n<li>retrieve spectra assigned to a certain peptide</li>\n</ul>\n</html>");
-			jMenu4.setEnabled(false);
-
-			jMenuItemShowQueries.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q,
-					java.awt.event.InputEvent.ALT_MASK));
-			jMenuItemShowQueries.setText("Go to queries dialog");
-			jMenuItemShowQueries.setToolTipText(
-					"<html> <b>This is a <font color='red'>beta</font> version</b>.<br> Make queries in the ProteoRed MIAPE repository.<br> Examples:<br> <ul> <li>get all peptides identified with a certain sequence</li> <li>get all peptides identified from a certain protein accession</li> <li>retrieve spectra assigned to a certain peptide</li> </ul> </html>");
-			jMenuItemShowQueries.setEnabled(false);
-			jMenuItemShowQueries.addActionListener(new java.awt.event.ActionListener() {
-				@Override
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					jMenuItemShowQueriesActionPerformed(evt);
-				}
-			});
-			jMenu4.add(jMenuItemShowQueries);
-
-			jMenuBar1.add(jMenu4);
-		}
 		jMenuHelp.setText("Help");
 
 		jMenuItemMIAPEExtractionTutorial.setAccelerator(
@@ -595,16 +443,6 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 
 	}
 
-	private void jMenuItemShowQueriesActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
-	}
-
-	private void enableLoginDependentMenus(boolean b) {
-		jMenuItemBrowseMIAPEs.setEnabled(b);
-		jMenuBrowseMIAPEs.setEnabled(b);
-
-	}
-
 	private void jMenuItemMIAPEExtractionTutorialActionPerformed(java.awt.event.ActionEvent evt) {
 		showMIAPEExtractionTutorial();
 	}
@@ -640,33 +478,8 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 		dispose();
 	}
 
-	private void jMenuItemBrowseMIAPEsActionPerformed(java.awt.event.ActionEvent evt) {
-
-		showBrowseData();
-	}
-
-	private void showBrowseData() {
-		ProteoRedMIAPEBrowserFrame miape2StandardDialog = ProteoRedMIAPEBrowserFrame.getInstance(this);
-		miape2StandardDialog.setVisible(true);
-		setVisible(false);
-
-	}
-
 	private void jMenuItemStandard2MIAPEActionPerformed(java.awt.event.ActionEvent evt) {
 		startDataImport();
-
-	}
-
-	private void jMenuItemLoginActionPerformed(java.awt.event.ActionEvent evt) {
-		showLogin();
-	}
-
-	private void showLogin() {
-		if (!isVisible())
-			setVisible(true);
-		enableLoginDependentMenus(false);
-		loginFrame = LoginDialog.getInstance(this, true, unattendedRetrieverEnabled);
-		loginFrame.setVisible(true);
 
 	}
 
@@ -714,41 +527,20 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 
 	// GEN-BEGIN:variables
 	// Variables declaration - do not modify
-	private javax.swing.JLabel jLabelInit;
 	private javax.swing.JMenu jMenu1;
 	private javax.swing.JMenu jMenu2;
 	private javax.swing.JMenu jMenu3;
-	private javax.swing.JMenu jMenu4;
 	private javax.swing.JMenuBar jMenuBar1;
-	private javax.swing.JMenu jMenuBrowseMIAPEs;
 	private javax.swing.JMenu jMenuHelp;
 	private javax.swing.JMenuItem jMenuItemBatchMiapeExtraction;
-	private javax.swing.JMenuItem jMenuItemBrowseMIAPEs;
 	private javax.swing.JMenuItem jMenuItemExit;
-	private javax.swing.JMenuItem jMenuItemLogin;
 	private javax.swing.JMenuItem jMenuItemMIAPEExtractionBatchTutorial;
 	private javax.swing.JMenuItem jMenuItemMIAPEExtractionTutorial;
-	private javax.swing.JMenuItem jMenuItemShowQueries;
 	private javax.swing.JMenuItem jMenuItemStandard2MIAPE;
 	private javax.swing.JMenuItem jMenuItemStartProjectComparison;
 	private javax.swing.JPanel jPanel1;
-	private JPanel panel;
 
 	// End of variables declaration//GEN-END:variables
-
-	@Override
-	public void propertyChange(PropertyChangeEvent arg0) {
-		if (arg0.getPropertyName().equals(LoginTask.LOGIN_OK)) {
-			enableLoginDependentMenus(true);
-			jLabelInit.setText("Logged as " + MainFrame.userName);
-		}
-
-	}
-
-	public static Software getMiapeExtractorSoftware() {
-		Software software = new MiapeExtractorSoftware();
-		return software;
-	}
 
 	public static AppVersion getVersion() {
 		if (version == null) {
@@ -767,13 +559,4 @@ public class MainFrame extends javax.swing.JFrame implements PropertyChangeListe
 
 	}
 
-	public static void setMiapeAPIWebservice(MiapeAPIWebserviceDelegate miapeAPIWebservice2) {
-		MainFrame.miapeAPIWebservice = miapeAPIWebservice2;
-
-	}
-
-	public static void setMiapeExtractorWebservice(MiapeExtractorDelegate miapeExtractorWebservice2) {
-		MainFrame.miapeExtractorWebservice = miapeExtractorWebservice2;
-
-	}
 }

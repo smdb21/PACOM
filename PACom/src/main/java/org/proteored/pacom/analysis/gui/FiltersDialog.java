@@ -73,6 +73,7 @@ import org.proteored.pacom.analysis.gui.tasks.FilterTask;
 import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.gui.MainFrame;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
+import org.proteored.pacom.utils.PACOMSoftware;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
 
@@ -525,7 +526,10 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 
 	public ModificationFilter getModificationFilter() {
 		if (jCheckBoxModificationFilterActivation.isSelected()) {
-			ModificationFilter modifFilter = new ModificationFilter(MainFrame.getMiapeExtractorSoftware());
+			ModificationFilter modifFilter = new ModificationFilter(
+					GeneralOptionsDialog.getInstance(parent).isDoNotGroupNonConclusiveProteins(),
+					GeneralOptionsDialog.getInstance(parent).isSeparateNonConclusiveProteins(),
+					PACOMSoftware.getInstance());
 			List<JComponent> previousFilterComponent = null;
 			for (int i = 0; i < modificationFilterControls.size(); i++) {
 
@@ -2519,7 +2523,10 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 			}
 			boolean requireUnique = jCheckBoxRequireUniquePeptides.isSelected();
 			PeptidesForMRMFilter ret = new PeptidesForMRMFilter(ignoreM, ignoreW, ignoreQAtBeginning,
-					ignoreMissedCleavages, minLength, maxLength, requireUnique, MainFrame.getMiapeExtractorSoftware());
+					ignoreMissedCleavages, minLength, maxLength, requireUnique,
+					GeneralOptionsDialog.getInstance(parent).isDoNotGroupNonConclusiveProteins(),
+					GeneralOptionsDialog.getInstance(parent).isSeparateNonConclusiveProteins(),
+					PACOMSoftware.getInstance());
 			return ret;
 		}
 		return null;
@@ -2543,7 +2550,10 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 			}
 			final boolean distinguisModificatedPeptides = false;
 			final PeptideSequenceFilter peptideSequenceFilter = new PeptideSequenceFilter(peptideSequenceList,
-					distinguisModificatedPeptides, MainFrame.getMiapeExtractorSoftware());
+					distinguisModificatedPeptides,
+					GeneralOptionsDialog.getInstance(parent).isDoNotGroupNonConclusiveProteins(),
+					GeneralOptionsDialog.getInstance(parent).isSeparateNonConclusiveProteins(),
+					PACOMSoftware.getInstance());
 			this.peptideSequenceFilter = peptideSequenceFilter;
 			return peptideSequenceFilter;
 		}
@@ -2556,7 +2566,7 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 				Integer min = Integer.valueOf(jTextFieldPeptideNumber.getText());
 				boolean distinguishSequences = true;
 				PeptideNumberFilter filter = new PeptideNumberFilter(min, distinguishSequences,
-						MainFrame.getMiapeExtractorSoftware());
+						PACOMSoftware.getInstance());
 				return filter;
 			} catch (Exception e) {
 
@@ -2577,7 +2587,10 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 				int max = Integer.MAX_VALUE;
 				if (!"".equals(jTextFieldPeptideLengthMax.getText()))
 					max = Integer.valueOf(jTextFieldPeptideLengthMax.getText());
-				PeptideLengthFilter filter = new PeptideLengthFilter(min, max, MainFrame.getMiapeExtractorSoftware());
+				PeptideLengthFilter filter = new PeptideLengthFilter(min, max,
+						GeneralOptionsDialog.getInstance(parent).isDoNotGroupNonConclusiveProteins(),
+						GeneralOptionsDialog.getInstance(parent).isSeparateNonConclusiveProteins(),
+						PACOMSoftware.getInstance());
 				return filter;
 			} catch (NumberFormatException e) {
 
@@ -2601,14 +2614,18 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 						proteinACCList.add(proteinACC);
 				}
 				final ProteinACCFilter proteinACCFilter = new ProteinACCFilter(proteinACCList,
-						MainFrame.getMiapeExtractorSoftware());
+						GeneralOptionsDialog.getInstance(parent).isDoNotGroupNonConclusiveProteins(),
+						GeneralOptionsDialog.getInstance(parent).isSeparateNonConclusiveProteins(),
+						PACOMSoftware.getInstance());
 				this.proteinACCFilter = proteinACCFilter;
 				return proteinACCFilter;
 			} else if (jRadioButtonSelectFastaFile.isSelected()) {
 				if (fastaFile != null && fastaFile.exists()) {
 					try {
 						final ProteinACCFilter proteinACCFilter = new ProteinACCFilter(fastaFile,
-								MainFrame.getMiapeExtractorSoftware());
+								GeneralOptionsDialog.getInstance(parent).isDoNotGroupNonConclusiveProteins(),
+								GeneralOptionsDialog.getInstance(parent).isSeparateNonConclusiveProteins(),
+								PACOMSoftware.getInstance());
 						this.proteinACCFilter = proteinACCFilter;
 						return proteinACCFilter;
 					} catch (IOException e) {
@@ -2658,7 +2675,11 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 			filterTask = new FilterTask(filters, experimentList, filterReplicates);
 			filterTask.addPropertyChangeListener(this);
 			filterTask.execute();
-			parent.setStatus("Filtering...");
+			if (filters.isEmpty()) {
+				parent.setStatus("Removing filters...");
+			} else {
+				parent.setStatus("Filtering...");
+			}
 		} else {
 			// TODO
 			// this.filterTask = new FilterTask(null, null);
@@ -2720,7 +2741,9 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 				Integer minOccurrence = Integer.valueOf(jTextFieldOccurrenceThreshold.getText());
 				boolean distinguisModificatedPeptides = getDistinguisModificatedPeptides();
 				OccurrenceFilter filter = new OccurrenceFilter(minOccurrence, item, distinguisModificatedPeptides,
-						replicatesBool, MainFrame.getMiapeExtractorSoftware());
+						replicatesBool, GeneralOptionsDialog.getInstance(parent).isDoNotGroupNonConclusiveProteins(),
+						GeneralOptionsDialog.getInstance(parent).isSeparateNonConclusiveProteins(),
+						PACOMSoftware.getInstance());
 
 				return filter;
 			} catch (NumberFormatException e) {
@@ -2753,7 +2776,9 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 					ComparatorOperator includeOperator = (ComparatorOperator) rowVector.get(OPERATOR_COLUMN);
 					if (rowVector.get(PROTEIN_PEPTIDE_COLUMN).toString().equalsIgnoreCase(item.toString())) {
 						ScoreFilter scoreFilter = new ScoreFilter(threshold, scoreName, includeOperator, item,
-								MainFrame.getMiapeExtractorSoftware());
+								GeneralOptionsDialog.getInstance(parent).isDoNotGroupNonConclusiveProteins(),
+								GeneralOptionsDialog.getInstance(parent).isSeparateNonConclusiveProteins(),
+								PACOMSoftware.getInstance());
 						ret.add(scoreFilter);
 					}
 				} catch (NumberFormatException e) {
@@ -2786,11 +2811,17 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 					String prefix = jTextFieldPrefix.getText();
 
 					return new FDRFilter(threshold, prefix, concatenatedDecoyDB, sortingParameters, item,
-							experimentName, replicateName, MainFrame.getMiapeExtractorSoftware());
+							experimentName, replicateName,
+							GeneralOptionsDialog.getInstance(parent).isDoNotGroupNonConclusiveProteins(),
+							GeneralOptionsDialog.getInstance(parent).isSeparateNonConclusiveProteins(),
+							PACOMSoftware.getInstance());
 				} else {
 					Pattern pattern = Pattern.compile(jTextFieldRegexp.getText());
 					return new FDRFilter(threshold, pattern, concatenatedDecoyDB, sortingParameters, item,
-							experimentName, replicateName, MainFrame.getMiapeExtractorSoftware());
+							experimentName, replicateName,
+							GeneralOptionsDialog.getInstance(parent).isDoNotGroupNonConclusiveProteins(),
+							GeneralOptionsDialog.getInstance(parent).isSeparateNonConclusiveProteins(),
+							PACOMSoftware.getInstance());
 				}
 
 			}

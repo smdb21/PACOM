@@ -56,8 +56,6 @@ public interface MiapeExtractionRunParameters {
 
 	public String getTemplateName();
 
-	public boolean storeMIAPEsInDB();
-
 	public boolean isXTandemPlusMGFSelected();
 
 	public String getDtaSelectFileName();
@@ -65,8 +63,6 @@ public interface MiapeExtractionRunParameters {
 	public boolean isDTASelectSelected();
 
 	public boolean isDTASelectPlusMGFSelected();
-
-	public boolean isLocalProcessing();
 
 	public TableTextFileSeparator getSeparator();
 }

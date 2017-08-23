@@ -41,8 +41,6 @@ import org.proteored.pacom.analysis.gui.components.ExtendedJTree;
 import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.gui.MainFrame;
 
-import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
-
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.set.hash.THashSet;
 
@@ -72,8 +70,10 @@ public class PEXBulkSubmissionSummaryFileCreatorDialog extends javax.swing.JDial
 		super(parent, true);
 		initComponents();
 		try {
-			UIManager.setLookAndFeel(new WindowsLookAndFeel());
-		} catch (UnsupportedLookAndFeelException e) {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException
+				| IllegalAccessException e) {
+			e.printStackTrace();
 		}
 		this.experimentList = experimentList;
 		if (this.experimentList != null) {

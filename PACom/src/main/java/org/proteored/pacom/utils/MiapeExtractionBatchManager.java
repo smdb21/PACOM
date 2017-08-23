@@ -6,7 +6,7 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,8 +18,6 @@ import org.apache.log4j.Logger;
 import org.proteored.miapeapi.cv.ControlVocabularyManager;
 import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
 import org.proteored.miapeapi.interfaces.ms.MiapeMSDocument;
-import org.proteored.miapeapi.webservice.clients.miapeapi.MiapeAPIWebserviceDelegate;
-import org.proteored.miapeapi.webservice.clients.miapeextractor.MiapeExtractorDelegate;
 import org.proteored.miapeapi.xml.ms.MIAPEMSXmlFile;
 import org.proteored.miapeapi.xml.ms.MiapeMSXmlFactory;
 import org.proteored.pacom.analysis.util.FileManager;
@@ -42,7 +40,6 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 	public static final String END_MIAPE_EXTRACTION = "END";
 	public static final String METADATA = "METADATA";
 	public static final String MIAPE_PROJECT = "PROJECT";
-	public static final String LOCAL_PROCESSING = "LOCAL";
 	public static final String FAST_PARSING = "FAST_PARSING";
 	public static final String MS_OUTPUT = "MS_OUTPUT";
 	public static final String MSI_OUTPUT = "MSI_OUTPUT";
@@ -56,8 +53,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 	private static int CONCURRENT_MIAPE_EXTRACTIONS = 1;
 	private final File inputBatchFile;
 	private final PropertyChangeListener listener;
-	private final MiapeExtractorDelegate miapeExtractorWebservice;
-	private final MiapeAPIWebserviceDelegate miapeAPIWebservice;
+
 	private final ControlVocabularyManager cvManager;
 	/**
 	 * Indicates how many times a MIAPE Extraction Task has been started
@@ -71,11 +67,10 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 	private boolean cancelAll = false;
 
 	public MiapeExtractionBatchManager(File inputBatchFile, PropertyChangeListener listener,
-			MiapeExtractorDelegate miapeExtractorWebservice, MiapeAPIWebserviceDelegate miapeAPIWebservice,
+
 			ControlVocabularyManager cvManager) {
 		this.inputBatchFile = inputBatchFile;
-		this.miapeAPIWebservice = miapeAPIWebservice;
-		this.miapeExtractorWebservice = miapeExtractorWebservice;
+
 		this.listener = listener;
 
 		this.cvManager = cvManager;
@@ -93,13 +88,13 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 
 	private void parseInputBatchFile() {
 		int numLine = 0;
+		BufferedReader br = null;
 
 		try {
-			final InputStream fstream = new FileInputStream(inputBatchFile);
-			if (fstream != null) {
-				DataInputStream in = new DataInputStream(fstream);
 
-				BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			br = new BufferedReader(new InputStreamReader(new DataInputStream(new FileInputStream(inputBatchFile))));
+			if (br != null) {
+
 				String strLine;
 				MiapeExtractionRunParametersImpl params = null;
 				while ((strLine = br.readLine()) != null) {
@@ -177,8 +172,6 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 					} else if (strLine.startsWith(MIAPE_PROJECT)) {
 						String[] split = strLine.split("\t");
 						params.setProjectName(split[1]);
-					} else if (strLine.startsWith(LOCAL_PROCESSING)) {
-						params.setLocalProcessing(true);
 					} else if (strLine.startsWith(FAST_PARSING)) {
 						params.setFastParsing(true);
 					} else if (strLine.startsWith(MS_OUTPUT)) {
@@ -207,7 +200,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 					} else if (strLine.startsWith(END_MIAPE_EXTRACTION)) {
 						params.consolidate();
 						MiapeExtractionTask task = new MiapeExtractionTask(params.getId(), params,
-								miapeExtractorWebservice, miapeAPIWebservice, MainFrame.userName, MainFrame.password,
+
 								MainFrame.parallelProcessingOnExtraction);
 						addTaskToQueue(task);
 					} else if (strLine.startsWith(MS_JOB_REF)) {
@@ -240,9 +233,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 
 					}
 				}
-				br.close();
-				in.close();
-				fstream.close();
+
 			}
 		} catch (Exception e) {
 			if (e instanceof ArrayIndexOutOfBoundsException)
@@ -251,6 +242,14 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 			if (!e.getMessage().contains("Please wait"))
 				throw new IllegalMiapeArgumentException(e.getMessage() + " - line:" + numLine);
 			throw new IllegalMiapeArgumentException(e.getMessage());
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -343,8 +342,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 					}
 					log.info("The task " + jobID + " is going to be reanalyzer");
 					miapeTask = new MiapeExtractionTask(miapeExtractionTask.getRunIdentifier(),
-							miapeExtractionTask.getParameters(), miapeExtractorWebservice, miapeAPIWebservice,
-							MainFrame.userName, MainFrame.password, miapeExtractionTask.isLocalProcessingInParallel());
+							miapeExtractionTask.getParameters(), miapeExtractionTask.isLocalProcessingInParallel());
 					miapeTask.addPropertyChangeListener(this);
 					miapeTask.addPropertyChangeListener(listener);
 					Iterator<Integer> iterator = miapeExtractionQueueOrder.iterator();

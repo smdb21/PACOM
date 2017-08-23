@@ -3543,7 +3543,7 @@ public class DatasetFactory {
 	 */
 	public static List<DefaultCategoryDataset> createExclusiveNumberIdentificationCategoryDataSetForProteins(
 			List<IdentificationSet> idSets, ProteinGroupComparisonType proteinGroupComparisonType,
-			boolean accumulativeTrend, Boolean countNonConclusiveProteins) {
+			boolean accumulativeTrend) {
 		// create the dataset...
 
 		List<DefaultCategoryDataset> datasets = new ArrayList<DefaultCategoryDataset>();
@@ -3562,8 +3562,7 @@ public class DatasetFactory {
 				Set<Object> keys = mapKeys.get(idSet.getFullName());
 
 				if (accumulativeTrend) {
-					globalVenn = new VennDataForProteins(keys, union, null, proteinGroupComparisonType,
-							countNonConclusiveProteins);
+					globalVenn = new VennDataForProteins(keys, union, null, proteinGroupComparisonType);
 					union = globalVenn.getUnion12();
 					int num = union.size();
 
@@ -3586,11 +3585,9 @@ public class DatasetFactory {
 					Set<Object> keys2 = mapKeys.get(idSet2.getFullName());
 					VennData venn = null;
 					if (unique == null) {
-						venn = new VennDataForProteins(keys, keys2, null, proteinGroupComparisonType,
-								countNonConclusiveProteins);
+						venn = new VennDataForProteins(keys, keys2, null, proteinGroupComparisonType);
 					} else {
-						venn = new VennDataForProteins(unique, keys2, null, proteinGroupComparisonType,
-								countNonConclusiveProteins);
+						venn = new VennDataForProteins(unique, keys2, null, proteinGroupComparisonType);
 					}
 					unique = venn.getUniqueTo1();
 					log.info(unique.size() + " remaining exclusive");
@@ -4027,7 +4024,7 @@ public class DatasetFactory {
 
 		HistogramDataset serie = new HistogramDataset();
 
-		double[] values = getRatioHistogram(idSet1, idSet2, proteinGroupComparisonType, countNonConclusiveProteins);
+		double[] values = getRatioHistogram(idSet1, idSet2, proteinGroupComparisonType);
 		if (values != null && values.length > 0)
 			serie.addSeries(idSet1.getName() + " vs " + idSet2.getName(), values, bins);
 
@@ -4039,11 +4036,10 @@ public class DatasetFactory {
 	}
 
 	private static double[] getRatioHistogram(IdentificationSet idSet1, IdentificationSet idSet2,
-			ProteinGroupComparisonType proteinGroupComparisonType, Boolean countNonConclusiveProteins) {
+			ProteinGroupComparisonType proteinGroupComparisonType) {
 
 		VennData venn = new VennDataForProteins(idSet1.getProteinGroupOccurrenceList().values(),
-				idSet2.getProteinGroupOccurrenceList().values(), null, proteinGroupComparisonType,
-				countNonConclusiveProteins);
+				idSet2.getProteinGroupOccurrenceList().values(), null, proteinGroupComparisonType);
 		final Collection<Object> intersection = venn.getIntersection12();
 		log.info(intersection.size() + " proteins in common");
 		double[] logRatios = new double[intersection.size()];
@@ -4056,10 +4052,7 @@ public class DatasetFactory {
 				final ProteinGroupOccurrence pgo2 = idSet2.getProteinGroupOccurrence(pgo.getFirstOccurrence());
 
 				if (pgo1 != null && pgo2 != null) {
-					if (!countNonConclusiveProteins && pgo.getEvidence() == ProteinEvidence.NONCONCLUSIVE)
-						continue;
-					if (!countNonConclusiveProteins && pgo2.getEvidence() == ProteinEvidence.NONCONCLUSIVE)
-						continue;
+
 					final List<ExtendedIdentifiedPeptide> peptides1 = pgo1.getPeptides();
 					final List<ExtendedIdentifiedPeptide> peptides2 = pgo2.getPeptides();
 					if (peptides1 != null && peptides2 != null) {
@@ -4080,14 +4073,13 @@ public class DatasetFactory {
 
 	public static XYSeriesCollection createPeptideCountingVsScoreXYDataSet(IdentificationSet idSet1,
 			IdentificationSet idSet2, ProteinGroupComparisonType proteinGroupComparisonType, boolean distinguish,
-			Boolean countNonConclusiveProteins, String scoreName) {
+			String scoreName) {
 		XYSeriesCollection xySeriesCollection = new XYSeriesCollection();
 		XYSeries serie = new XYSeries(idSet1.getName() + " vs " + idSet2.getName());
 		xySeriesCollection.addSeries(serie);
 
 		VennData venn = new VennDataForProteins(idSet1.getProteinGroupOccurrenceList().values(),
-				idSet2.getProteinGroupOccurrenceList().values(), null, proteinGroupComparisonType,
-				countNonConclusiveProteins);
+				idSet2.getProteinGroupOccurrenceList().values(), null, proteinGroupComparisonType);
 		final Collection<Object> intersection = venn.getIntersection12();
 		log.info(intersection.size() + " proteins in common");
 		double[] logRatios = new double[intersection.size()];
@@ -4100,10 +4092,6 @@ public class DatasetFactory {
 				final ProteinGroupOccurrence pgo2 = idSet2.getProteinGroupOccurrence(pgo.getFirstOccurrence());
 
 				if (pgo1 != null && pgo2 != null) {
-					if (!countNonConclusiveProteins && pgo.getEvidence() == ProteinEvidence.NONCONCLUSIVE)
-						continue;
-					if (!countNonConclusiveProteins && pgo2.getEvidence() == ProteinEvidence.NONCONCLUSIVE)
-						continue;
 					final List<ExtendedIdentifiedPeptide> peptides1 = pgo1.getPeptides();
 					final List<ExtendedIdentifiedPeptide> peptides2 = pgo2.getPeptides();
 					if (peptides1 != null && peptides2 != null) {

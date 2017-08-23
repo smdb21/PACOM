@@ -7,10 +7,6 @@ import javax.swing.JProgressBar;
 public interface TreeDialog {
 	// public void disableControls(boolean b);
 
-	public String getUserName();
-
-	public String getPassword();
-
 	public JProgressBar getProgressBar();
 
 	public void setCursor(Cursor cursor);

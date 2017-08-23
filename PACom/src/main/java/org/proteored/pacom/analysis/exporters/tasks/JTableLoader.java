@@ -32,6 +32,8 @@ import org.proteored.pacom.analysis.util.FileManager;
 import edu.scripps.yates.annotations.uniprot.UniprotProteinLocalRetriever;
 import edu.scripps.yates.annotations.uniprot.xml.Entry;
 import edu.scripps.yates.utilities.fasta.FastaParser;
+import edu.scripps.yates.utilities.progresscounter.ProgressCounter;
+import edu.scripps.yates.utilities.progresscounter.ProgressPrintingType;
 import gnu.trove.set.hash.THashSet;
 
 public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JTable> {
@@ -103,10 +105,8 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 			if (!uniprotAccs.isEmpty()) {
 
 				try {
-					firePropertyChange(PROTEIN_SEQUENCE_RETRIEVAL, null, null);
-
-					firePropertyChange(MESSAGE, null, "Retrieving protein sequences from " + uniprotAccs.size()
-							+ " different proteins in UniprotKB");
+					firePropertyChange(PROTEIN_SEQUENCE_RETRIEVAL, null, "Retrieving protein sequences from "
+							+ uniprotAccs.size() + " different proteins in UniprotKB");
 					UniprotProteinLocalRetriever upr = FileManager.getUniprotProteinLocalRetriever();
 					upr.setCacheEnabled(true);
 					Map<String, Entry> annotatedProteins = upr.getAnnotatedProteins(null, uniprotAccs);
@@ -141,14 +141,16 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 						// sort if there is a FDR Filter activated that tells us
 						// which is the score sort
 
-						firePropertyChange(DATA_EXPORTING_SORTING, null, peptideOccurrenceHashMap.size());
+						// firePropertyChange(DATA_EXPORTING_SORTING, null,
+						// peptideOccurrenceHashMap.size());
 						ArrayList<PeptideOccurrence> peptideOccurrenceList = new ArrayList<PeptideOccurrence>();
 						for (PeptideOccurrence peptideOccurrence : peptideOccurrenceHashMap.values()) {
 							peptideOccurrenceList.add(peptideOccurrence);
 						}
 
 						// SorterUtil.sortPeptideOcurrencesByBestPeptideScore(peptideOccurrenceList);
-						firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
+						// firePropertyChange(DATA_EXPORTING_SORTING_DONE, null,
+						// null);
 						Iterator<PeptideOccurrence> iterator = peptideOccurrenceList.iterator();
 
 						int i = 1;
@@ -193,11 +195,13 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 						// sort if there is a FDR Filter activated that tells us
 						// which is the score sort
 
-						firePropertyChange(DATA_EXPORTING_SORTING, null, identifiedPeptides.size());
+						// firePropertyChange(DATA_EXPORTING_SORTING, null,
+						// identifiedPeptides.size());
 
 						// SorterUtil.sortPeptidesByBestPeptideScore(identifiedPeptides,
 						// true);
-						firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
+						// firePropertyChange(DATA_EXPORTING_SORTING_DONE, null,
+						// null);
 
 						int i = 1;
 						for (ExtendedIdentifiedPeptide peptide : identifiedPeptides) {
@@ -233,12 +237,13 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 			} else {
 				// JUST PROTEINS
 				if (this.collapseProteins) {
-					int i = 1;
+
 					int total = 0;
 					progress = 0;
 					for (IdentificationSet idSet : idSets) {
 						total += idSet.getProteinGroupOccurrenceList().size();
 					}
+					ProgressCounter counter = new ProgressCounter(total, ProgressPrintingType.PERCENTAGE_STEPS, 0);
 					for (IdentificationSet idSet : idSets) {
 						final Collection<ProteinGroupOccurrence> proteinOccurrenceSet = idSet
 								.getProteinGroupOccurrenceList().values();
@@ -249,18 +254,22 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 						// sort if there is a FDR Filter activated that tells us
 						// which is the score sort
 
-						firePropertyChange(DATA_EXPORTING_SORTING, null, proteinOccurrenceList.size());
+						// firePropertyChange(DATA_EXPORTING_SORTING, null,
+						// proteinOccurrenceList.size());
 						try {
 							// SorterUtil.sortProteinGroupOcurrencesByBestPeptideScore(proteinOccurrenceList);
 						} catch (Exception e) {
 							log.info(e.getMessage());
 						}
-						firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
+						// firePropertyChange(DATA_EXPORTING_SORTING_DONE, null,
+						// null);
 						Iterator<ProteinGroupOccurrence> iterator = proteinOccurrenceList.iterator();
 
 						while (iterator.hasNext()) {
-							if (i % 10 == 0)
-								log.info(i + " / " + total);
+							String printIfNecessary = counter.printIfNecessary();
+							if (printIfNecessary != null) {
+								log.info(printIfNecessary);
+							}
 							ProteinGroupOccurrence proteinGroupOccurrence = iterator.next();
 							Thread.sleep(1L);
 
@@ -270,8 +279,9 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 
 								final List<String> lineStringList = ExporterUtil
 										.getInstance(idSets, includePeptides, includeGeneInfo, retrieveProteinSequences)
-										.getProteinInfoList(proteinGroupOccurrence, columnsStringList, i++, idSet);
-
+										.getProteinInfoList(proteinGroupOccurrence, columnsStringList,
+												counter.getCount(), idSet);
+								counter.increment();
 								// System.out.println(peptideString);
 								addNewRow(lineStringList);
 							}
@@ -300,10 +310,12 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 						// sort if there is a FDR Filter activated that tells us
 						// which is the score sort
 
-						firePropertyChange(DATA_EXPORTING_SORTING, null, proteinGroups.size());
+						// firePropertyChange(DATA_EXPORTING_SORTING, null,
+						// proteinGroups.size());
 
 						// SorterUtil.sortProteinGroupsByBestPeptideScore(proteinGroups);
-						firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
+						// firePropertyChange(DATA_EXPORTING_SORTING_DONE, null,
+						// null);
 
 						int i = 1;
 						for (ProteinGroup proteinGroup : proteinGroups) {

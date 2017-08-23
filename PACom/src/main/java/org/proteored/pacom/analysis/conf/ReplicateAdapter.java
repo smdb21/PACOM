@@ -50,9 +50,12 @@ public class ReplicateAdapter implements Adapter<Replicate> {
 	private final List<Filter> filters;
 	private final boolean processInParallel;
 	private final boolean annotateProteinsInUniprot;
+	private final boolean doNotGroupNonConclusiveProteins;
+	private final boolean separateNonConclusiveProteins;
 
 	public ReplicateAdapter(CPReplicate xmlRep, String experimentName, boolean curated, Integer minPeptideLength,
-			List<Filter> filters, boolean processInParallel, boolean annotateProteinsInUniprot) {
+			List<Filter> filters, boolean processInParallel, boolean annotateProteinsInUniprot,
+			boolean doNotGroupNonConclusiveProteins, boolean separateNonConclusiveProteins) {
 		this.xmlRep = xmlRep;
 		cvManager = OntologyLoaderTask.getCvManager();
 		this.experimentName = experimentName;
@@ -61,6 +64,8 @@ public class ReplicateAdapter implements Adapter<Replicate> {
 		this.filters = filters;
 		this.processInParallel = processInParallel;
 		this.annotateProteinsInUniprot = annotateProteinsInUniprot;
+		this.doNotGroupNonConclusiveProteins = doNotGroupNonConclusiveProteins;
+		this.separateNonConclusiveProteins = separateNonConclusiveProteins;
 	}
 
 	@Override
@@ -105,7 +110,8 @@ public class ReplicateAdapter implements Adapter<Replicate> {
 		}
 
 		log.info("Creating replicate: " + xmlRep.getName());
-		Replicate rep = new Replicate(xmlRep.getName(), experimentName, miapeMSs, miapeMSIs, filters, minPeptideLength,
+		Replicate rep = new Replicate(xmlRep.getName(), experimentName, miapeMSs, miapeMSIs, filters,
+				doNotGroupNonConclusiveProteins, separateNonConclusiveProteins, minPeptideLength,
 				OntologyLoaderTask.getCvManager(), processInParallel);
 		log.info("Replicate: " + xmlRep.getName() + " created.");
 		return rep;

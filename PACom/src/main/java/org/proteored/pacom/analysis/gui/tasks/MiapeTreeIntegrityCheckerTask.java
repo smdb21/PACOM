@@ -23,7 +23,6 @@ import org.proteored.pacom.analysis.conf.jaxb.CPMSI;
 import org.proteored.pacom.analysis.conf.jaxb.CPReplicate;
 import org.proteored.pacom.analysis.gui.Miape2ExperimentListDialog;
 import org.proteored.pacom.analysis.util.FileManager;
-import org.proteored.pacom.gui.MainFrame;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
@@ -34,6 +33,7 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 
 	public static String INTEGRITY_ERROR = "integrity error";
 	public static String INTEGRITY_OK = "integrity_ok";
+	public static String INTEGRITY_START = "integrity_start";
 	private final CPExperimentList expList;
 	private final Miape2ExperimentListDialog parent;
 
@@ -125,21 +125,22 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 										miapeMSIs.add(miapeMSI);
 										// create a replicate with one miape msi
 										Replicate replicate = new Replicate(cpReplicate.getName(),
-												cpExperiment.getName(), null, miapeMSIs, null, Integer.MAX_VALUE, // para
-																													// que
-																													// no
-																													// coja
-																													// péptidos
-																													// y
-																													// vaya
-																													// más
-																													// rápido,
-																													// ya
-																													// que
-																													// aquí
-																													// no
-																													// se
-																													// necesitan
+												cpExperiment.getName(), null, miapeMSIs, null, true, false,
+												Integer.MAX_VALUE, // para
+												// que
+												// no
+												// coja
+												// péptidos
+												// y
+												// vaya
+												// más
+												// rápido,
+												// ya
+												// que
+												// aquí
+												// no
+												// se
+												// necesitan
 												OntologyLoaderTask.getCvManager(), processInParallel);
 
 										// check databaseNames
@@ -212,18 +213,8 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 			List<Integer> miapesWaitingToBeDownloaded = new ArrayList<Integer>();
 			List<Integer> miapesBeingDownloaded = new ArrayList<Integer>();
 			for (Integer miapeId : listofNonExistingFiles) {
-				javax.swing.SwingWorker.StateValue downloadingState = MiapeRetrieverManager
-						.getInstance(MainFrame.userName, MainFrame.password)
-						.getDownloadingState("MSI", Integer.valueOf(miapeId));
-				if (downloadingState == null) {
-					miapesNotBeingDownloaded.add(miapeId);
-				} else if (javax.swing.SwingWorker.StateValue.PENDING.equals(downloadingState)) {
-					miapesWaitingToBeDownloaded.add(miapeId);
-				} else if (javax.swing.SwingWorker.StateValue.STARTED.equals(downloadingState)) {
-					miapesBeingDownloaded.add(miapeId);
-				} else {
-					log.info("MIRAR ESTO: " + miapeId);
-				}
+				miapesNotBeingDownloaded.add(miapeId);
+
 			}
 			String message = "<html><b>Warning:</b><br>" + "Some datasets are not stored locally in "
 					+ FileManager.getMiapeDataPath() + ".<br>" + "Some datasets in the comparison project";
@@ -231,10 +222,7 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 				message = message + " ('" + getCSVStringFromIntegerList(miapesNotBeingDownloaded)
 						+ "') are not being downloaded from server."
 						+ "<br>Please, go back and login in the ProteoRed MIAPE repository.<br>";
-				for (Integer integer : miapesNotBeingDownloaded) {
-					MiapeRetrieverManager.getInstance(MainFrame.userName, MainFrame.password).addRetrieving(integer,
-							"MSI", parent);
-				}
+
 			} else {
 				if (!miapesBeingDownloaded.isEmpty()) {
 					message = message + " ('" + getCSVStringFromIntegerList(miapesBeingDownloaded)

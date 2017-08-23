@@ -32,6 +32,8 @@ import org.proteored.pacom.analysis.util.FileManager;
 import edu.scripps.yates.annotations.uniprot.UniprotProteinLocalRetriever;
 import edu.scripps.yates.annotations.uniprot.xml.Entry;
 import edu.scripps.yates.utilities.fasta.FastaParser;
+import edu.scripps.yates.utilities.progresscounter.ProgressCounter;
+import edu.scripps.yates.utilities.progresscounter.ProgressPrintingType;
 import gnu.trove.set.hash.THashSet;
 
 public class TSVExporter extends SwingWorker<Void, String> implements Exporter<File> {
@@ -80,7 +82,6 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 		try {
 
 			if (this.retrieveProteinSequences || this.includeGeneInfo) {
-				firePropertyChange(PROTEIN_SEQUENCE_RETRIEVAL, null, null);
 
 				Set<String> uniprotAccs = new THashSet<String>();
 				for (IdentificationSet identificationSet : idSets) {
@@ -95,8 +96,9 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 				// get all sequences at once first
 				if (!uniprotAccs.isEmpty()) {
 					try {
-						firePropertyChange(MESSAGE, null, "Retrieving protein sequences from " + uniprotAccs.size()
-								+ " different proteins in UniprotKB");
+						firePropertyChange(PROTEIN_SEQUENCE_RETRIEVAL, null, "Retrieving protein sequences from "
+								+ uniprotAccs.size() + " different proteins in UniprotKB");
+
 						UniprotProteinLocalRetriever upr = FileManager.getUniprotProteinLocalRetriever();
 						upr.setCacheEnabled(true);
 						Map<String, Entry> annotatedProteins = upr.getAnnotatedProteins(null, uniprotAccs);
@@ -124,7 +126,6 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 			// .getProteinOccurrenceList();
 			int i = 1;
 			for (IdentificationSet idSet : idSets) {
-				int progress = 0;
 				// if (progress == 0)
 				// return;
 				if (this.showPeptides) {
@@ -132,13 +133,16 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 
 						Collection<PeptideOccurrence> peptideOccurrenceList = getPeptideOccurrenceListToExport(idSet);
 
-						firePropertyChange(DATA_EXPORTING_SORTING, null, peptideOccurrenceList.size());
+						// firePropertyChange(DATA_EXPORTING_SORTING, null,
+						// peptideOccurrenceList.size());
 
 						// SorterUtil.sortPeptideOcurrencesByBestPeptideScore(peptideOccurrenceList);
-						firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
+						// firePropertyChange(DATA_EXPORTING_SORTING_DONE, null,
+						// null);
 						Iterator<PeptideOccurrence> iterator = peptideOccurrenceList.iterator();
 
 						int total = peptideOccurrenceList.size();
+						ProgressCounter counter = new ProgressCounter(total, ProgressPrintingType.PERCENTAGE_STEPS, 0);
 
 						while (iterator.hasNext()) {
 							PeptideOccurrence peptideOccurrence = iterator.next();
@@ -151,22 +155,28 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 							// log.info(lineString);
 							out.write(lineString.getBytes());
 
-							progress++;
+							counter.increment();
 
-							final int percentage = progress * 100 / total;
-							log.debug(percentage + " %");
-							setProgress(percentage);
+							final String percentage = counter.printIfNecessary();
+							if (!"".equals(percentage)) {
+								log.info(percentage);
+							}
+							setProgress(Double.valueOf(counter.getPercentage()).intValue());
 						}
 					} else {
 						final Collection<ExtendedIdentifiedPeptide> peptidelistToExport = getPeptideListToExport(idSet);
 						// sort if there is a FDR Filter activated that tells us
 						// which is the score sort
-						firePropertyChange(DATA_EXPORTING_SORTING, null, peptidelistToExport.size());
+						// firePropertyChange(DATA_EXPORTING_SORTING, null,
+						// peptidelistToExport.size());
 						// SorterUtil.sortPeptidesByBestPeptideScore(peptidelistToExport,
 						// true);
-						firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
+						// firePropertyChange(DATA_EXPORTING_SORTING_DONE, null,
+						// null);
 
 						int total = peptidelistToExport.size();
+						ProgressCounter counter = new ProgressCounter(total, ProgressPrintingType.PERCENTAGE_STEPS, 0);
+
 						for (ExtendedIdentifiedPeptide peptide : peptidelistToExport) {
 
 							Thread.sleep(1);
@@ -180,10 +190,13 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 							// log.info(lineString);
 							out.write(lineString.getBytes());
 
-							progress++;
-							final int percentage = progress * 100 / total;
-							log.debug(percentage + " %");
-							setProgress(percentage);
+							counter.increment();
+
+							final String percentage = counter.printIfNecessary();
+							if (!"".equals(percentage)) {
+								log.info(percentage);
+							}
+							setProgress(Double.valueOf(counter.getPercentage()).intValue());
 						}
 					}
 				} else {
@@ -195,16 +208,20 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 						// sort if there is a FDR Filter activated that tells us
 						// which is the score sort
 
-						firePropertyChange(DATA_EXPORTING_SORTING, null, proteinGroupOccurrenceList.size());
+						// firePropertyChange(DATA_EXPORTING_SORTING, null,
+						// proteinGroupOccurrenceList.size());
 						try {
 							// SorterUtil.sortProteinGroupOcurrencesByBestPeptideScore(proteinGroupOccurrenceList);
 						} catch (Exception e) {
 
 						}
-						firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
+						// firePropertyChange(DATA_EXPORTING_SORTING_DONE, null,
+						// null);
 						Iterator<ProteinGroupOccurrence> iterator = proteinGroupOccurrenceList.iterator();
 
 						int total = proteinGroupOccurrenceList.size();
+						ProgressCounter counter = new ProgressCounter(total, ProgressPrintingType.PERCENTAGE_STEPS, 0);
+
 						while (iterator.hasNext()) {
 							ProteinGroupOccurrence proteinGroupOccurrence = iterator.next();
 							Thread.sleep(1);
@@ -216,21 +233,28 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 							// System.out.println(peptideString);
 							out.write(proteinString.getBytes());
 
-							progress++;
-							final int percentage = progress * 100 / total;
-							log.info(percentage + " %");
-							setProgress(percentage);
+							counter.increment();
+
+							final String percentage = counter.printIfNecessary();
+							if (!"".equals(percentage)) {
+								log.info(percentage);
+							}
+							setProgress(Double.valueOf(counter.getPercentage()).intValue());
 						}
 					} else {
 						final List<ProteinGroup> proteinGroupsToExport = getProteinGroupsToExport(idSet);
 						// sort if there is a FDR Filter activated that tells us
 						// which is the score sort
-						firePropertyChange(DATA_EXPORTING_SORTING, null, proteinGroupsToExport.size());
+						// firePropertyChange(DATA_EXPORTING_SORTING, null,
+						// proteinGroupsToExport.size());
 
 						// SorterUtil.sortProteinGroupsByBestPeptideScore(proteinGroupsToExport);
-						firePropertyChange(DATA_EXPORTING_SORTING_DONE, null, null);
+						// firePropertyChange(DATA_EXPORTING_SORTING_DONE, null,
+						// null);
 
 						int total = proteinGroupsToExport.size();
+						ProgressCounter counter = new ProgressCounter(total, ProgressPrintingType.PERCENTAGE_STEPS, 0);
+
 						for (ProteinGroup proteinGroup : proteinGroupsToExport) {
 
 							Thread.sleep(1);
@@ -245,10 +269,13 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 							// System.out.println(peptideString);
 							out.write(proteinString.getBytes());
 
-							progress++;
-							final int percentage = progress * 100 / total;
-							log.info(percentage + " %");
-							setProgress(percentage);
+							counter.increment();
+
+							final String percentage = counter.printIfNecessary();
+							if (!"".equals(percentage)) {
+								log.info(percentage);
+							}
+							setProgress(Double.valueOf(counter.getPercentage()).intValue());
 						}
 					}
 				}

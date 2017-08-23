@@ -29,7 +29,6 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 	private boolean isPRIDESelected;
 	private boolean isMzMLSelected;
 	private boolean isMzIdentMLSelected;
-	private boolean isLocalProcessing = true;
 	private String mzIdentMLFileName;
 	private String mzMLFileName;
 	private String mgfFileName;
@@ -41,7 +40,6 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 	private Integer associatedMiapeMSGeneratorJob;
 	private String templateName;
 	private boolean isMgfSelected;
-	private boolean storeMIAPEsInDB;
 	private boolean xtandemPlusMGFSelected;
 	private String dtaSelectFileName;
 	private boolean DTASelectPlusMGFSelected;
@@ -103,11 +101,6 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 	@Override
 	public boolean isMzIdentMLSelected() {
 		return isMzIdentMLSelected;
-	}
-
-	@Override
-	public boolean isLocalProcessing() {
-		return isLocalProcessing;
 	}
 
 	@Override
@@ -188,10 +181,6 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 		this.isMzIdentMLSelected = isMzIdentMLSelected;
 	}
 
-	public void setLocalProcessing(boolean isLocalProcessing) {
-		this.isLocalProcessing = isLocalProcessing;
-	}
-
 	public void setMzIdentMLFileName(String mzIdentMLFileName) {
 		this.mzIdentMLFileName = mzIdentMLFileName;
 	}
@@ -248,9 +237,9 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 				+ isMzMLPlusMzIdentMLSelected + ", isMIAPEMSChecked=" + isMIAPEMSChecked + ", projectName="
 				+ projectName + ", isMIAPEMSIChecked=" + isMIAPEMSIChecked + ", isXTandemSelected=" + isXTandemSelected
 				+ ", isPRIDESelected=" + isPRIDESelected + ", isMzMLSelected=" + isMzMLSelected
-				+ ", isMzIdentMLSelected=" + isMzIdentMLSelected + ", isLocalProcessing=" + isLocalProcessing
-				+ ", mzIdentMLFileName=" + mzIdentMLFileName + ", mzMLFileName=" + mzMLFileName + ", mgfFileName="
-				+ mgfFileName + ", PRIDEXMLFileName=" + PRIDEXMLFileName + ", xTandemFileName=" + xTandemFileName + "]";
+				+ ", isMzIdentMLSelected=" + isMzIdentMLSelected + ", mzIdentMLFileName=" + mzIdentMLFileName
+				+ ", mzMLFileName=" + mzMLFileName + ", mgfFileName=" + mgfFileName + ", PRIDEXMLFileName="
+				+ PRIDEXMLFileName + ", xTandemFileName=" + xTandemFileName + "]";
 	}
 
 	public void consolidate() {
@@ -294,10 +283,6 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 				&& getMiapeMSMetadata() == null)
 			throw new IllegalMiapeArgumentException(
 					"Some MIAPE MS metadata template is required for importing datasets from MGF + mzIdentML, MGF + XTandem or MGF + DTASelect. Include a METADATA line type in the batch file.");
-
-		if (!isLocalProcessing() && isFastParsing())
-			throw new IllegalMiapeArgumentException(
-					"Fast parsing is not applicable for remote processing (not LOCAL PROCESSING)");
 
 		if (getMzMLFileName() == null && isFastParsing())
 			throw new IllegalMiapeArgumentException("Fast parsing is only applicable for processing MZML files");
@@ -374,15 +359,6 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 	}
 
 	@Override
-	public boolean storeMIAPEsInDB() {
-		return storeMIAPEsInDB;
-	}
-
-	public void setStoreMIAPEsInDB(boolean storeMIAPEsInDB) {
-		this.storeMIAPEsInDB = storeMIAPEsInDB;
-	}
-
-	@Override
 	public boolean isXTandemPlusMGFSelected() {
 		return xtandemPlusMGFSelected;
 	}
@@ -422,13 +398,6 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 	 */
 	public String getxTandemFileName() {
 		return xTandemFileName;
-	}
-
-	/**
-	 * @return the storeMIAPEsInDB
-	 */
-	public boolean isStoreMIAPEsInDB() {
-		return storeMIAPEsInDB;
 	}
 
 	/**

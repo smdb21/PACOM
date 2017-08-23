@@ -53,7 +53,6 @@ import org.proteored.miapeapi.xml.ms.MIAPEMSXmlFile;
 import org.proteored.miapeapi.xml.ms.MiapeMSDocumentImpl;
 import org.proteored.miapeapi.xml.ms.MiapeMSXmlFactory;
 import org.proteored.miapeapi.xml.ms.merge.MiapeMSMerger;
-import org.proteored.pacom.analysis.gui.tasks.MiapeRetrieverManager;
 import org.proteored.pacom.analysis.util.FileManager;
 import org.proteored.pacom.gui.miapemsforms.MetadataLoader;
 import org.proteored.pacom.gui.tasks.LoadProjectsTask;
@@ -65,6 +64,7 @@ import org.proteored.pacom.utils.MiapeExtractionParametersUtil;
 import org.proteored.pacom.utils.MiapeExtractionResult;
 import org.proteored.pacom.utils.MiapeExtractionRunParameters;
 
+import edu.scripps.yates.utilities.util.versioning.AppVersion;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
 /**
@@ -73,6 +73,10 @@ import gnu.trove.map.hash.TIntObjectHashMap;
  */
 public class MiapeExtractionFrame extends javax.swing.JFrame
 		implements PropertyChangeListener, MiapeExtractionRunParameters {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2685612413712062973L;
 	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("log4j.logger.org.proteored");
 	private static MiapeExtractionFrame instance;
 	private static final String MZIDENTML_FILE_LABEL = "mzIdentML file:";
@@ -120,8 +124,6 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	public boolean isShallowParsing = false;
 	private MIAPEMSChecker miapeMSChecker;
 	private boolean extractionStarted = false;
-	private int currentUserID;
-	private boolean listenToItemEvents;
 	private boolean showProjectTable;
 
 	public static MiapeExtractionFrame getInstance(MainFrame mainFrame2, boolean b) {
@@ -142,11 +144,11 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		initComponents();
 
 		if (parent != null) {
-			ftpPath = MainFrame.ftpPath;
+
 			mainFrame = parent;
 			mainFrame.setEnabled(false);
 			mainFrame.setVisible(false);
-			currentUserID = mainFrame.userID;
+
 			// autoscroll in the status field
 			// this.mainFrame.autoScroll(jScrollPane1, jTextAreaStatus);
 		} else {
@@ -154,7 +156,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		}
 		changeRadioStatus();
 		// Load projects in background
-		loadProjects(false, storeMIAPEsInDB());
+		loadProjects(false);
 
 		FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_MZML);
 		FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_PRIDEXML);
@@ -174,6 +176,12 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		OntologyLoaderWaiter waiter = new OntologyLoaderWaiter();
 		waiter.addPropertyChangeListener(this);
 		waiter.execute();
+
+		AppVersion version = MainFrame.getVersion();
+		if (version != null) {
+			String suffix = " (v" + version.toString() + ")";
+			this.setTitle(getTitle() + suffix);
+		}
 	}
 
 	/*
@@ -185,10 +193,9 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	public void setVisible(boolean b) {
 		// check if the mainFrame user id has change. In that case, remove the
 		// loaded projects
-		if (currentUserID != mainFrame.userID) {
-			currentUserID = mainFrame.userID;
-			loadProjects(true, storeMIAPEsInDB());
-		}
+
+		loadProjects(true);
+
 		if (mainFrame != null) {
 			mainFrame.setVisible(!b);
 		}
@@ -198,16 +205,14 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	/**
 	 * Loads projects from repository in background
 	 */
-	private void loadProjects(boolean forceChange, boolean remoteStorage) {
+	private void loadProjects(boolean forceChange) {
 		if (loadedProjects == null || loadedProjects.isEmpty() || forceChange) {
-			if ((MainFrame.userName != null && MainFrame.password != null && remoteStorage) || !remoteStorage) {
-				if (loadedProjects != null)
-					loadedProjects.clear();
-				LoadProjectsTask loadProjectsThread = new LoadProjectsTask(this, !remoteStorage, currentUserID,
-						MainFrame.userName, MainFrame.password);
-				loadProjectsThread.addPropertyChangeListener(this);
-				loadProjectsThread.execute();
-			}
+			if (loadedProjects != null)
+				loadedProjects.clear();
+			LoadProjectsTask loadProjectsThread = new LoadProjectsTask(this);
+			loadProjectsThread.addPropertyChangeListener(this);
+			loadProjectsThread.execute();
+
 		} else {
 			showLoadedProjectTable();
 		}
@@ -286,7 +291,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		jButtonInputFile2 = new javax.swing.JButton();
 		jScrollPane2 = new javax.swing.JScrollPane();
 		jPanel5 = new javax.swing.JPanel();
-		jComboBoxMetadata = new javax.swing.JComboBox();
+		jComboBoxMetadata = new javax.swing.JComboBox<String>();
 		jComboBoxMetadata.setEnabled(false);
 		jLabelMiapeMSMetadata = new javax.swing.JLabel();
 		jButtonEditMetadata = new javax.swing.JButton();
@@ -303,6 +308,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Import data");
+
 		setResizable(false);
 
 		jPanel1.setBorder(
@@ -883,17 +889,10 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 
 	private void changeRadioStatus() {
 		if (mainFrame != null) {
-			listenToItemEvents = false;
-			if (MainFrame.userName != null && !"".equals(MainFrame.userName) && MainFrame.password != null
-					&& !"".equals(MainFrame.password)) {
 
-			} else {
+			// enable multicore processing option
+			jCheckBoxLocalProcessinInParallel.setEnabled(true);
 
-				// enable multicore processing option
-				jCheckBoxLocalProcessinInParallel.setEnabled(true);
-
-			}
-			listenToItemEvents = true;
 		}
 
 	}
@@ -1328,9 +1327,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 
 		if (!extractionStarted) {
 			extractionStarted = true;
-			miapeExtractionTask = new MiapeExtractionTask(this, MainFrame.getMiapeExtractorWebservice(),
-					MainFrame.getMiapeAPIWebservice(), MainFrame.userName, MainFrame.password,
-					isLocalProcessingInParallel());
+			miapeExtractionTask = new MiapeExtractionTask(this, isLocalProcessingInParallel());
 			miapeExtractionTask.addPropertyChangeListener(this);
 			miapeExtractionTask.execute();
 		} else {
@@ -1346,7 +1343,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	private void jButtonProjectActionPerformed(java.awt.event.ActionEvent evt) {
 		appendStatus("Opening project table");
 		showProjectTable = true;
-		loadProjects(true, false);
+		loadProjects(true);
 
 	}
 
@@ -1398,7 +1395,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	private javax.swing.JCheckBox jCheckBoxLocalProcessinInParallel;
 	public javax.swing.JCheckBox jCheckBoxMS;
 	public javax.swing.JCheckBox jCheckBoxMSI;
-	private javax.swing.JComboBox jComboBoxMetadata;
+	private javax.swing.JComboBox<String> jComboBoxMetadata;
 	private javax.swing.JFileChooser jFileChooser;
 	private javax.swing.JLabel jLabelMiapeMSMetadata;
 	private javax.swing.JPanel jPanel1;
@@ -1429,9 +1426,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 
 	private MiapeExtractionTask miapeExtractionTask;
 	private MainFrame mainFrame = null;
-	public String ftpPath = null;
-	public String id_msi;
-	public String id_ms;
+
 	private boolean isLoadingProjects; // indicate if the thread
 										// LoadProjectsThread is already loading
 										// or not
@@ -1476,30 +1471,18 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 			jLabelMiapeMSMetadata.setText(string);
 		} else if (MiapeExtractionTask.MIAPE_MSI_CREATED_DONE.equals(evt.getPropertyName())) {
 			extractionStarted = false;
-			String miapeIDString = (String) evt.getNewValue();
-			log.info("Miape MSI created done finished: " + miapeIDString);
-			if (miapeIDString != null && !miapeExtractionTask.isLocalMIAPEExtraction()) {
-				log.info("Starting retrieving of the MIAPE MSI created some moments ago");
-				int miapeID = Integer.valueOf(miapeIDString);
-				MiapeRetrieverManager.getInstance(MainFrame.userName, MainFrame.password)
-						.addRetrievingWithPriority(miapeID, "MSI", null);
-			}
+			File miapeIDString = (File) evt.getNewValue();
+			log.info("Miape MSI created done finished: " + miapeIDString.getAbsolutePath());
 			FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_MZML);
 			initMetadataCombo(null, getControlVocabularyManager());
 			// load new projects
-			loadProjects(false, storeMIAPEsInDB());
+			loadProjects(false);
 		} else if (MiapeExtractionTask.MIAPE_MS_CREATED_DONE.equals(evt.getPropertyName())) {
 			extractionStarted = false;
-			String miapeIDString = (String) evt.getNewValue();
-			log.info("Miape MS created done finished: " + miapeIDString);
-			if (miapeIDString != null) {
-				log.info("Starting retrieving of the MIAPE MS created some moments ago");
-				int miapeID = Integer.valueOf(miapeIDString);
-				MiapeRetrieverManager.getInstance(MainFrame.userName, MainFrame.password)
-						.addRetrievingWithPriority(miapeID, "MS", null);
-			}
+			File miapeIDString = (File) evt.getNewValue();
+			log.info("Miape MS created done finished: " + miapeIDString.getAbsolutePath());
 			// load new projects
-			loadProjects(false, storeMIAPEsInDB());
+			loadProjects(false);
 		} else if (OntologyLoaderWaiter.ONTOLOGY_LOADED.equals(evt.getPropertyName())) {
 			ControlVocabularyManager cvManager = (ControlVocabularyManager) evt.getNewValue();
 			appendStatus("Ontologies loaded.");
@@ -1541,7 +1524,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 			// this.appendStatus(miapeProjects.size() + " projects
 			// retrieved\n");
 			if (miapeProjects != null && !miapeProjects.isEmpty()) {
-				additionalDataForm = new TFrmInputTable(this, true, TFrmInputTable.PROJECT_MODE, miapeProjects);
+				additionalDataForm = new TFrmInputTable(this, true, miapeProjects);
 				additionalDataForm.setVisible(true);
 			} else {
 				appendStatus("There is no projects to show");
@@ -1642,7 +1625,8 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 
 	@Override
 	public String getMgfFileName() {
-		if (isMzIdentMLPlusMGFSelected() || isMGFSelected() || isXTandemPlusMGFSelected())
+		if (isMzIdentMLPlusMGFSelected() || isMGFSelected() || isXTandemPlusMGFSelected()
+				|| isDTASelectPlusMGFSelected())
 			return jTextFieldInputFile.getText();
 		return null;
 	}
@@ -1715,11 +1699,6 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		return jCheckBoxMSI.isSelected();
 	}
 
-	@Override
-	public boolean isLocalProcessing() {
-		return true;
-	}
-
 	public void setLoadedProjects(TIntObjectHashMap<String> projects) {
 
 		loadedProjects.clear();
@@ -1766,7 +1745,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		if (msURL != null && msiURL != null)
 			plural = "(s)";
 
-		Object[] dialog_options = { "Yes, open browser", "No, close this dialog" };
+		Object[] dialog_options = { "Yes, open system explorer", "No, close this dialog" };
 		int selected_option = JOptionPane.showOptionDialog(this,
 				directLinks + "\n"
 						+ "\nClick on yes to open the system explorer to go directly to the imported dataset file"
@@ -1845,11 +1824,6 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	}
 
 	@Override
-	public boolean storeMIAPEsInDB() {
-		return false;
-	}
-
-	@Override
 	public String getDtaSelectFileName() {
 		if (isDTASelectSelected())
 			return jTextFieldInputFile2.getText();
@@ -1858,7 +1832,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 
 	@Override
 	public boolean isDTASelectSelected() {
-		return jRadioButtonDTASelect.isSelected();
+		return jRadioButtonDTASelect.isSelected() || jRadioButtonDTASelectMGF.isSelected();
 	}
 
 	@Override

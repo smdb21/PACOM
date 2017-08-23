@@ -9,8 +9,6 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -24,16 +22,16 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.jfree.ui.RefineryUtilities;
 import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
+import org.proteored.miapeapi.exceptions.MiapeDataInconsistencyException;
 import org.proteored.miapeapi.interfaces.MiapeHeader;
-import org.proteored.miapeapi.webservice.clients.miapeapi.MiapeAPIWebserviceDelegate;
-import org.proteored.pacom.analysis.conf.ExperimentAdapter;
-import org.proteored.pacom.analysis.conf.ExperimentListAdapter;
+import org.proteored.pacom.analysis.conf.ComparisonProjectFileUtil;
 import org.proteored.pacom.analysis.conf.jaxb.CPExperiment;
 import org.proteored.pacom.analysis.conf.jaxb.CPExperimentList;
 import org.proteored.pacom.analysis.conf.jaxb.CPMS;
@@ -45,15 +43,12 @@ import org.proteored.pacom.analysis.gui.components.ExtendedJTree;
 import org.proteored.pacom.analysis.gui.components.MyTreeRenderer;
 import org.proteored.pacom.analysis.gui.tasks.InitializeProjectComboBoxTask;
 import org.proteored.pacom.analysis.gui.tasks.LocalDataTreeLoaderTask;
-import org.proteored.pacom.analysis.gui.tasks.MiapeRetrieverManager;
-import org.proteored.pacom.analysis.gui.tasks.MiapeRetrieverTask;
 import org.proteored.pacom.analysis.gui.tasks.MiapeTreeIntegrityCheckerTask;
 import org.proteored.pacom.analysis.util.FileManager;
 import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.gui.MainFrame;
-import org.proteored.pacom.gui.tasks.TreeLoaderTask;
 
-import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
+import edu.scripps.yates.utilities.util.versioning.AppVersion;
 
 /**
  *
@@ -76,8 +71,6 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 	private static final String MIAPE_LOCAL_PROJECT_NAME_REGEXP = "(.*)";
 
 	private boolean saved = false;
-	public TreeLoaderTask treeLoaderTask;
-	public MiapeAPIWebserviceDelegate miapeAPIWebservice;
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
 	private static final String NO_CURATED_EXPERIMENTS_AVAILABLE = "No curated experiments available";
 	private static Miape2ExperimentListDialog instance;
@@ -103,24 +96,22 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 	private boolean finishPressed;
 	private InitializeProjectComboBoxTask projectComboLoaderTask;
 	private LocalDataTreeLoaderTask localDataTreeLoaderTask;
+	private MiapeTreeIntegrityCheckerTask integrityChecker;
 
 	@Override
 	public void dispose() {
-
-		// cancel tree loader task
-		if (treeLoaderTask != null && treeLoaderTask.getState() == StateValue.STARTED) {
-			boolean canceled = treeLoaderTask.cancel(true);
+		if (integrityChecker != null && integrityChecker.getState() == StateValue.STARTED) {
+			boolean canceled = integrityChecker.cancel(true);
 			while (!canceled) {
-				canceled = treeLoaderTask.cancel(true);
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 				}
-				log.info("Waiting for tree loader closing");
-
+				log.info("Waiting for integrityChecker closing");
+				canceled = integrityChecker.cancel(true);
 			}
+			log.info("integrityChecker closed");
 		}
-
 		if (projectComboLoaderTask != null && projectComboLoaderTask.getState() == StateValue.STARTED) {
 			boolean canceled = projectComboLoaderTask.cancel(true);
 			while (!canceled) {
@@ -143,8 +134,10 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 	/** Creates new form Miape2ExperimentListDialog */
 	private Miape2ExperimentListDialog(MainFrame parent) {
 		try {
-			UIManager.setLookAndFeel(new WindowsLookAndFeel());
-		} catch (UnsupportedLookAndFeelException e) {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException
+				| IllegalAccessException e) {
+			e.printStackTrace();
 		}
 
 		initComponents();
@@ -171,21 +164,14 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 		fillLocalMIAPETree();
 
 		try {
-			if (MainFrame.userName != null && !"".equals(MainFrame.userName) && MainFrame.password != null
-					&& !"".equals(MainFrame.password)) {
-				fillTreeFromProteoRedRepository();
-				// ((org.apache.axis.client.Stub)
-				// miapeAPIWebservice.getMiapeAPIWebservice())
-				// .setTimeout(WEBSERVICE_TIMEOUT);
 
-			} else {
-				jButtonCancelLoading.setEnabled(false);
-				appendStatus("Offline mode");
-				// appendStatus("MIAPE MSI documents cannot be loaded since the
-				// user has not logged-in.");
-				// appendStatus("Load a previously saved comparison project or
-				// login again.");
-			}
+			jButtonCancelLoading.setEnabled(false);
+			appendStatus("Offline mode");
+			// appendStatus("MIAPE MSI documents cannot be loaded since the
+			// user has not logged-in.");
+			// appendStatus("Load a previously saved comparison project or
+			// login again.");
+
 			// Initialize project tree
 			initializeProjectTree(DEFAULT_PROJECT_NAME, DEFAULT_EXPERIMENT_NAME);
 			correctlyInitialized = true;
@@ -195,8 +181,11 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 			appendStatus(e.getMessage());
 		}
 
-		// register as listener of all the MIAPEs that are being downloaded
-		MiapeRetrieverManager.getInstance(MainFrame.userName, MainFrame.password).setListener(this);
+		AppVersion version = MainFrame.getVersion();
+		if (version != null) {
+			String suffix = " (v" + version.toString() + ")";
+			this.setTitle(getTitle() + suffix);
+		}
 
 	}
 
@@ -215,20 +204,6 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 			pack();
 		}
 		super.setVisible(b);
-	}
-
-	private void fillTreeFromProteoRedRepository() {
-		if (MainFrame.userName != null && !"".equals(MainFrame.userName) && MainFrame.password != null
-				&& !"".equals(MainFrame.password)) {
-			if (treeLoaderTask != null)
-				treeLoaderTask.cancel(true);
-			treeLoaderTask = new TreeLoaderTask(null, jTreeMIAPEMSIs, null, null, MainFrame.userName,
-					MainFrame.password);
-			treeLoaderTask.addPropertyChangeListener(this);
-			treeLoaderTask.execute();
-
-			jButtonCancelLoading.setEnabled(true);
-		}
 	}
 
 	private void fillLocalMIAPETree() {
@@ -314,7 +289,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 		jButtonStartLoading = new javax.swing.JButton();
 		jPanel7 = new javax.swing.JPanel();
 		jLabel7 = new javax.swing.JLabel();
-		jComboBox1 = new javax.swing.JComboBox();
+		jComboBox1 = new javax.swing.JComboBox<String>();
 		jButtonLoadSavedProject = new javax.swing.JButton();
 		jButtonRemoveSavedProject = new javax.swing.JButton();
 		jPanel3 = new javax.swing.JPanel();
@@ -334,7 +309,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 		jLabel6 = new javax.swing.JLabel();
 		jTextFieldLabelNumberTemplate = new javax.swing.JTextField();
 		jPanel9 = new javax.swing.JPanel();
-		jComboBoxCuratedExperiments = new javax.swing.JComboBox();
+		jComboBoxCuratedExperiments = new javax.swing.JComboBox<String>();
 		jButtonAddCuratedExperiment = new javax.swing.JButton();
 		jButtonRemoveCuratedExperiment = new javax.swing.JButton();
 		jPanel5 = new javax.swing.JPanel();
@@ -371,9 +346,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 						jPanel10Layout.createSequentialGroup().addContainerGap()
 								.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
 								.addContainerGap()));
-		if (!MainFrame.localWorkflow) {
-			jTabbedPane.addTab("Remote data", jPanel10);
-		}
+
 		jPanel12.setToolTipText("Input datasets stored in local system");
 
 		jTreeLocalMIAPEMSIs.setAutoscrolls(true);
@@ -984,7 +957,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 						cpMsi.setMiapeMsIdRef(ms_id);
 						CPMS cpMS = new CPMS();
 						cpMS.setId(ms_id);
-						cpMS.setName(FilenameUtils.getBaseName(FileManager.getMiapeMSLocalFileName(ms_id, null)));
+						cpMS.setName(FilenameUtils.getBaseName(FileManager.getMiapeMSLocalFileName(ms_id)));
 						cpMS.setLocalProjectName(projectName);
 						CPMSList cpMsList = null;
 						if (cpReplicate.getCPMSList() == null) {
@@ -1030,7 +1003,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 						cpMsi.setMiapeMsIdRef(ms_id);
 						CPMS cpMS = new CPMS();
 						cpMS.setId(ms_id);
-						cpMS.setName(FilenameUtils.getBaseName(FileManager.getMiapeMSLocalFileName(ms_id, null)));
+						cpMS.setName(FilenameUtils.getBaseName(FileManager.getMiapeMSLocalFileName(ms_id)));
 						cpMS.setLocalProjectName(projectName);
 						cpMS.setLocal(true);
 						CPMSList cpMsList = null;
@@ -1114,8 +1087,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 								cpMsi.setMiapeMsIdRef(ms_id);
 								CPMS cpMS = new CPMS();
 								cpMS.setId(ms_id);
-								cpMS.setName(
-										FilenameUtils.getBaseName(FileManager.getMiapeMSLocalFileName(ms_id, null)));
+								cpMS.setName(FilenameUtils.getBaseName(FileManager.getMiapeMSLocalFileName(ms_id)));
 								cpMS.setLocalProjectName(localProjectName);
 								cpMS.setLocal(true);
 								CPMSList cpMsList = null;
@@ -1392,13 +1364,9 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 	}
 
 	private void jButtonStartLoadingActionPerformed(java.awt.event.ActionEvent evt) {
-		if (treeLoaderTask != null && treeLoaderTask.getState().equals(StateValue.DONE)) {
-			treeLoaderTask.cancel(true);
-			log.info("Cancelling miape msi tree loading");
-		}
+
 		log.info("Starting miape msi tree loading");
 
-		fillTreeFromProteoRedRepository();
 		fillLocalMIAPETree();
 		loadProjectCombo();
 	}
@@ -1425,8 +1393,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 	}
 
 	private void jButtonCancelLoadingActionPerformed(java.awt.event.ActionEvent evt) {
-		if (treeLoaderTask != null)
-			treeLoaderTask.cancel(true);
+
 		setStatus("MIAPE loading canceled");
 		// this.cancelRetrievingTasks();
 		// this.disableControls(true);
@@ -1467,14 +1434,6 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 
 	private void jButtonClearProjectTreeActionPerformed(java.awt.event.ActionEvent evt) {
 		initializeProjectTree(DEFAULT_PROJECT_NAME, DEFAULT_EXPERIMENT_NAME);
-		cancelRetrievingTasks();
-	}
-
-	private void cancelRetrievingTasks() {
-		// Cancel all pending tasks
-		MiapeRetrieverManager.getInstance(MainFrame.userName, MainFrame.password).cancelAll();
-		// enable controls
-
 	}
 
 	public JComboBox getProjectComboBox() {
@@ -1506,7 +1465,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 			} catch (Exception e) {
 				e.printStackTrace();
 				log.warn(e.getMessage());
-				appendStatus("Project '" + projectName + "' has not found in the projects folder");
+				appendStatus("Some error occurred when loading project '" + projectName + "': " + e.getMessage());
 				return;
 			}
 		}
@@ -1542,7 +1501,6 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 
 				// start retrieving
 				final Integer id = Integer.valueOf(miapeID);
-				startMIAPEMSIRetrieving(id);
 
 				// if a relicate is selected
 				if (jTreeProject.isOnlyOneNodeSelected(REPLICATE_LEVEL)) {
@@ -1631,8 +1589,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 							DefaultMutableTreeNode miapeMSIChild = (DefaultMutableTreeNode) children.nextElement();
 							String miapeID = ExtendedJTree.getString(MIAPE_ID_REGEXP,
 									(String) miapeMSIChild.getUserObject());
-							// start retrieving
-							startMIAPEMSIRetrieving(Integer.valueOf(miapeID));
+
 							// add replicate node
 							String replicateName = getMIAPENodeNameFromTemplate();
 							CPReplicate cpRep = new CPReplicate();
@@ -1771,7 +1728,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 			// now?</html>",
 			// "Check integrity of the project?", JOptionPane.YES_NO_OPTION);
 			// if (selectedOption == JOptionPane.YES_OPTION) {
-			MiapeTreeIntegrityCheckerTask integrityChecker = new MiapeTreeIntegrityCheckerTask(this, cpExpList, false);
+			integrityChecker = new MiapeTreeIntegrityCheckerTask(this, cpExpList, false);
 			integrityChecker.addPropertyChangeListener(this);
 			integrityChecker.execute();
 			// } else {
@@ -1838,17 +1795,15 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 								cpMsList = new CPMSList();
 								if (cpmsiList != null) {
 									for (CPMSI cpMSI : cpmsiList.getCPMSI()) {
-										if (((cpMSI.isLocal() != null && !cpMSI.isLocal()) || cpMSI.isLocal() == null)
-												&& MiapeRetrieverManager
-														.getInstance(MainFrame.userName, MainFrame.password)
-														.getMiapeAssociations().containsKey(cpMSI.getId())) {
+										if (((cpMSI.isLocal() != null && !cpMSI.isLocal())
+												|| cpMSI.isLocal() == null)) {
 											CPMS cpMS = new CPMS();
-											final Integer idMiapeMS = MiapeRetrieverManager
-													.getInstance(MainFrame.userName, MainFrame.password)
-													.getMiapeAssociations().get(cpMSI.getId());
-											cpMS.setId(idMiapeMS);
-											cpMS.setName(FilenameUtils
-													.getBaseName(FileManager.getMiapeMSLocalFileName(idMiapeMS, null)));
+											Integer miapeMsIdRef = cpMSI.getMiapeMsIdRef();
+											if (miapeMsIdRef != null) {
+												cpMS.setId(miapeMsIdRef);
+												cpMS.setName(FilenameUtils.getBaseName(
+														FileManager.getMiapeMSLocalFileName(miapeMsIdRef)));
+											}
 											cpMsList.getCPMS().add(cpMS);
 										}
 									}
@@ -1959,8 +1914,6 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 					if (jTreeMIAPEMSIs.isOnlyOneNodeSelected(MIAPE_LEVEL)) {
 						int miapeID = Integer.valueOf(jTreeMIAPEMSIs.getStringFromSelection(MIAPE_ID_REGEXP));
 
-						startMIAPEMSIRetrieving(miapeID);
-
 						// get selected experiment node
 						DefaultMutableTreeNode experimentTreeNode = jTreeProject.getSelectedNode();
 						CPExperiment cpExp = (CPExperiment) experimentTreeNode.getUserObject();
@@ -1997,8 +1950,6 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 				} else if (jTreeProject.isOnlyOneNodeSelected(REPLICATE_LEVEL)) {
 					int miapeID = Integer.valueOf(jTreeMIAPEMSIs.getStringFromSelection(MIAPE_ID_REGEXP));
 
-					startMIAPEMSIRetrieving(miapeID);
-
 					// get selected experiment node
 					DefaultMutableTreeNode replicateTreeNode = jTreeProject.getSelectedNode();
 					CPReplicate cpRep = (CPReplicate) replicateTreeNode.getUserObject();
@@ -2024,35 +1975,6 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 		} else {
 			throw new IllegalMiapeArgumentException("Type a name for the level 2 node before to click on Add button");
 		}
-
-	}
-
-	private void startMIAPEMSIRetrieving(int miapeID) {
-		if (MainFrame.userName == null || MainFrame.password == null)
-			return;
-		// chek if the miape is already retrieved
-		File file = new File(FileManager.getMiapeMSIXMLFileLocalPathFromMiapeInformation(null, miapeID, null));
-		if (file.exists()) {
-			log.info("MIAPE MSI " + miapeID + " found in local system");
-			if (MiapeRetrieverManager.getInstance(MainFrame.userName, MainFrame.password).getSize() == 0) {
-				jProgressBar.setIndeterminate(false);
-				jProgressBar.setStringPainted(false);
-			}
-			// retrieve anyway because it will be located at local system and
-			// associated MIAPE MS will be detected
-			MiapeRetrieverManager.getInstance(MainFrame.userName, MainFrame.password).addRetrieving(miapeID, "MSI",
-					this);
-			return;
-		}
-
-		jProgressBar.setIndeterminate(true);
-
-		// add to the list of runners
-		final String executingTasks = MiapeRetrieverManager.getInstance(MainFrame.userName, MainFrame.password)
-				.addRetrievingWithPriority(miapeID, "MSI", this);
-
-		appendStatus("Downloading MIAPE MSI " + executingTasks + " from ProteoRed repository.");
-		appendStatus("This task will be performed in backgroud.");
 
 	}
 
@@ -2104,60 +2026,83 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 	}
 
 	private void initializeProjectTree(File projectFile) {
-		CPExperimentList cpExperimentList = new ExperimentListAdapter(projectFile, getAnnotateProteinsInUniprot())
-				.getCpExperimentList();
-		String projectName = cpExperimentList.getName();
-		DefaultMutableTreeNode nodoRaizMSI = new DefaultMutableTreeNode(cpExperimentList);
-		DefaultTreeModel modeloArbolMSI = new DefaultTreeModel(nodoRaizMSI);
-		jTreeProject.setModel(modeloArbolMSI);
-		jTextProjectName.setText(projectName);
-		final Iterator<CPExperiment> cpExpIterator = cpExperimentList.getCPExperiment().iterator();
-		while (cpExpIterator.hasNext()) {
-			CPExperiment cpExperiment = cpExpIterator.next();
-			boolean curated = cpExperiment.isCurated();
-			final DefaultMutableTreeNode experimentNode = jTreeProject.addNewNode(cpExperiment, nodoRaizMSI);
-			boolean hasOneReplicate = false;
-			final Iterator<CPReplicate> cpRepIterator = cpExperiment.getCPReplicate().iterator();
-			while (cpRepIterator.hasNext()) {
-				CPReplicate cpReplicate = cpRepIterator.next();
-				final DefaultMutableTreeNode replicateNode = jTreeProject.addNewNode(cpReplicate, experimentNode);
+		CPExperimentList cpExperimentList = null;
+		try {
+			JAXBContext jc = JAXBContext.newInstance("org.proteored.pacom.analysis.conf.jaxb");
+			cpExperimentList = ComparisonProjectFileUtil.getExperimentListFromComparisonProjectFile(projectFile);
 
-				if (cpReplicate.getCPMSIList() != null) {
-					for (CPMSI cpMsi : cpReplicate.getCPMSIList().getCPMSI()) {
+			String projectName = cpExperimentList.getName();
+			DefaultMutableTreeNode nodoRaizMSI = new DefaultMutableTreeNode(cpExperimentList);
+			DefaultTreeModel modeloArbolMSI = new DefaultTreeModel(nodoRaizMSI);
+			jTreeProject.setModel(modeloArbolMSI);
+			jTextProjectName.setText(projectName);
+			final Iterator<CPExperiment> cpExpIterator = cpExperimentList.getCPExperiment().iterator();
+			while (cpExpIterator.hasNext()) {
+				CPExperiment cpExperiment = cpExpIterator.next();
+				boolean curated = cpExperiment.isCurated();
+				final DefaultMutableTreeNode experimentNode = jTreeProject.addNewNode(cpExperiment, nodoRaizMSI);
+				boolean hasOneReplicate = false;
+				final Iterator<CPReplicate> cpRepIterator = cpExperiment.getCPReplicate().iterator();
+				while (cpRepIterator.hasNext()) {
+					CPReplicate cpReplicate = cpRepIterator.next();
+					final DefaultMutableTreeNode replicateNode = jTreeProject.addNewNode(cpReplicate, experimentNode);
 
-						// LOCAL MIAPE
-						boolean addNode = true;
-						if (curated) {
-							File file = new File(FileManager.getMiapeMSICuratedXMLFilePathFromMiapeInformation(cpMsi));
-							if (!file.exists())
-								addNode = false;
+					if (cpReplicate.getCPMSIList() != null) {
+						for (CPMSI cpMsi : cpReplicate.getCPMSIList().getCPMSI()) {
 
-						} else {
-							File file = new File(FileManager.getMiapeMSIXMLFileLocalPathFromMiapeInformation(cpMsi));
-							if (!file.exists())
-								addNode = false;
+							// LOCAL MIAPE
+							boolean addNode = true;
+							if (curated) {
+								File file = new File(
+										FileManager.getMiapeMSICuratedXMLFilePathFromMiapeInformation(cpMsi));
+								if (!file.exists()) {
+									String notificacion = "Warning:  '" + cpMsi.getName()
+											+ ".xml' file doesn't exist at folder '"
+											+ FileManager.getCuratedExperimentFolderPath(cpMsi.getLocalProjectName())
+											+ "'";
+									log.warn(notificacion);
+									appendStatus(notificacion);
+									addNode = false;
+								}
+
+							} else {
+								File file = new File(
+										FileManager.getMiapeMSIXMLFileLocalPathFromMiapeInformation(cpMsi));
+								if (!file.exists()) {
+									addNode = false;
+									String notificacion = "Warning:  '" + cpMsi.getName()
+											+ ".xml' file doesn't exist at folder '"
+											+ FileManager.getMiapeLocalDataPath(cpMsi.getLocalProjectName()) + "'";
+									log.warn(notificacion);
+									appendStatus(notificacion);
+								}
+							}
+							if (addNode) {
+								jTreeProject.addNewNode(cpMsi, replicateNode);
+								hasOneReplicate = true;
+							} else {
+								cpRepIterator.remove();
+								jTreeProject.removeNode(replicateNode);
+							}
+
 						}
-						if (addNode) {
-							jTreeProject.addNewNode(cpMsi, replicateNode);
-							hasOneReplicate = true;
-						} else {
-							cpRepIterator.remove();
-							jTreeProject.removeNode(replicateNode);
-						}
-
 					}
+
 				}
+				if (!hasOneReplicate) {
+					cpExpIterator.remove();
+					jTreeProject.removeNode(experimentNode);
 
+				}
 			}
-			if (!hasOneReplicate) {
-				cpExpIterator.remove();
-				jTreeProject.removeNode(experimentNode);
 
-			}
+			jTreeProject.selectNode(nodoRaizMSI);
+			saved = true;
+		} catch (JAXBException e) {
+			log.warn(e.getMessage());
+			throw new MiapeDataInconsistencyException(
+					"Error loading " + projectFile.getAbsolutePath() + " config file: " + e.getMessage());
 		}
-
-		jTreeProject.selectNode(nodoRaizMSI);
-		saved = true;
 	}
 
 	private boolean getAnnotateProteinsInUniprot() {
@@ -2167,34 +2112,39 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 	}
 
 	private void addExperimentToProjectTree(File projectFile) {
-		final DefaultMutableTreeNode experimentListNode = jTreeProject.getRootNode();
-		CPExperiment CPExperiment = new ExperimentAdapter(projectFile, getAnnotateProteinsInUniprot())
-				.getCpExperiment();
-		CPExperiment.setCurated(true);
-		CPExperimentList cpExperimentList = (CPExperimentList) experimentListNode.getUserObject();
-		cpExperimentList.getCPExperiment().add(CPExperiment);
+		try {
+			final DefaultMutableTreeNode experimentListNode = jTreeProject.getRootNode();
+			CPExperiment CPExperiment = ComparisonProjectFileUtil.getExperimentFromComparisonProjectFile(projectFile);
+			CPExperiment.setCurated(true);
+			CPExperimentList cpExperimentList = (CPExperimentList) experimentListNode.getUserObject();
+			cpExperimentList.getCPExperiment().add(CPExperiment);
 
-		String experimentName = CPExperiment.getName();
+			String experimentName = CPExperiment.getName();
 
-		jTextExperimentName.setText(experimentName);
+			jTextExperimentName.setText(experimentName);
 
-		final DefaultMutableTreeNode experimentNode = jTreeProject.addNewNode(CPExperiment, experimentListNode);
-		for (CPReplicate cpReplicate : CPExperiment.getCPReplicate()) {
+			final DefaultMutableTreeNode experimentNode = jTreeProject.addNewNode(CPExperiment, experimentListNode);
+			for (CPReplicate cpReplicate : CPExperiment.getCPReplicate()) {
 
-			final DefaultMutableTreeNode replicateNode = jTreeProject.addNewNode(cpReplicate, experimentNode);
-			if (cpReplicate.getCPMSIList() != null) {
-				for (CPMSI cpMsi : cpReplicate.getCPMSIList().getCPMSI()) {
-					// final DefaultMutableTreeNode miapeNode =
-					jTreeProject.addNewNode(cpMsi, replicateNode);
-					// cpMsi.setName(FilenameUtils.getName(
-					// FileManager.getMiapeMSICuratedXMLFilePath(cpMsi.getId(),
-					// experimentName, cpMsi.getName())));
+				final DefaultMutableTreeNode replicateNode = jTreeProject.addNewNode(cpReplicate, experimentNode);
+				if (cpReplicate.getCPMSIList() != null) {
+					for (CPMSI cpMsi : cpReplicate.getCPMSIList().getCPMSI()) {
+						// final DefaultMutableTreeNode miapeNode =
+						jTreeProject.addNewNode(cpMsi, replicateNode);
+						// cpMsi.setName(FilenameUtils.getName(
+						// FileManager.getMiapeMSICuratedXMLFilePath(cpMsi.getId(),
+						// experimentName, cpMsi.getName())));
 
+					}
 				}
 			}
+			jTreeProject.selectNode(experimentNode);
+			saved = true;
+		} catch (JAXBException e) {
+			log.warn(e.getMessage());
+			throw new MiapeDataInconsistencyException(
+					"Error loading " + projectFile.getAbsolutePath() + " config file: " + e.getMessage());
 		}
-		jTreeProject.selectNode(experimentNode);
-		saved = true;
 	}
 
 	/**
@@ -2236,8 +2186,8 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 	private javax.swing.JButton jButtonRemoveSavedProject;
 	private javax.swing.JButton jButtonSave;
 	private javax.swing.JButton jButtonStartLoading;
-	private javax.swing.JComboBox jComboBox1;
-	private javax.swing.JComboBox jComboBoxCuratedExperiments;
+	private javax.swing.JComboBox<String> jComboBox1;
+	private javax.swing.JComboBox<String> jComboBoxCuratedExperiments;
 	private javax.swing.JLabel jLabel1;
 	private javax.swing.JLabel jLabel2;
 	private javax.swing.JLabel jLabel3;
@@ -2278,12 +2228,6 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 	private ExtendedJTree jTreeProject;
 
 	// End of variables declaration//GEN-END:variables
-
-	// @Override
-	private void setLoadedMSIDocumentsNumber(String number) {
-		jLabelMIAPEMSINumber.setText(number);
-
-	}
 
 	// @Override
 	private void disableControls(boolean b) {
@@ -2331,56 +2275,9 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 		else if ("notificacion".equals(evt.getPropertyName())) {
 			String notificacion = evt.getNewValue().toString();
 			appendStatus(notificacion);
-		} else if (MiapeRetrieverTask.MIAPE_LOADER_ERROR.equals(evt.getPropertyName())) {
-			String message = (String) evt.getNewValue();
-			if (message.contains(MESSAGE_SPLITTER)) {
-				String[] splitter = message.split(SCAPED_MESSAGE_SPLITTER);
-				Integer miapeID = Integer.valueOf(splitter[0]);
-				String miapeType = splitter[1];
-				String messageError = splitter[2];
-				appendStatus("Error loading MIAPE " + miapeType + " " + miapeID + ": " + messageError);
-
-			} else {
-				appendStatus("Error loading MIAPE document: " + message);
-				appendStatus("Try again or contact to miape_support@proteored.org");
-			}
-			int size = MiapeRetrieverManager.getInstance(MainFrame.userName, MainFrame.password).getSize();
-			if (size < 1)
-				jProgressBar.setIndeterminate(false);
-		} else if (MiapeRetrieverTask.MIAPE_LOADER_DONE.equals(evt.getPropertyName())) {
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			Integer size = MiapeRetrieverManager.getInstance(MainFrame.userName, MainFrame.password).getSize();
-			if (size < 1)
-				jProgressBar.setIndeterminate(false);
-			String message = (String) evt.getNewValue();
-			if (message.contains(MiapeRetrieverTask.MESSAGE_SPLITTER)) {
-				Object[] splitter = message.split(MiapeRetrieverTask.SCAPED_MESSAGE_SPLITTER);
-				int miapeID = Integer.valueOf((String) splitter[0]);
-				String miapeType = (String) splitter[1];
-
-				size = MiapeRetrieverManager.getInstance(MainFrame.userName, MainFrame.password).getSize();
-				if (size < 1)
-					jProgressBar.setIndeterminate(false);
-				appendStatus("MIAPE " + miapeType + " " + miapeID + " retrieving finished at "
-						+ DateFormat.getInstance().format(new Date(System.currentTimeMillis())) + ". " + size
-						+ " pending...");
-
-				// execute other miape retriever if available
-				if (size > 0) {
-					final String executingTasks = MiapeRetrieverManager
-							.getInstance(MainFrame.userName, MainFrame.password).enumerate();
-
-					appendStatus("Currently downloading in background: " + executingTasks + " from MIAPE repository.");
-					// this.appendStatus("This task will be performed in
-					// backgroud.");
-				}
-			}
 		} else if (MiapeTreeIntegrityCheckerTask.INTEGRITY_OK.equals(evt.getPropertyName())) {
 			jProgressBar.setIndeterminate(false);
+			disableControls(true);
 			try {
 				save(false);
 				if (finishPressed)
@@ -2389,32 +2286,15 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 				setStatus(e.getMessage());
 				return;
 			}
-
+		} else if (MiapeTreeIntegrityCheckerTask.INTEGRITY_START.equals(evt.getPropertyName())) {
+			jProgressBar.setIndeterminate(true);
+			disableControls(false);
 		} else if (MiapeTreeIntegrityCheckerTask.INTEGRITY_ERROR.equals(evt.getPropertyName())) {
 			jProgressBar.setIndeterminate(false);
+			disableControls(true);
 			String message = (String) evt.getNewValue();
 			JOptionPane.showMessageDialog(this, message, "Error in comparison project", JOptionPane.OK_OPTION);
 			appendStatus("Save canceled");
-		} else if (TreeLoaderTask.TREE_LOADER_MSI_NUMBER.equals(evt.getPropertyName())) {
-			Integer num = (Integer) evt.getNewValue();
-			log.debug(num + " datasets loaded");
-			setLoadedMSIDocumentsNumber(String.valueOf(num));
-		} else if (TreeLoaderTask.TREE_LOADER_STARTS.equals(evt.getPropertyName())) {
-			log.info("Starting tree loader");
-			// this.disableControls(false);
-			enableCancelTreeLoadinButton(true);
-			appendStatus("Loading datasets. Please wait...");
-			// appendStatus("You can stop MIAPE MSI loading by clicking on
-			// 'Stop' button.");
-		} else if (TreeLoaderTask.TREE_LOADER_DONE.equals(evt.getPropertyName())) {
-			log.info("Tree loader ended");
-			// this.disableControls(true);
-			this.setCursor(null); // turn off the wait cursor
-			jProgressBar.setIndeterminate(false);
-			enableCancelTreeLoadinButton(false);
-		} else if (TreeLoaderTask.TREE_LOADER_CANCELED.equals(evt.getPropertyName())) {
-			jButtonStartLoading.setEnabled(true);
-			jButtonCancelLoading.setEnabled(false);
 		} else if (LocalDataTreeLoaderTask.LOCAL_TREE_LOADER_FINISHED.equals(evt.getPropertyName())) {
 			Integer numLoaded = (Integer) evt.getNewValue();
 			appendStatus(numLoaded + " imported datasets loaded.");

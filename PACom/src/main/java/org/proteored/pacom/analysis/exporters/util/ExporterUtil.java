@@ -599,9 +599,7 @@ public class ExporterUtil {
 		List<String> descriptions = new ArrayList<String>();
 
 		for (ExtendedIdentifiedProtein protein : proteinOccurrence.getProteins()) {
-			if (protein.getDescription() == null) {
-				log.info(protein.getDescription());
-			}
+
 			if (!descriptions.contains(protein.getDescription())) {
 				descriptions.add(protein.getDescription());
 			}

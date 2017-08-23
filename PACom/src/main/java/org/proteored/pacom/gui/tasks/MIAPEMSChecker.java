@@ -18,7 +18,6 @@ import org.proteored.miapeapi.xml.pride.MSMiapeFactory;
 import org.proteored.miapeapi.xml.pride.MiapeFullPrideXMLFile;
 import org.proteored.miapeapi.xml.pride.MiapeMsPrideXmlFile;
 import org.proteored.pacom.analysis.util.FileManager;
-import org.proteored.pacom.gui.MainFrame;
 import org.proteored.pacom.gui.MiapeExtractionFrame;
 import org.proteored.pacom.gui.miapemsforms.MiapeMSForms;
 
@@ -78,7 +77,7 @@ public class MIAPEMSChecker extends SwingWorker<MiapeMSDocument, Void> {
 				setProgress(50);
 				// Create the MIAPE MS document
 				miapeMs = org.proteored.miapeapi.xml.mzml.MSMiapeFactory.getFactory().toDocument(mzmlLight, null,
-						cvManager, MainFrame.userName, MainFrame.password, mzMLFile.getName(), null);
+						cvManager, null, null, mzMLFile.getName(), null);
 
 			} else if (parent.isPRIDESelected()) {
 				File prideXMLFile = new File(inputFileName);
@@ -91,7 +90,7 @@ public class MIAPEMSChecker extends SwingWorker<MiapeMSDocument, Void> {
 				setProgress(50);
 				if (miapePrideFile != null) {
 					miapeMs = MSMiapeFactory.getFactory().toDocument(new MiapeMsPrideXmlFile(prideXMLFile), null,
-							cvManager, MainFrame.userName, MainFrame.password, null);
+							cvManager, null, null, null);
 
 				}
 

@@ -42,8 +42,6 @@ import org.proteored.pacom.analysis.gui.ChartManagerFrame;
 import org.proteored.pacom.analysis.util.DataLevel;
 import org.proteored.pacom.gui.ImageManager;
 
-import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
-
 import gnu.trove.set.hash.THashSet;
 
 /**
@@ -98,8 +96,10 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 	/** Creates new form IdentificationTableFrame */
 	private IdentificationTableFrame(ChartManagerFrame parent, Collection<IdentificationSet> idSets) {
 		try {
-			UIManager.setLookAndFeel(new WindowsLookAndFeel());
-		} catch (UnsupportedLookAndFeelException e) {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException
+				| IllegalAccessException e) {
+			e.printStackTrace();
 		}
 		initComponents();
 		// MainFrame.autoScroll(jScrollPane3, jTextAreaStatus);
@@ -219,7 +219,7 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 			}
 		});
 
-		jCheckBoxCollapsePeptides.setText("show just the best peptides");
+		jCheckBoxCollapsePeptides.setText("hidde redundant peptides");
 		jCheckBoxCollapsePeptides.setToolTipText(
 				"<html>\nIf this option is activated, if the same peptide has been detected\n<br>\nmore than once, it will appear only once in the exported table and\n<br>\nthe score will be the best score of all occurrences.</html>");
 		jCheckBoxCollapsePeptides.setEnabled(false);
@@ -231,7 +231,7 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 		});
 
 		jCheckBoxCollapseProteins.setSelected(true);
-		jCheckBoxCollapseProteins.setText("show just the best proteins");
+		jCheckBoxCollapseProteins.setText("hidde redundant proteins");
 		jCheckBoxCollapseProteins.setToolTipText(
 				"<html>\nIf this option is activated, if the same protein has been detected\n<br>\nmore than once, it will appear only once in the exported table and\n<br>\nthe score will be the best score of all occurrences.</html>");
 		jCheckBoxCollapseProteins.addActionListener(new java.awt.event.ActionListener() {
@@ -412,31 +412,27 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 		jPanelStatusLayout.setHorizontalGroup(jPanelStatusLayout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(jPanelStatusLayout.createSequentialGroup().addContainerGap()
 						.addGroup(jPanelStatusLayout.createParallelGroup(Alignment.TRAILING)
-								.addComponent(jScrollPane3, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 231,
+								.addComponent(jScrollPane3, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 223,
 										Short.MAX_VALUE)
-								.addComponent(jProgressBar1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 231,
+								.addComponent(jProgressBar1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 223,
 										Short.MAX_VALUE))
 						.addContainerGap()));
 		jPanelStatusLayout.setVerticalGroup(jPanelStatusLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(jPanelStatusLayout.createSequentialGroup().addContainerGap()
-						.addComponent(jScrollPane3, GroupLayout.PREFERRED_SIZE, 149, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(jScrollPane3, GroupLayout.PREFERRED_SIZE, 109, GroupLayout.PREFERRED_SIZE)
+						.addGap(5)
 						.addComponent(jProgressBar1, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
 						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 		jPanelStatus.setLayout(jPanelStatusLayout);
 
 		javax.swing.GroupLayout jPanelLeftLayout = new javax.swing.GroupLayout(jPanelLeft);
-		jPanelLeftLayout.setHorizontalGroup(
-				jPanelLeftLayout.createParallelGroup(Alignment.TRAILING).addGroup(jPanelLeftLayout
-						.createSequentialGroup().addGroup(jPanelLeftLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(jPanelLeftLayout.createSequentialGroup().addContainerGap()
-										.addComponent(jPanelOptions, GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE))
-								.addGroup(jPanelLeftLayout.createSequentialGroup().addContainerGap()
-										.addGroup(jPanelLeftLayout.createParallelGroup(Alignment.LEADING)
-												.addComponent(jPanelStatus, Alignment.TRAILING,
-														GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
-												.addComponent(jPanelFilterByColumn, GroupLayout.DEFAULT_SIZE, 259,
-														Short.MAX_VALUE))))
+		jPanelLeftLayout.setHorizontalGroup(jPanelLeftLayout.createParallelGroup(Alignment.TRAILING)
+				.addGroup(jPanelLeftLayout.createSequentialGroup().addContainerGap()
+						.addGroup(jPanelLeftLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(jPanelOptions, GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
+								.addComponent(jPanelStatus, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 259,
+										Short.MAX_VALUE)
+								.addComponent(jPanelFilterByColumn, GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE))
 						.addContainerGap()));
 		jPanelLeftLayout.setVerticalGroup(jPanelLeftLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(jPanelLeftLayout.createSequentialGroup().addContainerGap()
@@ -444,15 +440,14 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addComponent(jPanelFilterByColumn, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 								GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(jPanelStatus, GroupLayout.PREFERRED_SIZE, 170, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap()));
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(jPanelStatus, GroupLayout.PREFERRED_SIZE, 183, Short.MAX_VALUE).addGap(0)));
 		jPanelLeft.setLayout(jPanelLeftLayout);
 
 		getContentPane().add(jPanelLeft, java.awt.BorderLayout.WEST);
 
 		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds((screenSize.width - 863) / 2, (screenSize.height - 618) / 2, 301, 567);
+		setBounds((screenSize.width - 863) / 2, (screenSize.height - 618) / 2, 525, 447);
 	}// </editor-fold>
 
 	protected void exportTSV() {
@@ -631,15 +626,6 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 
 		} else if (evt.getPropertyName().equals("progress")) {
 			jProgressBar1.setValue((Integer) evt.getNewValue());
-		} else if (evt.getPropertyName().equals(JTableLoader.DATA_EXPORTING_SORTING)) {
-			if (showPeptides()) {
-				appendStatus("Sorting peptides by best score...");
-			} else {
-				appendStatus("Sorting proteins by best peptide score...");
-			}
-
-		} else if (evt.getPropertyName().equals(JTableLoader.DATA_EXPORTING_SORTING_DONE)) {
-			appendStatus("Data sorted. Now loading table...");
 		} else if (JTableLoader.DATA_EXPORTING_ERROR.equals(evt.getPropertyName())) {
 
 			enableControls(true);
@@ -664,8 +650,6 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 			appendStatus("Information retrieved.");
 			jProgressBar1.setIndeterminate(false);
 			jProgressBar1.setStringPainted(true);
-		} else if (evt.getPropertyName().equals(JTableLoader.MESSAGE)) {
-			appendStatus(evt.getNewValue().toString());
 		}
 
 	}

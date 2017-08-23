@@ -10,8 +10,6 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.AbstractTableModel;
 
-import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
-
 import gnu.trove.map.hash.TIntObjectHashMap;
 
 /**
@@ -19,15 +17,17 @@ import gnu.trove.map.hash.TIntObjectHashMap;
  * @author __USER__
  */
 public class TFrmInputTable extends javax.swing.JDialog {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3170154557975726634L;
 	// variables.....
 	public static final String[] instrument_head = new String[] { "Name", "Manufacturer", "IonSource(s)", "Analyzer(s)",
 			"Activation" };
 	private String[] project_head;
 	// public static final int INTRUMENT_MODE = 1;
 	public static final int PROJECT_MODE = 0;
-	private final int FormMode;
 	// Para las proporciones
-	private int[] instrument_propor;
 	private int[] project_propor = {};
 	// En principio el modelo va a ser abstracto.
 	private AbstractTableModel TableModel;
@@ -39,41 +39,26 @@ public class TFrmInputTable extends javax.swing.JDialog {
 	private boolean firstClick = false;
 	private long firstClickTime;
 	private String previousUserSelection;
-	private final boolean localProjects;
 
-	/** Creates new form TFrmInputTable */
-	public TFrmInputTable(MiapeExtractionFrame parentForm, boolean modal, int _mode,
-			InstrumentSummary[] instrumentData) {
+	public TFrmInputTable(MiapeExtractionFrame parentForm, boolean modal, TIntObjectHashMap<String> miapeProjects) {
 		super(parentForm, modal);
 		try {
-			UIManager.setLookAndFeel(new WindowsLookAndFeel());
-		} catch (UnsupportedLookAndFeelException ex) {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
 		}
 		initComponents();
-
-		FormMode = _mode;
 		this.parentForm = parentForm;
-		localProjects = !parentForm.storeMIAPEsInDB();
-		instrument_propor = new int[] { 10, 5, 5, 5, 1 };
+		project_head = new String[] { "ID", "Name", "Date" };
+		project_propor = new int[] { 5, 35, 10 };
 		userSelection = "NO SELECTION";
-		myInit(_mode, instrumentData);
-	}
-
-	public TFrmInputTable(MiapeExtractionFrame parentForm, boolean modal, int _mode,
-			TIntObjectHashMap<String> miapeProjects) {
-		super(parentForm, modal);
-		try {
-			UIManager.setLookAndFeel(new WindowsLookAndFeel());
-		} catch (UnsupportedLookAndFeelException ex) {
-		}
-		initComponents();
-		localProjects = !parentForm.storeMIAPEsInDB();
-		FormMode = _mode;
-		this.parentForm = parentForm;
-		project_head = new String[] { "ID", "Name", "Owner", "Date", "Comment" };
-		project_propor = new int[] { 5, 35, 15, 10, 35 };
-		userSelection = "NO SELECTION";
-		myInit(_mode, miapeProjects);
+		myInit(miapeProjects);
 	}
 
 	/**
@@ -209,8 +194,8 @@ public class TFrmInputTable extends javax.swing.JDialog {
 		return parentForm;
 	}
 
-	private void myInit(int _mode, Object Data) {
-		int i;
+	private void myInit(TIntObjectHashMap<String> Data) {
+
 		// Este metodo cambia el label de la cabecera y los contenidos de la
 		// tabla.
 
@@ -223,7 +208,7 @@ public class TFrmInputTable extends javax.swing.JDialog {
 		// } else {
 		jLabel_head.setText("Select a project from the list");
 		setTitle("Projects");
-		TableModel = new TMIAPEProjectModelTable(this, project_head, Data, localProjects);
+		TableModel = new TMIAPEProjectModelTable(project_head, Data);
 		jTable_contents.setModel(TableModel);
 		initTableWidth(jTable_contents, project_propor);
 		// }

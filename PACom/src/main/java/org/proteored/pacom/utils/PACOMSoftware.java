@@ -3,10 +3,18 @@ package org.proteored.pacom.utils;
 import org.proteored.miapeapi.interfaces.Software;
 import org.proteored.pacom.gui.MainFrame;
 
-public class MiapeExtractorSoftware implements Software {
+public class PACOMSoftware implements Software {
+	private static PACOMSoftware instance;
 
-	public MiapeExtractorSoftware() {
+	private PACOMSoftware() {
 
+	}
+
+	public static PACOMSoftware getInstance() {
+		if (instance == null) {
+			instance = new PACOMSoftware();
+		}
+		return instance;
 	}
 
 	@Override

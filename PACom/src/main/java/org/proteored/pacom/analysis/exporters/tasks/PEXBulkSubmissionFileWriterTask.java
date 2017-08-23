@@ -16,7 +16,7 @@ import javax.swing.SwingWorker;
 import org.apache.log4j.Logger;
 import org.proteored.pacom.analysis.exporters.Exporter;
 import org.proteored.pacom.analysis.exporters.ProteomeXchangeFilev2_1;
-import org.proteored.pacom.utils.MiapeExtractorSoftware;
+import org.proteored.pacom.utils.PACOMSoftware;
 
 public class PEXBulkSubmissionFileWriterTask extends SwingWorker<Void, String>
 		implements Exporter<File>, PropertyChangeListener {
@@ -112,8 +112,8 @@ public class PEXBulkSubmissionFileWriterTask extends SwingWorker<Void, String>
 
 	private void writeMiapeExtractorHeader() throws IOException {
 		out.write(COM + TAB + "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" + NEWLINE);
-		out.write(COM + TAB + "This file has been created using PACOM v" + new MiapeExtractorSoftware().getVersion()
-				+ NEWLINE + NEWLINE);
+		out.write(COM + TAB + "This file has been created using " + PACOMSoftware.getInstance().getName() + " v"
+				+ PACOMSoftware.getInstance().getVersion() + NEWLINE + NEWLINE);
 		out.write(COM + TAB
 				+ "This file is intended to be used in the ProteomeXchange Submission Tool as a Bulk submission"
 				+ NEWLINE);

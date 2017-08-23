@@ -759,7 +759,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 						distModPeptides, showAccumulativeTrend);
 			} else {
 				datasets = DatasetFactory.createExclusiveNumberIdentificationCategoryDataSetForProteins(idSets,
-						proteinGroupComparisonType, showAccumulativeTrend, countNonConclusiveProteins);
+						proteinGroupComparisonType, showAccumulativeTrend);
 			}
 			if (showAccumulativeTrend) {
 				CombinedChart chart = new CombinedChart(parent.getChartTitle(chartType),
@@ -780,7 +780,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 						distModPeptides, showAccumulativeTrend);
 			} else {
 				datasets = DatasetFactory.createExclusiveNumberIdentificationCategoryDataSetForProteins(idSets,
-						proteinGroupComparisonType, showAccumulativeTrend, countNonConclusiveProteins);
+						proteinGroupComparisonType, showAccumulativeTrend);
 			}
 			if (showAccumulativeTrend) {
 				CombinedChart chart = new CombinedChart(parent.getChartTitle(chartType),
@@ -800,7 +800,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 						distModPeptides, showAccumulativeTrend);
 			} else {
 				datasets = DatasetFactory.createExclusiveNumberIdentificationCategoryDataSetForProteins(idSets,
-						proteinGroupComparisonType, showAccumulativeTrend, countNonConclusiveProteins);
+						proteinGroupComparisonType, showAccumulativeTrend);
 			}
 			if (showAccumulativeTrend) {
 				CombinedChart chart = new CombinedChart(parent.getChartTitle(chartType),
@@ -824,7 +824,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 							distModPeptides, showAccumulativeTrend);
 				} else {
 					datasets = DatasetFactory.createExclusiveNumberIdentificationCategoryDataSetForProteins(idSets,
-							proteinGroupComparisonType, showAccumulativeTrend, countNonConclusiveProteins);
+							proteinGroupComparisonType, showAccumulativeTrend);
 				}
 				if (showAccumulativeTrend) {
 					CombinedChart chart = new CombinedChart(
@@ -2437,8 +2437,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				throw new IllegalMiapeArgumentException("Please, select at least 2 datasets to show the diagram");
 			}
 			VennChart chart = new VennChart(parent.getChartTitle(chartType), idSet1, label1, idSet2, label2, idSet3,
-					label3, plotItem, parent.distinguishModifiedPeptides(), countNonConclusiveProteins,
-					proteinSelection, color1, color2, color3);
+					label3, plotItem, parent.distinguishModifiedPeptides(), proteinSelection, color1, color2, color3);
 
 			this.vennChartMap.put(null, chart);
 			String intersectionsText = chart.getIntersectionsText(null);
@@ -2473,28 +2472,16 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				throw new IllegalMiapeArgumentException("Please, select at least 2 datasets to show the diagram");
 			}
 			VennChart chart = new VennChart(parent.getChartTitle(chartType), idSet1, label1, idSet2, label2, idSet3,
-					label3, plotItem, parent.distinguishModifiedPeptides(), countNonConclusiveProteins,
-					proteinSelection, color1, color2, color3);
+					label3, plotItem, parent.distinguishModifiedPeptides(), proteinSelection, color1, color2, color3);
 			this.vennChartMap.put(null, chart);
 			optionsFactory.setIntersectionText(chart.getIntersectionsText(null));
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			idSet1 = experimentList;
-			label1 = experimentList.getName();
-			color1 = optionsFactory.getIdSetsColors().get(idSet1.getFullName());
-
-			if (idSet1 == null) {
+			if (idSet1 == null || idSet2 == null) {
 				throw new IllegalMiapeArgumentException(
-						"Please, select another comparison level to have at least 2 datasets to show the diagram");
+						"Please, select a different comparison level to be able to select at least 2 datasets");
 			}
-			VennChart chart = new VennChart(parent.getChartTitle(chartType), idSet1, label1, idSet2, label2, idSet3,
-					label3, plotItem, parent.distinguishModifiedPeptides(), countNonConclusiveProteins,
-					proteinSelection, color1, color2, color3);
-			this.vennChartMap.put(null, chart);
-			optionsFactory.setIntersectionText(chart.getIntersectionsText(null));
-			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
-			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
 			List<JPanel> chartList = new ArrayList<JPanel>();
 			String intersectionText = "";
@@ -2538,7 +2525,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				}
 				VennChart chart = new VennChart(parent.getChartTitle(chartType) + " (" + experiment.getName() + ")",
 						idSet1, label1, idSet2, label2, idSet3, label3, plotItem, parent.distinguishModifiedPeptides(),
-						countNonConclusiveProteins, proteinSelection, color1, color2, color3);
+						proteinSelection, color1, color2, color3);
 				this.vennChartMap.put(experiment.getName(), chart);
 
 				intersectionText += chart.getIntersectionsText(experiment.getName());
@@ -3073,6 +3060,10 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		// yAxisLabel = "# proteins";
 
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
+		String chartTitle = parent.getChartTitle(chartType);
+		if (showPSMsorPeptides) {
+			chartTitle = chartTitle.replace("peptides", "PSMs");
+		}
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 
 			if (!stackedChart && idSets.size() > 1 && !occurrenceFilterEnabled && isTotalSerieShown)
@@ -3084,9 +3075,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				CategoryDataset dataset = null;
 				dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
 						showPSMsorPeptides, countNonConclusiveProteins);
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
-						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
-						asPercentage);
+				StackedBarChart chart = new StackedBarChart(chartTitle, parent.getChartSubtitle(chartType, option),
+						xAxisLabel, yAxisLabel, dataset, plotOrientation, asPercentage);
 				chart.setIntegerItemLabels();
 				return chart.getChartPanel();
 			} else {
@@ -3094,8 +3084,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 				dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
 						showPSMsorPeptides, countNonConclusiveProteins);
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
-						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
+				BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option), xAxisLabel,
+						yAxisLabel, dataset, plotOrientation);
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
@@ -3110,9 +3100,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 				dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
 						showPSMsorPeptides, countNonConclusiveProteins);
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
-						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
-						asPercentage);
+				StackedBarChart chart = new StackedBarChart(chartTitle, parent.getChartSubtitle(chartType, option),
+						xAxisLabel, yAxisLabel, dataset, plotOrientation, asPercentage);
 				chart.setIntegerItemLabels();
 				return chart.getChartPanel();
 			} else {
@@ -3121,8 +3110,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 				dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
 						showPSMsorPeptides, countNonConclusiveProteins);
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
-						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
+				BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option), xAxisLabel,
+						yAxisLabel, dataset, plotOrientation);
 
 				return chart.getChartPanel();
 			}
@@ -3138,9 +3127,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 				dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
 						showPSMsorPeptides, countNonConclusiveProteins);
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
-						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
-						asPercentage);
+				StackedBarChart chart = new StackedBarChart(chartTitle, parent.getChartSubtitle(chartType, option),
+						xAxisLabel, yAxisLabel, dataset, plotOrientation, asPercentage);
 				chart.setIntegerItemLabels();
 				return chart.getChartPanel();
 			} else {
@@ -3149,8 +3137,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 				dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
 						showPSMsorPeptides, countNonConclusiveProteins);
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
-						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
+				BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option), xAxisLabel,
+						yAxisLabel, dataset, plotOrientation);
 
 				return chart.getChartPanel();
 			}
@@ -3165,9 +3153,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 					CategoryDataset dataset = null;
 					dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
 							showPSMsorPeptides, countNonConclusiveProteins);
-					StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
-							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
-							plotOrientation, asPercentage);
+					StackedBarChart chart = new StackedBarChart(chartTitle, parent.getChartSubtitle(chartType, option),
+							xAxisLabel, yAxisLabel, dataset, plotOrientation, asPercentage);
 
 					chart.setIntegerItemLabels();
 
@@ -3178,9 +3165,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 					dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
 							showPSMsorPeptides, countNonConclusiveProteins);
 
-					BarChart chart = new BarChart(parent.getChartTitle(chartType),
-							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
-							plotOrientation);
+					BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option), xAxisLabel,
+							yAxisLabel, dataset, plotOrientation);
 
 					chartList.add(chart.getChartPanel());
 				}
@@ -3841,7 +3827,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 
 			XYDataset dataset = DatasetFactory.createPeptideCountingVsScoreXYDataSet(idSets.get(0), idSets.get(1),
-					proteinGroupComparisonType, distinguish, countNonConclusiveProteins, selectedScoreName);
+					proteinGroupComparisonType, distinguish, selectedScoreName);
 			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 			chart.centerRangeAxisOnZero();
@@ -3850,7 +3836,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
 			XYDataset dataset = DatasetFactory.createPeptideCountingVsScoreXYDataSet(idSets.get(0), idSets.get(1),
-					proteinGroupComparisonType, distinguish, countNonConclusiveProteins, selectedScoreName);
+					proteinGroupComparisonType, distinguish, selectedScoreName);
 
 			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
@@ -3860,7 +3846,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
 			XYDataset dataset = DatasetFactory.createPeptideCountingVsScoreXYDataSet(idSets.get(0), idSets.get(1),
-					proteinGroupComparisonType, distinguish, countNonConclusiveProteins, selectedScoreName);
+					proteinGroupComparisonType, distinguish, selectedScoreName);
 			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 			chart.centerRangeAxisOnZero();
@@ -3872,7 +3858,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			for (Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, true);
 				XYDataset dataset = DatasetFactory.createPeptideCountingVsScoreXYDataSet(idSets.get(0), idSets.get(1),
-						proteinGroupComparisonType, distinguish, countNonConclusiveProteins, selectedScoreName);
+						proteinGroupComparisonType, distinguish, selectedScoreName);
 				XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 				chart.centerRangeAxisOnZero();

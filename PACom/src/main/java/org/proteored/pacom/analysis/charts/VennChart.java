@@ -64,8 +64,7 @@ public class VennChart {
 
 	public VennChart(String title, IdentificationSet idset1, String label1, IdentificationSet idset2, String label2,
 			IdentificationSet idset3, String label3, IdentificationItemEnum plotItem, Boolean distModPep,
-			Boolean countNonConclusiveProteins, ProteinGroupComparisonType proteinGroupComparisonType, Color color1,
-			Color color2, Color color3) {
+			ProteinGroupComparisonType proteinGroupComparisonType, Color color1, Color color2, Color color3) {
 
 		if (title != null)
 			this.title = title.replace(" ", "%20");
@@ -97,7 +96,7 @@ public class VennChart {
 			if (idset3 != null)
 				proteinGroupOccurrenceList3 = idset3.getProteinGroupOccurrenceList().values();
 			this.vennData = new VennDataForProteins(proteinGroupOccurrenceList1, proteinGroupOccurrenceList2,
-					proteinGroupOccurrenceList3, proteinGroupComparisonType, countNonConclusiveProteins);
+					proteinGroupOccurrenceList3, proteinGroupComparisonType);
 
 			try {
 				updateChart();

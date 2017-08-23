@@ -29,8 +29,6 @@ import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
 import org.proteored.pacom.utils.ClientHttpRequest;
 import org.proteored.pacom.utils.HttpUtilities;
 
-import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
-
 import gnu.trove.map.hash.THashMap;
 
 /**
@@ -52,8 +50,10 @@ public class Miape2PIKEFrame extends javax.swing.JFrame implements PropertyChang
 		if (this.parentDialog != null)
 			this.parentDialog.setVisible(false);
 		try {
-			UIManager.setLookAndFeel(new WindowsLookAndFeel());
-		} catch (UnsupportedLookAndFeelException e) {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException
+				| IllegalAccessException e) {
+			e.printStackTrace();
 		}
 		initComponents();
 		initDatabaseComboBox();

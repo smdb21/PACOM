@@ -31,8 +31,6 @@ import org.proteored.pacom.gui.MiapeExtractionFrame;
 import org.proteored.pacom.gui.tasks.MIAPEMSChecker;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 
-import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
-
 /**
  * 
  * @author __USER__
@@ -64,8 +62,10 @@ public class MiapeMSForms extends javax.swing.JDialog {
 	public MiapeMSForms(MiapeExtractionFrame frame, MIAPEMSChecker miapemsChecker, MiapeMSDocument miapeMS) {
 		super(frame, true);
 		try {
-			UIManager.setLookAndFeel(new WindowsLookAndFeel());
-		} catch (UnsupportedLookAndFeelException ex) {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException
+				| IllegalAccessException e) {
+			e.printStackTrace();
 		}
 		initComponents();
 		this.setTitle("MIAPE MS Metadata editor");
@@ -85,8 +85,10 @@ public class MiapeMSForms extends javax.swing.JDialog {
 			ControlVocabularyManager cvManager) {
 		super(frame, true);
 		try {
-			UIManager.setLookAndFeel(new WindowsLookAndFeel());
-		} catch (UnsupportedLookAndFeelException ex) {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException
+				| IllegalAccessException e) {
+			e.printStackTrace();
 		}
 		initComponents();
 		this.setTitle("MIAPE MS Metadata editor");
