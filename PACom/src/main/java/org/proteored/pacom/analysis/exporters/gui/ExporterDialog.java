@@ -527,7 +527,7 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 			jProgressBar1.setStringPainted(true);
 
 		} else if (evt.getPropertyName().equals(JTableLoader.PROTEIN_SEQUENCE_RETRIEVAL)) {
-			jProgressBar1.setString("Retrieving protein sequences from uniprotKB...");
+			jProgressBar1.setString(evt.getNewValue().toString());
 			jProgressBar1.setIndeterminate(true);
 			jProgressBar1.setValue(0);
 			jProgressBar1.setStringPainted(true);

@@ -642,7 +642,7 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 
 			applyFilters();
 		} else if (evt.getPropertyName().equals(JTableLoader.PROTEIN_SEQUENCE_RETRIEVAL)) {
-			appendStatus("Retrieving information from uniprotKB...");
+			appendStatus(evt.getNewValue().toString());
 			jProgressBar1.setIndeterminate(true);
 			jProgressBar1.setValue(0);
 			jProgressBar1.setStringPainted(false);
