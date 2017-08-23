@@ -18,24 +18,23 @@ import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
  *
  * @author __USER__
  */
-public class GeneralOptionsDialog extends javax.swing.JDialog {
-	private static final int MAXIMUM_NUM_CORES = 6;
-	private static GeneralOptionsDialog instance;
+public class GeneralOptionsDialogNoParallel extends javax.swing.JDialog {
+	private static GeneralOptionsDialogNoParallel instance;
 	private Integer previousMinPeptideLength;
 	private Boolean previousGroupAtExperimentListLevel;
-	private Boolean previousLocalProcessingInParallel;
 	private final ChartManagerFrame parent;
+	private boolean dataShouldnotBeLoaded;
 
-	public static GeneralOptionsDialog getInstance(ChartManagerFrame parent, boolean showDoNotAskAgain) {
+	public static GeneralOptionsDialogNoParallel getInstance(ChartManagerFrame parent, boolean showDoNotAskAgain) {
 		getInstance(parent);
 
 		instance.jCheckBoxDoNotAskAgain.setVisible(showDoNotAskAgain);
 		return instance;
 	}
 
-	public static GeneralOptionsDialog getInstance(ChartManagerFrame parent) {
+	public static GeneralOptionsDialogNoParallel getInstance(ChartManagerFrame parent) {
 		if (instance == null) {
-			instance = new GeneralOptionsDialog(parent);
+			instance = new GeneralOptionsDialogNoParallel(parent);
 		} else {
 		}
 
@@ -48,7 +47,6 @@ public class GeneralOptionsDialog extends javax.swing.JDialog {
 		}
 		instance.previousMinPeptideLength = num;
 		instance.previousGroupAtExperimentListLevel = instance.groupProteinsAtExperimentListLevel();
-		instance.previousLocalProcessingInParallel = instance.isLocalProcessingInParallel();
 		return instance;
 	}
 
@@ -78,9 +76,14 @@ public class GeneralOptionsDialog extends javax.swing.JDialog {
 		boolean localProcessingInParallel = isLocalProcessingInParallel();
 		final boolean dataShouldBeLoaded = parent.dataShouldBeLoaded(parent.cfgFile, groupAtExperimentListLevel,
 				minPeptideLength, localProcessingInParallel);
-		if (dataShouldBeLoaded)
+		if (dataShouldBeLoaded && !dataShouldnotBeLoaded)
 			parent.loadData(minPeptideLength, groupAtExperimentListLevel, localProcessingInParallel);
+		dataShouldnotBeLoaded = false;
+	}
 
+	public void disposeNotLoadingData() {
+		this.dataShouldnotBeLoaded = true;
+		dispose();
 	}
 
 	public Integer getMinPeptideLength() {
@@ -98,11 +101,11 @@ public class GeneralOptionsDialog extends javax.swing.JDialog {
 	}
 
 	public boolean isLocalProcessingInParallel() {
-		return jCheckBoxProcessInParallel.isSelected();
+		return false;
 	}
 
 	/** Creates new form GeneralOptions */
-	private GeneralOptionsDialog(ChartManagerFrame parent) {
+	private GeneralOptionsDialogNoParallel(ChartManagerFrame parent) {
 		super(parent, true);
 		try {
 			UIManager.setLookAndFeel(new WindowsLookAndFeel());
@@ -113,20 +116,6 @@ public class GeneralOptionsDialog extends javax.swing.JDialog {
 		this.parent = parent;
 		jLabelWarning.setVisible(false);
 		RefineryUtilities.centerFrameOnScreen(this);
-
-		String text = getCoresToUseText();
-		jLabelUsingCores.setText(text);
-	}
-
-	private String getCoresToUseText() {
-		final int availableProcessors = Runtime.getRuntime().availableProcessors();
-		if (jCheckBoxProcessInParallel.isSelected()) {
-			final int availableNumSystemCores = edu.scripps.yates.utilities.cores.SystemCoreManager
-					.getAvailableNumSystemCores(MAXIMUM_NUM_CORES);
-			return "Using " + availableNumSystemCores + " out of " + availableProcessors + " cores";
-		} else {
-			return "Using just 1 out of " + availableProcessors + " core";
-		}
 
 	}
 
@@ -142,9 +131,7 @@ public class GeneralOptionsDialog extends javax.swing.JDialog {
 		jLabel2 = new javax.swing.JLabel();
 		jPanel3 = new javax.swing.JPanel();
 		jCheckBoxGroupProteinsInExperimentList = new javax.swing.JCheckBox();
-		jPanel4 = new javax.swing.JPanel();
-		jCheckBoxProcessInParallel = new javax.swing.JCheckBox();
-		jLabelUsingCores = new javax.swing.JLabel();
+
 		jPanel5 = new javax.swing.JPanel();
 		jButtonClose = new javax.swing.JButton();
 		jCheckBoxDoNotAskAgain = new javax.swing.JCheckBox();
@@ -165,7 +152,7 @@ public class GeneralOptionsDialog extends javax.swing.JDialog {
 				"<html>Peptides with short sequences can be somehow problematic, <br> since short decoy sequences could have similar identification <br> scores than a non decoy short sequence.</html>");
 
 		jTextFieldPeptideLength.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-		jTextFieldPeptideLength.setText("7");
+		jTextFieldPeptideLength.setText(String.valueOf(DataManager.DEFAULT_MIN_PEPTIDE_LENGTH));
 		jTextFieldPeptideLength.setToolTipText(
 				"<html>Peptides with short sequences can be somehow problematic, <br>\nsince short decoy sequences could have similar identification <br>\nscores than a non decoy short sequence.</html>");
 		jTextFieldPeptideLength.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -221,35 +208,6 @@ public class GeneralOptionsDialog extends javax.swing.JDialog {
 						.addComponent(jCheckBoxGroupProteinsInExperimentList)
 						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
-		jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(),
-				"Parallel processing"));
-
-		jCheckBoxProcessInParallel.setSelected(true);
-		jCheckBoxProcessInParallel.setText("Process in parallel");
-		jCheckBoxProcessInParallel.setToolTipText(
-				"<html>By default, protein grouping algorithm is applied at level 1<br>\nwhich is usually at experiment level. In that case, protein groups <br>\nat level 0 (experiment list) are not recalculated.<br>\nIf this option is selected, all protein groups will be rebuilded from <br>\npeptides comming from any lower level. <br>\nNote that the resulting protein groups will not be able to be repeated.</html>");
-		jCheckBoxProcessInParallel.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jCheckBoxProcessInParallelActionPerformed(evt);
-			}
-		});
-
-		jLabelUsingCores.setText("Using cores");
-
-		javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-		jPanel4.setLayout(jPanel4Layout);
-		jPanel4Layout.setHorizontalGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanel4Layout.createSequentialGroup().addContainerGap()
-						.addComponent(jCheckBoxProcessInParallel).addGap(18, 18, 18).addComponent(jLabelUsingCores,
-								javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
-						.addContainerGap()));
-		jPanel4Layout.setVerticalGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanel4Layout.createSequentialGroup()
-						.addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-								.addComponent(jCheckBoxProcessInParallel).addComponent(jLabelUsingCores))
-						.addContainerGap(18, Short.MAX_VALUE)));
-
 		jButtonClose.setText("OK");
 		jButtonClose.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -284,9 +242,7 @@ public class GeneralOptionsDialog extends javax.swing.JDialog {
 								.addComponent(jLabelWarning, javax.swing.GroupLayout.Alignment.LEADING,
 										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
 										Short.MAX_VALUE)
-								.addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)
+
 								.addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING,
 										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
 										Short.MAX_VALUE)
@@ -302,8 +258,7 @@ public class GeneralOptionsDialog extends javax.swing.JDialog {
 						.addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE,
 								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jLabelWarning, javax.swing.GroupLayout.PREFERRED_SIZE, 46,
 								javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -327,17 +282,6 @@ public class GeneralOptionsDialog extends javax.swing.JDialog {
 		pack();
 	}// </editor-fold>
 		// GEN-END:initComponents
-
-	private void jCheckBoxProcessInParallelActionPerformed(java.awt.event.ActionEvent evt) {
-
-		jLabelUsingCores.setText(getCoresToUseText());
-
-		if (!String.valueOf(jCheckBoxProcessInParallel.isSelected())
-				.equals(String.valueOf(previousLocalProcessingInParallel)))
-			showWarningLabel(true);
-		else
-			showWarningLabel(false);
-	}
 
 	private void jCheckBoxGroupProteinsInExperimentListActionPerformed(java.awt.event.ActionEvent evt) {
 		if (!String.valueOf(jCheckBoxGroupProteinsInExperimentList.isSelected())
@@ -381,7 +325,7 @@ public class GeneralOptionsDialog extends javax.swing.JDialog {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				GeneralOptionsDialog dialog = new GeneralOptionsDialog(null);
+				GeneralOptionsDialogNoParallel dialog = new GeneralOptionsDialogNoParallel(null);
 				dialog.addWindowListener(new java.awt.event.WindowAdapter() {
 					@Override
 					public void windowClosing(java.awt.event.WindowEvent e) {
@@ -398,15 +342,12 @@ public class GeneralOptionsDialog extends javax.swing.JDialog {
 	private javax.swing.JButton jButtonClose;
 	private javax.swing.JCheckBox jCheckBoxDoNotAskAgain;
 	private javax.swing.JCheckBox jCheckBoxGroupProteinsInExperimentList;
-	private javax.swing.JCheckBox jCheckBoxProcessInParallel;
 	private javax.swing.JLabel jLabel1;
 	private javax.swing.JLabel jLabel2;
-	private javax.swing.JLabel jLabelUsingCores;
 	private javax.swing.JLabel jLabelWarning;
 	private javax.swing.JPanel jPanel1;
 	private javax.swing.JPanel jPanel2;
 	private javax.swing.JPanel jPanel3;
-	private javax.swing.JPanel jPanel4;
 	private javax.swing.JPanel jPanel5;
 	private javax.swing.JTextField jTextFieldPeptideLength;
 	// End of variables declaration//GEN-END:variables
