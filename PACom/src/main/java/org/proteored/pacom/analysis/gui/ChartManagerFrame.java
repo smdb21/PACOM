@@ -441,7 +441,6 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		setInformation3("Loading data...");
 
 		experimentList = null;
-		System.gc();
 
 		OntologyLoaderTask ontologyLoaderTask = new OntologyLoaderTask();
 		ontologyLoaderTask.addPropertyChangeListener(this);
