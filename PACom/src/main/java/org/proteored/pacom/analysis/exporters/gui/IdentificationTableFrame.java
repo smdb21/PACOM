@@ -22,7 +22,6 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker.StateValue;
@@ -41,6 +40,7 @@ import org.proteored.pacom.analysis.exporters.util.ExporterUtil;
 import org.proteored.pacom.analysis.gui.ChartManagerFrame;
 import org.proteored.pacom.analysis.util.DataLevel;
 import org.proteored.pacom.gui.ImageManager;
+import org.proteored.pacom.utils.ComponentEnableStateKeeper;
 
 import gnu.trove.set.hash.THashSet;
 
@@ -55,12 +55,11 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 	private final Set<IdentificationSet> idSets = new THashSet<IdentificationSet>();
 
 	private JTableLoader tableExporter;
-	private JPanel scrollPanel;
-
 	private ScrollableJTable scrollablePanel;
 	private final ChartManagerFrame parentFrame;
 	private JButton jButtonExport2Excel;
 	private static IdentificationTableFrame instance;
+	private final ComponentEnableStateKeeper enableStateKeeper = new ComponentEnableStateKeeper();
 
 	public static IdentificationTableFrame getInstance(ChartManagerFrame parent, Collection<IdentificationSet> idSets) {
 		if (instance == null || !idSets.containsAll(instance.idSets))
@@ -126,6 +125,8 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 
 		// icon button excel
 		jButtonExport2Excel.setIcon(ImageManager.getImageIcon(ImageManager.EXCEL_TABLE));
+
+		enableStateKeeper.addReverseComponent(this.jButtonCancel);
 	}
 
 	private void updateColumnNamesComboBox() {
@@ -582,13 +583,15 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals(JTableLoader.DATA_EXPORTING_STARTING)) {
-			enableControls(false);
+			enableStateKeeper.keepEnableStates(this);
+			enableStateKeeper.disable(this);
+
 			setStatus("Loading " + getNum() + " items in table...");
 
 			RefineryUtilities.centerFrameOnScreen(this);
 			applyFilters();
 		} else if (evt.getPropertyName().equals(JTableLoader.DATA_EXPORTING_DONE)) {
-			enableControls(true);
+			enableStateKeeper.setToPreviousState(this);
 			String items = "proteins";
 			if (showPeptides())
 				items = "peptides";
@@ -628,11 +631,11 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 			jProgressBar1.setValue((Integer) evt.getNewValue());
 		} else if (JTableLoader.DATA_EXPORTING_ERROR.equals(evt.getPropertyName())) {
 
-			enableControls(true);
+			enableStateKeeper.setToPreviousState(this);
 			appendStatus("Error: " + evt.getNewValue().toString());
 
 		} else if (evt.getPropertyName().equals(JTableLoader.DATA_EXPORTING_CANCELED)) {
-			enableControls(true);
+			enableStateKeeper.setToPreviousState(this);
 			int num = (Integer) evt.getNewValue();
 			jProgressBar1.setValue(0);
 			scrollablePanel.initializeSorter();
@@ -651,22 +654,6 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 			jProgressBar1.setIndeterminate(false);
 			jProgressBar1.setStringPainted(true);
 		}
-
-	}
-
-	private void enableControls(boolean b) {
-		jButtonCancel.setEnabled(!b);
-		jCheckBoxCollapsePeptides.setEnabled(b);
-		jCheckBoxCollapseProteins.setEnabled(b);
-		jCheckBoxIncludeDecoy.setEnabled(b);
-		jCheckBoxIncludeGeneInfo.setEnabled(b);
-		jCheckBoxSearchForProteinSequence.setEnabled(b);
-		jComboBoxColumnNames.setEnabled(b);
-		jTextFieldFilter.setEnabled(b);
-		dataLevelComboBox.setEnabled(b);
-		jRadioButtonShowPeptides.setEnabled(b);
-		jRadioButtonShowProteins.setEnabled(b);
-		jButtonExport2Excel.setEnabled(b);
 
 	}
 

@@ -60,6 +60,7 @@ import org.proteored.pacom.gui.tasks.MIAPEMSChecker;
 import org.proteored.pacom.gui.tasks.MiapeExtractionTask;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 import org.proteored.pacom.gui.tasks.OntologyLoaderWaiter;
+import org.proteored.pacom.utils.ComponentEnableStateKeeper;
 import org.proteored.pacom.utils.MiapeExtractionParametersUtil;
 import org.proteored.pacom.utils.MiapeExtractionResult;
 import org.proteored.pacom.utils.MiapeExtractionRunParameters;
@@ -88,6 +89,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	private static final String TSV_FILE_LABEL = "TSV text file:";
 	private static final String DTASELECT_FILE_LABEL = "DTASelect file:";
 	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+	private final ComponentEnableStateKeeper enableStateKeeper = new ComponentEnableStateKeeper();
 
 	@Override
 	public void dispose() {
@@ -123,7 +125,6 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	public boolean isFastParsing = false;
 	public boolean isShallowParsing = false;
 	private MIAPEMSChecker miapeMSChecker;
-	private boolean extractionStarted = false;
 	private boolean showProjectTable;
 
 	public static MiapeExtractionFrame getInstance(MainFrame mainFrame2, boolean b) {
@@ -165,8 +166,8 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		setIconImage(ImageManager.getImageIcon(ImageManager.LOAD_LOGO_128).getImage());
 		jButtonSubmit.setIcon(ImageManager.getImageIcon(ImageManager.ADD));
 		jButtonSubmit.setPressedIcon(ImageManager.getImageIcon(ImageManager.ADD_CLICKED));
-		jButtonClearStatus.setIcon(ImageManager.getImageIcon(ImageManager.CLEAR));
-		jButtonClearStatus.setPressedIcon(ImageManager.getImageIcon(ImageManager.CLEAR_CLICKED));
+		jButtonCancel.setIcon(ImageManager.getImageIcon(ImageManager.STOP));
+		jButtonCancel.setPressedIcon(ImageManager.getImageIcon(ImageManager.STOP_CLICKED));
 		jButtonEditMetadata.setIcon(ImageManager.getImageIcon(ImageManager.FINISH));
 		jButtonEditMetadata.setPressedIcon(ImageManager.getImageIcon(ImageManager.FINISH_CLICKED));
 
@@ -182,6 +183,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 			String suffix = " (v" + version.toString() + ")";
 			this.setTitle(getTitle() + suffix);
 		}
+		enableStateKeeper.addReverseComponent(jButtonCancel);
 	}
 
 	/*
@@ -258,7 +260,6 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 			log.info("Task canceled=" + canceled);
 			miapeExtractionTask = null;
 		}
-		extractionStarted = false;
 
 	}
 
@@ -303,7 +304,8 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		jScrollPane1 = new javax.swing.JScrollPane();
 		jTextAreaStatus = new javax.swing.JTextArea();
 		jProgressBar = new javax.swing.JProgressBar();
-		jButtonClearStatus = new javax.swing.JButton();
+		jButtonCancel = new javax.swing.JButton();
+		jButtonCancel.setEnabled(false);
 		jButtonSubmit = new javax.swing.JButton();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -723,12 +725,12 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		jTextAreaStatus.setToolTipText("Task status");
 		jScrollPane1.setViewportView(jTextAreaStatus);
 
-		jButtonClearStatus.setText("Clear status");
-		jButtonClearStatus.setToolTipText("Clear the status panel");
-		jButtonClearStatus.addActionListener(new java.awt.event.ActionListener() {
+		jButtonCancel.setText("Cancel");
+		jButtonCancel.setToolTipText("Cancel current task");
+		jButtonCancel.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButtonClearStatusActionPerformed(evt);
+				jButtonCancelActionPerformed(evt);
 			}
 		});
 
@@ -749,7 +751,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 								.addComponent(jProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
 								.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
 								.addGroup(
-										jPanel3Layout.createSequentialGroup().addComponent(jButtonClearStatus)
+										jPanel3Layout.createSequentialGroup().addComponent(jButtonCancel)
 												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
 														578, Short.MAX_VALUE)
 												.addComponent(jButtonSubmit)))
@@ -763,7 +765,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-								.addComponent(jButtonClearStatus).addComponent(jButtonSubmit,
+								.addComponent(jButtonCancel).addComponent(jButtonSubmit,
 										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
 										Short.MAX_VALUE))));
 
@@ -998,8 +1000,10 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 
 	}
 
-	private void jButtonClearStatusActionPerformed(java.awt.event.ActionEvent evt) {
-		jTextAreaStatus.setText("");
+	private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {
+		if (this.miapeExtractionTask.getState() == StateValue.STARTED) {
+			this.miapeExtractionTask.cancel(true);
+		}
 	}
 
 	public MainFrame getMainFrame() {
@@ -1325,8 +1329,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 			return;
 		}
 
-		if (!extractionStarted) {
-			extractionStarted = true;
+		if (miapeExtractionTask == null || miapeExtractionTask.getState() != StateValue.STARTED) {
 			miapeExtractionTask = new MiapeExtractionTask(this, isLocalProcessingInParallel());
 			miapeExtractionTask.addPropertyChangeListener(this);
 			miapeExtractionTask.execute();
@@ -1386,7 +1389,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	private javax.swing.ButtonGroup buttonGroupStoreOrNotStore;
 	private javax.swing.JLabel inputFileLabel1;
 	private javax.swing.JLabel inputFileLabel2;
-	private javax.swing.JButton jButtonClearStatus;
+	private javax.swing.JButton jButtonCancel;
 	private javax.swing.JButton jButtonEditMetadata;
 	public javax.swing.JButton jButtonInputFile;
 	public javax.swing.JButton jButtonInputFile2;
@@ -1446,31 +1449,35 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 			String notificacion = evt.getNewValue().toString();
 			appendStatus(notificacion);
 		} else if (MiapeExtractionTask.MIAPE_CREATION_ERROR.equals(evt.getPropertyName())) {
+			enableStateKeeper.setToPreviousState(this);
 			if (evt.getNewValue() != null) {
 				MiapeExtractionResult errorMessage = (MiapeExtractionResult) evt.getNewValue();
 				appendStatus(errorMessage.getErrorMessage());
 			}
 			jProgressBar.setIndeterminate(false);
-			jButtonSubmit.setEnabled(true);
 			this.setCursor(null); // turn off the wait cursor
-			extractionStarted = false;
 			appendStatus("Process finished.");
+		} else if (MiapeExtractionTask.MIAPE_CREATION_CANCELED.equals(evt.getPropertyName())) {
+			enableStateKeeper.setToPreviousState(this);
+			appendStatus("Data import cancelled");
+			this.setCursor(null); // turn off the wait cursor
+			jProgressBar.setIndeterminate(false);
 		} else if (MIAPEMSChecker.MIAPE_MS_CHECKING_IN_PROGRESS.equals(evt.getPropertyName())) {
 			appendStatus("Extracting MIAPE MS metadata from file...");
 			jProgressBar.setIndeterminate(true);
 		} else if (MIAPEMSChecker.MIAPE_MS_CHECKING_ERROR.equals(evt.getPropertyName())) {
+			enableStateKeeper.setToPreviousState(this);
 			String error = evt.getNewValue().toString();
 			appendStatus(error);
 			jProgressBar.setIndeterminate(false);
 		} else if (MIAPEMSChecker.MIAPE_MS_CHECKING_DONE.equals(evt.getPropertyName())) {
-			appendStatus(
-					"MIAPE MS metadata edition completed. Click again on \"Create MIAPE(s)\" to extract MIAPE information.");
+			enableStateKeeper.setToPreviousState(this);
+			appendStatus("MIAPE MS metadata edition completed. Click again on Import data.");
 			jProgressBar.setIndeterminate(false);
 		} else if (MetadataLoader.METADATA_READED.equals(evt.getPropertyName())) {
 			String string = (String) evt.getNewValue();
 			jLabelMiapeMSMetadata.setText(string);
 		} else if (MiapeExtractionTask.MIAPE_MSI_CREATED_DONE.equals(evt.getPropertyName())) {
-			extractionStarted = false;
 			File miapeIDString = (File) evt.getNewValue();
 			log.info("Miape MSI created done finished: " + miapeIDString.getAbsolutePath());
 			FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_MZML);
@@ -1478,7 +1485,6 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 			// load new projects
 			loadProjects(false);
 		} else if (MiapeExtractionTask.MIAPE_MS_CREATED_DONE.equals(evt.getPropertyName())) {
-			extractionStarted = false;
 			File miapeIDString = (File) evt.getNewValue();
 			log.info("Miape MS created done finished: " + miapeIDString.getAbsolutePath());
 			// load new projects
@@ -1496,19 +1502,21 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 				initMetadataCombo(MIAPEMSChecker.CURRENT_PRIDEXML, getControlVocabularyManager());
 			jProgressBar.setIndeterminate(false);
 		} else if (MiapeExtractionTask.MIAPE_CREATION_TOTAL_DONE.equals(evt.getPropertyName())) {
+			enableStateKeeper.setToPreviousState(this);
 			jProgressBar.setIndeterminate(false);
 			MiapeExtractionResult extractionResult = (MiapeExtractionResult) evt.getNewValue();
 			showOpenBrowserDialog(extractionResult.getDirectLinkToMIAPEMS(), extractionResult.getDirectLinkToMIAPEMSI(),
 					extractionResult.getDirectLinkText());
 
 			jProgressBar.setIndeterminate(false);
-			jButtonSubmit.setEnabled(true);
+
 			this.setCursor(null); // turn off the wait cursor
-			extractionStarted = false;
 			appendStatus("Process finished.");
 
 		} else if (MiapeExtractionTask.MIAPE_CREATION_STARTS.equals(evt.getPropertyName())) {
-			jButtonSubmit.setEnabled(false);
+			enableStateKeeper.keepEnableStates(this);
+			enableStateKeeper.disable(this);
+
 			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 			jProgressBar.setIndeterminate(true);
 			appendStatus("Starting process...");

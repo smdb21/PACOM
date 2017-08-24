@@ -102,6 +102,7 @@ import org.proteored.pacom.analysis.util.ImageUtils;
 import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.gui.MainFrame;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
+import org.proteored.pacom.utils.ComponentEnableStateKeeper;
 import org.proteored.pacom.utils.PACOMSoftware;
 
 import edu.scripps.yates.utilities.checksum.MD5Checksum;
@@ -224,6 +225,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	private String previousMd5Checksum;
 	private Map<Object, Object> previousTogleValues = new THashMap<Object, Object>();
 	private long t1;
+	private final ComponentEnableStateKeeper enableStateKeeper = new ComponentEnableStateKeeper();
 
 	@Override
 	public void dispose() {
@@ -295,7 +297,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			String suffix = " (v" + version.toString() + ")";
 			this.setTitle(getTitle() + suffix);
 		}
-
+		enableStateKeeper.addReverseComponent(jButtonCancel);
+		enableStateKeeper.addInvariableComponent(jTextAreaStatus);
 	}
 
 	public static ChartManagerFrame getInstance(Miape2ExperimentListDialog parentDialog, File cfgFile) {
@@ -4096,7 +4099,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 			appendStatus("Creating chart '" + chartType + " (" + option + ")...");
 			setProgressBarIndeterminate(true);
-			disableControls(false);
+
 			chartCreator = new ChartCreatorTask(this, chartType, option, experimentList);
 			chartCreator.addPropertyChangeListener(this);
 			chartCreator.execute();
@@ -4216,18 +4219,6 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 	// End of variables declaration//GEN-END:variables
 
-	private void disableControls(boolean b) {
-		// if (b)
-		// log.info("Enabling controls");
-		// else
-		// log.info("Disabling controls");
-		jComboBoxChartOptions.setEnabled(b);
-		jCheckBoxUniquePeptides.setEnabled(b);
-		// jCheckBoxCountNonConclusiveProteins.setEnabled(b);
-		optionsFactory.disableAdditionalOptionControls(b);
-		// log.info("Finish disabling/enabling");
-	}
-
 	@Override
 	public synchronized void propertyChange(PropertyChangeEvent evt) {
 		if ("progress".equals(evt.getPropertyName())) {
@@ -4237,6 +4228,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			else
 				jProgressBar.setValue(progress);
 
+		} else if (ChartCreatorTask.CHART_GENERATION_STARTED.equals(evt.getPropertyName())) {
+			enableStateKeeper.keepEnableStates(this);
+			enableStateKeeper.disable(this);
 		}
 		// else if ("state".equals(evt.getPropertyName())) {
 		// if (task != null && !task.isCancelled()) {
@@ -4254,16 +4248,18 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			String notificacion = evt.getNewValue().toString();
 			appendStatus(notificacion);
 		} else if (DataLoaderTask.DATA_LOADED_START.equals(evt.getPropertyName())) {
-			jButtonCancel.setEnabled(true);
+			enableStateKeeper.keepEnableStates(this);
+			enableStateKeeper.disable(this);
+
 			appendStatus("Reading project data...");
 			appendStatus("Depending on the size of the data, it can take a few seconds or a couple of minutes...");
 			setEmptyChart();
-			disableControls(false);
+
 			setProgressBarIndeterminate(true);
 		} else if (DataLoaderTask.DATA_LOADED_DONE.equals(evt.getPropertyName())) {
-			jButtonCancel.setEnabled(false);
+			enableStateKeeper.setToPreviousState(this);
 			errorLoadingData = false;
-			disableControls(true);
+
 			if (experimentList != null)
 				experimentList = null;
 			experimentList = (ExperimentList) evt.getNewValue();
@@ -4289,6 +4285,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			jButtonExport2PRIDE.setEnabled(true);
 
 		} else if (DataLoaderTask.DATA_LOADED_ERROR.equals(evt.getPropertyName())) {
+			enableStateKeeper.setToPreviousState(this);
 			jButtonCancel.setEnabled(false);
 			errorLoadingData = true;
 			String erromessage = (String) evt.getNewValue();
@@ -4306,6 +4303,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			dispose();
 		} else if (ChartCreatorTask.CHART_GENERATED.equals(evt.getPropertyName())
 				|| ChartCreatorTask.CHART_ERROR_GENERATED.equals(evt.getPropertyName())) {
+			enableStateKeeper.setToPreviousState(this);
 			jButtonCancel.setEnabled(false);
 			jPanelChart.removeAll();
 			jPanelChart.setLayout(new GridBagLayout());
@@ -4372,7 +4370,6 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				appendStatus("Error generating the chart.");
 			}
 			setProgressBarIndeterminate(false);
-			disableControls(true);
 			updateControlStates();
 			if (!filterDialog.getFilters().isEmpty()) {
 				jButtonSeeAppliedFilters.setEnabled(true);
@@ -4393,12 +4390,14 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			String memoryUsage = (String) evt.getNewValue();
 			jProgressBarMemoryUsage.setString("Memory usage: " + memoryUsage);
 		} else if (CuratedExperimentSaver.CURATED_EXP_SAVER_START.equals(evt.getPropertyName())) {
-			jButtonCancel.setEnabled(true);
+			enableStateKeeper.keepEnableStates(this);
+			enableStateKeeper.disable(this);
 			appendStatus("Saving experiment(s) as curated...");
 			appendStatus("This task will be performed in background");
 			jButtonSaveAsFiltered.setEnabled(false);
 		} else if (CuratedExperimentSaver.CURATED_EXP_SAVER_END.equals(evt.getPropertyName())) {
-			jButtonCancel.setEnabled(false);
+			enableStateKeeper.setToPreviousState(this);
+
 			setProgressBarIndeterminate(false);
 			jProgressBar.setString("");
 			jProgressBar.setValue(0);
@@ -4406,6 +4405,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			jButtonSaveAsFiltered.setEnabled(true);
 
 		} else if (CuratedExperimentSaver.CURATED_EXP_SAVER_ERROR.equals(evt.getPropertyName())) {
+			enableStateKeeper.setToPreviousState(this);
 			jButtonCancel.setEnabled(false);
 			setProgressBarIndeterminate(false);
 			jProgressBar.setString("");

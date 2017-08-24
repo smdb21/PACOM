@@ -195,8 +195,9 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 							final String percentage = counter.printIfNecessary();
 							if (!"".equals(percentage)) {
 								log.info(percentage);
+								setProgress(Double.valueOf(counter.getPercentage()).intValue());
 							}
-							setProgress(Double.valueOf(counter.getPercentage()).intValue());
+
 						}
 					}
 				} else {

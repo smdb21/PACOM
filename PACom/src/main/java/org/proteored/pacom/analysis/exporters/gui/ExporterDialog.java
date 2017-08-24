@@ -34,6 +34,7 @@ import org.proteored.pacom.analysis.gui.TsvFileFilter;
 import org.proteored.pacom.analysis.util.DataLevel;
 import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.gui.MainFrame;
+import org.proteored.pacom.utils.ComponentEnableStateKeeper;
 
 import gnu.trove.set.hash.THashSet;
 
@@ -48,17 +49,14 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 	private final Set<IdentificationSet> idSets = new THashSet<IdentificationSet>();
 	private TSVExporter exporter;
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
-	private boolean previousCollapsePeptides;
-	private boolean previousCollapseProteins;
-	private boolean previousIncludeDecoy;
-	private boolean previousIncludeGene;
-	private boolean previousSearchForProteinSequence;
+
 	private final boolean isFDRApplied;
 	private Filters filter;
 	private Boolean distinguisModifiedPeptides;
 	private final ChartManagerFrame chartManagerFrame;
 	private JLabel lblLevelToExport;
 	private DataLevel dataLevel;
+	private final ComponentEnableStateKeeper componentEnableStatusKeeper = new ComponentEnableStateKeeper();
 
 	public ExporterDialog(Frame parentFrame, ChartManagerFrame parent, Collection<IdentificationSet> idSets,
 			DataLevel dataLevel) {
@@ -73,7 +71,7 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 		this.idSets.addAll(idSets);
 		this.dataLevel = dataLevel;
 		initComponents();
-
+		componentEnableStatusKeeper.addReverseComponent(this.jButtonCancel);
 		if (!this.idSets.isEmpty() && parent.getFiltersDialog() != null
 				&& parent.getFiltersDialog().isFDRFilterDefined()) {
 			jCheckBoxIncludeDecoy.setEnabled(true);
@@ -396,9 +394,8 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 	private void jButtonExportActionPerformed(java.awt.event.ActionEvent evt) {
 		log.info("Export button is pressed");
 		final File file = getFile();
-		setControlStatusEnabled(false);
-		jButtonCancel.setEnabled(true);
-		jProgressBar1.setIndeterminate(true);
+		componentEnableStatusKeeper.disable(this);
+
 		exporter = new TSVExporter(this, ExporterUtil.getSelectedIdentificationSets(idSets, getDataLevel()), file,
 				this.filter);
 		exporter.setDistinguisModificatedPeptides(isDistinguishModifiedPeptides());
@@ -494,11 +491,19 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (TSVExporter.DATA_EXPORTING_DONE.equals(evt.getPropertyName())) {
+		if (evt.getPropertyName().equals(JTableLoader.DATA_EXPORTING_STARTING)) {
+			this.componentEnableStatusKeeper.keepEnableStates(this);
+			this.componentEnableStatusKeeper.disable(this);
+
+			// setControlStatusEnabled(false);
+			jButtonCancel.setEnabled(true);
+			jButtonExport.setEnabled(false);
+			jProgressBar1.setIndeterminate(true);
+		} else if (TSVExporter.DATA_EXPORTING_DONE.equals(evt.getPropertyName())) {
+			this.componentEnableStatusKeeper.setToPreviousState(this);
 			final File file = (File) evt.getNewValue();
 			JOptionPane.showMessageDialog(this, "Data exported succesfully at " + file.getAbsolutePath(),
 					"Data exported", JOptionPane.INFORMATION_MESSAGE);
-			setControlStatusToPrevious();
 			jButtonCancel.setEnabled(false);
 			jButtonExport.setEnabled(true);
 			jProgressBar1.setValue(0);
@@ -508,20 +513,15 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 			int progress = (Integer) evt.getNewValue();
 			jProgressBar1.setValue(progress);
 			jProgressBar1.setString("Exporting..." + progress + "%");
-			jButtonExport.setEnabled(false);
 
 		} else if (TSVExporter.DATA_EXPORTING_ERROR.equals(evt.getPropertyName())) {
+			this.componentEnableStatusKeeper.setToPreviousState(this);
 			JOptionPane.showMessageDialog(this, "Error exporting data: " + evt.getNewValue(), "Error exporting data",
 					JOptionPane.INFORMATION_MESSAGE);
-			setControlStatusToPrevious();
-			jButtonCancel.setEnabled(false);
-			jButtonExport.setEnabled(true);
 			jProgressBar1.setIndeterminate(false);
 		} else if (TSVExporter.DATA_EXPORTING_CANCELED.equals(evt.getPropertyName())) {
+			this.componentEnableStatusKeeper.setToPreviousState(this);
 			jProgressBar1.setValue(0);
-			setControlStatusToPrevious();
-			jButtonCancel.setEnabled(false);
-			jButtonExport.setEnabled(true);
 			jProgressBar1.setIndeterminate(false);
 			jProgressBar1.setString("Export cancelled");
 			jProgressBar1.setStringPainted(true);
@@ -538,29 +538,11 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 		}
 	}
 
-	private void setControlStatusToPrevious() {
-		if (!controlsDisabled) {
-			jCheckBoxCollapsePeptides.setEnabled(previousCollapsePeptides);
-			jCheckBoxCollapseProteins.setEnabled(previousCollapseProteins);
-			jCheckBoxIncludeDecoy.setEnabled(previousIncludeDecoy);
-			jCheckBoxIncludeGeneInfo.setEnabled(previousIncludeGene);
-			jCheckBoxSearchForProteinSequence.setEnabled(previousSearchForProteinSequence);
-			jButtonExport.setEnabled(true);
-			jRadioButtonExportPeptides.setEnabled(true);
-			jRadioButtonExportProteins.setEnabled(true);
-		}
-	}
-
 	public void setControlsDisabled() {
 		this.controlsDisabled = true;
 	}
 
 	public void setControlStatusEnabled(boolean b) {
-		previousCollapsePeptides = jCheckBoxCollapsePeptides.isEnabled();
-		previousCollapseProteins = jCheckBoxCollapseProteins.isEnabled();
-		previousIncludeDecoy = jCheckBoxIncludeDecoy.isEnabled();
-		previousIncludeGene = jCheckBoxIncludeGeneInfo.isEnabled();
-		previousSearchForProteinSequence = jCheckBoxSearchForProteinSequence.isEnabled();
 
 		jCheckBoxCollapsePeptides.setEnabled(b);
 		jCheckBoxCollapseProteins.setEnabled(b);

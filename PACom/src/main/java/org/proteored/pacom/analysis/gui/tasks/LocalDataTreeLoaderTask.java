@@ -56,11 +56,9 @@ public class LocalDataTreeLoaderTask extends SwingWorker<Void, String> {
 					rootNode.add(projectNode);
 				}
 
-				treeModel.nodeStructureChanged(rootNode);
-				treeModel.reload();
-
 			}
-
+			treeModel.nodeStructureChanged(rootNode);
+			treeModel.reload();
 			firePropertyChange(LOCAL_TREE_LOADER_FINISHED, null, numLocalIdSets);
 		} catch (Exception e) {
 			firePropertyChange(LOCAL_TREE_LOADER_ERROR, null, e.getMessage());

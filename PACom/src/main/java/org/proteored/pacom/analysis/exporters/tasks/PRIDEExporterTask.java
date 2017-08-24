@@ -37,6 +37,7 @@ public class PRIDEExporterTask extends SwingWorker<Void, Void> implements Export
 	public static final String SINGLE_PRIDE_COMPRESSING_FINISHED = "single PRIDE compressing finished";
 	public static final String PRIDE_EXPORTER_ERROR = "pride exporter error";
 	public static final String PRIDE_EXPORTER_DONE = "pride exporter done";
+	public static final String PRIDE_EXPORTER_STARTED = "pride exporter started";
 
 	public static final String SINGLE_PRIDE_EXPORTING_STARTED = "single pride exporting started";
 
@@ -69,6 +70,7 @@ public class PRIDEExporterTask extends SwingWorker<Void, Void> implements Export
 
 	@Override
 	protected Void doInBackground() {
+		firePropertyChange(PRIDE_EXPORTER_STARTED, null, null);
 		export();
 		return null;
 	}

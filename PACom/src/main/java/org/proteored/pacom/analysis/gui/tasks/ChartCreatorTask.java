@@ -54,6 +54,7 @@ import gnu.trove.set.hash.THashSet;
 public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
 	public static final String CHART_GENERATED = "Chart generated";
+	public static final String CHART_GENERATION_STARTED = "Chart started";
 	public static final String CHART_ERROR_GENERATED = "Chart error generated";
 	public static final String DATASET_PROGRESS = "Data set progress";
 	private final String chartType;
@@ -81,6 +82,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 	@Override
 	protected Object doInBackground() throws Exception {
+		firePropertyChange(CHART_GENERATION_STARTED, null, null);
 		parent.setToolTipInformation3("");
 		error = null;
 		try {

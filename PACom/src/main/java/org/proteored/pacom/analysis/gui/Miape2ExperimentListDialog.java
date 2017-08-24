@@ -47,6 +47,7 @@ import org.proteored.pacom.analysis.gui.tasks.MiapeTreeIntegrityCheckerTask;
 import org.proteored.pacom.analysis.util.FileManager;
 import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.gui.MainFrame;
+import org.proteored.pacom.utils.ComponentEnableStateKeeper;
 
 import edu.scripps.yates.utilities.util.versioning.AppVersion;
 
@@ -97,6 +98,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 	private InitializeProjectComboBoxTask projectComboLoaderTask;
 	private LocalDataTreeLoaderTask localDataTreeLoaderTask;
 	private MiapeTreeIntegrityCheckerTask integrityChecker;
+	private final ComponentEnableStateKeeper enableStateKeeper = new ComponentEnableStateKeeper();
 
 	@Override
 	public void dispose() {
@@ -186,7 +188,6 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 			String suffix = " (v" + version.toString() + ")";
 			this.setTitle(getTitle() + suffix);
 		}
-
 	}
 
 	public static Miape2ExperimentListDialog getInstance(MainFrame parent) {
@@ -485,7 +486,6 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 		jButtonCancelLoading.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButtonCancelLoadingActionPerformed(evt);
 			}
 		});
 
@@ -1392,18 +1392,6 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 		}
 	}
 
-	private void jButtonCancelLoadingActionPerformed(java.awt.event.ActionEvent evt) {
-
-		setStatus("MIAPE loading canceled");
-		// this.cancelRetrievingTasks();
-		// this.disableControls(true);
-		enableCancelTreeLoadinButton(false);
-
-		jProgressBar.setValue(0);
-		jProgressBar.setStringPainted(false);
-		jProgressBar.setIndeterminate(false);
-	}
-
 	private void jButtonDeleteNodeActionPerformed(java.awt.event.ActionEvent evt) {
 		if (jTreeProject.getSelectionCount() > 0) {
 			if (jTreeProject.isOnlyOneNodeSelected(PROJECT_LEVEL)) {
@@ -2230,27 +2218,6 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 	// End of variables declaration//GEN-END:variables
 
 	// @Override
-	private void disableControls(boolean b) {
-		jButtonAddExperiment.setEnabled(b);
-		jButtonAddReplicate.setEnabled(b);
-		jButtonFinish.setEnabled(b);
-		jButtonClearProjectTree.setEnabled(b);
-		jButtonSave.setEnabled(b);
-		jButtonDeleteNode.setEnabled(b);
-
-		jTextExperimentName.setEnabled(b);
-		jTextProjectName.setEnabled(b);
-		jTextReplicateName.setEnabled(b);
-		jTreeMIAPEMSIs.setEnabled(b);
-		jTreeProject.setEnabled(b);
-		jTreeManualMIAPEMSIs.setEnabled(b);
-
-		jTextFieldLabelNameTemplate.setEnabled(b);
-		jTextFieldLabelNumberTemplate.setEnabled(b);
-
-		jButtonLoadSavedProject.setEnabled(b);
-
-	}
 
 	@Override
 	public synchronized void propertyChange(PropertyChangeEvent evt) {
@@ -2276,8 +2243,9 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 			String notificacion = evt.getNewValue().toString();
 			appendStatus(notificacion);
 		} else if (MiapeTreeIntegrityCheckerTask.INTEGRITY_OK.equals(evt.getPropertyName())) {
+			this.enableStateKeeper.setToPreviousState(this);
 			jProgressBar.setIndeterminate(false);
-			disableControls(true);
+
 			try {
 				save(false);
 				if (finishPressed)
@@ -2287,19 +2255,26 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 				return;
 			}
 		} else if (MiapeTreeIntegrityCheckerTask.INTEGRITY_START.equals(evt.getPropertyName())) {
+			this.enableStateKeeper.keepEnableStates(this);
+			this.enableStateKeeper.disable(this);
 			jProgressBar.setIndeterminate(true);
-			disableControls(false);
+
 		} else if (MiapeTreeIntegrityCheckerTask.INTEGRITY_ERROR.equals(evt.getPropertyName())) {
 			jProgressBar.setIndeterminate(false);
-			disableControls(true);
+			this.enableStateKeeper.setToPreviousState(this);
 			String message = (String) evt.getNewValue();
 			JOptionPane.showMessageDialog(this, message, "Error in comparison project", JOptionPane.OK_OPTION);
 			appendStatus("Save canceled");
 		} else if (LocalDataTreeLoaderTask.LOCAL_TREE_LOADER_FINISHED.equals(evt.getPropertyName())) {
+			this.enableStateKeeper.setToPreviousState(this);
 			Integer numLoaded = (Integer) evt.getNewValue();
-			appendStatus(numLoaded + " imported datasets loaded.");
+			appendStatus(numLoaded + " datasets loaded.");
 		} else if (LocalDataTreeLoaderTask.LOCAL_TREE_LOADER_ERROR.equals(evt.getPropertyName())) {
+			this.enableStateKeeper.setToPreviousState(this);
 			appendStatus("Error loading local datasets: " + evt.getNewValue());
+		} else if (LocalDataTreeLoaderTask.LOCAL_TREE_LOADER_STARTS.equals(evt.getPropertyName())) {
+			this.enableStateKeeper.keepEnableStates(this);
+			this.enableStateKeeper.disable(this);
 		}
 		pack();
 	}

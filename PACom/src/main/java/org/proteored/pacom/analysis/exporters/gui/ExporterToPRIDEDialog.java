@@ -22,6 +22,7 @@ import org.proteored.miapeapi.experiment.model.ExperimentList;
 import org.proteored.pacom.analysis.exporters.tasks.PRIDEExporterTask;
 import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.gui.MainFrame;
+import org.proteored.pacom.utils.ComponentEnableStateKeeper;
 
 /**
  *
@@ -35,6 +36,7 @@ public class ExporterToPRIDEDialog extends javax.swing.JDialog implements Proper
 	private int numCreated = 0;
 
 	private PRIDEExporterTask exporterTask;
+	private final ComponentEnableStateKeeper enableStateKeeper = new ComponentEnableStateKeeper();
 
 	public ExporterToPRIDEDialog(Frame parent, ExperimentList experimentList) {
 		super(parent, true);
@@ -67,6 +69,7 @@ public class ExporterToPRIDEDialog extends javax.swing.JDialog implements Proper
 		// set title
 		setTitle("Export to PRIDE XML");
 		pack();
+		enableStateKeeper.addReverseComponent(jButtonCancel);
 	}
 
 	/*
@@ -421,7 +424,10 @@ public class ExporterToPRIDEDialog extends javax.swing.JDialog implements Proper
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getPropertyName().equals(PRIDEExporterTask.SINGLE_PRIDE_EXPORTING_STARTED)) {
+		if (evt.getPropertyName().equals(PRIDEExporterTask.PRIDE_EXPORTER_STARTED)) {
+			enableStateKeeper.keepEnableStates(this);
+			enableStateKeeper.disable(this);
+		} else if (evt.getPropertyName().equals(PRIDEExporterTask.SINGLE_PRIDE_EXPORTING_STARTED)) {
 			jProgressBar.setIndeterminate(true);
 			jButtonExport.setEnabled(false);
 			String experimentName = (String) evt.getNewValue();
@@ -467,6 +473,7 @@ public class ExporterToPRIDEDialog extends javax.swing.JDialog implements Proper
 
 			}
 		} else if (evt.getPropertyName().equals(PRIDEExporterTask.PRIDE_EXPORTER_DONE)) {
+			enableStateKeeper.setToPreviousState(this);
 			List<File> generatedFiles = (List<File>) evt.getNewValue();
 			jProgressBar.setIndeterminate(false);
 			jButtonExport.setEnabled(true);
@@ -489,6 +496,7 @@ public class ExporterToPRIDEDialog extends javax.swing.JDialog implements Proper
 
 			}
 		} else if (evt.getPropertyName().equals(PRIDEExporterTask.PRIDE_EXPORTER_ERROR)) {
+			enableStateKeeper.setToPreviousState(this);
 			jProgressBar.setIndeterminate(false);
 			jButtonExport.setEnabled(true);
 			jButtonCancel.setEnabled(false);
