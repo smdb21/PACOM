@@ -251,10 +251,12 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 			public void changedUpdate(DocumentEvent e) {
 				String text;
 				try {
-					text = e.getDocument().getText(0, e.getLength());
+					text = e.getDocument().getText(0, e.getDocument().getLength()).trim();
 					if (text.contains("\n")) {
 						final String[] split = text.split("\n");
 						jLabelNumPeptidesPeptideSequenceFilter.setText(split.length + " peptide sequences");
+					} else if (!"".equals(text)) {
+						jLabelNumPeptidesPeptideSequenceFilter.setText("1 peptide sequence");
 					} else {
 						jLabelNumPeptidesPeptideSequenceFilter.setText("0 peptide sequences");
 					}
@@ -269,10 +271,12 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 			public void insertUpdate(DocumentEvent e) {
 				String text;
 				try {
-					text = e.getDocument().getText(0, e.getLength());
+					text = e.getDocument().getText(0, e.getDocument().getLength()).trim();
 					if (text.contains("\n")) {
 						final String[] split = text.split("\n");
 						jLabelNumPeptidesPeptideSequenceFilter.setText(split.length + " peptide sequences");
+					} else if (!"".equals(text)) {
+						jLabelNumPeptidesPeptideSequenceFilter.setText("1 peptide sequence");
 					} else {
 						jLabelNumPeptidesPeptideSequenceFilter.setText("0 peptide sequences");
 					}
@@ -286,10 +290,12 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 			public void removeUpdate(DocumentEvent e) {
 				String text;
 				try {
-					text = e.getDocument().getText(0, e.getLength());
+					text = e.getDocument().getText(0, e.getDocument().getLength()).trim();
 					if (text.contains("\n")) {
 						final String[] split = text.split("\n");
 						jLabelNumPeptidesPeptideSequenceFilter.setText(split.length + " peptide sequences");
+					} else if (!"".equals(text)) {
+						jLabelNumPeptidesPeptideSequenceFilter.setText("1 peptide sequence");
 					} else {
 						jLabelNumPeptidesPeptideSequenceFilter.setText("0 peptide sequences");
 					}
