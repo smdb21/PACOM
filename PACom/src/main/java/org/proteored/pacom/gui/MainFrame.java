@@ -418,7 +418,7 @@ public class MainFrame extends javax.swing.JFrame {
 
 	private void showMiapeExtractionBatchTutorial() {
 		final int showConfirmDialog = JOptionPane.showConfirmDialog(this,
-				"Do you want to open a browser window to go to the Tutorial pdf file?", "Go to tutorial",
+				"Do you want to open a browser window to go to the PACOM Wiki file?", "Go to WIKI",
 				JOptionPane.YES_NO_OPTION);
 		if (showConfirmDialog == JOptionPane.YES_OPTION) {
 			try {
@@ -449,7 +449,7 @@ public class MainFrame extends javax.swing.JFrame {
 
 	private void showMIAPEExtractionTutorial() {
 		final int showConfirmDialog = JOptionPane.showConfirmDialog(this,
-				"Do you want to open a browser window to go to the Tutorial pdf file?", "Go to tutorial",
+				"Do you want to open a browser window to go to the PACOM Wiki page?", "Go to WIKI",
 				JOptionPane.YES_NO_OPTION);
 		if (showConfirmDialog == JOptionPane.YES_OPTION) {
 			try {
