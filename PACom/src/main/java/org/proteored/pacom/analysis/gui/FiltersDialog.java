@@ -2564,7 +2564,8 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 		if (jCheckBoxPeptideNumberFilterActivation.isSelected()) {
 			try {
 				Integer min = Integer.valueOf(jTextFieldPeptideNumber.getText());
-				boolean distinguishSequences = true;
+				boolean distinguishSequences = checkBoxDifferentSequences.isSelected();
+
 				PeptideNumberFilter filter = new PeptideNumberFilter(min, distinguishSequences,
 						PACOMSoftware.getInstance());
 				return filter;
