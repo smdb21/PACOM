@@ -1466,7 +1466,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		} else if (MIAPEMSChecker.MIAPE_MS_FORMS_OPENING.equals(evt.getPropertyName())) {
 			appendStatus("Opening MS metadata editor...");
 		} else if (MIAPEMSChecker.MIAPE_MS_CHECKING_IN_PROGRESS.equals(evt.getPropertyName())) {
-			appendStatus("Extracting MIAPE MS metadata from file...");
+			appendStatus("Extracting MS metadata from file...");
 			jProgressBar.setIndeterminate(true);
 		} else if (MIAPEMSChecker.MIAPE_MS_CHECKING_ERROR.equals(evt.getPropertyName())) {
 			enableStateKeeper.setToPreviousState(this);
@@ -1475,7 +1475,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 			jProgressBar.setIndeterminate(false);
 		} else if (MIAPEMSChecker.MIAPE_MS_CHECKING_DONE.equals(evt.getPropertyName())) {
 			enableStateKeeper.setToPreviousState(this);
-			appendStatus("MIAPE MS metadata edition completed. Click again on Import data.");
+			appendStatus("MS metadata edition completed. Click again on Import data.");
 			jProgressBar.setIndeterminate(false);
 			setCursor(null);
 		} else if (MetadataLoader.METADATA_READED.equals(evt.getPropertyName())) {
