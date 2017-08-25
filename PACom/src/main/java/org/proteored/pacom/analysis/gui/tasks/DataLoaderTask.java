@@ -64,15 +64,19 @@ public class DataLoaderTask extends SwingWorker<ExperimentList, Void> {
 
 			return expList;
 		} catch (MiapeDataInconsistencyException e) {
+			e.printStackTrace();
 			firePropertyChange(DATA_LOADED_ERROR, null, e.getMessage());
 			return null;
 		} catch (WrongXMLFormatException e) {
+			e.printStackTrace();
 			firePropertyChange(DATA_LOADED_ERROR, null, e.getMessage());
 			return null;
 		} catch (IllegalMiapeArgumentException e) {
+			e.printStackTrace();
 			firePropertyChange(DATA_LOADED_ERROR, null, e.getMessage());
 			return null;
 		} catch (Exception e) {
+			e.printStackTrace();
 			firePropertyChange(DATA_LOADED_ERROR, null, e.getMessage());
 			return null;
 		}
