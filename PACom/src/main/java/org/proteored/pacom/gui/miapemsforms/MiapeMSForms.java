@@ -68,7 +68,7 @@ public class MiapeMSForms extends javax.swing.JDialog {
 			e.printStackTrace();
 		}
 		initComponents();
-		this.setTitle("MIAPE MS Metadata editor");
+		this.setTitle("MS Metadata editor");
 		this.cvManager = OntologyLoaderTask.getCvManager();
 		this.miapeMSFormManager = new MIAPEMSFormManager(this, cvManager);
 		this.miapeMS = miapeMS;
@@ -516,10 +516,7 @@ public class MiapeMSForms extends javax.swing.JDialog {
 			this.jButtonSaveActionPerformed(null);
 		}
 
-		if (this.miapemsChecker != null)
-			this.miapemsChecker.finished(this.jTextFieldConfigurationName.getText());
-
-		this.dispose();
+		dispose();
 	}
 
 	private void jButtonPreviousActionPerformed(java.awt.event.ActionEvent evt) {
@@ -542,6 +539,14 @@ public class MiapeMSForms extends javax.swing.JDialog {
 		disableCurrentButton();
 		showMIAPEdata(currentSlide);
 		RefineryUtilities.centerFrameOnScreen(this);
+	}
+
+	@Override
+	public void dispose() {
+		if (this.miapemsChecker != null) {
+			this.miapemsChecker.finished(this.jTextFieldConfigurationName.getText());
+		}
+		super.dispose();
 	}
 
 	private void disableCurrentButton() {

@@ -849,18 +849,15 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 
 	private void jButtonEditMetadataActionPerformed(java.awt.event.ActionEvent evt) {
 		if (miapeMSChecker == null || !miapeMSChecker.getState().equals(StateValue.STARTED)) {
-			if (miapeMSChecker != null)
-				miapeMSChecker.cancel(true);
-
 			boolean extractFromStandardFile;
-			if ("".equals(jComboBoxMetadata.getSelectedItem()))
+			if ("".equals(jComboBoxMetadata.getSelectedItem())) {
 				extractFromStandardFile = true;
-			else
+			} else {
 				extractFromStandardFile = false;
+			}
 			miapeMSChecker = new MIAPEMSChecker(this, extractFromStandardFile);
 			miapeMSChecker.addPropertyChangeListener(this);
 			miapeMSChecker.execute();
-			appendStatus("Opening metadata editor...");
 
 		} else
 			appendStatus("MIAPE MS metadata is currently being checked. Try again later");
@@ -1462,6 +1459,12 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 			appendStatus("Data import cancelled");
 			this.setCursor(null); // turn off the wait cursor
 			jProgressBar.setIndeterminate(false);
+		} else if (MIAPEMSChecker.MIAPE_MS_CHECKING_STARTED.equals(evt.getPropertyName())) {
+			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			enableStateKeeper.keepEnableStates(this);
+			enableStateKeeper.disable(this);
+		} else if (MIAPEMSChecker.MIAPE_MS_FORMS_OPENING.equals(evt.getPropertyName())) {
+			appendStatus("Opening MS metadata editor...");
 		} else if (MIAPEMSChecker.MIAPE_MS_CHECKING_IN_PROGRESS.equals(evt.getPropertyName())) {
 			appendStatus("Extracting MIAPE MS metadata from file...");
 			jProgressBar.setIndeterminate(true);
@@ -1474,6 +1477,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 			enableStateKeeper.setToPreviousState(this);
 			appendStatus("MIAPE MS metadata edition completed. Click again on Import data.");
 			jProgressBar.setIndeterminate(false);
+			setCursor(null);
 		} else if (MetadataLoader.METADATA_READED.equals(evt.getPropertyName())) {
 			String string = (String) evt.getNewValue();
 			jLabelMiapeMSMetadata.setText(string);

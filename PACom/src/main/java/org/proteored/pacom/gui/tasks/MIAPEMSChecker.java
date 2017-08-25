@@ -32,18 +32,25 @@ public class MIAPEMSChecker extends SwingWorker<MiapeMSDocument, Void> {
 	public static final String MIAPE_MS_CHECKING_DONE = "checking ms done";
 	public static final String MIAPE_MS_CHECKING_ERROR = "checking ms error";
 	public static final String MIAPE_MS_CHECKING_IN_PROGRESS = "checking ms";
+	public static final String MIAPE_MS_CHECKING_STARTED = "checking ms started";
+	public static final String MIAPE_MS_FORMS_OPENING = "ms forms opening";
+
 	public static final String CURRENT_MZML = "current mzML file";
 	public static final String CURRENT_PRIDEXML = "current PRIDE XML file";
 
 	private final MiapeExtractionFrame parent;
 	private final ControlVocabularyManager cvManager;
 
-	private MiapeMSForms forms;
+	private static MiapeMSForms forms;
 	private boolean save = false;
 
 	private boolean reportExtractionDone;
 
 	private final boolean extractMetadataFromStandardFile;
+
+	private static MiapeMSDocument previousMIAPEMS;
+
+	private static MiapeMSDocument miapeMs;
 
 	public MIAPEMSChecker(MiapeExtractionFrame standard2miapeDialog, boolean extractMetadataFromStandardFile) {
 		parent = standard2miapeDialog;
@@ -61,14 +68,16 @@ public class MIAPEMSChecker extends SwingWorker<MiapeMSDocument, Void> {
 
 	@Override
 	protected MiapeMSDocument doInBackground() throws Exception {
+		firePropertyChange(MIAPE_MS_CHECKING_STARTED, null, null);
 		reportExtractionDone = true;
-		MiapeMSDocument miapeMs = null;
+		miapeMs = null;
 
 		setProgress(0);
 		final String inputFileName = parent.getPrimaryInputFileName();
 		if (inputFileName != null && !"".equals(inputFileName) && extractMetadataFromStandardFile) {
-			firePropertyChange(MIAPE_MS_CHECKING_IN_PROGRESS, null, null);
+
 			if (parent.isMzMLSelected()) {
+				firePropertyChange(MIAPE_MS_CHECKING_IN_PROGRESS, null, null);
 				File mzMLFile = new File(inputFileName);
 				File metadataMzMLFile = getMetadataMzMLFile(mzMLFile);
 				log.info("parsing mzML XML to document MS in the faster method (SAX+DOM method)");
@@ -80,6 +89,7 @@ public class MIAPEMSChecker extends SwingWorker<MiapeMSDocument, Void> {
 						cvManager, null, null, mzMLFile.getName(), null);
 
 			} else if (parent.isPRIDESelected()) {
+				firePropertyChange(MIAPE_MS_CHECKING_IN_PROGRESS, null, null);
 				File prideXMLFile = new File(inputFileName);
 				MiapePrideXmlFile miapePrideFile = null;
 				if (parent.jCheckBoxMS.isSelected() && parent.jCheckBoxMSI.isSelected()) {
@@ -106,7 +116,13 @@ public class MIAPEMSChecker extends SwingWorker<MiapeMSDocument, Void> {
 		}
 
 		if (!save) {
-			forms = new MiapeMSForms(parent, this, miapeMs);
+			firePropertyChange(MIAPE_MS_FORMS_OPENING, null, null);
+			if (forms == null || (miapeMs != null && previousMIAPEMS == null)
+					|| (miapeMs == null && previousMIAPEMS != null)
+					|| (miapeMs != null && !miapeMs.equals(previousMIAPEMS))) {
+				previousMIAPEMS = miapeMs;
+				forms = new MiapeMSForms(parent, this, miapeMs);
+			}
 			forms.setVisible(true);
 		} else {
 			String absolutePath = null;
@@ -198,11 +214,10 @@ public class MIAPEMSChecker extends SwingWorker<MiapeMSDocument, Void> {
 	protected void done() {
 		if (!isCancelled()) {
 			log.info("MIAPEMSChecker done");
-			if (reportExtractionDone)
+			if (reportExtractionDone) {
 				firePropertyChange(MIAPE_MS_METADATA_EXTRACTION_DONE, null, null);
-		} else
-			log.info("MIAPEMSChecker error");
-		// TODO Auto-generated method stub
+			}
+		}
 		super.done();
 	}
 
