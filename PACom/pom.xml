@@ -3,7 +3,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.proteored</groupId>
    <artifactId>pacom</artifactId>
-   <version>1.43</version>
+   <version>1.44</version>
    <distributionManagement>
       <repository>
          <id>internal</id>
@@ -81,7 +81,7 @@
       <dependency>
          <groupId>edu.scripps.yates</groupId>
          <artifactId>utilities</artifactId>
-         <version>1.2-SNAPSHOT</version>
+         <version>1.3-SNAPSHOT</version>
       </dependency>
    </dependencies>
    <repositories>
