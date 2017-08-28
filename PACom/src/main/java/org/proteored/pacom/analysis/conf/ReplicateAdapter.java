@@ -119,9 +119,15 @@ public class ReplicateAdapter implements Adapter<Replicate> {
 	}
 
 	private MiapeMSDocument getMIAPEMSFromFile(CPMS cpMs) {
-		File file = new File(FileManager.getMiapeMSXMLFileLocalPathFromMiapeInformation(cpMs));
-		if (!file.exists())
+		File file = null;
+		try {
+			file = new File(FileManager.getMiapeMSXMLFileLocalPathFromMiapeInformation(cpMs));
+		} catch (IllegalMiapeArgumentException e) {
 			return null;
+		}
+		if (!file.exists()) {
+			return null;
+		}
 		MiapeMSDocument ret;
 		MIAPEMSXmlFile msFile = new MIAPEMSXmlFile(file);
 		msFile.setCvUtil(cvManager);
