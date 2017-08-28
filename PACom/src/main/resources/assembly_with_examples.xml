@@ -27,16 +27,16 @@
 			</includes>
 			<outputDirectory>${assembly.output.folder}/user_data/curated_exps</outputDirectory>
 		</fileSet>
-<!--         <fileSet> -->
-<!--             <directory>pme6_reanalysis_project</directory> -->
-<!--             <includes> -->
-<!--                 <include>*.xml</include> -->
-<!--             </includes> -->
-<!--             <excludes> -->
-<!--             	<exclude>PME6_Reanalysis*.xml</exclude> -->
-<!--             </excludes> -->
-<!--             <outputDirectory>${assembly.output.folder}/user_data/local_datasets/PME6_reanalysis</outputDirectory> -->
-<!--         </fileSet> -->
+        <fileSet>
+            <directory>pme6_reanalysis_project</directory>
+            <includes>
+                <include>*.xml</include>
+            </includes>
+            <excludes>
+            	<exclude>PME6_Reanalysis*.xml</exclude>
+            </excludes>
+            <outputDirectory>${assembly.output.folder}/user_data/local_datasets/PME6_reanalysis</outputDirectory>
+        </fileSet>
 		<fileSet>
             <directory>pme6_reanalysis_project</directory>
             <includes>
