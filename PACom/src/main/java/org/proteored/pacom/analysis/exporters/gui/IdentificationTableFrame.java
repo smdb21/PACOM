@@ -125,12 +125,16 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 
 		// icon button excel
 		jButtonExport2Excel.setIcon(ImageManager.getImageIcon(ImageManager.EXCEL_TABLE));
+		jButtonExport2Excel.setPressedIcon(ImageManager.getImageIcon(ImageManager.EXCEL_TABLE_CLICKED));
+		jButtonCancel.setIcon(ImageManager.getImageIcon(ImageManager.STOP));
+		jButtonCancel.setPressedIcon(ImageManager.getImageIcon(ImageManager.STOP_CLICKED));
 
 		enableStateKeeper.addReverseComponent(this.jButtonCancel);
+
 	}
 
 	private void updateColumnNamesComboBox() {
-		List<String> columnsStringList = ExportedColumns.getColumnsStringForTable(showPeptides(), isGeneInfoIncluded(),
+		List<String> columnsStringList = ExportedColumns.getColumnsStringForTable(showPeptides(), showGeneInfo(),
 				jCheckBoxIncludeDecoy.isEnabled(),
 				ExporterUtil.getSelectedIdentificationSets(this.idSets, getDataLevel()));
 		jComboBoxColumnNames.setModel(new DefaultComboBoxModel(columnsStringList.toArray()));
@@ -189,7 +193,7 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 		jPanelOptions.setBorder(javax.swing.BorderFactory
 				.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Options"));
 
-		jCheckBoxIncludeDecoy.setText("include DECOY hits");
+		jCheckBoxIncludeDecoy.setText("show DECOY hits");
 		jCheckBoxIncludeDecoy.setToolTipText(
 				"<html>If this options is activated, decoy peptides/proteins <br>will also be included in the exported file.<br>\nThis options only is available if a FDR filter is applied.</html>");
 		jCheckBoxIncludeDecoy.setEnabled(false);
@@ -199,10 +203,11 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 				jCheckBoxIncludeDecoyActionPerformed(evt);
 			}
 		});
-
-		jCheckBoxSearchForProteinSequence.setText("calculate protein coverages");
+		jCheckBoxSearchForProteinSequence.setText("import UniprotKB info");
 		jCheckBoxSearchForProteinSequence.setToolTipText(
-				"<html>\nThis options will retrieve protein sequences from the Internet in order to\n<br>\ncalculate the protein coverage. Depending on the number of proteins you\n<br>have, it can take several minutes.\n</html>");
+				"<html>This option will retrieve protein annotations from the Internet such as<ul><li>protein description (if not available yet)</li><li>gene name (if not available yet)</li><li>Uniprot annotation score</li><li>protein sequence to calculate protein coverage (if not available yet)</li></ul><br>"
+						+ "Depending on the number of proteins you have, it can take several minutes.</html>");
+
 		jCheckBoxSearchForProteinSequence.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -210,9 +215,10 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 			}
 		});
 
-		jCheckBoxIncludeGeneInfo.setText("include gene information");
+		jCheckBoxIncludeGeneInfo.setText("show gene information");
 		jCheckBoxIncludeGeneInfo.setToolTipText(
-				"<html>\nThis option will retrieve genes associated with the proteins from the UniprotKB.\nDepending on the number of proteins you\n<br>have, it can take several minutes.</html>");
+				"<html>Select this option to include information about the genes encoding the dataset proteins such as:<ul><li>gene name</li><li>ENSEMBL gene ID</li><li>chromosome name (for human proteins)</li></ul></html>");
+
 		jCheckBoxIncludeGeneInfo.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -220,7 +226,7 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 			}
 		});
 
-		jCheckBoxCollapsePeptides.setText("hidde redundant peptides");
+		jCheckBoxCollapsePeptides.setText("hide redundant peptides");
 		jCheckBoxCollapsePeptides.setToolTipText(
 				"<html>\nIf this option is activated, if the same peptide has been detected\n<br>\nmore than once, it will appear only once in the exported table and\n<br>\nthe score will be the best score of all occurrences.</html>");
 		jCheckBoxCollapsePeptides.setEnabled(false);
@@ -232,7 +238,7 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 		});
 
 		jCheckBoxCollapseProteins.setSelected(true);
-		jCheckBoxCollapseProteins.setText("hidde redundant proteins");
+		jCheckBoxCollapseProteins.setText("hide redundant proteins");
 		jCheckBoxCollapseProteins.setToolTipText(
 				"<html>\nIf this option is activated, if the same protein has been detected\n<br>\nmore than once, it will appear only once in the exported table and\n<br>\nthe score will be the best score of all occurrences.</html>");
 		jCheckBoxCollapseProteins.addActionListener(new java.awt.event.ActionListener() {
@@ -295,7 +301,6 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 		});
 		jButtonExport2Excel.setToolTipText(
 				"<html>Export current data to a Tab Separated Values file<br>that can be opened by Excel.</html>");
-		jButtonExport2Excel.setEnabled(false);
 		javax.swing.GroupLayout jPanelOptionsLayout = new javax.swing.GroupLayout(jPanelOptions);
 		jPanelOptionsLayout.setHorizontalGroup(jPanelOptionsLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(jPanelOptionsLayout.createSequentialGroup().addContainerGap()
@@ -454,9 +459,8 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 	protected void exportTSV() {
 		ExporterDialog exporterDialog = new ExporterDialog(this, parentFrame,
 				ExporterUtil.getSelectedIdentificationSets(idSets, getDataLevel()), getDataLevel());
-		// disable any modification
-		exporterDialog.setControlsDisabled();
-		exporterDialog.setControlStatusEnabled(false);
+
+		exporterDialog.setOptionsEnabled(false);
 		// set exporting parameters
 		exporterDialog.setExporterParameters(this);
 		exporterDialog.enableExportButton(true);
@@ -780,7 +784,7 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 	}
 
 	@Override
-	public boolean isGeneInfoIncluded() {
+	public boolean showGeneInfo() {
 		return jCheckBoxIncludeGeneInfo.isSelected();
 	}
 
@@ -795,7 +799,7 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 	}
 
 	@Override
-	public boolean retrieveProteinSequences() {
+	public boolean retrieveFromUniprotKB() {
 		return jCheckBoxSearchForProteinSequence.isSelected();
 	}
 

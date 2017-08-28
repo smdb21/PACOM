@@ -42,7 +42,7 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 	private JTable table;
 	private final boolean includeDecoyHits;
 	private final boolean includePeptides;
-	private final boolean retrieveProteinSequences;
+	private final boolean retrieveFromUniprot;
 	private final boolean includeGeneInfo;
 	private final boolean collapsePeptides;
 	private final boolean collapseProteins;
@@ -60,10 +60,10 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 		this.table = table2;
 		this.includeDecoyHits = manager.isDecoyHitsIncluded();
 		this.includePeptides = manager.showPeptides();
-		this.includeGeneInfo = manager.isGeneInfoIncluded();
+		this.includeGeneInfo = manager.showGeneInfo();
 		this.collapsePeptides = manager.showBestPeptides();
 		this.collapseProteins = manager.showBestProteins();
-		this.retrieveProteinSequences = manager.retrieveProteinSequences();
+		this.retrieveFromUniprot = manager.retrieveFromUniprotKB();
 		this.isFDRApplied = manager.isFDRApplied();
 		this.idSets.addAll(idSets);
 
@@ -89,7 +89,7 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 			return this.table;
 		}
 
-		if (this.retrieveProteinSequences || includeGeneInfo) {
+		if (this.retrieveFromUniprot) {
 
 			Set<String> uniprotAccs = new THashSet<String>();
 			for (IdentificationSet identificationSet : idSets) {
@@ -105,7 +105,7 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 			if (!uniprotAccs.isEmpty()) {
 
 				try {
-					firePropertyChange(PROTEIN_SEQUENCE_RETRIEVAL, null, "Retrieving protein sequences from "
+					firePropertyChange(PROTEIN_SEQUENCE_RETRIEVAL, null, "Retrieving protein annotations from "
 							+ uniprotAccs.size() + " different proteins in UniprotKB");
 					UniprotProteinLocalRetriever upr = FileManager.getUniprotProteinLocalRetriever();
 					upr.setCacheEnabled(true);
@@ -163,7 +163,7 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 
 							if (pass && (includeDecoyHits || (!includeDecoyHits && !isdecoy))) {
 								final List<String> lineStringList = ExporterUtil
-										.getInstance(idSets, includePeptides, includeGeneInfo, retrieveProteinSequences)
+										.getInstance(idSets, includePeptides, retrieveFromUniprot)
 										.getPeptideInfoList(peptideOccurrence, columnsStringList, i++, idSet);
 								addNewRow(lineStringList);
 							}
@@ -213,7 +213,7 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 										peptide.getModificationString());
 								peptideOccurrence.addOccurrence(peptide);
 								final List<String> lineStringList = ExporterUtil
-										.getInstance(idSets, includePeptides, includeGeneInfo, retrieveProteinSequences)
+										.getInstance(idSets, includePeptides, retrieveFromUniprot)
 										.getPeptideInfoList(peptideOccurrence, columnsStringList, i++, idSet);
 
 								// log.info(lineString);
@@ -267,7 +267,7 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 
 						while (iterator.hasNext()) {
 							String printIfNecessary = counter.printIfNecessary();
-							if (printIfNecessary != null) {
+							if (printIfNecessary != null && !"".equals(printIfNecessary)) {
 								log.info(printIfNecessary);
 							}
 							ProteinGroupOccurrence proteinGroupOccurrence = iterator.next();
@@ -278,7 +278,7 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 							if (pass && (includeDecoyHits || (!includeDecoyHits && !isdecoy))) {
 
 								final List<String> lineStringList = ExporterUtil
-										.getInstance(idSets, includePeptides, includeGeneInfo, retrieveProteinSequences)
+										.getInstance(idSets, includePeptides, retrieveFromUniprot)
 										.getProteinInfoList(proteinGroupOccurrence, columnsStringList,
 												counter.getCount() + 1, idSet);
 								counter.increment();
@@ -326,7 +326,7 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 								ProteinGroupOccurrence proteinGroupOccurrence = new ProteinGroupOccurrence();
 								proteinGroupOccurrence.addOccurrence(proteinGroup);
 								final List<String> lineStringList = ExporterUtil
-										.getInstance(idSets, includePeptides, includeGeneInfo, retrieveProteinSequences)
+										.getInstance(idSets, includePeptides, retrieveFromUniprot)
 										.getProteinInfoList(proteinGroupOccurrence, columnsStringList, i++, idSet);
 
 								// System.out.println(peptideString);

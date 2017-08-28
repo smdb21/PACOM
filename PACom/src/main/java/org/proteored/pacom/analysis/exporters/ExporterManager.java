@@ -11,13 +11,13 @@ public interface ExporterManager {
 
 	public boolean showPeptides();
 
-	public boolean isGeneInfoIncluded();
-
 	public boolean showBestPeptides();
 
 	public boolean showBestProteins();
 
-	public boolean retrieveProteinSequences();
+	public boolean retrieveFromUniprotKB();
+
+	public boolean showGeneInfo();
 
 	public boolean isDistinguishModifiedPeptides();
 

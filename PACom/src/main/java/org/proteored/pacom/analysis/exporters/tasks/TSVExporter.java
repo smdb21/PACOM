@@ -67,10 +67,10 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 		this.comparisonType = expManager.getComparisonType();
 		this.includeDecoyHits = expManager.isDecoyHitsIncluded();
 		this.showPeptides = expManager.showPeptides();
-		this.includeGeneInfo = expManager.isGeneInfoIncluded();
+		this.includeGeneInfo = expManager.showGeneInfo();
 		this.showBestPeptides = expManager.showBestPeptides();
 		this.showBestProteins = expManager.showBestProteins();
-		this.retrieveProteinSequences = expManager.retrieveProteinSequences();
+		this.retrieveProteinSequences = expManager.retrieveFromUniprotKB();
 		this.isFDRApplied = expManager.isFDRApplied();
 	}
 
@@ -81,7 +81,7 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 		// create file
 		try {
 
-			if (this.retrieveProteinSequences || this.includeGeneInfo) {
+			if (this.retrieveProteinSequences) {
 
 				Set<String> uniprotAccs = new THashSet<String>();
 				for (IdentificationSet identificationSet : idSets) {
@@ -96,8 +96,8 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 				// get all sequences at once first
 				if (!uniprotAccs.isEmpty()) {
 					try {
-						firePropertyChange(PROTEIN_SEQUENCE_RETRIEVAL, null, "Retrieving protein sequences from "
-								+ uniprotAccs.size() + " different proteins in UniprotKB");
+						firePropertyChange(PROTEIN_SEQUENCE_RETRIEVAL, null,
+								"Retrieving protein annotations from " + uniprotAccs.size() + " proteins in UniprotKB");
 
 						UniprotProteinLocalRetriever upr = FileManager.getUniprotProteinLocalRetriever();
 						upr.setCacheEnabled(true);
@@ -113,8 +113,7 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 
 			List<String> columnsStringList = ExportedColumns.getColumnsString(this.showPeptides, this.includeGeneInfo,
 					this.isFDRApplied, idSets);
-			ExporterUtil exporterUtil = ExporterUtil.getInstance(idSets, showPeptides, includeGeneInfo,
-					retrieveProteinSequences);
+			ExporterUtil exporterUtil = ExporterUtil.getInstance(idSets, showPeptides, retrieveProteinSequences);
 			String columnsString = exporterUtil.getStringFromList(columnsStringList, separator) + NEWLINE;
 
 			log.info(columnsString);
@@ -422,6 +421,7 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 
 	@Override
 	protected Void doInBackground() {
+		firePropertyChange(DATA_EXPORTING_STARTING, null, null);
 		export();
 		return null;
 	}

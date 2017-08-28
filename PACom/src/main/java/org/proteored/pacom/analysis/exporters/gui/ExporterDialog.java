@@ -96,8 +96,6 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 			this.jCheckBoxCollapsePeptides.setEnabled(true);
 
 		}
-		// Just enable if the protein sequences have not been retrieved before
-		jCheckBoxSearchForProteinSequence.setEnabled(!parent.isProteinSequencesRetrieved());
 
 		// if (parent != null && parent.isChr16ChartShowed())
 		// this.jCheckBoxIncludeGeneInfo.setEnabled(true);
@@ -193,13 +191,14 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 				"<html>If this options is activated, decoy peptides/proteins <br>will also be included in the exported file.<br>\nThis options only is available if a FDR filter is applied.</html>");
 		jCheckBoxIncludeDecoy.setEnabled(false);
 
-		jCheckBoxSearchForProteinSequence.setText("calculate protein coverages");
+		jCheckBoxSearchForProteinSequence.setText("import UniprotKB info");
 		jCheckBoxSearchForProteinSequence.setToolTipText(
-				"<html>\nThis options will retrieve protein sequences from the Internet in order to\n<br>\ncalculate the protein coverage. Depending on the number of proteins you\n<br>have, it can take several minutes.\n</html>");
+				"<html>This option will retrieve protein annotations from the Internet such as<ul><li>protein description (if not available yet)</li><li>gene name (if not available yet)</li><li>Uniprot annotation score</li><li>protein sequence to calculate protein coverage (if not available yet)</li></ul><br>"
+						+ "Depending on the number of proteins you have, it can take several minutes.</html>");
 
 		jCheckBoxIncludeGeneInfo.setText("include gene information");
 		jCheckBoxIncludeGeneInfo.setToolTipText(
-				"<html>\nThis option will retrieve genes associated with the proteins from the UniprotKB.\nDepending on the number of proteins you\n<br>have, it can take several minutes.</html>");
+				"<html>Select this option to include information about the genes encoding the dataset proteins such as:<ul><li>gene name</li><li>ENSEMBL gene ID</li><li>chromosome name (for human proteins)</li></ul></html>");
 
 		jCheckBoxCollapsePeptides.setSelected(true);
 		jCheckBoxCollapsePeptides.setText("hide redundant peptides");
@@ -394,9 +393,9 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 	private void jButtonExportActionPerformed(java.awt.event.ActionEvent evt) {
 		log.info("Export button is pressed");
 		final File file = getFile();
-		componentEnableStatusKeeper.disable(this);
 
-		exporter = new TSVExporter(this, ExporterUtil.getSelectedIdentificationSets(idSets, getDataLevel()), file,
+		Set<IdentificationSet> idSets2 = ExporterUtil.getSelectedIdentificationSets(idSets, getDataLevel());
+		exporter = new TSVExporter(this, idSets2, file,
 				this.filter);
 		exporter.setDistinguisModificatedPeptides(isDistinguishModifiedPeptides());
 		exporter.addPropertyChangeListener(this);
@@ -416,14 +415,14 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 	}
 
 	@Override
-	public boolean isGeneInfoIncluded() {
+	public boolean showGeneInfo() {
 
 		return jCheckBoxIncludeGeneInfo.isSelected();
 
 	}
 
 	@Override
-	public boolean retrieveProteinSequences() {
+	public boolean retrieveFromUniprotKB() {
 		return jCheckBoxSearchForProteinSequence.isSelected();
 	}
 
@@ -485,7 +484,6 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 	private javax.swing.JRadioButton jRadioButtonExportProteins;
 	private javax.swing.JTextField jTextFieldFilePath;
 	private JComboBox<DataLevel> dataLevelComboBox;
-	private boolean controlsDisabled = false;
 
 	// End of variables declaration//GEN-END:variables
 
@@ -495,17 +493,11 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 			this.componentEnableStatusKeeper.keepEnableStates(this);
 			this.componentEnableStatusKeeper.disable(this);
 
-			// setControlStatusEnabled(false);
-			jButtonCancel.setEnabled(true);
-			jButtonExport.setEnabled(false);
-			jProgressBar1.setIndeterminate(true);
 		} else if (TSVExporter.DATA_EXPORTING_DONE.equals(evt.getPropertyName())) {
 			this.componentEnableStatusKeeper.setToPreviousState(this);
 			final File file = (File) evt.getNewValue();
 			JOptionPane.showMessageDialog(this, "Data exported succesfully at " + file.getAbsolutePath(),
 					"Data exported", JOptionPane.INFORMATION_MESSAGE);
-			jButtonCancel.setEnabled(false);
-			jButtonExport.setEnabled(true);
 			jProgressBar1.setValue(0);
 			jProgressBar1.setString("");
 			jProgressBar1.setIndeterminate(false);
@@ -538,11 +530,7 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 		}
 	}
 
-	public void setControlsDisabled() {
-		this.controlsDisabled = true;
-	}
-
-	public void setControlStatusEnabled(boolean b) {
+	public void setOptionsEnabled(boolean b) {
 
 		jCheckBoxCollapsePeptides.setEnabled(b);
 		jCheckBoxCollapseProteins.setEnabled(b);
@@ -551,8 +539,6 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 		jCheckBoxSearchForProteinSequence.setEnabled(b);
 		jRadioButtonExportProteins.setEnabled(b);
 		jRadioButtonExportPeptides.setEnabled(b);
-		jButtonExport.setEnabled(b);
-		lblLevelToExport.setEnabled(b);
 		if (dataLevel == null) {
 			dataLevelComboBox.setEnabled(b);
 		}
@@ -601,13 +587,13 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 
 	public void setExporterParameters(ExporterManager exporterManager) {
 		jCheckBoxIncludeDecoy.setSelected(exporterManager.isDecoyHitsIncluded());
-		jCheckBoxIncludeGeneInfo.setSelected(exporterManager.isGeneInfoIncluded());
+		jCheckBoxIncludeGeneInfo.setSelected(exporterManager.showGeneInfo());
 		dataLevelComboBox.setSelectedItem(exporterManager.getDataLevel());
 		jCheckBoxCollapsePeptides.setSelected(exporterManager.showBestPeptides());
 		jCheckBoxCollapseProteins.setSelected(exporterManager.showBestProteins());
 		jRadioButtonExportPeptides.setSelected(exporterManager.showPeptides());
 		jRadioButtonExportProteins.setSelected(exporterManager.showBestProteins());
-		jCheckBoxSearchForProteinSequence.setSelected(exporterManager.retrieveProteinSequences());
+		jCheckBoxSearchForProteinSequence.setSelected(exporterManager.retrieveFromUniprotKB());
 	}
 
 	public void enableExportButton(boolean b) {

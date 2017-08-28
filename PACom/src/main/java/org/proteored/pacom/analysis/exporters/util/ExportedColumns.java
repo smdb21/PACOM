@@ -38,7 +38,7 @@ public enum ExportedColumns {
 	PEPTIDE_OCCURRENCE("pep.occurr.", 6,
 			"Peptide occurrence: number of times that the peptide (with the modifications) has been detected in the dataset"), //
 	CHROMOSOME_NAME("chr", 10, "Chromosome name"), //
-	ENSG_ID("ENSG", 15, "ENSEMBL identifier"), //
+	ENSG_ID("ENSG", 15, "ENSEMBL gene identifier"), //
 	GENE_NAME("gene name", 15, "Gene name"), //
 	PROTEIN_EVIDENCE("pe", 6, "Protein evidence (from UniprotKB)"), //
 	// RESEARCHER("researcher", 20, "Researcher name (internal data for the
@@ -153,6 +153,7 @@ public enum ExportedColumns {
 
 		if (!showPeptides) {
 			ret.add(PROTEIN_GROUP_TYPE);
+			ret.add(PROTEIN_EVIDENCE);
 			ret.add(PROTEIN_SCORE);
 			if (isFDRApplied)
 				ret.add(PROTEIN_LOCAL_FDR);
