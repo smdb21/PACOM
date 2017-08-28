@@ -40,7 +40,7 @@
 		<fileSet>
             <directory>pme6_reanalysis_project</directory>
             <includes>
-                <include>PME6_Reanalysis*percnt.xml</include>
+                <include>PME6_Reanalysis*.xml</include>
             </includes>
             <outputDirectory>${assembly.output.folder}/user_data/projects</outputDirectory>
         </fileSet>
