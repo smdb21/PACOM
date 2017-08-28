@@ -189,6 +189,7 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 			public void changedUpdate(DocumentEvent e) {
 				String text;
 				try {
+					jRadioButtonPasteProteinACCList.setSelected(true);
 					text = e.getDocument().getText(0, e.getLength());
 					if (text.contains("\n")) {
 						final String[] split = text.split("\n");
@@ -212,6 +213,8 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 			public void insertUpdate(DocumentEvent e) {
 				String text;
 				try {
+					jRadioButtonPasteProteinACCList.setSelected(true);
+
 					text = e.getDocument().getText(0, e.getDocument().getEndPosition().getOffset());
 					if (text.contains("\n")) {
 						final String[] split = text.split("\n");
@@ -229,6 +232,8 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 			public void removeUpdate(DocumentEvent e) {
 				String text;
 				try {
+					jRadioButtonPasteProteinACCList.setSelected(true);
+
 					text = e.getDocument().getText(0, e.getDocument().getEndPosition().getOffset());
 					if (text.contains("\n")) {
 						final String[] split = text.split("\n");
