@@ -3174,7 +3174,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				if (idSet != null) {
 					datasetName = idSet.getName();
 				}
-				exportSubset(vennData.getUniqueTo1(), datasetName);
+				exportSubset(vennData.getUniqueTo1(), idSet, datasetName);
 			}
 		}
 	}
@@ -3260,7 +3260,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				if (idSet != null) {
 					datasetName = idSet.getName();
 				}
-				exportSubset(vennData.getUniqueTo2(), datasetName);
+				exportSubset(vennData.getUniqueTo2(), idSet, datasetName);
 			}
 		}
 	}
@@ -3275,7 +3275,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				if (idSet != null) {
 					datasetName = idSet.getName();
 				}
-				exportSubset(vennData.getUniqueTo3(), datasetName);
+				exportSubset(vennData.getUniqueTo3(), idSet, datasetName);
 			}
 		}
 	}
@@ -3290,20 +3290,26 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 					String datasetName1 = null;
 					String datasetName2 = null;
 					String datasetName3 = null;
+					Set<IdentificationSet> idSets = new HashSet<IdentificationSet>();
 					IdentificationSet idSet1 = getSelectedIdentificationSetsForVennChart(experimentName)[0];
 					if (idSet1 != null) {
 						datasetName1 = idSet1.getName();
+						idSets.add(idSet1);
 					}
 					IdentificationSet idSet2 = getSelectedIdentificationSetsForVennChart(experimentName)[1];
 					if (idSet2 != null) {
 						datasetName2 = idSet2.getName();
+						idSets.add(idSet2);
 					}
 					IdentificationSet idSet3 = getSelectedIdentificationSetsForVennChart(experimentName)[2];
 					if (idSet3 != null) {
 						datasetName3 = idSet3.getName();
+						idSets.add(idSet3);
 					}
-					exportSubset(intersection123, datasetName1, datasetName2, datasetName3);
+					exportSubset(intersection123, idSets, datasetName1, datasetName2, datasetName3);
 				} else {
+					Set<IdentificationSet> idSets = new HashSet<IdentificationSet>();
+
 					Collection<Object> intersection12 = vennData.getIntersection12();
 					if (!intersection12.isEmpty()) {
 						String datasetName1 = null;
@@ -3311,14 +3317,16 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 						IdentificationSet idSet1 = getSelectedIdentificationSetsForVennChart(experimentName)[0];
 						if (idSet1 != null) {
 							datasetName1 = idSet1.getName();
+							idSets.add(idSet1);
 						}
 						IdentificationSet idSet2 = getSelectedIdentificationSetsForVennChart(experimentName)[1];
 						if (idSet2 != null) {
 							datasetName2 = idSet2.getName();
+							idSets.add(idSet2);
 						}
 
 						log.info(intersection12.size() + " overlapped");
-						exportSubset(intersection12, datasetName1, datasetName2);
+						exportSubset(intersection12, idSets, datasetName1, datasetName2);
 					}
 				}
 			}
@@ -3336,20 +3344,21 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		return ret;
 	}
 
+	private void exportSubset(Collection<Object> collection, IdentificationSet idSet, String... datasetNames) {
+		Set<IdentificationSet> set = new HashSet<IdentificationSet>();
+		set.add(idSet);
+		exportSubset(collection, set, datasetNames);
+	}
+
 	/**
 	 * @param uniqueTo2
 	 */
-	private void exportSubset(Collection<Object> collection, String... datasetNames) {
+	private void exportSubset(Collection<Object> collection, Collection<IdentificationSet> idSets,
+			String... datasetNames) {
 		if (collection.isEmpty()) {
 			return;
 		}
-		Set<IdentificationSet> idSets = new THashSet<IdentificationSet>();
-		for (String datasetName : datasetNames) {
-			IdentificationSet idSet = getDatasetFromName(experimentList, datasetName);
-			if (idSet != null) {
-				idSets.add(idSet);
-			}
-		}
+
 		ExporterDialog exporterDialog = new ExporterDialog(this, this, idSets, getDataLevel(), true);
 
 		Filters filter = null;
