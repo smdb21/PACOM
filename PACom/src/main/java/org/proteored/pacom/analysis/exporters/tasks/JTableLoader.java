@@ -280,7 +280,7 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 								final List<String> lineStringList = ExporterUtil
 										.getInstance(idSets, includePeptides, includeGeneInfo, retrieveProteinSequences)
 										.getProteinInfoList(proteinGroupOccurrence, columnsStringList,
-												counter.getCount(), idSet);
+												counter.getCount() + 1, idSet);
 								counter.increment();
 								// System.out.println(peptideString);
 								addNewRow(lineStringList);
