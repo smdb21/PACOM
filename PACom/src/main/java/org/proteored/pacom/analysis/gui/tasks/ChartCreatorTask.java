@@ -2506,7 +2506,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 						} else if (idSet2 == null) {
 							idSet2 = replicate;
 							label2 = replicate.getName();
-							color3 = optionsFactory.getIdSetsColors().get(repName);
+							color2 = optionsFactory.getIdSetsColors().get(repName);
 						} else if (idSet3 == null) {
 							idSet3 = replicate;
 							label3 = replicate.getName();
