@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.swing.SwingWorker;
+import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
 import org.proteored.miapeapi.cv.ControlVocabularyManager;
@@ -14,7 +15,7 @@ import org.proteored.miapeapi.experiment.model.ExperimentList;
 import org.proteored.miapeapi.experiment.model.Replicate;
 import org.proteored.miapeapi.experiment.msi.MiapeMSIFiltered;
 import org.proteored.miapeapi.interfaces.msi.MiapeMSIDocument;
-import org.proteored.pacom.analysis.conf.ExperimentListAdapter;
+import org.proteored.pacom.analysis.conf.ComparisonProjectFileUtil;
 import org.proteored.pacom.analysis.conf.jaxb.CPExperiment;
 import org.proteored.pacom.analysis.conf.jaxb.CPExperimentList;
 import org.proteored.pacom.analysis.conf.jaxb.CPMS;
@@ -35,7 +36,7 @@ public class CuratedExperimentSaver extends SwingWorker<Void, Void> {
 	private final ExperimentList experimentList;
 	private final ControlVocabularyManager cvManager;
 	private final Frame parentFrame;
-	private final CPExperimentList originalCfgProject;
+	private CPExperimentList originalCfgProject;
 
 	public CuratedExperimentSaver(Frame parentFrame, File originalCfgProjectFile, ExperimentList idSet,
 			ControlVocabularyManager cvManager, boolean doNotGroupNonConclusiveProteins,
@@ -44,8 +45,13 @@ public class CuratedExperimentSaver extends SwingWorker<Void, Void> {
 		this.cvManager = cvManager;
 		this.parentFrame = parentFrame;
 		if (originalCfgProjectFile != null && originalCfgProjectFile.exists()) {
-			this.originalCfgProject = new ExperimentListAdapter(originalCfgProjectFile, false,
-					doNotGroupNonConclusiveProteins, separateNonConclusiveProteins).getCpExperimentList();
+			try {
+				this.originalCfgProject = ComparisonProjectFileUtil
+						.getExperimentListFromComparisonProjectFile(originalCfgProjectFile);
+			} catch (JAXBException e) {
+				e.printStackTrace();
+				this.originalCfgProject = null;
+			}
 		} else {
 			this.originalCfgProject = null;
 		}
@@ -128,6 +134,7 @@ public class CuratedExperimentSaver extends SwingWorker<Void, Void> {
 
 			firePropertyChange(CURATED_EXP_SAVER_END, null, null);
 		} catch (Exception e) {
+			e.printStackTrace();
 			log.error(e);
 			firePropertyChange(CURATED_EXP_SAVER_ERROR, null, e.getMessage());
 		}
