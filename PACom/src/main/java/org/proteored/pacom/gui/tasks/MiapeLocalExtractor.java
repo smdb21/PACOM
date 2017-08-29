@@ -43,49 +43,39 @@ import org.proteored.miapeapi.xml.xtandem.msi.MiapeXTandemFile;
 import org.proteored.pacom.analysis.util.FileManager;
 import org.proteored.pacom.analysis.util.LocalFilesIndex;
 import org.proteored.pacom.exceptions.MiapeExtractionException;
+import org.proteored.pacom.utils.PropertiesReader;
 
 import uk.ac.ebi.jmzml.model.mzml.MzML;
 
 /**
- * Class with the logic of the webservice that transforms a standard XML file to
- * a MIAPE document and MIAPE documents to Standard XML Files
+ * Class that transforms a standard XML file to a MIAPE document and MIAPE
+ * documents to Standard XML Files
  *
  * @author Salvador
  *
  */
 public class MiapeLocalExtractor {
-	private static String ftpPath;
-	private static boolean schemaValidation;
+	private boolean schemaValidation;
 
-	public static final String MIAPE_LOCAL_CONVERTER_PROPERTIES_FILE = "miape-extractor.properties";
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
 
 	private final SwingWorker<Void, Void> swingWorker;
 	private final int idJob;
 	private final boolean processInParallel;
 
-	static {
-		try {
-			final Properties properties = getProperties(MIAPE_LOCAL_CONVERTER_PROPERTIES_FILE);
-			ftpPath = properties.getProperty("ftp.path");
-
-			schemaValidation = Boolean.valueOf(properties.getProperty("schema.validation"));
-
-		} catch (Exception e) {
-			log.info(MIAPE_LOCAL_CONVERTER_PROPERTIES_FILE + " file not found. Trying with defaults");
-			// by default, if the properties file fails
-			ftpPath = "ftp://proteo.cnb.csic.es/pub/tmp/";
-			schemaValidation = false;
-		}
-		log.info("ftp path =" + ftpPath);
-		log.info("schema validation = " + schemaValidation);
-	}
-
 	public MiapeLocalExtractor(SwingWorker<Void, Void> standard2miapeTaskManager, int idJob,
 			boolean processInParallel) {
 		swingWorker = standard2miapeTaskManager;
 		this.idJob = idJob;
 		this.processInParallel = processInParallel;
+		try {
+			schemaValidation = Boolean
+					.valueOf(PropertiesReader.getProperties().getProperty(PropertiesReader.SCHEMA_VALIDATION));
+		} catch (Exception e) {
+			// by default, if the properties file fails
+			schemaValidation = false;
+		}
+		log.info("schema validation = " + schemaValidation);
 	}
 
 	protected ControlVocabularyManager getControlVocabularyManager() {
@@ -483,7 +473,7 @@ public class MiapeLocalExtractor {
 			if (fastParsing) {
 				log.info("parsing mzML XML to document MS in the faster method (SAX+DOM method)");
 				MzMLLightParser mzMLParser = new MzMLLightParser(inputFile.getAbsolutePath());
-				MzML mzmlLight = mzMLParser.ParseDocument(MiapeLocalExtractor.schemaValidation);
+				MzML mzmlLight = mzMLParser.ParseDocument(schemaValidation);
 
 				// Create the MIAPE MS document
 				msDocument = org.proteored.miapeapi.xml.mzml.MSMiapeFactory.getFactory().toDocument(mzmlLight, null,
@@ -563,7 +553,7 @@ public class MiapeLocalExtractor {
 			if (fastParsing) {
 				log.info("parsing mzML XML to document MS in the faster method (SAX+DOM method)");
 				MzMLLightParser mzMLParser = new MzMLLightParser(inputFile.getAbsolutePath());
-				MzML mzmlLight = mzMLParser.ParseDocument(MiapeLocalExtractor.schemaValidation);
+				MzML mzmlLight = mzMLParser.ParseDocument(schemaValidation);
 
 				// Create the MIAPE MS document
 				msDocument = org.proteored.miapeapi.xml.mzml.MSMiapeFactory.getFactory().toDocument(mzmlLight, null,
@@ -660,7 +650,7 @@ public class MiapeLocalExtractor {
 			if (fastParsing) {
 				log.info("parsing mzML XML to document MS in the faster method (SAX+DOM method)");
 				MzMLLightParser mzMLParser = new MzMLLightParser(inputmzMLFile.getAbsolutePath());
-				MzML mzmlLight = mzMLParser.ParseDocument(MiapeLocalExtractor.schemaValidation);
+				MzML mzmlLight = mzMLParser.ParseDocument(schemaValidation);
 				// Create the MIAPE MS document
 				msDocument = org.proteored.miapeapi.xml.mzml.MSMiapeFactory.getFactory().toDocument(mzmlLight, null,
 						getControlVocabularyManager(), null, null, inputmzMLFile.getName(), projectName);
@@ -775,7 +765,7 @@ public class MiapeLocalExtractor {
 			if (fastParsing) {
 				log.info("parsing mzML XML to document MS in the faster method (SAX+DOM method)");
 				MzMLLightParser mzMLParser = new MzMLLightParser(inputMzMLFile.getAbsolutePath());
-				MzML mzmlLight = mzMLParser.ParseDocument(MiapeLocalExtractor.schemaValidation);
+				MzML mzmlLight = mzMLParser.ParseDocument(schemaValidation);
 				// Create the MIAPE MS document
 				msDocument = org.proteored.miapeapi.xml.mzml.MSMiapeFactory.getFactory().toDocument(mzmlLight, null,
 						getControlVocabularyManager(), null, null, inputMzMLFile.getName(), projectName);
@@ -902,7 +892,7 @@ public class MiapeLocalExtractor {
 			if (fastParsing) {
 				log.info("parsing mzML XML to document MS in the faster method (SAX+DOM method)");
 				MzMLLightParser mzMLParser = new MzMLLightParser(inputMzMLFile.getAbsolutePath());
-				MzML mzmlLight = mzMLParser.ParseDocument(MiapeLocalExtractor.schemaValidation);
+				MzML mzmlLight = mzMLParser.ParseDocument(schemaValidation);
 
 				// Create the MIAPE MS document
 				msDocument = org.proteored.miapeapi.xml.mzml.MSMiapeFactory.getFactory().toDocument(mzmlLight, null,
@@ -1020,7 +1010,7 @@ public class MiapeLocalExtractor {
 			if (fastParsing) {
 				log.info("parsing mzML XML to document MS in the faster method (SAX+DOM method)");
 				MzMLLightParser mzMLParser = new MzMLLightParser(inputMzMLFile.getAbsolutePath());
-				MzML mzmlLight = mzMLParser.ParseDocument(MiapeLocalExtractor.schemaValidation);
+				MzML mzmlLight = mzMLParser.ParseDocument(schemaValidation);
 
 				// Create the MIAPE MS document
 				msDocument = org.proteored.miapeapi.xml.mzml.MSMiapeFactory.getFactory().toDocument(mzmlLight, null,
@@ -1555,14 +1545,15 @@ public class MiapeLocalExtractor {
 		MiapeMSIDocument msiDocument = null;
 		File dtaSelectFile = null;
 		StringBuilder sb = new StringBuilder();
-		log.info("createFile");
+		log.info("storeMiapeMSIFromDTASelect from " + dtaSelectFileURI);
 
 		try {
 			dtaSelectFile = new File(dtaSelectFileURI);
 
 			dtaSelectFile = FileManager.saveLocalFile(dtaSelectFile, projectName);
+			log.info("file saved to " + dtaSelectFile.getAbsolutePath());
 			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, dtaSelectFile);
-
+			log.info("indexed ok");
 			// Dont Validate file because we don't have the schema
 			// if (schemaValidation)
 			// SchemaValidator.validateXMLFile(mzIdentMLFile,
