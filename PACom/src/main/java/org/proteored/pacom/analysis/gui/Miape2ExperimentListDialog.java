@@ -47,9 +47,8 @@ import org.proteored.pacom.analysis.gui.tasks.MiapeTreeIntegrityCheckerTask;
 import org.proteored.pacom.analysis.util.FileManager;
 import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.gui.MainFrame;
+import org.proteored.pacom.utils.AppVersion;
 import org.proteored.pacom.utils.ComponentEnableStateKeeper;
-
-import edu.scripps.yates.utilities.versioning.AppVersion;
 
 /**
  *

@@ -33,9 +33,8 @@ import org.proteored.pacom.analysis.gui.Miape2ExperimentListDialog;
 import org.proteored.pacom.gui.tasks.CheckUpdateTask;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 import org.proteored.pacom.gui.tasks.OntologyLoaderWaiter;
+import org.proteored.pacom.utils.AppVersion;
 import org.proteored.pacom.utils.PropertiesReader;
-
-import edu.scripps.yates.utilities.versioning.AppVersion;
 
 /**
  *

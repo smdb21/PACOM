@@ -41,11 +41,11 @@ import org.proteored.miapeapi.cv.ControlVocabularyManager;
 import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
 import org.proteored.pacom.gui.tasks.MiapeExtractionTask;
 import org.proteored.pacom.gui.tasks.OntologyLoaderWaiter;
+import org.proteored.pacom.utils.AppVersion;
 import org.proteored.pacom.utils.HttpUtilities;
 import org.proteored.pacom.utils.MiapeExtractionBatchManager;
 import org.proteored.pacom.utils.MiapeExtractionResult;
 
-import edu.scripps.yates.utilities.versioning.AppVersion;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
 /**

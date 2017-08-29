@@ -102,12 +102,12 @@ import org.proteored.pacom.analysis.util.ImageUtils;
 import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.gui.MainFrame;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
+import org.proteored.pacom.utils.AppVersion;
 import org.proteored.pacom.utils.ComponentEnableStateKeeper;
 import org.proteored.pacom.utils.PACOMSoftware;
 
 import edu.scripps.yates.utilities.checksum.MD5Checksum;
 import edu.scripps.yates.utilities.dates.DatesUtil;
-import edu.scripps.yates.utilities.versioning.AppVersion;
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.set.hash.THashSet;
