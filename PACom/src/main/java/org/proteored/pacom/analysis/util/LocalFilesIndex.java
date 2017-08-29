@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.set.hash.THashSet;
@@ -34,6 +36,7 @@ public class LocalFilesIndex {
 	private static final Map<String, Set<File>> indexByProject = new THashMap<String, Set<File>>();
 	private static final TIntObjectHashMap<Set<File>> indexByMiapeID = new TIntObjectHashMap<Set<File>>();
 	private static LocalFilesIndex instance;
+	private final static Logger log = Logger.getLogger(LocalFilesIndex.class);
 
 	public static LocalFilesIndex getInstance() throws IOException {
 		if (instance == null)
@@ -43,11 +46,15 @@ public class LocalFilesIndex {
 
 	private LocalFilesIndex() throws IOException {
 		indexFile = new File(FileManager.getMiapeLocalDataPath() + INDEX_FILE_NAME);
-		if (indexFile.exists())
+		log.info("Getting index from " + indexFile.getAbsolutePath());
+		if (indexFile.exists()) {
+			log.info("Index already exists at " + indexFile.getAbsolutePath());
 			loadIndex();
+		}
 	}
 
 	private void loadIndex() throws IOException {
+		log.info("Loading index");
 		BufferedReader br = new BufferedReader(new FileReader(LocalFilesIndex.indexFile));
 		try {
 			String line;
@@ -94,6 +101,7 @@ public class LocalFilesIndex {
 					}
 				}
 			}
+			log.info("Index loaded successfully");
 		} finally {
 			if (br != null)
 				br.close();
@@ -101,6 +109,7 @@ public class LocalFilesIndex {
 	}
 
 	private void writeIndex() throws IOException {
+		log.info("Writting index");
 		BufferedWriter bw = new BufferedWriter(new FileWriter(LocalFilesIndex.indexFile));
 		try {
 			bw.write("# this file serves as index for the files associated to the locally created miape files\n");
@@ -143,6 +152,7 @@ public class LocalFilesIndex {
 				}
 				bw.write("\n");
 			}
+			log.info("Writting index OK");
 		} finally {
 			if (bw != null)
 				bw.close();
@@ -176,6 +186,7 @@ public class LocalFilesIndex {
 	}
 
 	public void indexFileByProjectName(String projectName, File file) throws IOException {
+		log.info("Indexing file " + file.getAbsolutePath() + " by project name: " + projectName);
 		if (LocalFilesIndex.indexByProject.containsKey(projectName)) {
 			LocalFilesIndex.indexByProject.get(projectName).add(file);
 		} else {
