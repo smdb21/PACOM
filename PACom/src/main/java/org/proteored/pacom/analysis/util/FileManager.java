@@ -126,17 +126,18 @@ public class FileManager {
 	 */
 	public static String getMiapeLocalDataPath(String projectName) {
 		String dir = System.getProperty("user.dir");
-
 		// check if the miape_data folder has been previously created or not
 		File miapeLocalDataFolder = new File(dir + PATH_SEPARATOR + FileManager.USER_DATA_FOLDER_NAME + PATH_SEPARATOR
 				+ FileManager.MIAPE_LOCA_DATA_FOLDER_NAME + PATH_SEPARATOR + projectName);
 		// if it doesn't exist, create folder: APP_PATH\USER_DATA_FOLDER_NAME
 		if (!miapeLocalDataFolder.exists()) {
 			boolean created = miapeLocalDataFolder.mkdirs();
-			if (!created)
+			if (!created) {
 				return null;
+			}
 		}
-		return miapeLocalDataFolder.getAbsolutePath() + PATH_SEPARATOR;
+		String string = miapeLocalDataFolder.getAbsolutePath() + PATH_SEPARATOR;
+		return string;
 
 	}
 
@@ -826,6 +827,7 @@ public class FileManager {
 	 */
 	public static File saveLocalFile(File file, String projectName) throws IOException {
 		if (file != null) {
+			log.info("Saving local file " + file.getAbsolutePath());
 			String fileName = FilenameUtils.getBaseName(file.getAbsolutePath());
 			String extension = FilenameUtils.getExtension(file.getAbsolutePath());
 
@@ -834,14 +836,17 @@ public class FileManager {
 				pathname += "." + extension;
 			}
 			File outputFile = new File(pathname);
+			log.info("Copying file from " + file.getAbsolutePath() + " to " + outputFile.getAbsolutePath());
 			FileUtils.copyFile(file, outputFile);
-
+			log.info("file copied : " + outputFile.getAbsolutePath() + " length " + outputFile.length());
 			log.info("File "
 					+ edu.scripps.yates.utilities.files.FileUtils.getDescriptiveSizeFromBytes(outputFile.length())
 					+ " copied to " + outputFile.getAbsolutePath());
 			return outputFile;
 		}
-		throw new FileNotFoundException("file to copy is null");
+		String message = "file to copy is null";
+		log.warn(message);
+		throw new FileNotFoundException(message);
 	}
 
 	/**
