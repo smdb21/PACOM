@@ -18,11 +18,11 @@ public class PropertiesReader {
 	public static final String MIAPE_API_WEBSERVICE_NAMESPACEURI = "miapeapi.webservice.namespaceURI";
 	public static final String MIAPE_EXTRACTOR_WEBSERVICE_SERVICENAME = "miapeextractor.webservice.servicename";
 	public static final String MIAPE_EXTRACTOR_WEBSERVICE_NAMESPACEURI = "miapeextractor.webservice.namespaceURI";
-	public static final String FTP_PATH = "ftp.path";
 	public static final String EMAIL_NOTIFICATIONS = "email_notifications";
 	public static final String MIAPE_TOOL_ACCESS_SCRIPT = "miapetool_access_script";
 	public static final String MIAPE_EXTRACTOR_UNATENDEDRETRIEVER = "miapeextractor.unatendedretriever";
 	public static final String LOCAL_WORKFLOW = "local.workflow";
+	public static final String SCHEMA_VALIDATION = "schema.validation";
 
 	public static Properties getProperties() {
 		ClassLoader cl = PropertiesReader.class.getClassLoader();
