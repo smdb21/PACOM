@@ -107,7 +107,7 @@ import org.proteored.pacom.utils.PACOMSoftware;
 
 import edu.scripps.yates.utilities.checksum.MD5Checksum;
 import edu.scripps.yates.utilities.dates.DatesUtil;
-import edu.scripps.yates.utilities.util.versioning.AppVersion;
+import edu.scripps.yates.utilities.versioning.AppVersion;
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.set.hash.THashSet;

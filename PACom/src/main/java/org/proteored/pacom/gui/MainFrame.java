@@ -35,7 +35,7 @@ import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 import org.proteored.pacom.gui.tasks.OntologyLoaderWaiter;
 import org.proteored.pacom.utils.PropertiesReader;
 
-import edu.scripps.yates.utilities.util.versioning.AppVersion;
+import edu.scripps.yates.utilities.versioning.AppVersion;
 
 /**
  *

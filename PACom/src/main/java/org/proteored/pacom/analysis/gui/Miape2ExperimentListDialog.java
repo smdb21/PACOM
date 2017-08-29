@@ -49,7 +49,7 @@ import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.gui.MainFrame;
 import org.proteored.pacom.utils.ComponentEnableStateKeeper;
 
-import edu.scripps.yates.utilities.util.versioning.AppVersion;
+import edu.scripps.yates.utilities.versioning.AppVersion;
 
 /**
  *

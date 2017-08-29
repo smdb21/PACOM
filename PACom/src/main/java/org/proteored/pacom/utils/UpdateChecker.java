@@ -16,7 +16,7 @@ import org.proteored.pacom.gui.MainFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.scripps.yates.utilities.util.versioning.AppVersion;
+import edu.scripps.yates.utilities.versioning.AppVersion;
 
 /**
  * Check whether there is a new update

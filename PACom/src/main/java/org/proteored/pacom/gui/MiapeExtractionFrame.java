@@ -65,7 +65,7 @@ import org.proteored.pacom.utils.MiapeExtractionParametersUtil;
 import org.proteored.pacom.utils.MiapeExtractionResult;
 import org.proteored.pacom.utils.MiapeExtractionRunParameters;
 
-import edu.scripps.yates.utilities.util.versioning.AppVersion;
+import edu.scripps.yates.utilities.versioning.AppVersion;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
 /**

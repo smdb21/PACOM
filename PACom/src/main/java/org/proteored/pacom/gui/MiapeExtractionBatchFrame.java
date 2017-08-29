@@ -45,7 +45,7 @@ import org.proteored.pacom.utils.HttpUtilities;
 import org.proteored.pacom.utils.MiapeExtractionBatchManager;
 import org.proteored.pacom.utils.MiapeExtractionResult;
 
-import edu.scripps.yates.utilities.util.versioning.AppVersion;
+import edu.scripps.yates.utilities.versioning.AppVersion;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
 /**
