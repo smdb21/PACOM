@@ -36,6 +36,8 @@ import org.proteored.pacom.gui.tasks.OntologyLoaderWaiter;
 import org.proteored.pacom.utils.AppVersion;
 import org.proteored.pacom.utils.PropertiesReader;
 
+import edu.scripps.yates.utilities.files.FileUtils;
+
 /**
  *
  * @author __USER__
@@ -77,12 +79,7 @@ public class MainFrame extends javax.swing.JFrame {
 	 * @throws Exception
 	 */
 	public MainFrame() {
-		/*
-		 * MiapeMSDocument miapeMS; miapeMS =
-		 * createDefault_4800MALDITOFTOF_MiapeMS(); System.out.println(
-		 * "INFO despues del readMiapeMSMetadata: " +
-		 * miapeMS.toXml().toString());
-		 */
+		FileUtils.getDescriptiveSizeFromBytes(123123l);
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException
@@ -512,6 +509,7 @@ public class MainFrame extends javax.swing.JFrame {
 	 *            the command line arguments
 	 */
 	public static void main(String args[]) {
+
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {

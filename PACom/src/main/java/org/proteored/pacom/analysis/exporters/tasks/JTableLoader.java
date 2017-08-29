@@ -30,7 +30,6 @@ import org.proteored.pacom.analysis.exporters.util.ExporterUtil;
 import org.proteored.pacom.analysis.util.FileManager;
 
 import edu.scripps.yates.annotations.uniprot.UniprotProteinLocalRetriever;
-import edu.scripps.yates.annotations.uniprot.xml.Entry;
 import edu.scripps.yates.utilities.fasta.FastaParser;
 import edu.scripps.yates.utilities.progresscounter.ProgressCounter;
 import edu.scripps.yates.utilities.progresscounter.ProgressPrintingType;
@@ -109,7 +108,7 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 							+ uniprotAccs.size() + " different proteins in UniprotKB");
 					UniprotProteinLocalRetriever upr = FileManager.getUniprotProteinLocalRetriever();
 					upr.setCacheEnabled(true);
-					Map<String, Entry> annotatedProteins = upr.getAnnotatedProteins(null, uniprotAccs);
+					upr.getAnnotatedProteins(null, uniprotAccs);
 				} finally {
 					firePropertyChange(PROTEIN_SEQUENCE_RETRIEVAL_DONE, null, null);
 				}

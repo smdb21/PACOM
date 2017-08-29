@@ -45,7 +45,7 @@ public class PACOMSoftware implements Software {
 
 	@Override
 	public String getDescription() {
-		return "The ProteoRed MIAPE Extractor tool is a standalone tool that allows: to obtain graphical representations of qualitative information from MIAPE MSI documents; to automatically create MIAPE compliant reports from your standard data files (PRIDE XML, mzML, mzIdentML) and others (XTandem output xml), storing these reports in the ProteoRed MIAPE repository;  to export your MIAPE-compliant reports to standard data files (currently to PRIDE XML).";
+		return "The PACOM tool is a standalone tool that allows: to obtain graphical representations of qualitative information from MIAPE MSI documents; to export your MIAPE-compliant reports to standard data files (currently to PRIDE XML).";
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class PACOMSoftware implements Software {
 
 	@Override
 	public String getURI() {
-		return "http://proteo.cnb.csic.es/trac#MIAPEExtractorTool";
+		return "http://github.com/smdb21/PACom";
 	}
 
 	@Override
