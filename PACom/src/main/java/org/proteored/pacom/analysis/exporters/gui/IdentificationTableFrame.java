@@ -109,8 +109,13 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 			setTitle("Identification table");
 		}
 		loadTable();
-		// Just enable if the protein sequences have not been retrieved before
-		jCheckBoxSearchForProteinSequence.setEnabled(!parent.isProteinSequencesRetrieved());
+		// disable if the protein sequences have been retrieved before, but keep
+		// it selected
+		if (parent.isProteinSequencesRetrieved()) {
+			jCheckBoxSearchForProteinSequence.setSelected(true);
+			jCheckBoxSearchForProteinSequence.setEnabled(false);
+			jCheckBoxSearchForProteinSequence.setToolTipText("UniprotKB information was already imported");
+		}
 
 		parentFrame = parent;
 
