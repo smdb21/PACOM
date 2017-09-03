@@ -3293,7 +3293,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
 			List<JPanel> chartList = new ArrayList<JPanel>();
 			for (Experiment experiment : experimentList.getExperiments()) {
-				idSets = getIdentificationSets(null, null, true);
+				idSets = getIdentificationSets(experiment.getFullName(), null, true);
 				HistogramDataset dataset = DatasetFactory.createProteinCoverageHistogramDataSet(idSets, bins,
 						histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
 				HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType), experiment.getName(),
@@ -3369,7 +3369,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
 			List<JPanel> chartList = new ArrayList<JPanel>();
 			for (Experiment experiment : experimentList.getExperiments()) {
-				idSets = getIdentificationSets(experiment.getName(), null, true);
+				idSets = getIdentificationSets(experiment.getFullName(), null, true);
 				xAxisLabel = "experiment";
 
 				CategoryDataset dataset = null;
