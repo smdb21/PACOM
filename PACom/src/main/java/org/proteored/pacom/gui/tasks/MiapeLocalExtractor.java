@@ -1121,8 +1121,13 @@ public class MiapeLocalExtractor {
 				try {
 					SchemaValidator.validateXMLFile(inputMzIdentMLFile, SchemaValidator.mzIdentML_1_0);
 				} catch (WrongXMLFormatException e) {
-					SchemaValidator.validateXMLFile(inputMzIdentMLFile, SchemaValidator.mzIdentML_1_1);
+					try {
+						SchemaValidator.validateXMLFile(inputMzIdentMLFile, SchemaValidator.mzIdentML_1_1);
+					} catch (WrongXMLFormatException e2) {
+						SchemaValidator.validateXMLFile(inputMzIdentMLFile, SchemaValidator.mzIdentML_1_2);
+					}
 				}
+
 			}
 		} catch (Exception e) {
 			log.error(e);
@@ -1228,7 +1233,11 @@ public class MiapeLocalExtractor {
 				try {
 					SchemaValidator.validateXMLFile(inputMzIdentMLFile, SchemaValidator.mzIdentML_1_0);
 				} catch (WrongXMLFormatException ex) {
-					SchemaValidator.validateXMLFile(inputMzIdentMLFile, SchemaValidator.mzIdentML_1_1);
+					try {
+						SchemaValidator.validateXMLFile(inputMzIdentMLFile, SchemaValidator.mzIdentML_1_1);
+					} catch (WrongXMLFormatException ex2) {
+						SchemaValidator.validateXMLFile(inputMzIdentMLFile, SchemaValidator.mzIdentML_1_2);
+					}
 				}
 			}
 			try {
@@ -1272,7 +1281,9 @@ public class MiapeLocalExtractor {
 			LocalFilesIndex.getInstance().indexFileByMiapeID(id_msi, inputMzIdentMLFile);
 
 			return identifiers;
-		} catch (Exception e) {
+		} catch (
+
+		Exception e) {
 			log.error(e);
 			sb.append(e.getMessage());
 			e.printStackTrace();
