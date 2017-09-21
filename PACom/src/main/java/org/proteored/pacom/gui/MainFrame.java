@@ -26,6 +26,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker.StateValue;
+import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -514,6 +515,7 @@ public class MainFrame extends javax.swing.JFrame {
 			@Override
 			public void run() {
 				try {
+					ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
 					new MainFrame().setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
