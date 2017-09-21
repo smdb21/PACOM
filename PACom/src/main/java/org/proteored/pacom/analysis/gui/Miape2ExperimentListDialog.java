@@ -752,7 +752,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 		jComboBoxCuratedExperiments
 				.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No curated experiments available" }));
 		jComboBoxCuratedExperiments.setToolTipText(
-				"<html>\n<b>Curated experiments<b/> are created in the MIAPE Extractor Charts<br> viewer, usually after applying some filters.<br> This curated projects are lighter than normal projects<br> since filtered-out data is discarted and is not loaded. </html>");
+				"<html>\n<b>Curated experiments<b/> are created in the Charts<br> viewer, usually after applying some filters.<br> This curated projects are lighter than normal projects<br> since filtered-out data is discarted and is not loaded. </html>");
 		jComboBoxCuratedExperiments.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1114,7 +1114,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 					}
 
 				} else {
-					throw new IllegalMiapeArgumentException("The MIAPE Project has not MIAPE MSIs!");
+					throw new IllegalMiapeArgumentException("The project has not any dataset!");
 				}
 			}
 		}
@@ -1140,7 +1140,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 			// MiapeMSIDocument miapeDocument =
 			// miapemsiXmlFile.toDocument();
 			miapeMSIHeader = new MiapeHeader(msiFile, false);
-			log.debug("referenced MIAPE MS: " + miapeMSIHeader.getMiapeRef());
+			log.debug("referenced MS dataset: " + miapeMSIHeader.getMiapeRef());
 			if (miapeMSIHeader.getMiapeRef() != -1)
 				return miapeMSIHeader.getMiapeRef();
 			// }
@@ -1216,7 +1216,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 					CPExperiment cpExp = (CPExperiment) experimentNode.getUserObject();
 					if (cpExp.isCurated())
 						throw new IllegalMiapeArgumentException(
-								"A non curated MIAPE MSI cannot be added to a curated experiment");
+								"A non curated dataset cannot be added to a curated experiment");
 					// add replicate node
 					String defaultReplicateName = getMIAPENodeNameFromTemplate();
 					CPReplicate cpRep = new CPReplicate();
@@ -1364,7 +1364,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 
 	private void jButtonStartLoadingActionPerformed(java.awt.event.ActionEvent evt) {
 
-		log.info("Starting miape msi tree loading");
+		log.info("Starting datasets tree loading");
 
 		fillLocalMIAPETree();
 		loadProjectCombo();
@@ -1518,7 +1518,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 					CPExperiment cpExp = (CPExperiment) experimentNode.getUserObject();
 					if (cpExp.isCurated())
 						throw new IllegalMiapeArgumentException(
-								"A non curated MIAPE MSI cannot be added to a curated experiment");
+								"A non curated dataset cannot be added to a curated experiment");
 					// add replicate node
 					String defaultReplicateName = getMIAPENodeNameFromTemplate();
 					CPReplicate cpRep = new CPReplicate();
@@ -1550,7 +1550,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 
 			} else if (jTreeMIAPEMSIs.isOnlyOneNodeSelected(MIAPE_PROJECT_LEVEL)) {
 				// if the user clicks on a MIAPE PROJECT
-				log.info("Miape project selected");
+				log.info("dataset project selected");
 				final int numMIAPEsInMIAPEProject = jTreeMIAPEMSIs.getSelectedNode().getChildCount();
 				if (numMIAPEsInMIAPEProject > 0) {
 
@@ -1604,7 +1604,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 					}
 
 				} else {
-					throw new IllegalMiapeArgumentException("The MIAPE Project has not MIAPE MSIs!");
+					throw new IllegalMiapeArgumentException("The project has not any dataset!");
 				}
 			}
 		}
@@ -1906,7 +1906,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 						CPExperiment cpExp = (CPExperiment) experimentTreeNode.getUserObject();
 						if (cpExp.isCurated())
 							throw new IllegalMiapeArgumentException(
-									"A non curated MIAPE MSI cannot be added to a curated experiment");
+									"A non curated dataset cannot be added to a curated experiment");
 						final CPReplicate cpRep = new CPReplicate();
 						cpRep.setName(replicateName);
 						cpExp.getCPReplicate().add(cpRep);
@@ -1932,7 +1932,7 @@ public class Miape2ExperimentListDialog extends javax.swing.JFrame implements Pr
 						// jTreeProject.expandAll();
 					} else {
 						throw new IllegalMiapeArgumentException(
-								"Select a MIAPE MSI to associate to a new level 2 node");
+								"Select an imported dataset to associate to a new level 2 node");
 					}
 				} else if (jTreeProject.isOnlyOneNodeSelected(REPLICATE_LEVEL)) {
 					int miapeID = Integer.valueOf(jTreeMIAPEMSIs.getStringFromSelection(MIAPE_ID_REGEXP));
