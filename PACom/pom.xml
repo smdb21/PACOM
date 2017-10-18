@@ -37,6 +37,20 @@
          <artifactId>jfreechart</artifactId>
          <version>1.0.19</version>
       </dependency>
+      <!-- library that jfreechart uses to save charts in pdf -->
+		<dependency>
+		    <groupId>com.orsonpdf</groupId>
+		    <artifactId>orsonpdf</artifactId>
+		    <version>1.7</version>
+		</dependency>
+       
+       <!-- library that jfreechart uses to save charts in SVG -->
+		<dependency>
+		    <groupId>org.jfree</groupId>
+		    <artifactId>jfreesvg</artifactId>
+		    <version>3.2</version>
+		</dependency>
+       
       <!--  WORDCRAM -->
       <dependency>
          <groupId>org.wordcram.processing</groupId>
