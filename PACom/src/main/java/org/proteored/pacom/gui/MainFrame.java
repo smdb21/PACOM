@@ -31,6 +31,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.proteored.pacom.analysis.gui.Miape2ExperimentListDialog;
+import org.proteored.pacom.analysis.util.FileManager;
 import org.proteored.pacom.gui.tasks.CheckUpdateTask;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 import org.proteored.pacom.gui.tasks.OntologyLoaderWaiter;
@@ -292,6 +293,16 @@ public class MainFrame extends javax.swing.JFrame {
 						.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, 300, GroupLayout.PREFERRED_SIZE)
 						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 		jPanel1.setLayout(new GridBagLayout());
+
+		JLabel lblExamples = new JLabel("Example project");
+		lblExamples.setVerticalAlignment(SwingConstants.TOP);
+		lblExamples.setHorizontalAlignment(SwingConstants.LEFT);
+		lblExamples.setFont(new Font("Dialog", Font.PLAIN, 18));
+		GridBagConstraints gbc_lblExamples = new GridBagConstraints();
+		gbc_lblExamples.insets = new Insets(0, 0, 5, 0);
+		gbc_lblExamples.gridx = 4;
+		gbc_lblExamples.gridy = 1;
+		jPanel1.add(lblExamples, gbc_lblExamples);
 		JLabel jLabelInit = new javax.swing.JLabel("Import data");
 		jLabelInit.setHorizontalAlignment(SwingConstants.LEFT);
 		jLabelInit.setFont(new Font("Dialog", Font.PLAIN, 18));
@@ -300,34 +311,37 @@ public class MainFrame extends javax.swing.JFrame {
 		c.fill = GridBagConstraints.FIRST_LINE_START;
 		c.insets = new Insets(10, 10, 10, 10);
 		c.gridx = 0;
-		c.gridy = 0;
+		c.gridy = 1;
 		c.gridwidth = 1;
 		jPanel1.add(jLabelInit, c);
 		JLabel jLabelInit2 = new javax.swing.JLabel("Batch import data");
 		jLabelInit2.setHorizontalAlignment(SwingConstants.LEFT);
 		jLabelInit2.setFont(new Font("Dialog", Font.PLAIN, 18));
 		jLabelInit2.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-		c.fill = GridBagConstraints.FIRST_LINE_START;
-		c.insets = new Insets(10, 10, 10, 10);
-		c.gridx = 1;
-		c.gridy = 0;
-		c.gridwidth = 1;
-		jPanel1.add(jLabelInit2, c);
+		GridBagConstraints c2 = new GridBagConstraints();
+		c2.fill = GridBagConstraints.FIRST_LINE_START;
+		c2.insets = new Insets(10, 10, 10, 10);
+		c2.gridx = 1;
+		c2.gridy = 1;
+		c2.gridwidth = 1;
+		jPanel1.add(jLabelInit2, c2);
 		JLabel jLabelInit3 = new javax.swing.JLabel("Data Inspection");
 		jLabelInit3.setHorizontalAlignment(SwingConstants.LEFT);
 		jLabelInit3.setFont(new Font("Dialog", Font.PLAIN, 18));
 		jLabelInit3.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-		c.fill = GridBagConstraints.FIRST_LINE_START;
-		c.insets = new Insets(10, 10, 10, 10);
-		c.gridx = 2;
-		c.gridy = 0;
-		c.gridwidth = 1;
-		jPanel1.add(jLabelInit3, c);
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.insets = new Insets(10, 10, 10, 10);
-		c.gridx = 0;
-		c.gridy = 1;
-		c.gridwidth = 1;
+		GridBagConstraints c3 = new GridBagConstraints();
+		c3.fill = GridBagConstraints.FIRST_LINE_START;
+		c3.insets = new Insets(10, 10, 10, 10);
+		c3.gridx = 2;
+		c3.gridy = 1;
+		c3.gridwidth = 1;
+		jPanel1.add(jLabelInit3, c3);
+		GridBagConstraints c4 = new GridBagConstraints();
+		c4.fill = GridBagConstraints.HORIZONTAL;
+		c4.insets = new Insets(10, 10, 10, 10);
+		c4.gridx = 0;
+		c4.gridy = 2;
+		c4.gridwidth = 1;
 		JButton loadButton = new JButton();
 		loadButton.setIcon(ImageManager.getImageIcon(ImageManager.LOAD_LOGO_128));
 		loadButton.setPressedIcon(ImageManager.getImageIcon(ImageManager.LOAD_LOGO_128_CLICKED));
@@ -341,17 +355,37 @@ public class MainFrame extends javax.swing.JFrame {
 
 			}
 		});
+
+		jButtonExample1 = new JButton();
+		jButtonExample1.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				jButtonExampleClicked();
+			}
+		});
+		jButtonExample1.setToolTipText("<html>Click here to directly load one of the available examples</html>");
+		jButtonExample1.setContentAreaFilled(false);
+		jButtonExample1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		jButtonExample1.setVerticalAlignment(SwingConstants.TOP);
+		jButtonExample1.setIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_64));
+		jButtonExample1.setPressedIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_64_CLICKED));
+		jButtonExample1.setRolloverIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_64_HOVER));
+		GridBagConstraints gbc_jButtonExample1 = new GridBagConstraints();
+		gbc_jButtonExample1.gridy = 2;
+		gbc_jButtonExample1.gridx = 4;
+		jPanel1.add(jButtonExample1, gbc_jButtonExample1);
 		loadButton.setToolTipText(dataImportToolTip);
 		loadButton.setBorder(BorderFactory.createEmptyBorder());
 		loadButton.setContentAreaFilled(false);
 		loadButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		jPanel1.add(loadButton, c);
+		jPanel1.add(loadButton, c4);
 		//
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.insets = new Insets(10, 10, 10, 10);
-		c.gridx = 1;
-		c.gridy = 1;
-		c.gridwidth = 1;
+		GridBagConstraints c5 = new GridBagConstraints();
+		c5.fill = GridBagConstraints.HORIZONTAL;
+		c5.insets = new Insets(10, 10, 10, 10);
+		c5.gridx = 1;
+		c5.gridy = 2;
+		c5.gridwidth = 1;
 		JButton batchLoadButton = new JButton();
 		batchLoadButton.setIcon(ImageManager.getImageIcon(ImageManager.BATCH_LOAD_LOGO_128));
 		batchLoadButton.setPressedIcon(ImageManager.getImageIcon(ImageManager.BATCH_LOAD_LOGO_128_CLICKED));
@@ -369,13 +403,14 @@ public class MainFrame extends javax.swing.JFrame {
 		batchLoadButton.setBorder(BorderFactory.createEmptyBorder());
 		batchLoadButton.setContentAreaFilled(false);
 		batchLoadButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		jPanel1.add(batchLoadButton, c);
+		jPanel1.add(batchLoadButton, c5);
 		//
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.insets = new Insets(10, 10, 10, 10);
-		c.gridx = 2;
-		c.gridy = 1;
-		c.gridwidth = 1;
+		GridBagConstraints c6 = new GridBagConstraints();
+		c6.fill = GridBagConstraints.HORIZONTAL;
+		c6.insets = new Insets(10, 10, 10, 10);
+		c6.gridx = 2;
+		c6.gridy = 2;
+		c6.gridwidth = 1;
 		JButton inspectButton = new JButton();
 		inspectButton.setIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_128));
 		inspectButton.setPressedIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_128_CLICKED));
@@ -391,7 +426,7 @@ public class MainFrame extends javax.swing.JFrame {
 		inspectButton.setToolTipText(dataInspectionTooltip);
 		inspectButton.setBorder(BorderFactory.createEmptyBorder());
 		inspectButton.setContentAreaFilled(false);
-		jPanel1.add(inspectButton, c);
+		jPanel1.add(inspectButton, c6);
 		getContentPane().setLayout(layout);
 
 		pack();
@@ -399,6 +434,33 @@ public class MainFrame extends javax.swing.JFrame {
 		java.awt.Dimension dialogSize = getSize();
 		setLocation((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2);
 	}// </editor-fold>
+
+	protected void jButtonExampleClicked() {
+		String exampleProjectName = "PME6_Reanalysis";
+		loadExample(exampleProjectName);
+	}
+
+	private void loadExample(String projectName) {
+		String projectXMLFilePath = FileManager.getProjectXMLFilePath(projectName);
+		File projectFile = new File(projectXMLFilePath);
+		if (!projectFile.exists()) {
+			// appendStatus("Project '" + projectName + "' has not found in the
+			// projects folder");
+			return;
+		}
+		try {
+			log.info("Reading project configuration file: " + projectName);
+			// setStatus("Loading project: " + projectName + "...");
+			Miape2ExperimentListDialog.getInstance(this).initializeProjectTree(projectFile);
+			Miape2ExperimentListDialog.getInstance(this).setCurrentCgfFile(projectFile);
+			Miape2ExperimentListDialog.getInstance(this).showChartManager();
+			log.info("Project configuration file readed");
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.warn(e.getMessage());
+			return;
+		}
+	}
 
 	private void startDataImport() {
 		setVisible(false);
@@ -538,6 +600,7 @@ public class MainFrame extends javax.swing.JFrame {
 	private javax.swing.JMenuItem jMenuItemStandard2MIAPE;
 	private javax.swing.JMenuItem jMenuItemStartProjectComparison;
 	private javax.swing.JPanel jPanel1;
+	private JButton jButtonExample1;
 
 	// End of variables declaration//GEN-END:variables
 
@@ -557,5 +620,4 @@ public class MainFrame extends javax.swing.JFrame {
 		return version;
 
 	}
-
 }

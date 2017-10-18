@@ -18,6 +18,11 @@ public class ImageManager {
 	public static final String PACOM_LOGO_128 = "pacom_128.png";
 	public static final String PACOM_LOGO_128_CLICKED = "pacom_128_clicked.png";
 	public static final String PACOM_LOGO_128_HOVER = "pacom_128_hover.png";
+
+	public static final String PACOM_LOGO_64 = "pacom_64.png";
+	public static final String PACOM_LOGO_64_CLICKED = "pacom_64_clicked.png";
+	public static final String PACOM_LOGO_64_HOVER = "pacom_64_hover.png";
+
 	public static final String LOAD_LOGO_128 = "load_128.png";
 	public static final String LOAD_LOGO_128_CLICKED = "load_128_clicked.png";
 	public static final String LOAD_LOGO_128_HOVER = "load_128_hover.png";
