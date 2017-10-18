@@ -17,8 +17,7 @@ import org.apache.log4j.Logger;
 
 public class HeatMapChart {
 	private static final int SIZE_MARGINS = 60;
-	private static final Logger log = Logger
-			.getLogger("log4j.logger.org.proteored");
+	private static final Logger log = Logger.getLogger("log4j.logger.org.proteored");
 	private static final double MIN_CELL_WIDTH = 30;
 	private static final double HEIGHT_PERCENTAJE_SCREEN = 0.9;
 	private final HeatChart chart;
@@ -26,8 +25,7 @@ public class HeatMapChart {
 	private List<String> columnList = new ArrayList<String>();
 	private final int numRows;
 	private final int numColumns;
-	private static final int screenHeight = Toolkit.getDefaultToolkit()
-			.getScreenSize().height;
+	private static final int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
 	private final JPanel jPanel = new JPanel();
 
 	/**
@@ -39,8 +37,8 @@ public class HeatMapChart {
 	 * @param columnList
 	 *            list of labels for the columns
 	 */
-	public HeatMapChart(String title, double[][] dataset, List<String> rowList,
-			List<String> columnList, double colorScale) {
+	public HeatMapChart(String title, double[][] dataset, List<String> rowList, List<String> columnList,
+			double colorScale) {
 		this.rowList = rowList;
 		this.columnList = columnList;
 		this.numColumns = this.columnList.size();
@@ -52,8 +50,8 @@ public class HeatMapChart {
 		if (chart != null) {
 			this.chart.setTitle(title);
 			this.chart.setChartMargin(2);
-			this.chart.setHighValueColour(Color.RED);
-			this.chart.setLowValueColour(Color.GREEN);
+			this.chart.setHighValueColour(Color.BLUE);
+			this.chart.setLowValueColour(Color.YELLOW);
 			this.chart.setXValuesHorizontal(false);
 			this.chart.setColourScale(colorScale);
 
@@ -113,8 +111,7 @@ public class HeatMapChart {
 	}
 
 	private void printSize(String string, Dimension size) {
-		System.out.println(string + " (" + size.getHeight() + " , "
-				+ size.getWidth() + ")");
+		System.out.println(string + " (" + size.getHeight() + " , " + size.getWidth() + ")");
 
 	}
 
@@ -131,16 +128,13 @@ public class HeatMapChart {
 	 */
 	public void fitToScreen(double percentage) {
 		if (isGreaterThanScreen()) {
-			final Dimension screenSize = Toolkit.getDefaultToolkit()
-					.getScreenSize();
+			final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 			final Dimension chartSize = this.chart.getChartSize();
 			// width
 			if (chartSize.getWidth() > screenSize.getWidth()) {
 				// fit to the 90% of the screen width
-				Long t = Math.round(screenSize.getWidth() * percentage
-						/ numColumns);
-				log.info("Resizing the chart to the screen width ("
-						+ screenSize.getWidth() + ")");
+				Long t = Math.round(screenSize.getWidth() * percentage / numColumns);
+				log.info("Resizing the chart to the screen width (" + screenSize.getWidth() + ")");
 				// chartSize.setSize(chartSize.getWidth(),
 				// screenSize.getHeight());
 				this.chart.setCellWidth(Integer.valueOf(t.toString()));
@@ -149,12 +143,10 @@ public class HeatMapChart {
 			// heigth
 			if (chartSize.getHeight() > screenSize.getHeight()) {
 				// fit to the 90% of the screen height
-				Long t = Math.round(screenSize.getHeight() * percentage
-						/ numRows);
+				Long t = Math.round(screenSize.getHeight() * percentage / numRows);
 				if (t == 0)
 					t = t + 1;
-				log.info("Resizing the chart to the screen height ("
-						+ screenSize.getHeight() + ")");
+				log.info("Resizing the chart to the screen height (" + screenSize.getHeight() + ")");
 				// chartSize.setSize(chartSize.getWidth(),
 				// screenSize.getHeight());
 				this.chart.setCellHeight(Integer.valueOf(t.toString()));
@@ -166,8 +158,7 @@ public class HeatMapChart {
 			}
 
 			// resize the panel accordingly
-			jPanel.setSize(new Dimension(chart.getChartWidth(), chart
-					.getChartHeight()));
+			jPanel.setSize(new Dimension(chart.getChartWidth(), chart.getChartHeight()));
 		}
 	}
 
@@ -179,8 +170,7 @@ public class HeatMapChart {
 	}
 
 	private boolean isGreaterThanScreen() {
-		final Dimension screenSize = Toolkit.getDefaultToolkit()
-				.getScreenSize();
+		final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		final Dimension chartSize = this.chart.getChartSize();
 		if (chartSize.getWidth() > screenSize.getWidth())
 			return true;
