@@ -39,8 +39,8 @@ public class LineCategoryChart {
 	 *            {@link CategoryDataset}
 	 * @param plotOrientation
 	 */
-	public LineCategoryChart(String chartTitle, String subtitle, String xAxisLabel,
-			String yAxisLabel, CategoryDataset dataset, PlotOrientation plotOrientation) {
+	public LineCategoryChart(String chartTitle, String subtitle, String xAxisLabel, String yAxisLabel,
+			CategoryDataset dataset, PlotOrientation plotOrientation) {
 
 		this.title = chartTitle;
 		this.subtitle = new TextTitle(subtitle);
@@ -52,7 +52,6 @@ public class LineCategoryChart {
 		if (dataset.getColumnCount() == 1 || !this.xLabelsExcedLimit())
 			this.setHorizontalXLabel();
 		chartPanel = new ChartPanel(chart);
-
 		chartPanel.setFillZoomRectangle(true);
 		chartPanel.setMouseWheelEnabled(true);
 
@@ -76,8 +75,8 @@ public class LineCategoryChart {
 
 	private JFreeChart createChart(CategoryDataset dataset, PlotOrientation plotOrientation) {
 
-		JFreeChart chart = ChartFactory.createLineChart(title, categoryAxisLabel, valueAxisLabel,
-				dataset, plotOrientation, true, true, false);
+		JFreeChart chart = ChartFactory.createLineChart(title, categoryAxisLabel, valueAxisLabel, dataset,
+				plotOrientation, true, true, false);
 		chart.addSubtitle(this.subtitle);
 		// Backgroung color
 		// chart.setBackgroundPaint(new Color(229, 229, 229));
@@ -95,8 +94,7 @@ public class LineCategoryChart {
 		rangeAxis.setUpperMargin(0.05);
 
 		CategoryAxis domainAxis = plot.getDomainAxis();
-		domainAxis.setCategoryLabelPositions(CategoryLabelPositions
-				.createUpRotationLabelPositions(Math.PI / 2));
+		domainAxis.setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 2));
 
 		LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
 
@@ -109,8 +107,7 @@ public class LineCategoryChart {
 		renderer.setItemMargin(0.01);
 		// item labels
 		final StandardCategoryItemLabelGenerator generator = new StandardCategoryItemLabelGenerator(
-				StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING,
-				NumberFormat.getIntegerInstance());
+				StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING, NumberFormat.getIntegerInstance());
 		renderer.setItemLabelGenerator(generator);
 		renderer.setItemLabelsVisible(true);
 
@@ -127,8 +124,7 @@ public class LineCategoryChart {
 	public void setHorizontalXLabel() {
 		CategoryPlot plot = (CategoryPlot) chart.getPlot();
 		CategoryAxis domainAxis = plot.getDomainAxis();
-		domainAxis.setCategoryLabelPositions(CategoryLabelPositions
-				.createUpRotationLabelPositions(0));
+		domainAxis.setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(0));
 	}
 
 	public boolean xLabelsExcedLimit() {
