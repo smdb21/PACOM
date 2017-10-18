@@ -48,6 +48,10 @@ public class MiapeExtractionParametersUtil {
 			ret = ret + "DTASelect (" + FilenameUtils.getName(new File(params.getDtaSelectFileName()).getAbsolutePath())
 					+ ")";
 			// miape_extraction = "MSI";
+		} else if (params.isDTASelectSelected()) {
+			ret = ret + "pepXML (" + FilenameUtils.getName(new File(params.getDtaSelectFileName()).getAbsolutePath())
+					+ ")";
+			// miape_extraction = "MSI";
 		} else if (params.isTSVSelected()) {
 			ret = ret + "Text Table ("
 					+ FilenameUtils.getName(new File(params.getDtaSelectFileName()).getAbsolutePath()) + ")";
@@ -56,6 +60,11 @@ public class MiapeExtractionParametersUtil {
 			ret = ret + "MGF (" + FilenameUtils.getName(new File(params.getMgfFileName()).getAbsolutePath())
 					+ ") + <br> DTASelect ("
 					+ FilenameUtils.getName(new File(params.getDtaSelectFileName()).getAbsolutePath()) + ")";
+			// miape_extraction = "MSI";
+		} else if (params.isPepXMLPlusMGFSelected()) {
+			ret = ret + "MGF (" + FilenameUtils.getName(new File(params.getMgfFileName()).getAbsolutePath())
+					+ ") + <br> pepXML ("
+					+ FilenameUtils.getName(new File(params.getPepXMLFileName()).getAbsolutePath()) + ")";
 			// miape_extraction = "MSI";
 		}
 
@@ -80,11 +89,12 @@ public class MiapeExtractionParametersUtil {
 			String miapeName = "";
 
 			if (params.isMzIdentMLPlusMGFSelected() || params.isDTASelectPlusMGFSelected()
-					|| params.isXTandemPlusMGFSelected()) {
+					|| params.isXTandemPlusMGFSelected() || params.isPepXMLPlusMGFSelected()) {
 				if (params.getMgfFileName() != null) {
 					miapeName = "MS dataset from '" + FilenameUtils.getName(params.getMgfFileName()) + "'";
 				}
-			} else if (params.isMzIdentMLSelected() || params.isXTandemSelected() || params.isDTASelectSelected()) {
+			} else if (params.isMzIdentMLSelected() || params.isXTandemSelected() || params.isDTASelectSelected()
+					|| params.isPepXMLSelected()) {
 				miapeName = "MS dataset from '" + metadataMiapeMS.getName() + "' metadata";
 			} else if (params.isMzMLPlusMzIdentMLSelected() || params.isMzMLSelected()) {
 				if (params.getMzMLFileName() != null) {

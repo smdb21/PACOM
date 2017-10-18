@@ -169,6 +169,14 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 				return false;
 			}
 		}
+		if (miapeExtractorInputParameters.isPepXMLPlusMGFSelected()
+				|| miapeExtractorInputParameters.isPepXMLSelected()) {
+			if ("".equals(miapeExtractorInputParameters.getPepXMLFileName())) {
+				firePropertyChange(MIAPE_CREATION_ERROR, null,
+						new MiapeExtractionResult(identifier, "Error. Select the pepXML file"));
+				return false;
+			}
+		}
 		if (!miapeExtractorInputParameters.isMIAPEMSChecked() && !miapeExtractorInputParameters.isMIAPEMSIChecked()) {
 			firePropertyChange(MIAPE_CREATION_ERROR, null,
 					new MiapeExtractionResult(identifier, "Error. Select one output MIAPE type."));
@@ -239,6 +247,9 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 		} else if (miapeExtractorInputParameters.isDTASelectSelected()
 				|| miapeExtractorInputParameters.isDTASelectPlusMGFSelected()) {
 			extractMIAPEfromDTASelectFile(tinnyMiapeMS);
+		} else if (miapeExtractorInputParameters.isPepXMLSelected()
+				|| miapeExtractorInputParameters.isPepXMLPlusMGFSelected()) {
+			extractMIAPEfromPepXMLFile(tinnyMiapeMS);
 		} else if (miapeExtractorInputParameters.isTSVSelected()) {
 			extractMIAPEfromTSVFile(tinnyMiapeMS, miapeExtractorInputParameters.getSeparator());
 		} else if (miapeExtractorInputParameters.isPRIDESelected()) {
@@ -504,6 +515,43 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 				idMS = associatedMiapeMSID;
 
 			identifiers = miapeLocalExtractor.storeMiapeMSIFromDTASelect(dtaSelectFile, idMS,
+					miapeExtractorInputParameters.getProjectName());
+
+		}
+		id_msi = identifiers[1];
+		id_ms = identifiers[0];
+
+	}
+
+	private void extractMIAPEfromPepXMLFile(MiapeXmlFile<MiapeMSDocument> miapeMsXML)
+			throws IOException, MethodNotSupportedException {
+
+		String pepXMLFile = miapeExtractorInputParameters.getPepXMLFileName();
+
+		if (miapeExtractorInputParameters.isPepXMLPlusMGFSelected())
+			uploadedMGFFile = miapeExtractorInputParameters.getMgfFileName();
+
+		taskStatus = CONVERTING;
+
+		File[] identifiers = new File[2];
+
+		if (miapeMsXML != null) {
+			firePropertyChange(NOTIFICATION, null, "Extracting data from pepXML file + metadata...");
+			MiapeXmlFile<MiapeMSDocument> miapeMSWithResultingData = addResultingData(miapeMsXML,
+					miapeExtractorInputParameters.getProjectName());
+			// log.info(miapeMsXML);
+			identifiers = miapeLocalExtractor.storeMiapeMSMSIFromPepXML(pepXMLFile, miapeMSWithResultingData.toBytes(),
+					miapeExtractorInputParameters.getProjectName());
+
+		} else {
+			firePropertyChange(NOTIFICATION, null, "Extracting data from pepXML file...");
+
+			int idMS = -1;
+			Integer associatedMiapeMSID = miapeExtractorInputParameters.getAssociatedMiapeMS();
+			if (associatedMiapeMSID != null)
+				idMS = associatedMiapeMSID;
+
+			identifiers = miapeLocalExtractor.storeMiapeMSIFromPepXML(pepXMLFile, idMS,
 					miapeExtractorInputParameters.getProjectName());
 
 		}

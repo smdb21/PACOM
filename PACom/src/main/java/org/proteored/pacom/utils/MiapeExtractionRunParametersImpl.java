@@ -42,8 +42,11 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 	private boolean isMgfSelected;
 	private boolean xtandemPlusMGFSelected;
 	private String dtaSelectFileName;
+	private String pepXMLFileName;
 	private boolean DTASelectPlusMGFSelected;
 	private boolean DTASelectSelected;
+	private boolean PepXMLPlusMGFSelected;
+	private boolean PepXMLSelected;
 	private boolean tSVSelected;
 	private String tSVFileName;
 	private TableTextFileSeparator separator;
@@ -253,8 +256,11 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 		} else if (getMgfFileName() != null && getDtaSelectFileName() != null) {
 			setDTASelectPlusMGFSelected(true);
 			someOptionIsCorrect = true;
+		} else if (getMgfFileName() != null && getPepXMLFileName() != null) {
+			setPepXMLPlusMGFSelected(true);
+			someOptionIsCorrect = true;
 		} else if (getMgfFileName() != null && getMzIdentMLFileName() == null && getxTandemFileName() == null
-				&& getDtaSelectFileName() == null) {
+				&& getDtaSelectFileName() == null && getPepXMLFileName() == null) {
 			setMGFSelected(true);
 			someOptionIsCorrect = true;
 		} else if (getMzMLFileName() != null && getMzIdentMLFileName() != null) {
@@ -269,6 +275,9 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 		} else if (getDtaSelectFileName() != null) {
 			setDTASelectSelected(true);
 			someOptionIsCorrect = true;
+		} else if (getPepXMLFileName() != null) {
+			setPepXMLSelected(true);
+			someOptionIsCorrect = true;
 		} else if (getPRIDEXMLFileName() != null) {
 			setPRIDESelected(true);
 			someOptionIsCorrect = true;
@@ -279,10 +288,10 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 		if (!someOptionIsCorrect)
 			throw new IllegalMiapeArgumentException("Some error has been detected on input batch file");
 
-		if ((isMzIdentMLPlusMGFSelected() || isXtandemPlusMGFSelected() || isDTASelectPlusMGFSelected())
-				&& getMiapeMSMetadata() == null)
+		if ((isMzIdentMLPlusMGFSelected() || isXtandemPlusMGFSelected() || isDTASelectPlusMGFSelected()
+				|| isPepXMLPlusMGFSelected()) && getMiapeMSMetadata() == null)
 			throw new IllegalMiapeArgumentException(
-					"Some MIAPE MS metadata template is required for importing datasets from MGF + mzIdentML, MGF + XTandem or MGF + DTASelect. Include a METADATA line type in the batch file.");
+					"Some Mass Spectrometry metadata template is required for importing datasets from MGF + mzIdentML, MGF + XTandem, MGF + DTASelect or MGF + pepXML. Include a METADATA line type in the batch file.");
 
 		if (getMzMLFileName() == null && isFastParsing())
 			throw new IllegalMiapeArgumentException("Fast parsing is only applicable for processing MZML files");
@@ -434,6 +443,24 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 		DTASelectPlusMGFSelected = dTASelectPlusMGFSelected;
 	}
 
+	public void setPepXMLPlusMGFSelected(boolean pepXMLPlusMGFSelected) {
+		this.PepXMLPlusMGFSelected = pepXMLPlusMGFSelected;
+	}
+
+	@Override
+	public boolean isPepXMLSelected() {
+		return PepXMLSelected;
+	}
+
+	public void setPepXMLSelected(boolean pepXMLSelected) {
+		PepXMLSelected = pepXMLSelected;
+	}
+
+	@Override
+	public boolean isPepXMLPlusMGFSelected() {
+		return PepXMLPlusMGFSelected;
+	}
+
 	/**
 	 * @param dTASelectSelected
 	 *            the dTASelectSelected to set
@@ -467,6 +494,15 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 
 	public void setSeparator(TableTextFileSeparator separator) {
 		this.separator = separator;
+	}
+
+	@Override
+	public String getPepXMLFileName() {
+		return this.pepXMLFileName;
+	}
+
+	public void setPepXMLFileName(String pepXMLFileName) {
+		this.pepXMLFileName = pepXMLFileName;
 	}
 
 }

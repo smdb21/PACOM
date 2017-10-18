@@ -24,7 +24,7 @@ import org.proteored.miapeapi.text.tsv.MiapeTSVFile;
 import org.proteored.miapeapi.text.tsv.msi.TableTextFileSeparator;
 import org.proteored.miapeapi.xml.SchemaValidator;
 import org.proteored.miapeapi.xml.dtaselect.MiapeDTASelectFile;
-import org.proteored.miapeapi.xml.dtaselect.msi.MiapeMsiDocumentImpl;
+import org.proteored.miapeapi.xml.dtaselect.MiapeMsiDocumentImpl;
 import org.proteored.miapeapi.xml.ms.MIAPEMSXmlFile;
 import org.proteored.miapeapi.xml.ms.MiapeMSXmlFactory;
 import org.proteored.miapeapi.xml.ms.merge.MiapeMSMerger;
@@ -34,12 +34,13 @@ import org.proteored.miapeapi.xml.mzidentml.MiapeMzIdentMLFile;
 import org.proteored.miapeapi.xml.mzml.MiapeMSDocumentImpl;
 import org.proteored.miapeapi.xml.mzml.MiapeMzMLFile;
 import org.proteored.miapeapi.xml.mzml.lightParser.utils.MzMLLightParser;
+import org.proteored.miapeapi.xml.pepxml.MiapePepXMLFile;
 import org.proteored.miapeapi.xml.pride.AbstractDocumentFromPride;
 import org.proteored.miapeapi.xml.pride.MSIMiapeFactory;
 import org.proteored.miapeapi.xml.pride.MSMiapeFactory;
 import org.proteored.miapeapi.xml.pride.MiapeMsPrideXmlFile;
 import org.proteored.miapeapi.xml.pride.MiapeMsiPrideXmlFile;
-import org.proteored.miapeapi.xml.xtandem.msi.MiapeXTandemFile;
+import org.proteored.miapeapi.xml.xtandem.MiapeXTandemFile;
 import org.proteored.pacom.analysis.util.FileManager;
 import org.proteored.pacom.analysis.util.LocalFilesIndex;
 import org.proteored.pacom.exceptions.MiapeExtractionException;
@@ -1572,13 +1573,13 @@ public class MiapeLocalExtractor {
 
 			log.info("create MIAPE MSI from dtaSelect file");
 			MiapeDTASelectFile xmlFile = new MiapeDTASelectFile(dtaSelectFile);
-			msiDocument = org.proteored.miapeapi.xml.dtaselect.msi.MSIMiapeFactory.getFactory().toDocument(xmlFile,
-					null, getControlVocabularyManager(), null, null, projectName);
-			((org.proteored.miapeapi.xml.dtaselect.msi.MiapeMsiDocumentImpl) msiDocument)
+			msiDocument = org.proteored.miapeapi.xml.dtaselect.MSIMiapeFactory.getFactory().toDocument(xmlFile, null,
+					getControlVocabularyManager(), null, null, projectName);
+			((org.proteored.miapeapi.xml.dtaselect.MiapeMsiDocumentImpl) msiDocument)
 					.setAttachedFileURL(dtaSelectFile.getAbsolutePath());
 
 			if (idMiapeMS > 0) {
-				((org.proteored.miapeapi.xml.dtaselect.msi.MiapeMsiDocumentImpl) msiDocument)
+				((org.proteored.miapeapi.xml.dtaselect.MiapeMsiDocumentImpl) msiDocument)
 						.setReferencedMSDocument(Integer.valueOf(idMiapeMS));
 			}
 			log.info("MIAPE created");
@@ -1595,6 +1596,62 @@ public class MiapeLocalExtractor {
 			identifiers[1] = saveMSILocally(id_msi, msiDocumentXML, projectName,
 					FilenameUtils.getBaseName(dtaSelectFileURI));
 			LocalFilesIndex.getInstance().indexFileByMiapeID(id_msi, dtaSelectFile);
+			return identifiers;
+
+		} catch (Exception e) {
+			log.error(e);
+			sb.append(e.getMessage());
+			e.printStackTrace();
+		}
+		throw new MiapeExtractionException(sb.toString());
+
+	}
+
+	public File[] storeMiapeMSIFromPepXML(String pepXMLFileURI, int idMiapeMS, String projectName) {
+		File[] identifiers = new File[2];
+		int id_msi = -1;
+		MiapeMSIDocument msiDocument = null;
+		File pepXMLFile = null;
+		StringBuilder sb = new StringBuilder();
+		log.info("storeMiapeMSIFromPEPXML from " + pepXMLFileURI);
+
+		try {
+			pepXMLFile = new File(pepXMLFileURI);
+
+			pepXMLFile = FileManager.saveLocalFile(pepXMLFile, projectName);
+			log.info("file saved to " + pepXMLFile.getAbsolutePath());
+			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, pepXMLFile);
+			log.info("indexed ok");
+			// Dont Validate file because we don't have the schema
+			// if (schemaValidation)
+			// SchemaValidator.validateXMLFile(mzIdentMLFile,
+			// SchemaValidator.mzIdentML);
+
+			log.info("create MIAPE MSI from pepXML file");
+			MiapePepXMLFile xmlFile = new MiapePepXMLFile(pepXMLFile);
+			msiDocument = org.proteored.miapeapi.xml.pepxml.MSIMiapeFactory.getFactory().toDocument(xmlFile, null,
+					getControlVocabularyManager(), null, null, projectName);
+			((org.proteored.miapeapi.xml.pepxml.MiapeMsiDocumentImpl) msiDocument)
+					.setAttachedFileURL(pepXMLFile.getAbsolutePath());
+
+			if (idMiapeMS > 0) {
+				((org.proteored.miapeapi.xml.pepxml.MiapeMsiDocumentImpl) msiDocument)
+						.setReferencedMSDocument(Integer.valueOf(idMiapeMS));
+			}
+			log.info("MIAPE created");
+			log.info("Storing document MSI");
+			log.info("Converting document to xml");
+
+			if (idMiapeMS > 0) {
+				identifiers[0] = new File(FileManager.getMiapeMSXMLFileLocalPath(idMiapeMS, projectName));
+			}
+			id_msi = LocalFilesIndex.getInstance().getFreeIndex();
+			msiDocument.setId(id_msi);
+			final MiapeXmlFile<MiapeMSIDocument> msiDocumentXML = msiDocument.toXml();
+
+			identifiers[1] = saveMSILocally(id_msi, msiDocumentXML, projectName,
+					FilenameUtils.getBaseName(pepXMLFileURI));
+			LocalFilesIndex.getInstance().indexFileByMiapeID(id_msi, pepXMLFile);
 			return identifiers;
 
 		} catch (Exception e) {
@@ -1632,7 +1689,7 @@ public class MiapeLocalExtractor {
 
 			MiapeDTASelectFile dtaSelectMIAPEFile = new MiapeDTASelectFile(dtaSelectFile);
 
-			msiDocument = org.proteored.miapeapi.xml.dtaselect.msi.MSIMiapeFactory.getFactory()
+			msiDocument = org.proteored.miapeapi.xml.dtaselect.MSIMiapeFactory.getFactory()
 					.toDocument(dtaSelectMIAPEFile, null, getControlVocabularyManager(), null, null, projectName);
 			((MiapeMsiDocumentImpl) msiDocument).setAttachedFileURL(dtaSelectFile.getAbsolutePath());
 
@@ -1650,6 +1707,61 @@ public class MiapeLocalExtractor {
 			identifiers[1] = saveMSILocally(id_msi, msiDocumentXML, projectName,
 					FilenameUtils.getBaseName(dtaSelectFileURL));
 			LocalFilesIndex.getInstance().indexFileByMiapeID(id_msi, dtaSelectFile);
+
+			return identifiers;
+		} catch (Exception e) {
+			log.error(e);
+			sb.append(e.getMessage());
+			e.printStackTrace();
+		}
+		throw new MiapeExtractionException(sb.toString());
+
+	}
+
+	public File[] storeMiapeMSMSIFromPepXML(String pepXMLFileURL, byte[] miapeMSXMLBytes, String projectName) {
+		int id_ms = -1;
+		int id_msi = -1;
+		StringBuilder sb = new StringBuilder();
+		File[] identifiers = new File[2];
+		MiapeMSIDocument msiDocument = null;
+		File pepXMLFile = null;
+
+		try {
+			if (miapeMSXMLBytes != null) {
+
+				MiapeXmlFile<MiapeMSDocument> msDocumentXML = new MIAPEMSXmlFile(miapeMSXMLBytes);
+				id_ms = LocalFilesIndex.getInstance().getFreeIndex();
+				identifiers[0] = saveMSLocally(id_ms, msDocumentXML, projectName);
+
+			}
+
+			log.info("create MIAPE MSI from pepXML file");
+			// copy dtaselect file to a temp file
+			pepXMLFile = new File(pepXMLFileURL);
+
+			pepXMLFile = FileManager.saveLocalFile(pepXMLFile, projectName);
+			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, pepXMLFile);
+
+			MiapePepXMLFile pepXMLMIAPEFile = new MiapePepXMLFile(pepXMLFile);
+
+			msiDocument = org.proteored.miapeapi.xml.pepxml.MSIMiapeFactory.getFactory().toDocument(pepXMLMIAPEFile,
+					null, getControlVocabularyManager(), null, null, projectName);
+			((MiapeMsiDocumentImpl) msiDocument).setAttachedFileURL(pepXMLFile.getAbsolutePath());
+
+			if (id_ms > 0) {
+				log.info("Associating the MIAPE MSI document to the previously created MIAPE MS document");
+				((MiapeMsiDocumentImpl) msiDocument).setReferencedMSDocument(Integer.valueOf(id_ms));
+			}
+			log.info("MIAPE created");
+			log.info("Storing document MSI");
+			log.info("Converting document to xml");
+
+			id_msi = LocalFilesIndex.getInstance().getFreeIndex();
+			msiDocument.setId(id_msi);
+			MiapeXmlFile<MiapeMSIDocument> msiDocumentXML = msiDocument.toXml();
+			identifiers[1] = saveMSILocally(id_msi, msiDocumentXML, projectName,
+					FilenameUtils.getBaseName(pepXMLFileURL));
+			LocalFilesIndex.getInstance().indexFileByMiapeID(id_msi, pepXMLFile);
 
 			return identifiers;
 		} catch (Exception e) {

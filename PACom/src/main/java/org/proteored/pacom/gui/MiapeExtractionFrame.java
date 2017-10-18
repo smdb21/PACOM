@@ -86,6 +86,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	private static final String NOT_APPLICABLE = "not applicable";
 	private static final String PRIDE_FILE_LABEL = "PRIDE xml file:";
 	private static final String XTANDEM_FILE_LABEL = "X!Tandem xml file:";
+	private static final String PEPXML_FILE_LABEL = "pepXML file:";
 	private static final String TSV_FILE_LABEL = "TSV text file:";
 	private static final String DTASELECT_FILE_LABEL = "DTASelect file:";
 	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
@@ -337,17 +338,22 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		panel_1.setBorder(new TitledBorder(null, "Input type", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 
 		javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-		jPanel4Layout.setHorizontalGroup(jPanel4Layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanel4Layout.createSequentialGroup().addContainerGap()
-						.addGroup(jPanel4Layout.createParallelGroup(Alignment.LEADING)
-								.addComponent(panel, GroupLayout.PREFERRED_SIZE, 149, Short.MAX_VALUE)
-								.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE))));
+		jPanel4Layout
+				.setHorizontalGroup(
+						jPanel4Layout.createParallelGroup(Alignment.LEADING)
+								.addGroup(jPanel4Layout.createSequentialGroup().addContainerGap()
+										.addGroup(jPanel4Layout.createParallelGroup(Alignment.LEADING)
+												.addGroup(jPanel4Layout.createSequentialGroup()
+														.addComponent(panel, GroupLayout.PREFERRED_SIZE, 243,
+																Short.MAX_VALUE)
+														.addContainerGap())
+												.addComponent(panel_1, GroupLayout.DEFAULT_SIZE,
+														GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))));
 		jPanel4Layout.setVerticalGroup(jPanel4Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel4Layout
 				.createSequentialGroup()
 				.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 				.addPreferredGap(ComponentPlacement.RELATED)
-				.addComponent(panel, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-				.addContainerGap(60, Short.MAX_VALUE)));
+				.addComponent(panel, GroupLayout.PREFERRED_SIZE, 164, Short.MAX_VALUE).addContainerGap()));
 		jRadioButtonMzIdentML = new javax.swing.JRadioButton();
 		jRadioButtonMzIdentML.setSelected(true);
 
@@ -419,33 +425,50 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		jButtonHelpSeparators.setPressedIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON_CLICKED));
 		jButtonHelpSeparators.setRolloverIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON_HOVER));
 		jButtonHelpSeparators.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+		jRadioButtonPepXML = new JRadioButton("pepXML");
+		buttonGroupInputFileFormat.add(jRadioButtonPepXML);
+		jRadioButtonPepXML.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				jRadioButtonPepXMLSelected();
+			}
+		});
+		jRadioButtonPepXML.setToolTipText("<html>Import a dataset from a pepXML output files.</html>");
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
-		gl_panel_1.setHorizontalGroup(gl_panel_1.createParallelGroup(Alignment.LEADING).addGroup(gl_panel_1
+		gl_panel_1
+				.setHorizontalGroup(
+						gl_panel_1.createParallelGroup(Alignment.LEADING).addGroup(gl_panel_1.createSequentialGroup()
+								.addContainerGap().addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+										.addComponent(jRadioButtonMzIdentML).addComponent(jRadioButtonPRIDE)
+										.addComponent(
+												jRadioButtonDTASelect)
+										.addComponent(jRadioButtonXTandem)
+										.addGroup(gl_panel_1.createSequentialGroup()
+												.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+														.addComponent(jRatioButtonTabseparatedTextFile)
+														.addComponent(jRadioButtonPepXML))
+												.addPreferredGap(ComponentPlacement.UNRELATED)
+												.addComponent(jComboBoxTableSeparators, GroupLayout.PREFERRED_SIZE, 85,
+														GroupLayout.PREFERRED_SIZE)
+												.addGap(7).addComponent(jButtonHelpSeparators,
+														GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE)))
+								.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+		gl_panel_1.setVerticalGroup(gl_panel_1.createParallelGroup(Alignment.LEADING).addGroup(gl_panel_1
 				.createSequentialGroup().addContainerGap()
-				.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING).addComponent(jRadioButtonMzIdentML)
-						.addComponent(jRadioButtonPRIDE).addComponent(jRadioButtonDTASelect)
-						.addComponent(jRadioButtonXTandem)
-						.addGroup(gl_panel_1.createSequentialGroup().addComponent(jRatioButtonTabseparatedTextFile)
-								.addPreferredGap(ComponentPlacement.RELATED).addComponent(jComboBoxTableSeparators,
-										GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE)
-								.addGap(6).addComponent(jButtonHelpSeparators, GroupLayout.PREFERRED_SIZE, 16,
-										GroupLayout.PREFERRED_SIZE)))
+				.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING)
+						.addComponent(jButtonHelpSeparators, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_panel_1.createSequentialGroup().addComponent(jRadioButtonMzIdentML)
+								.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonPRIDE)
+								.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonDTASelect)
+								.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonXTandem)
+								.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonPepXML)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
+										.addComponent(jRatioButtonTabseparatedTextFile).addComponent(
+												jComboBoxTableSeparators, GroupLayout.PREFERRED_SIZE,
+												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
 				.addContainerGap()));
-		gl_panel_1.setVerticalGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_1.createSequentialGroup().addContainerGap()
-						.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING)
-								.addGroup(gl_panel_1.createSequentialGroup().addGap(100).addComponent(
-										jButtonHelpSeparators, GroupLayout.PREFERRED_SIZE, 16, Short.MAX_VALUE))
-								.addGroup(gl_panel_1.createSequentialGroup().addComponent(jRadioButtonMzIdentML)
-										.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonPRIDE)
-										.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonDTASelect)
-										.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonXTandem)
-										.addPreferredGap(ComponentPlacement.RELATED)
-										.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
-												.addComponent(jRatioButtonTabseparatedTextFile).addComponent(
-														jComboBoxTableSeparators, GroupLayout.PREFERRED_SIZE,
-														GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
-						.addContainerGap()));
 		panel_1.setLayout(gl_panel_1);
 		jRadioButtonMzIdentML.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -499,14 +522,25 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		JLabel lblforPrideExport = new JLabel("(for PRIDE export)");
 		lblforPrideExport.setToolTipText(
 				"<html>Input type + MS data file:<br>\r\nUse one of these options if you want later to export a PRIDE XML file containing the spectra. \r\n</html>");
+
+		jRadioButtonPepXMLMGF = new JRadioButton("pepXML + mgf");
+		buttonGroupInputFileFormat.add(jRadioButtonPepXMLMGF);
+		jRadioButtonPepXMLMGF.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				jRatioButtonPepXMLPlusMGFSelected();
+			}
+		});
+		jRadioButtonPepXMLMGF.setToolTipText(
+				"<html>Imports dataset from a pepXML file and keeps the PSMs linked to the spectra using a mgf file.<br>\r\nA PRIDE XML file could be created just in case of using a mgf file that has been used directly in the search.<br>\r\nA metadata template will be mandatory in order to complete the Mass Spectrometry metadata information.</html>");
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(gl_panel.createParallelGroup(Alignment.LEADING).addGroup(gl_panel
 				.createSequentialGroup().addContainerGap()
-				.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-						.addComponent(jRadioButtonXTandemMGF, GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
+				.addGroup(gl_panel.createParallelGroup(Alignment.LEADING).addComponent(jRadioButtonPepXMLMGF)
+						.addComponent(jRadioButtonDTASelectMGF, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+								Short.MAX_VALUE)
+						.addComponent(jRadioButtonXTandemMGF, GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
 						.addGroup(gl_panel.createParallelGroup(Alignment.LEADING, false).addComponent(lblforPrideExport)
-								.addComponent(jRadioButtonDTASelectMGF, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 								.addComponent(jRadioButtonMzIdentMLMGF, GroupLayout.DEFAULT_SIZE,
 										GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 								.addComponent(jRadioButtonMzMLMzIdentML, GroupLayout.DEFAULT_SIZE,
@@ -518,7 +552,8 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonMzMLMzIdentML)
 						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonXTandemMGF)
 						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonDTASelectMGF)
-						.addContainerGap(9, Short.MAX_VALUE)));
+						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonPepXMLMGF)
+						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 		panel.setLayout(gl_panel);
 		jRadioButtonMzMLMzIdentML.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -638,7 +673,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel1Layout
 				.createSequentialGroup().addContainerGap().addGroup(jPanel1Layout
 						.createParallelGroup(Alignment.LEADING).addGroup(jPanel1Layout.createSequentialGroup()
-								.addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, 238, GroupLayout.PREFERRED_SIZE)
+								.addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, 252, GroupLayout.PREFERRED_SIZE)
 								.addPreferredGap(ComponentPlacement.RELATED)
 								.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING, false)
 										.addComponent(jPanel8, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
@@ -671,13 +706,13 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 								.addComponent(jButtonInputFile2))
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-								.addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE)
-								.addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 308, Short.MAX_VALUE)
+								.addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 359, Short.MAX_VALUE)
 								.addGroup(jPanel1Layout.createSequentialGroup()
 										.addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 												GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(ComponentPlacement.RELATED).addComponent(jPanel8,
-												GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addComponent(jPanel8, GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE))
+								.addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, 396, Short.MAX_VALUE))
 						.addContainerGap()));
 		jPanel1.setLayout(jPanel1Layout);
 
@@ -793,6 +828,46 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		java.awt.Dimension dialogSize = getSize();
 		setLocation((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2);
 	}// </editor-fold>
+
+	private void jRatioButtonPepXMLPlusMGFSelected() {
+		// disable and select MIAPE MS
+		jCheckBoxMS.setEnabled(false);
+		jCheckBoxMS.setSelected(true);
+		// disable and select MIAPE MSI
+
+		jCheckBoxMSI.setSelected(true);
+
+		jComboBoxMetadata.setEnabled(true);
+		jButtonEditMetadata.setEnabled(true);
+
+		enablePrimaryInputTextFile(MGF_FILE_LABEL);
+		enableSecondaryInputTextFile(PEPXML_FILE_LABEL);
+
+		String mgfPlusDTASelectMessage = "<html>With this option, you will be able to create <ul><li>a MS dataset from the mgf file. "
+				+ "(Some minimal information about the spectrometer<br>will be asked to you before to start the process).</li>"
+				+ "<li>an identification dataset from the pepXML file.</li></ul>"
+				+ "If the pepXML file comes from a search using the mgf file, "
+				+ "later you will be able to create<br>a complete PRIDE XML file from both MS and identification datasets.</html>";
+		// show mzML + mzIdentML warning
+		JOptionPane.showMessageDialog(this, mgfPlusDTASelectMessage, "mgf + pepXML", JOptionPane.INFORMATION_MESSAGE);
+
+		// show local processing warning
+		// if (jRadioButtonLocalProcessin
+	}
+
+	private void jRadioButtonPepXMLSelected() {
+		jComboBoxMetadata.setEnabled(false);
+		jButtonEditMetadata.setEnabled(false);
+
+		// the same as for mzIdentML
+		jRadioButtonMzIdentMLActionPerformed();
+
+		disablePrimaryInputTextFile();
+		enableSecondaryInputTextFile(PEPXML_FILE_LABEL);
+
+		// reset combo box, deleting current mzml if exists
+		FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_MZML);
+	}
 
 	private void showTableTextFileHelp() {
 		HelpDialog helpDialog = new HelpDialog(this, "Text table format", getTextTableFormatText1());
@@ -1257,7 +1332,8 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 			if ("".equals(selectedItem)) {
 				// do not let continue if mgf + mzIdentml or mgf + XTandem
 				// options are selected. Other options, show a warning:
-				if (isMzIdentMLPlusMGFSelected() || isXTandemPlusMGFSelected() || isDTASelectPlusMGFSelected()) {
+				if (isMzIdentMLPlusMGFSelected() || isXTandemPlusMGFSelected() || isDTASelectPlusMGFSelected()
+						|| isPepXMLPlusMGFSelected()) {
 					final int option = JOptionPane.showConfirmDialog(this,
 							"<html>MGF input file doesn't contain any metadata. <br>"
 									+ "You must select one preconfigured metadata information in the dropdown list or introduce the information yourself.<br><br>"
@@ -1434,6 +1510,8 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	private JRadioButton jRatioButtonTabseparatedTextFile;
 	private JComboBox jComboBoxTableSeparators;
 	private JButton jButtonHelpSeparators;
+	private JRadioButton jRadioButtonPepXML;
+	private JRadioButton jRadioButtonPepXMLMGF;
 
 	// public int selectedInstrumentNumber;
 
@@ -1638,7 +1716,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	@Override
 	public String getMgfFileName() {
 		if (isMzIdentMLPlusMGFSelected() || isMGFSelected() || isXTandemPlusMGFSelected()
-				|| isDTASelectPlusMGFSelected())
+				|| isDTASelectPlusMGFSelected() || isPepXMLPlusMGFSelected())
 			return jTextFieldInputFile.getText();
 		return null;
 	}
@@ -1832,7 +1910,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	@Override
 	public boolean isMGFSelected() {
 		return jRadioButtonDTASelectMGF.isSelected() || jRadioButtonMzIdentMLMGF.isSelected()
-				|| jRadioButtonXTandemMGF.isSelected();
+				|| jRadioButtonXTandemMGF.isSelected() || jRadioButtonPepXMLMGF.isSelected();
 	}
 
 	@Override
@@ -1868,5 +1946,22 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	@Override
 	public TableTextFileSeparator getSeparator() {
 		return (TableTextFileSeparator) this.jComboBoxTableSeparators.getSelectedItem();
+	}
+
+	@Override
+	public String getPepXMLFileName() {
+		if (isPepXMLSelected())
+			return jTextFieldInputFile2.getText();
+		return null;
+	}
+
+	@Override
+	public boolean isPepXMLPlusMGFSelected() {
+		return jRadioButtonPepXMLMGF.isSelected();
+	}
+
+	@Override
+	public boolean isPepXMLSelected() {
+		return jRadioButtonPepXML.isSelected();
 	}
 }

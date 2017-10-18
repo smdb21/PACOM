@@ -60,9 +60,15 @@ public interface MiapeExtractionRunParameters {
 
 	public String getDtaSelectFileName();
 
+	public String getPepXMLFileName();
+
 	public boolean isDTASelectSelected();
 
 	public boolean isDTASelectPlusMGFSelected();
 
 	public TableTextFileSeparator getSeparator();
+
+	public boolean isPepXMLPlusMGFSelected();
+
+	public boolean isPepXMLSelected();
 }
