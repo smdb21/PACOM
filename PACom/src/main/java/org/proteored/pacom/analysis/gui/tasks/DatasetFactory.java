@@ -1718,7 +1718,9 @@ public class DatasetFactory {
 						// double log10 = Math.log(numPeptidesPerProtein /
 						// mass);
 						double log2 = Math.log(numPeptidesPerProtein / mass) / Math.log(2);
-
+						if (Double.isInfinite(log2)) {
+							continue;
+						}
 						// log.info(numPeptidesPerProtein + " " + mass + " "
 						// + log10);
 						values.add(log2);
@@ -2336,16 +2338,25 @@ public class DatasetFactory {
 					try {
 						final PeptideOccurrence occurrence1 = peptideOccurrences1.get(occurrence2.getKey());
 						Float x = occurrence1.getBestPeptideScore(scoreName);
-						if (x != null && applyLog)
-							x = Float.valueOf(String.valueOf(Math.log10(x)));
+						if (x != null && applyLog) {
+							x = Double.valueOf(Math.log10(x)).floatValue();
+							if (Double.isInfinite(x)) {
+								continue;
+							}
+						}
 						Float y = occurrence2.getBestPeptideScore(scoreName);
-						if (y != null && applyLog)
-							y = Float.valueOf(String.valueOf(Math.log10(y)));
+						if (y != null && applyLog) {
+							y = Double.valueOf(Math.log10(y)).floatValue();
+							if (Double.isInfinite(y)) {
+								continue;
+							}
+						}
 						if (x != null && y != null) {
-							if (separateDecoyHits && (occurrence1.isDecoy() || occurrence2.isDecoy()))
+							if (separateDecoyHits && (occurrence1.isDecoy() || occurrence2.isDecoy())) {
 								decoySeries.add(x, y);
-							else
+							} else {
 								normalSeries.add(x, y);
+							}
 						}
 					} catch (IllegalMiapeArgumentException e) {
 						// do nothing, not plot it
@@ -2417,9 +2428,12 @@ public class DatasetFactory {
 			Float score = proteinGroup.getBestProteinScore(scoreName);
 			if (score != null) {
 				double doubleValue = score.doubleValue();
-				if (applyLog)
+				if (applyLog) {
 					doubleValue = Math.log10(doubleValue);
-
+					if (Double.isInfinite(doubleValue)) {
+						continue;
+					}
+				}
 				if (separateDecoyHits && proteinGroup.isDecoy()) {
 					scoresDecoy.add(doubleValue);
 				} else {
@@ -2463,8 +2477,12 @@ public class DatasetFactory {
 				Float score = peptide.getScore(scoreName);
 				if (score != null) {
 					double doubleValue = score.doubleValue();
-					if (applyLog)
+					if (applyLog) {
 						doubleValue = Math.log10(doubleValue);
+						if (Double.isInfinite(doubleValue)) {
+							continue;
+						}
+					}
 					if (separateDecoyHits && peptide.isDecoy()) {
 						scoresDecoy.add(doubleValue);
 					} else {
@@ -4060,9 +4078,12 @@ public class DatasetFactory {
 						final int numPeptides2 = peptides2.size();
 						if (numPeptides2 > 0) {
 							double ratio = (double) numPeptides1 / (double) numPeptides2;
-							double logratio = Math.log(ratio);
-							log.debug("Ratio= " + numPeptides1 + "/" + numPeptides2 + "=" + logratio);
-							logRatios[i++] = logratio;
+							double log2ratio = Math.log(ratio) / Math.log(2);
+							if (Double.isInfinite(log2ratio)) {
+								continue;
+							}
+							log.debug("Ratio= " + numPeptides1 + "/" + numPeptides2 + "=" + log2ratio);
+							logRatios[i++] = log2ratio;
 						}
 					}
 				}
@@ -4099,8 +4120,10 @@ public class DatasetFactory {
 						final int numPeptides2 = peptides2.size();
 						if (numPeptides2 > 0) {
 							double ratio = (double) numPeptides1 / (double) numPeptides2;
-							double logratio = Math.log(ratio);
-
+							double logratio = Math.log10(ratio);
+							if (Double.isInfinite(logratio)) {
+								continue;
+							}
 							Float score1 = pgo1.getBestPeptideScore(scoreName);
 							if (score1 != null)
 								serie.add(logratio, score1);
