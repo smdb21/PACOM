@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 
 import org.apache.log4j.Logger;
+import org.jfree.chart.ChartPanel;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset;
@@ -187,8 +188,11 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			} else if (ChartManagerFrame.PEPTIDE_COUNTING_VS_SCORE.equals(chartType)) {
 				ret = showPeptideCountingVsScoreScatterChart();
 			}
-			if (ret != null)
+			if (ret != null) {
+				if (ret instanceof ChartPanel)
+					log.info("Chart panel with dimension: " + ((ChartPanel) ret).getSize());
 				return ret;
+			}
 		} catch (IllegalMiapeArgumentException e) {
 			e.printStackTrace();
 			error = e.getMessage();
@@ -506,14 +510,14 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 		List<String> skipWords = optionsFactory.getSkipWords();
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST)) {
-			WordCramChart chart = new WordCramChart(idSets.get(0), skipWords, minWordLength);
+			WordCramChart chart = new WordCramChart(idSets.get(0), skipWords, minWordLength, parent);
 			chart.selectedWordLabel(label).selectedProteinsLabel(parent.getTextAreaStatus())
 					.font(optionsFactory.getFont()).maximumNumberOfWords(maxNumWords);
 			return chart;
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
 			List<Panel> chartList = new ArrayList<Panel>();
 			for (Experiment experiment : experimentList.getExperiments()) {
-				WordCramChart chart = new WordCramChart(experiment, skipWords, minWordLength);
+				WordCramChart chart = new WordCramChart(experiment, skipWords, minWordLength, parent);
 				chart.selectedWordLabel(label).selectedProteinsLabel(parent.getTextAreaStatus())
 						.font(optionsFactory.getFont()).maximumNumberOfWords(maxNumWords);
 				chartList.add(chart);
@@ -3405,15 +3409,19 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 		String xAxisLabel = scoreName;
 		String yAxisLabel = scoreName;
-
+		boolean applyLog = optionsFactory.isApplyLog();
+		if (applyLog) {
+			xAxisLabel = "log10(" + xAxisLabel + ")";
+			yAxisLabel = "log10(" + xAxisLabel + ")";
+		}
 		boolean showRegressionLine = optionsFactory.showRegressionLine();
 		boolean showDiagonalLine = optionsFactory.showDiagonalLine();
-		boolean applyLog = optionsFactory.isApplyLog();
+
 		boolean separateDecoyHits = optionsFactory.isSeparatedDecoyHits();
 		List<IdentificationSet> idSets = getIdentificationSets(null, scoreComparisonJCheckBoxes, false);
 		if (idSets.size() == 2) {
-			xAxisLabel = scoreName + "(" + idSets.get(0).getFullName() + ")";
-			yAxisLabel = scoreName + "(" + idSets.get(1).getFullName() + ")";
+			xAxisLabel = xAxisLabel + " (" + idSets.get(0).getFullName() + ")";
+			yAxisLabel = yAxisLabel + " (" + idSets.get(1).getFullName() + ")";
 		}
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 
@@ -3495,6 +3503,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		boolean applyLog = optionsFactory.isApplyLog();
 		boolean separateDecoyHits = optionsFactory.isSeparatedDecoyHits();
 		String xAxisLabel = scoreName;
+		if (applyLog) {
+			xAxisLabel = "log10(" + xAxisLabel + ")";
+		}
 
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, addTotal);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
