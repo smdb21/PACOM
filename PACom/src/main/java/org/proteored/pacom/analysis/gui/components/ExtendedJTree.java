@@ -1,5 +1,7 @@
 package org.proteored.pacom.analysis.gui.components;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,6 +16,41 @@ import javax.swing.tree.TreePath;
 import org.proteored.pacom.analysis.conf.jaxb.CPNode;
 
 public class ExtendedJTree extends JTree {
+	public ExtendedJTree() {
+		this(false);
+	}
+
+	public ExtendedJTree(boolean allowDeletion) {
+		addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				DefaultMutableTreeNode selectedNode = getSelectedNode();
+				if (selectedNode != null) {
+					if (allowDeletion
+							&& (e.getKeyCode() == KeyEvent.VK_DELETE || e.getKeyCode() == KeyEvent.VK_BACK_SPACE)) {
+						removeNode(selectedNode);
+					}
+					if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_SPACE) {
+						expandNode(selectedNode);
+					}
+					if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+						collapseNode(selectedNode);
+					}
+				}
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+
+			}
+		});
+	}
 
 	/**
 	 * This method takes the node string and traverses the tree till it finds
@@ -383,4 +420,13 @@ public class ExtendedJTree extends JTree {
 			removeNode(node);
 		// reload();
 	}
+
+	public void expandNode(DefaultMutableTreeNode node) {
+		this.expandPath(new TreePath(node.getPath()));
+	}
+
+	public void collapseNode(DefaultMutableTreeNode node) {
+		this.collapsePath(new TreePath(node.getPath()));
+	}
+
 }
