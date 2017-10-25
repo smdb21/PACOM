@@ -7,7 +7,7 @@ import javax.swing.SwingWorker;
 
 import org.proteored.miapeapi.cv.ControlVocabularyManager;
 import org.proteored.miapeapi.factories.msi.MiapeMSIDocumentBuilder;
-import org.proteored.miapeapi.xml.dtaselect.msi.MiapeMsiDocumentImpl;
+import org.proteored.miapeapi.xml.dtaselect.MiapeMsiDocumentImpl;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 
 import edu.scripps.yates.dtaselectparser.DTASelectParser;
