@@ -195,10 +195,14 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			}
 		} catch (IllegalMiapeArgumentException e) {
 			e.printStackTrace();
-			error = e.getMessage();
-			log.warn(e.getMessage());
+			String message = e.getMessage();
+			error = message;
+			log.warn(message);
 			JPanel jpanel = new JPanel();
-			jpanel.add(new JLabel(e.getMessage()));
+			if (message.contains("\n")) {
+				message = "<html>" + message.replace("\n", "<br>") + "</html>";
+			}
+			jpanel.add(new JLabel(message));
 			return jpanel;
 		}
 		if (error == null)
