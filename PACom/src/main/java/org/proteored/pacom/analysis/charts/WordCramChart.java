@@ -1,5 +1,10 @@
 package org.proteored.pacom.analysis.charts;
 
+import java.awt.BorderLayout;
+import java.awt.Toolkit;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +17,7 @@ import javax.swing.JTextArea;
 import org.apache.log4j.Logger;
 import org.proteored.miapeapi.experiment.model.ExtendedIdentifiedProtein;
 import org.proteored.miapeapi.experiment.model.IdentificationSet;
+import org.proteored.pacom.analysis.gui.ChartManagerFrame;
 
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.set.hash.THashSet;
@@ -51,6 +57,13 @@ public class WordCramChart extends PApplet {
 
 	private int maximumNumberOfWords;
 
+	private boolean initialized = false;
+
+	private ChartManagerFrame chartManagerFrame;
+
+	private int myWidth = 800;
+	private int myHeight = 550;
+	public static final String WORDCRAMCREATED = "wordcram_created";
 	static {
 
 		// this.prefixesToSkip.add("ensp");
@@ -131,10 +144,12 @@ public class WordCramChart extends PApplet {
 	// this.array = this.sentences.toArray(new String[0]);
 	// this.init();
 	// }
-	public WordCramChart(IdentificationSet identificationSet, List<String> skipWords, int minWordLength) {
+	public WordCramChart(IdentificationSet identificationSet, List<String> skipWords, int minWordLength,
+			ChartManagerFrame parent) {
+
 		final List<ExtendedIdentifiedProtein> identifiedProteins = identificationSet.getIdentifiedProteins();
 		log.info(identifiedProteins.size() + " proteins");
-
+		this.chartManagerFrame = parent;
 		StringBuilder skipWordsBuffer = new StringBuilder();
 		if (skipWords != null) {
 			for (String word : skipWords) {
@@ -174,7 +189,38 @@ public class WordCramChart extends PApplet {
 		log.info(wordMapping.size() + " words mapped to proteins");
 
 		// this.panel.add(papplet, c);
-		init();
+
+		this.setLayout(new BorderLayout());
+		this.addComponentListener(new ComponentListener() {
+
+			@Override
+			public void componentShown(ComponentEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void componentResized(ComponentEvent e) {
+				if (initialized) {
+					initialized = false;
+					if (chartManagerFrame != null) {
+						chartManagerFrame.startShowingChart(null);
+					}
+				}
+			}
+
+			@Override
+			public void componentMoved(ComponentEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void componentHidden(ComponentEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
 	}
 
 	public static List<String> getDefaultSkippedWords() {
@@ -196,6 +242,12 @@ public class WordCramChart extends PApplet {
 
 	public List<ExtendedIdentifiedProtein> getProteinsByWord(String word) {
 		return wordMapping.get(word);
+	}
+
+	public void initialize(int width, int height) {
+		myWidth = width;
+		myHeight = height;
+		init();
 	}
 
 	public WordCramChart selectedWordLabel(JLabel label) {
@@ -222,7 +274,7 @@ public class WordCramChart extends PApplet {
 
 	@Override
 	public void setup() {
-
+		initialized = false;
 		// destination.image.getGraphics():
 		// P2D -> sun.awt.image.ToolkitImage, JAVA2D ->
 		// java.awt.image.BufferedImage.
@@ -231,9 +283,15 @@ public class WordCramChart extends PApplet {
 		// P2D -> sun.java2d.SunGraphics2D, JAVA2D -> same thing.
 
 		// P2D can't draw to destination.image.getGraphics(). Interesting.
+		int width = Double.valueOf(Math.max(800, Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 4))
+				.intValue();
+		int heigth = Double.valueOf(Math.max(550, Toolkit.getDefaultToolkit().getScreenSize().getHeight() * 4 / 6))
+				.intValue();
+		size(myWidth, myHeight);
+		// size(mywidth, myheight);
 
-		size(550, 550); // (int)random(300, 800)); //1200, 675);
-						// //1600,
+		// size(width, heigth); // (int)random(300, 800)); //1200, 675);
+		// //1600,
 		// 900);
 		smooth();
 		colorMode(PConstants.HSB);
@@ -281,11 +339,13 @@ public class WordCramChart extends PApplet {
 				// .withColorer(Colorers.complement(this, random(255), 200,
 				// 220))
 
-				.withAngler(Anglers.mostlyHoriz()).withPlacer(Placers.swirl())
-				// .withPlacer(Placers.centerClump())
-				.withSizer(Sizers.byWeight(1, 100)).withWordPadding(1).sizedByWeight(5, 100)
-
-				.minShapeSize(1)
+				.withAngler(Anglers.mostlyHoriz())//
+				.withPlacer(Placers.swirl())//
+				.withPlacer(Placers.centerClump())//
+				.withSizer(Sizers.byWeight(1, 100))//
+				.withWordPadding(1)//
+				.sizedByWeight(5, 100)//
+				.minShapeSize(1)//
 				// .MaxAttemptsForPlacement(10)
 				.maxNumberOfWordsToDraw(getMaximumNumberOfWords()).withNudger(new SpiralWordNudger())
 		// .withNudger(
@@ -318,6 +378,8 @@ public class WordCramChart extends PApplet {
 		// println("Done");
 		// save("wordcram.png");
 		noLoop();
+		initialized = true;
+		firePropertyChange(WORDCRAMCREATED, null, null);
 	}
 
 	@Override
@@ -325,7 +387,7 @@ public class WordCramChart extends PApplet {
 		// fill(55);
 		// rect(0, 0, width, height);
 
-		boolean allAtOnce = false;
+		boolean allAtOnce = true;
 		if (allAtOnce) {
 			log.info("Drawing words...");
 			wordcram.drawAll();
@@ -340,6 +402,13 @@ public class WordCramChart extends PApplet {
 				finishUp();
 			}
 		}
+
+	}
+
+	@Override
+	public void repaint() {
+		draw();
+		super.repaint();
 	}
 
 	@Override
@@ -347,7 +416,7 @@ public class WordCramChart extends PApplet {
 
 		Word word = wordcram.getWordAt(mouseX, mouseY);
 		if (word != null) {
-			log.info(round(mouseX) + "," + round(mouseY) + " -> " + word.word);
+			log.debug(round(mouseX) + "," + round(mouseY) + " -> " + word.word);
 			if (jLabelSelectedWord != null)
 				jLabelSelectedWord.setText(word.word);
 			if (jTextAreaSelectedProteins != null) {
@@ -395,9 +464,11 @@ public class WordCramChart extends PApplet {
 
 	@Override
 	public void mouseClicked() {
+
 		log.info("Mouse clicked");
-		initWordCram();
-		loop();
+
+		// initWordCram();
+		// loop();
 	}
 
 	@Override
@@ -425,5 +496,9 @@ public class WordCramChart extends PApplet {
 			w[i] = new Word(new String(new char[] { (char) (i + 65) }), 26 - i);
 		}
 		return w;
+	}
+
+	public void saveAsSVG(File file) {
+		this.saveFile(file.getAbsolutePath());
 	}
 }
