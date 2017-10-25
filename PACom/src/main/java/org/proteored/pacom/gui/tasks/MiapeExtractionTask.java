@@ -50,7 +50,8 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 	public static final String MIAPE_CREATION_COMPRESSING_FILE_DONE = "MIAPE CREATION COMPRESSING FILE DONE";
 	public static final String MIAPE_CREATION_SENDING_MIAPE_TO_SERVER = "MIAPE CREATION SENDING MIAPE TO SERVER";
 	public static final String MIAPE_CREATION_WAITING_FOR_OTHER_JOB_COMPLETION = "MIAPE_CREATION_WAITING_FOR_OTHER_JOB_COMPLETION";
-
+	public static final String MIAPE_CREATION_COPYING_FILE = "MIAPE_CREATION_COPYING_FILE";
+	public static final String MIAPE_CREATION_COPYING_FILE_DONE = "MIAPE_CREATION_COPYING_FILE_DONE";
 	private static int numTasks = 1;
 	private int identifier;
 	/*
