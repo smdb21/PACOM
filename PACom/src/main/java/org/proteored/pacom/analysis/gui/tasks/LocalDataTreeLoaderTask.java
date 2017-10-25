@@ -30,7 +30,7 @@ public class LocalDataTreeLoaderTask extends SwingWorker<Void, String> {
 
 			int numLocalIdSets = 0;
 			final List<String> localMIAPEProjects = FileManager.getlocalMIAPEProjects();
-
+			log.info("Getting datasets for " + localMIAPEProjects.size() + " local projects");
 			for (String projectName : localMIAPEProjects) {
 
 				// Para que se pueda interrumpir el proceso
@@ -39,7 +39,7 @@ public class LocalDataTreeLoaderTask extends SwingWorker<Void, String> {
 				// String project_label = "'" + projectName + "'";
 				String project_label = projectName;
 				// Project project = getProject(idProject, userName, password);
-				log.info("Getting datasets for local project: " + projectName);
+				log.debug("Getting datasets for local project: " + projectName);
 				List<String> miapeList = FileManager.getLocalMiapesByProjectName(projectName);
 
 				if (!miapeList.isEmpty()) {
