@@ -21,6 +21,9 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.FileImageOutputStream;
 import javax.swing.ImageIcon;
 
+import org.apache.commons.io.FilenameUtils;
+import org.proteored.pacom.analysis.charts.ImageFileFormat;
+
 public class ImageUtils {
 	// This method returns true if the specified image has transparent pixels
 	public static boolean hasAlpha(Image image) {
@@ -56,7 +59,8 @@ public class ImageUtils {
 		// implementation, see Determining If an Image Has Transparent Pixels
 		boolean hasAlpha = hasAlpha(image);
 
-		// Create a buffered image with a format that's compatible with the screen
+		// Create a buffered image with a format that's compatible with the
+		// screen
 		BufferedImage bimage = null;
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		try {
@@ -69,8 +73,7 @@ public class ImageUtils {
 			// Create the buffered image
 			GraphicsDevice gs = ge.getDefaultScreenDevice();
 			GraphicsConfiguration gc = gs.getDefaultConfiguration();
-			bimage = gc.createCompatibleImage(image.getWidth(null), image.getHeight(null),
-					transparency);
+			bimage = gc.createCompatibleImage(image.getWidth(null), image.getHeight(null), transparency);
 		} catch (HeadlessException e) {
 			// The system does not have a screen
 		}
@@ -100,29 +103,33 @@ public class ImageUtils {
 	}
 
 	/**
-	 * Generates a new chart <code>Image</code> based upon the currently held settings and then
-	 * attempts to save that image to disk, to the location provided as a File parameter. The image
-	 * type of the saved file will equal the extension of the filename provided, so it is essential
-	 * that a suitable extension be included on the file name.
+	 * Generates a new chart <code>Image</code> based upon the currently held
+	 * settings and then attempts to save that image to disk, to the location
+	 * provided as a File parameter. The image type of the saved file will equal
+	 * the extension of the filename provided, so it is essential that a
+	 * suitable extension be included on the file name.
 	 * 
 	 * <p>
-	 * All supported <code>ImageIO</code> file types are supported, including PNG, JPG and GIF.
+	 * All supported <code>ImageIO</code> file types are supported, including
+	 * PNG, JPG and GIF.
 	 * 
 	 * <p>
-	 * No chart will be generated until this or the related <code>getChartImage()</code> method are
-	 * called. All successive calls will result in the generation of a new chart image, no caching
-	 * is used.
+	 * No chart will be generated until this or the related
+	 * <code>getChartImage()</code> method are called. All successive calls will
+	 * result in the generation of a new chart image, no caching is used.
 	 * 
 	 * @param outputFile
-	 *            the file location that the generated image file should be written to. The File
-	 *            must have a suitable filename, with an extension of a valid image format (as
-	 *            supported by <code>ImageIO</code>).
+	 *            the file location that the generated image file should be
+	 *            written to. The File must have a suitable filename, with an
+	 *            extension of a valid image format (as supported by
+	 *            <code>ImageIO</code>).
 	 * @return
 	 * @throws IOException
-	 *             if the output file's filename has no extension or if there the file is unable to
-	 *             written to. Reasons for this include a non-existant file location (check with the
-	 *             File exists() method on the parent directory), or the permissions of the write
-	 *             location may be incorrect.
+	 *             if the output file's filename has no extension or if there
+	 *             the file is unable to written to. Reasons for this include a
+	 *             non-existant file location (check with the File exists()
+	 *             method on the parent directory), or the permissions of the
+	 *             write location may be incorrect.
 	 */
 	private static String saveToFile(Image image, File outputFile) throws IOException {
 		String filename = outputFile.getName();
@@ -131,40 +138,55 @@ public class ImageUtils {
 
 		if (extPoint < 0) {
 			// throw new IOException("Illegal filename, no extension used.");
-			filename = outputFile.getAbsolutePath() + ".jpg";
+			filename = outputFile.getAbsolutePath() + "." + ImageFileFormat.PNG.getExtension();
 			extPoint = filename.lastIndexOf('.');
 			outputFile = new File(filename);
 		}
 
 		// Determine the extension of the filename.
-		String ext = filename.substring(extPoint + 1);
+		String ext = FilenameUtils.getExtension(filename);
 
 		// Handle jpg without transparency.
-		if (ext.toLowerCase().equals("jpg") || ext.toLowerCase().equals("jpeg")) {
-			BufferedImage chart = ImageUtils.toBufferedImage(image);
+		ImageFileFormat fromExtension = ImageFileFormat.getFromExtension(ext);
+		if (fromExtension != null) {
+			BufferedImage bufferedImage = ImageUtils.toBufferedImage(image);
 			// BufferedImage chart = (BufferedImage) getChartImage(false);
 
 			// Save our graphic.
-			saveGraphicJpeg(chart, outputFile, 1.0f);
+			saveGraphicByFormat(bufferedImage, outputFile, 1.0f, fromExtension);
 		} else {
-			BufferedImage chart = ImageUtils.toBufferedImage(image);
+			BufferedImage bufferedImage = ImageUtils.toBufferedImage(image);
 			// BufferedImage chart = (BufferedImage) getChartImage(true);
 
-			ImageIO.write(chart, ext, outputFile);
+			ImageIO.write(bufferedImage, ext, outputFile);
 		}
 
 		return outputFile.getAbsolutePath();
 	}
 
-	private static void saveGraphicJpeg(BufferedImage chart, File outputFile, float quality)
-			throws IOException {
+	private static void saveGraphicByFormat(BufferedImage chart, File outputFile, float quality,
+			ImageFileFormat imageFileFormat) throws IOException {
 		// Setup correct compression for jpeg.
-		Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("jpeg");
-		ImageWriter writer = (ImageWriter) iter.next();
+		Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName(imageFileFormat.getExtension());
+		ImageWriter writer = iter.next();
 		ImageWriteParam iwp = writer.getDefaultWriteParam();
-		iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-		iwp.setCompressionQuality(quality);
+		try {
+			if (imageFileFormat == ImageFileFormat.GIF) {
+				iwp.setCompressionMode(ImageWriteParam.MODE_COPY_FROM_METADATA);
+			} else {
+				iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+			}
+		} catch (UnsupportedOperationException e) {
 
+		}
+		try {
+			iwp.setCompressionQuality(quality);
+		} catch (UnsupportedOperationException e) {
+
+		} catch (IllegalArgumentException e) {
+		} catch (IllegalStateException e) {
+
+		}
 		// Output the image.
 		FileImageOutputStream output = new FileImageOutputStream(outputFile);
 		writer.setOutput(output);
