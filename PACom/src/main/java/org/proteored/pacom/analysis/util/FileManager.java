@@ -735,9 +735,13 @@ public class FileManager {
 					"'local_project_name' attribute in project is null or empty. Project file seems to be malformed");
 		}
 		String path = getMiapeLocalDataPath(projectName);
-		// String name = getMiapeMSILocalFileName(miapeLocalID, fileName);
-		// final String finalFileName = path + name;
-		final String finalFileName = path + FilenameUtils.getBaseName(fileName) + ".xml";
+
+		// final String finalFileName = path +
+		// FilenameUtils.getBaseName(fileName) + ".xml";
+		String finalFileName = path + fileName + ".xml";
+		if (!new File(finalFileName).exists()) {
+			finalFileName = path + FilenameUtils.getBaseName(fileName) + ".xml";
+		}
 		return finalFileName;
 	}
 
@@ -884,7 +888,7 @@ public class FileManager {
 			}
 		}
 		// sort in alphabetic order
-		Collections.sort(ret);
+		Collections.sort(ret, (string1, string2) -> string1.compareToIgnoreCase(string2));
 		return ret;
 	}
 
