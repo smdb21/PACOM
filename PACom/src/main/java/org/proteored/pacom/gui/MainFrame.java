@@ -11,19 +11,27 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker.StateValue;
 import javax.swing.ToolTipManager;
@@ -36,22 +44,20 @@ import org.proteored.pacom.gui.tasks.CheckUpdateTask;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 import org.proteored.pacom.gui.tasks.OntologyLoaderWaiter;
 import org.proteored.pacom.utils.AppVersion;
+import org.proteored.pacom.utils.ExampleProject;
 import org.proteored.pacom.utils.PropertiesReader;
-
-import edu.scripps.yates.utilities.files.FileUtils;
 
 /**
  *
  * @author __USER__
  */
-public class MainFrame extends javax.swing.JFrame {
+public class MainFrame extends AbstractJFrameWithAttachedHelpDialog {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4998871134548349223L;
 	// by default
-	public static String miapetool_access_script = "http://www.proteored.org/acceso.asp?pmArea=8";
 
 	private static final String URL_MIAPE_EXTRACTOR_TUTORIAL = "https://github.com/smdb21/PACOM/wiki";
 	private static final String URL_MIAPE_EXTRACTOR_BATCH_TUTORIAL = "https://github.com/smdb21/PACOM/wiki/How-to-import-datasets#importing-multiple-datasets-with-batch-import";
@@ -81,7 +87,7 @@ public class MainFrame extends javax.swing.JFrame {
 	 * @throws Exception
 	 */
 	public MainFrame() {
-		FileUtils.getDescriptiveSizeFromBytes(123123l);
+		super(40);
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException
@@ -120,6 +126,12 @@ public class MainFrame extends javax.swing.JFrame {
 			// load ontologies
 			loadOntologies();
 
+			// load exampleprojects
+			loadExampleProjectsInCombo();
+
+			// show help
+			showAttachedHelpDialog();
+
 		} catch (Exception e) {
 			String message = "";
 			if (e.getMessage().startsWith("XML reader error") || e.getMessage().contains("Failed to access")) {
@@ -132,6 +144,13 @@ public class MainFrame extends javax.swing.JFrame {
 
 	}
 
+	private void loadExampleProjectsInCombo() {
+		final String[] abbreviations = ExampleProject.getAbbreviations();
+		for (String abbreviation : abbreviations) {
+			jComboBoxExampleProjects.addItem(abbreviation);
+		}
+	}
+
 	private void loadOntologies() {
 		// OntologyLoaderTask.getCvManager();
 		new OntologyLoaderWaiter().execute();
@@ -140,7 +159,7 @@ public class MainFrame extends javax.swing.JFrame {
 	private void writeErrorMessage(String message) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<html>Error initializating the tool: <b>" + message
-				+ "</b><br/>Try to restart and if the problem persist, contact to 'miape_support@proteored.org'</html>");
+				+ "</b><br/>Try to restart and if the problem persist, contact to 'salvador@scripps.edu'</html>");
 		// this.jLabelInit.setText(sb.toString());
 
 		// cancel tasks
@@ -266,6 +285,19 @@ public class MainFrame extends javax.swing.JFrame {
 				jMenuItemMIAPEExtractionTutorialActionPerformed(evt);
 			}
 		});
+
+		mntmShowHelpDialog = new JMenuItem("Show help dialog");
+		mntmShowHelpDialog.setToolTipText("Click here to open the help dialog of this page");
+		mntmShowHelpDialog.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				showAttachedHelpDialog();
+
+			}
+		});
+		mntmShowHelpDialog.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.ALT_MASK));
+		jMenuHelp.add(mntmShowHelpDialog);
 		jMenuHelp.add(jMenuItemMIAPEExtractionTutorial);
 
 		jMenuItemMIAPEExtractionBatchTutorial.setAccelerator(
@@ -283,23 +315,46 @@ public class MainFrame extends javax.swing.JFrame {
 
 		setJMenuBar(jMenuBar1);
 
+		jButtonShowHelp = new JButton("");
+		jButtonShowHelp.setToolTipText("Click here to open the help dialog of this page");
+		jButtonShowHelp.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (getHelpDialog().isVisible()) {
+					getHelpDialog().setMinimized(true);
+					getHelpDialog().setVisible(false);
+				} else {
+					showAttachedHelpDialog();
+				}
+			}
+		});
+		jButtonShowHelp.setIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON));
+		jButtonShowHelp.setPressedIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON_CLICKED));
+		jButtonShowHelp.setRolloverIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON));
+
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup().addContainerGap()
 						.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, 800, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+				.addGroup(Alignment.TRAILING, layout.createSequentialGroup().addContainerGap(735, Short.MAX_VALUE)
+						.addComponent(jButtonShowHelp).addContainerGap()));
 		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup().addContainerGap()
 						.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, 300, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-		jPanel1.setLayout(new GridBagLayout());
+						.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(jButtonShowHelp)));
+		GridBagLayout gbl_jPanel1 = new GridBagLayout();
+		gbl_jPanel1.columnWidths = new int[] { 0, 0, 0, 0, 161 };
+		gbl_jPanel1.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0 };
+		jPanel1.setLayout(gbl_jPanel1);
 
-		JLabel lblExamples = new JLabel("Example project");
+		JLabel lblExamples = new JLabel("Examples project");
 		lblExamples.setVerticalAlignment(SwingConstants.TOP);
 		lblExamples.setHorizontalAlignment(SwingConstants.LEFT);
 		lblExamples.setFont(new Font("Dialog", Font.PLAIN, 18));
 		GridBagConstraints gbc_lblExamples = new GridBagConstraints();
-		gbc_lblExamples.insets = new Insets(0, 0, 5, 0);
+		gbc_lblExamples.insets = new Insets(10, 10, 10, 10);
 		gbc_lblExamples.gridx = 4;
 		gbc_lblExamples.gridy = 1;
 		jPanel1.add(lblExamples, gbc_lblExamples);
@@ -337,10 +392,11 @@ public class MainFrame extends javax.swing.JFrame {
 		c3.gridwidth = 1;
 		jPanel1.add(jLabelInit3, c3);
 		GridBagConstraints c4 = new GridBagConstraints();
+		c4.gridheight = 2;
 		c4.fill = GridBagConstraints.HORIZONTAL;
 		c4.insets = new Insets(10, 10, 10, 10);
 		c4.gridx = 0;
-		c4.gridy = 2;
+		c4.gridy = 3;
 		c4.gridwidth = 1;
 		JButton loadButton = new JButton();
 		loadButton.setIcon(ImageManager.getImageIcon(ImageManager.LOAD_LOGO_128));
@@ -355,25 +411,6 @@ public class MainFrame extends javax.swing.JFrame {
 
 			}
 		});
-
-		jButtonExample1 = new JButton();
-		jButtonExample1.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				jButtonExampleClicked();
-			}
-		});
-		jButtonExample1.setToolTipText("<html>Click here to directly load one of the available examples</html>");
-		jButtonExample1.setContentAreaFilled(false);
-		jButtonExample1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		jButtonExample1.setVerticalAlignment(SwingConstants.TOP);
-		jButtonExample1.setIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_64));
-		jButtonExample1.setPressedIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_64_CLICKED));
-		jButtonExample1.setRolloverIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_64_HOVER));
-		GridBagConstraints gbc_jButtonExample1 = new GridBagConstraints();
-		gbc_jButtonExample1.gridy = 2;
-		gbc_jButtonExample1.gridx = 4;
-		jPanel1.add(jButtonExample1, gbc_jButtonExample1);
 		loadButton.setToolTipText(dataImportToolTip);
 		loadButton.setBorder(BorderFactory.createEmptyBorder());
 		loadButton.setContentAreaFilled(false);
@@ -381,10 +418,11 @@ public class MainFrame extends javax.swing.JFrame {
 		jPanel1.add(loadButton, c4);
 		//
 		GridBagConstraints c5 = new GridBagConstraints();
+		c5.gridheight = 2;
 		c5.fill = GridBagConstraints.HORIZONTAL;
 		c5.insets = new Insets(10, 10, 10, 10);
 		c5.gridx = 1;
-		c5.gridy = 2;
+		c5.gridy = 3;
 		c5.gridwidth = 1;
 		JButton batchLoadButton = new JButton();
 		batchLoadButton.setIcon(ImageManager.getImageIcon(ImageManager.BATCH_LOAD_LOGO_128));
@@ -406,10 +444,11 @@ public class MainFrame extends javax.swing.JFrame {
 		jPanel1.add(batchLoadButton, c5);
 		//
 		GridBagConstraints c6 = new GridBagConstraints();
+		c6.gridheight = 2;
 		c6.fill = GridBagConstraints.HORIZONTAL;
 		c6.insets = new Insets(10, 10, 10, 10);
 		c6.gridx = 2;
-		c6.gridy = 2;
+		c6.gridy = 3;
 		c6.gridwidth = 1;
 		JButton inspectButton = new JButton();
 		inspectButton.setIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_128));
@@ -427,6 +466,41 @@ public class MainFrame extends javax.swing.JFrame {
 		inspectButton.setBorder(BorderFactory.createEmptyBorder());
 		inspectButton.setContentAreaFilled(false);
 		jPanel1.add(inspectButton, c6);
+
+		jButtonExample1 = new JButton();
+		jButtonExample1.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				jButtonExampleClicked();
+			}
+		});
+
+		jComboBoxExampleProjects = new JComboBox<String>();
+		jComboBoxExampleProjects.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				exampleProjectSelected();
+			}
+		});
+		jComboBoxExampleProjects.setToolTipText("Select one of the available example datasets");
+		GridBagConstraints gbc_jComboBoxExampleProjects = new GridBagConstraints();
+		gbc_jComboBoxExampleProjects.insets = new Insets(0, 0, 5, 0);
+		gbc_jComboBoxExampleProjects.gridx = 4;
+		gbc_jComboBoxExampleProjects.gridy = 3;
+		jPanel1.add(jComboBoxExampleProjects, gbc_jComboBoxExampleProjects);
+		jButtonExample1.setToolTipText("<html>Click here to directly load one of the available examples</html>");
+		jButtonExample1.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		jButtonExample1.setVerticalAlignment(SwingConstants.TOP);
+		jButtonExample1.setIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_64));
+		jButtonExample1.setPressedIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_64_CLICKED));
+		jButtonExample1.setRolloverIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_64_HOVER));
+		jButtonExample1.setFocusable(false);
+		jButtonExample1.setContentAreaFilled(false);
+		jButtonExample1.setBorder(BorderFactory.createEmptyBorder());
+		GridBagConstraints gbc_jButtonExample1 = new GridBagConstraints();
+		gbc_jButtonExample1.gridy = 4;
+		gbc_jButtonExample1.gridx = 4;
+		jPanel1.add(jButtonExample1, gbc_jButtonExample1);
 		getContentPane().setLayout(layout);
 
 		pack();
@@ -435,9 +509,23 @@ public class MainFrame extends javax.swing.JFrame {
 		setLocation((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2);
 	}// </editor-fold>
 
+	protected void exampleProjectSelected() {
+		String exampleProject = jComboBoxExampleProjects.getSelectedItem().toString();
+		if ("".equals(exampleProject)) {
+			jButtonExample1.setIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_64_CLICKED));
+			jButtonExample1.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		} else {
+			jButtonExample1.setIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_64));
+			jButtonExample1.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		}
+
+	}
+
 	protected void jButtonExampleClicked() {
-		String exampleProjectName = "PME6_Reanalysis";
-		loadExample(exampleProjectName);
+		String exampleProject = jComboBoxExampleProjects.getSelectedItem().toString();
+		if (!"".equals(exampleProject)) {
+			loadExample(ExampleProject.getByAbbreviation(exampleProject).getName());
+		}
 	}
 
 	private void loadExample(String projectName) {
@@ -455,6 +543,7 @@ public class MainFrame extends javax.swing.JFrame {
 			Miape2ExperimentListDialog.getInstance(this).setCurrentCgfFile(projectFile);
 			Miape2ExperimentListDialog.getInstance(this).showChartManager();
 			log.info("Project configuration file readed");
+			this.setVisible(false);
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.warn(e.getMessage());
@@ -462,7 +551,7 @@ public class MainFrame extends javax.swing.JFrame {
 		}
 	}
 
-	private void startDataImport() {
+	public void startDataImport() {
 		setVisible(false);
 		MiapeExtractionFrame standard2MIAPEDialog = MiapeExtractionFrame.getInstance(this, true);
 		standard2MIAPEDialog.setVisible(true);
@@ -525,7 +614,7 @@ public class MainFrame extends javax.swing.JFrame {
 		startProjectComparison();
 	}
 
-	private void startProjectComparison() {
+	public void startProjectComparison() {
 		setVisible(false);
 		miape2experimentListDialog = Miape2ExperimentListDialog.getInstance(this);
 		if (miape2experimentListDialog.isCorrectlyInitialized())
@@ -600,6 +689,9 @@ public class MainFrame extends javax.swing.JFrame {
 	private javax.swing.JMenuItem jMenuItemStandard2MIAPE;
 	private javax.swing.JMenuItem jMenuItemStartProjectComparison;
 	private javax.swing.JPanel jPanel1;
+	private JButton jButtonShowHelp;
+	private JMenuItem mntmShowHelpDialog;
+	private JComboBox<String> jComboBoxExampleProjects;
 	private JButton jButtonExample1;
 
 	// End of variables declaration//GEN-END:variables
@@ -620,4 +712,20 @@ public class MainFrame extends javax.swing.JFrame {
 		return version;
 
 	}
+
+	@Override
+	public List<String> getHelpMessages() {
+		String[] array = { "This is the main window in PACOM", //
+				"From here you can: ", //
+				"", //
+				"- click on <b>Import data</b> to go import datasets into PACOM", //
+				"", //
+				"- click on <b>Batch import data</b> to import several datasets in batch", //
+				"", //
+				"- click on <b>Data Inspection</b> to open the comparison project builder", //
+				"", //
+				"- select and click one of the available <b>example projects</b> and directly start to visualize the data." };
+		return Arrays.asList(array);
+	}
+
 }

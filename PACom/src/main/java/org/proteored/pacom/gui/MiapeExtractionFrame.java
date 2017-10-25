@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -72,7 +73,7 @@ import gnu.trove.map.hash.TIntObjectHashMap;
  *
  * @author __USER__
  */
-public class MiapeExtractionFrame extends javax.swing.JFrame
+public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 		implements PropertyChangeListener, MiapeExtractionRunParameters {
 	/**
 	 * 
@@ -141,7 +142,7 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 
 	/** Creates new form Standard2MIAPEDialog */
 	private MiapeExtractionFrame(MainFrame parent, boolean modal) {
-
+		super(75);
 		// super(parent, modal);
 		initComponents();
 
@@ -171,6 +172,8 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		jButtonCancel.setPressedIcon(ImageManager.getImageIcon(ImageManager.STOP_CLICKED));
 		jButtonEditMetadata.setIcon(ImageManager.getImageIcon(ImageManager.FINISH));
 		jButtonEditMetadata.setPressedIcon(ImageManager.getImageIcon(ImageManager.FINISH_CLICKED));
+		jButtonGoToData.setIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_32));
+		jButtonGoToData.setPressedIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_32_CLICKED));
 
 		// wait for the ontology loading. When done, it will notify to this
 		// class and metadata combo will be able to be filled
@@ -778,31 +781,58 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 			}
 		});
 
+		jButtonGoToData = new JButton("Go to Data Inspection");
+		jButtonGoToData.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				goToDataInspection();
+			}
+		});
+		jButtonGoToData.setToolTipText("Click here to go directly to Data Inspection");
+
+		jButtonHelp = new JButton("");
+		jButtonHelp.setToolTipText("Click here to open the help window.");
+		jButtonHelp.setIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON));
+		jButtonHelp.setPressedIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON_CLICKED));
+		jButtonHelp.setRolloverIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON));
+		jButtonHelp.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (getHelpDialog().isVisible()) {
+					getHelpDialog().setMinimized(true);
+					getHelpDialog().setVisible(false);
+				} else {
+					showAttachedHelpDialog();
+				}
+			}
+		});
+
 		javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-		jPanel3.setLayout(jPanel3Layout);
-		jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+		jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(jPanel3Layout.createSequentialGroup().addContainerGap()
-						.addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-								.addComponent(jProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
-								.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
-								.addGroup(
-										jPanel3Layout.createSequentialGroup().addComponent(jButtonCancel)
-												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-														578, Short.MAX_VALUE)
-												.addComponent(jButtonSubmit)))
+						.addGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING)
+								.addComponent(jProgressBar, GroupLayout.DEFAULT_SIZE, 961, Short.MAX_VALUE)
+								.addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 961, Short.MAX_VALUE)
+								.addGroup(jPanel3Layout.createSequentialGroup().addComponent(jButtonGoToData)
+										.addPreferredGap(ComponentPlacement.RELATED, 443, Short.MAX_VALUE)
+										.addComponent(jButtonCancel).addGap(18).addComponent(jButtonSubmit).addGap(18)
+										.addComponent(jButtonHelp)))
 						.addContainerGap()));
-		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(jPanel3Layout.createSequentialGroup()
-						.addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-								.addComponent(jButtonCancel).addComponent(jButtonSubmit,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE))));
+						.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(jProgressBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING)
+								.addGroup(jPanel3Layout.createParallelGroup(Alignment.BASELINE)
+										.addComponent(jButtonSubmit, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+												Short.MAX_VALUE)
+										.addComponent(jButtonCancel))
+								.addComponent(jButtonGoToData).addComponent(jButtonHelp))));
+		jPanel3.setLayout(jPanel3Layout);
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout.createSequentialGroup()
@@ -828,6 +858,11 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 		java.awt.Dimension dialogSize = getSize();
 		setLocation((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2);
 	}// </editor-fold>
+
+	protected void goToDataInspection() {
+		this.setVisible(false);
+		this.mainFrame.startProjectComparison();
+	}
 
 	private void jRatioButtonPepXMLPlusMGFSelected() {
 		// disable and select MIAPE MS
@@ -1512,6 +1547,8 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	private JButton jButtonHelpSeparators;
 	private JRadioButton jRadioButtonPepXML;
 	private JRadioButton jRadioButtonPepXMLMGF;
+	private JButton jButtonGoToData;
+	private JButton jButtonHelp;
 
 	// public int selectedInstrumentNumber;
 
@@ -1605,6 +1642,11 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 
 		} else if (LoadProjectsTask.PROJECT_LOADED_DONE.equals(evt.getPropertyName())) {
 			showLoadedProjectTable();
+		} else if (MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE.equals(evt.getPropertyName())) {
+			appendStatus("Copying file '" + evt.getNewValue() + "' to the local file structure");
+		} else if (MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE.equals(evt.getPropertyName())) {
+			appendStatus(evt.getNewValue().toString());
+			appendStatus("Now reading and processing it...");
 		}
 	}
 
@@ -1964,4 +2006,34 @@ public class MiapeExtractionFrame extends javax.swing.JFrame
 	public boolean isPepXMLSelected() {
 		return jRadioButtonPepXML.isSelected();
 	}
+
+	@Override
+	public List<String> getHelpMessages() {
+		String[] array = { "Import datasets into PACOM:", //
+				"Here is the steps you have to follow:", //
+				"", //
+				"1. Select the <b>type of input file</b> you are going to import. "
+						+ "You can either select it from the '<b>Input type</b>' panel or from the '<b>Input type + MS data file</b>' panel.", //
+				"", //
+				"If you select one of option in 'Input type + MS data file' panel, "
+						+ "you will be able to import a peak list file (MGF file) and "
+						+ "a <b>Mass Spectrometry metadata template</b>. "
+						+ "This option is useful in case you want to generate a <b>PRIDE XML</b> "
+						+ "file containing the spectra in the peak list file.", //
+				"", //
+				"2. Select the <b>Input file(s)</b> from your file system using the file selectors in the top.", //
+				"", //
+				"3. Type the <b>name of the project</b> or select one by clicking on 'Select project' button. "
+						+ "These projects in which the input datasets will be stored, "
+						+ "are just a way for organizing your imported datasets.", //
+				"", //
+				"If you type a new project name, it will appear the next time you click on 'Select project'.", //
+				"", //
+				"4. Click on <b>'Import data'</b> to start the import data process.", //
+				"", //
+				"Click on <b>'Go to Data Inspection</b> to go directly to the Data Inspection project builder "
+						+ "without the need of going through the main dialog." };
+		return Arrays.asList(array);
+	}
+
 }

@@ -39,6 +39,7 @@ import org.proteored.pacom.analysis.exporters.util.ExportedColumns;
 import org.proteored.pacom.analysis.exporters.util.ExporterUtil;
 import org.proteored.pacom.analysis.gui.ChartManagerFrame;
 import org.proteored.pacom.analysis.util.DataLevel;
+import org.proteored.pacom.gui.AbstractJFrameWithAttachedHelpDialog;
 import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.utils.ComponentEnableStateKeeper;
 
@@ -48,7 +49,8 @@ import gnu.trove.set.hash.THashSet;
  * 
  * @author __USER__
  */
-public class IdentificationTableFrame extends javax.swing.JFrame implements ExporterManager, PropertyChangeListener {
+public class IdentificationTableFrame extends AbstractJFrameWithAttachedHelpDialog
+		implements ExporterManager, PropertyChangeListener {
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
 	private static final int NUM_MIN_TYPED_CHARS = 2;
 
@@ -94,6 +96,7 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 
 	/** Creates new form IdentificationTableFrame */
 	private IdentificationTableFrame(ChartManagerFrame parent, Collection<IdentificationSet> idSets) {
+		super(75);
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException
@@ -306,6 +309,23 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 		});
 		jButtonExport2Excel.setToolTipText(
 				"<html>Export current data to a Tab Separated Values file<br>that can be opened by Excel.</html>");
+
+		jButtonHelp = new JButton("");
+		jButtonHelp.setToolTipText("Click here to shown the help window.");
+		jButtonHelp.setIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON));
+		jButtonHelp.setPressedIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON_CLICKED));
+		jButtonHelp.setRolloverIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON));
+		jButtonHelp.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (getHelpDialog().isVisible()) {
+					getHelpDialog().setMinimized(true);
+					getHelpDialog().setVisible(false);
+				} else {
+					showAttachedHelpDialog();
+				}
+			}
+		});
 		javax.swing.GroupLayout jPanelOptionsLayout = new javax.swing.GroupLayout(jPanelOptions);
 		jPanelOptionsLayout.setHorizontalGroup(jPanelOptionsLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(jPanelOptionsLayout.createSequentialGroup().addContainerGap()
@@ -313,40 +333,51 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 								.addComponent(jCheckBoxIncludeDecoy).addComponent(jCheckBoxIncludeGeneInfo)
 								.addComponent(jCheckBoxSearchForProteinSequence).addComponent(jRadioButtonShowPeptides)
 								.addComponent(jRadioButtonShowProteins).addComponent(jCheckBoxCollapseProteins)
-								.addGroup(jPanelOptionsLayout.createSequentialGroup().addComponent(lblDataLevel)
-										.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(dataLevelComboBox,
-												GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-												GroupLayout.PREFERRED_SIZE))
+								.addGroup(jPanelOptionsLayout.createSequentialGroup()
+										.addComponent(lblDataLevel).addPreferredGap(ComponentPlacement.UNRELATED)
+										.addComponent(dataLevelComboBox, GroupLayout.PREFERRED_SIZE,
+												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 								.addComponent(jCheckBoxCollapsePeptides)
 								.addGroup(jPanelOptionsLayout.createSequentialGroup().addComponent(jButtonCancel)
-										.addGap(18).addComponent(jButtonExport2Excel, GroupLayout.PREFERRED_SIZE, 46,
-												GroupLayout.PREFERRED_SIZE)))
-						.addContainerGap(92, Short.MAX_VALUE)));
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addComponent(jButtonExport2Excel, GroupLayout.PREFERRED_SIZE, 46,
+												GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
+												Short.MAX_VALUE)
+										.addComponent(jButtonHelp)))
+						.addContainerGap()));
 		jPanelOptionsLayout.setVerticalGroup(jPanelOptionsLayout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(jPanelOptionsLayout.createSequentialGroup()
-						.addComponent(jCheckBoxIncludeDecoy, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(jCheckBoxIncludeGeneInfo, GroupLayout.PREFERRED_SIZE, 30,
-								GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(jCheckBoxSearchForProteinSequence, GroupLayout.PREFERRED_SIZE, 30,
-								GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonShowProteins)
-						.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(jRadioButtonShowPeptides).addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(jCheckBoxCollapseProteins, GroupLayout.PREFERRED_SIZE, 30,
-								GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(jCheckBoxCollapsePeptides, GroupLayout.PREFERRED_SIZE, 30,
-								GroupLayout.PREFERRED_SIZE)
-						.addGap(8)
-						.addGroup(jPanelOptionsLayout.createParallelGroup(Alignment.BASELINE).addComponent(lblDataLevel)
-								.addComponent(dataLevelComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE))
-						.addGap(15)
-						.addGroup(jPanelOptionsLayout.createParallelGroup(Alignment.TRAILING)
-								.addComponent(jButtonCancel).addComponent(jButtonExport2Excel,
-										GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE))
+				.addGroup(jPanelOptionsLayout.createSequentialGroup().addGroup(jPanelOptionsLayout
+						.createParallelGroup(Alignment.TRAILING)
+						.addGroup(
+								jPanelOptionsLayout.createSequentialGroup().addContainerGap().addComponent(jButtonHelp))
+						.addGroup(jPanelOptionsLayout.createSequentialGroup()
+								.addComponent(jCheckBoxIncludeDecoy, GroupLayout.PREFERRED_SIZE, 30,
+										GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(jCheckBoxIncludeGeneInfo, GroupLayout.PREFERRED_SIZE, 30,
+										GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(jCheckBoxSearchForProteinSequence, GroupLayout.PREFERRED_SIZE, 30,
+										GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonShowProteins)
+								.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(jRadioButtonShowPeptides).addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(jCheckBoxCollapseProteins, GroupLayout.PREFERRED_SIZE, 30,
+										GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(jCheckBoxCollapsePeptides, GroupLayout.PREFERRED_SIZE, 30,
+										GroupLayout.PREFERRED_SIZE)
+								.addGap(8)
+								.addGroup(jPanelOptionsLayout.createParallelGroup(Alignment.TRAILING)
+										.addGroup(jPanelOptionsLayout.createSequentialGroup()
+												.addGroup(jPanelOptionsLayout.createParallelGroup(Alignment.BASELINE)
+														.addComponent(lblDataLevel).addComponent(dataLevelComboBox,
+																GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+																GroupLayout.PREFERRED_SIZE))
+												.addGap(15).addComponent(jButtonCancel))
+										.addComponent(jButtonExport2Excel, GroupLayout.PREFERRED_SIZE, 41,
+												GroupLayout.PREFERRED_SIZE))))
 						.addGap(40)));
 		jPanelOptions.setLayout(jPanelOptionsLayout);
 
@@ -775,6 +806,7 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 	private javax.swing.JTextField jTextFieldFilter;
 	private JLabel lblDataLevel;
 	private JComboBox dataLevelComboBox;
+	private JButton jButtonHelp;
 
 	// End of variables declaration//GEN-END:variables
 
@@ -846,5 +878,11 @@ public class IdentificationTableFrame extends javax.swing.JFrame implements Expo
 			return (DataLevel) dataLevelSelected;
 		}
 		return DataLevel.LEVEL0;
+	}
+
+	@Override
+	public List<String> getHelpMessages() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

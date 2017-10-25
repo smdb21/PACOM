@@ -7,8 +7,10 @@ package org.proteored.pacom.analysis.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Panel;
@@ -62,6 +64,7 @@ import javax.swing.event.ChangeListener;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
+import org.jfree.chart.ChartPanel;
 import org.jfree.ui.ExtensionFileFilter;
 import org.jfree.ui.RefineryUtilities;
 import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
@@ -83,6 +86,8 @@ import org.proteored.miapeapi.experiment.model.filters.ScoreFilter;
 import org.proteored.miapeapi.experiment.model.sort.ProteinComparatorKey;
 import org.proteored.miapeapi.experiment.model.sort.ProteinGroupComparisonType;
 import org.proteored.miapeapi.experiment.model.sort.SorterUtil;
+import org.proteored.pacom.analysis.charts.ImageFileFormat;
+import org.proteored.pacom.analysis.charts.ImageLabel;
 import org.proteored.pacom.analysis.charts.VennChart;
 import org.proteored.pacom.analysis.charts.WordCramChart;
 import org.proteored.pacom.analysis.conf.ExperimentListAdapter;
@@ -99,6 +104,7 @@ import org.proteored.pacom.analysis.gui.tasks.MemoryCheckerTask;
 import org.proteored.pacom.analysis.util.DataLevel;
 import org.proteored.pacom.analysis.util.DoSomethingToChangeColorInChart;
 import org.proteored.pacom.analysis.util.ImageUtils;
+import org.proteored.pacom.gui.AbstractJFrameWithAttachedHelpDialog;
 import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.gui.MainFrame;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
@@ -116,7 +122,8 @@ import gnu.trove.set.hash.THashSet;
  *
  * @author __USER__
  */
-public class ChartManagerFrame extends javax.swing.JFrame implements PropertyChangeListener, TreeDialog {
+public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
+		implements PropertyChangeListener, TreeDialog {
 	private FiltersDialog filterDialog = null;
 	public static final String PROTEIN_SCORE_DISTRIBUTION = "Protein score Distribution";
 	public static final String PEPTIDE_SCORE_DISTRIBUTION = "Peptide score Distribution";
@@ -201,7 +208,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	public static final String ONE_SERIES_PER_EXPERIMENT = "One data series per level 1";
 	public static final String ONE_SERIES_PER_REPLICATE = "One data series per level 2";
 	public static final String ONE_CHART_PER_EXPERIMENT = "One separate chart per level 1";
-	public static final String ONE_SERIES_PER_EXPERIMENT_LIST = "One single data series (level 0) ";
+	public static final String ONE_SERIES_PER_EXPERIMENT_LIST = "One single data series (level 0)";
 	private static final String MENU_SEPARATION = "menu separation";
 
 	private final JFrame parentFrame;
@@ -248,6 +255,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	 */
 	@SuppressWarnings("restriction")
 	private ChartManagerFrame(JFrame parentDialog, File cfgFile) {
+		super(75);
 		parentFrame = parentDialog;
 		this.cfgFile = cfgFile;
 		if (parentFrame != null)
@@ -299,6 +307,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		}
 		enableStateKeeper.addReverseComponent(jButtonCancel);
 		enableStateKeeper.addInvariableComponent(jTextAreaStatus);
+
 	}
 
 	public static ChartManagerFrame getInstance(Miape2ExperimentListDialog parentDialog, File cfgFile) {
@@ -436,7 +445,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		previousCfgFileSize = this.cfgFile.length();
 		isLocalProcessingInParallel = processInParallel;
 		CPExperimentList cpExpList = getCPExperimentList(cfgFile);
-		setTitle(cpExpList.getName() + " - Data Comparison and Inspection Charts");
+		setTitle(cpExpList.getName() + " - Chart Viewer");
 
 		// set to "loading data..." the information labels
 		setInformation1("Loading data...");
@@ -933,8 +942,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		jMenuItemGeneralOptions = new javax.swing.JMenuItem();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		setTitle("Chart creator");
-		getContentPane().setLayout(new java.awt.GridBagLayout());
+		setTitle("Charts Viewer");
+		getContentPane().setLayout(new BorderLayout(0, 0));
 
 		jPanelStatus.setBorder(
 				javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Status"));
@@ -949,34 +958,54 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		jProgressBarMemoryUsage.setToolTipText("Memory usage");
 		jProgressBarMemoryUsage.setStringPainted(true);
 
+		jButtonHelp = new JButton("");
+		jButtonHelp.setToolTipText("Click here to show the help dialog");
+		jButtonHelp.setIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON));
+		jButtonHelp.setPressedIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON_CLICKED));
+		jButtonHelp.setRolloverIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON));
+		jButtonHelp.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (getHelpDialog().isVisible()) {
+					getHelpDialog().setMinimized(true);
+					getHelpDialog().setVisible(false);
+				} else {
+					showAttachedHelpDialog();
+				}
+			}
+		});
 		javax.swing.GroupLayout jPanelStatusLayout = new javax.swing.GroupLayout(jPanelStatus);
-		jPanelStatus.setLayout(jPanelStatusLayout);
-		jPanelStatusLayout.setHorizontalGroup(jPanelStatusLayout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanelStatusLayout.createSequentialGroup().addContainerGap()
-						.addGroup(jPanelStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-								.addComponent(jProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 591, Short.MAX_VALUE)
-								.addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 591, Short.MAX_VALUE)
-								.addComponent(jProgressBarMemoryUsage, javax.swing.GroupLayout.DEFAULT_SIZE, 591,
-										Short.MAX_VALUE))
-						.addContainerGap()));
 		jPanelStatusLayout
-				.setVerticalGroup(jPanelStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(jPanelStatusLayout.createSequentialGroup()
-								.addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 92,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jProgressBarMemoryUsage, javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)));
-
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridx = 1;
-		gridBagConstraints.gridy = 1;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		getContentPane().add(jPanelStatus, gridBagConstraints);
+				.setHorizontalGroup(jPanelStatusLayout.createParallelGroup(Alignment.TRAILING)
+						.addGroup(jPanelStatusLayout.createSequentialGroup().addContainerGap()
+								.addGroup(jPanelStatusLayout.createParallelGroup(Alignment.LEADING)
+										.addGroup(jPanelStatusLayout.createSequentialGroup()
+												.addComponent(jProgressBarMemoryUsage, GroupLayout.DEFAULT_SIZE, 983,
+														Short.MAX_VALUE)
+												.addContainerGap())
+										.addGroup(jPanelStatusLayout.createSequentialGroup()
+												.addComponent(jScrollPane3, GroupLayout.DEFAULT_SIZE, 983,
+														Short.MAX_VALUE)
+												.addContainerGap())
+										.addGroup(Alignment.TRAILING,
+												jPanelStatusLayout.createSequentialGroup().addComponent(jButtonHelp)
+														.addContainerGap())
+										.addGroup(Alignment.TRAILING,
+												jPanelStatusLayout
+														.createSequentialGroup().addComponent(jProgressBar,
+																GroupLayout.DEFAULT_SIZE, 983, Short.MAX_VALUE)
+														.addContainerGap()))));
+		jPanelStatusLayout.setVerticalGroup(jPanelStatusLayout.createParallelGroup(Alignment.TRAILING)
+				.addGroup(jPanelStatusLayout.createSequentialGroup()
+						.addComponent(jScrollPane3, GroupLayout.PREFERRED_SIZE, 92, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(jProgressBar, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(jProgressBarMemoryUsage, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jButtonHelp).addContainerGap()));
+		jPanelStatus.setLayout(jPanelStatusLayout);
+		getContentPane().add(jPanelStatus, BorderLayout.PAGE_END);
 
 		jPanelChartType.setBorder(javax.swing.BorderFactory
 				.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Comparison level"));
@@ -1005,7 +1034,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Additional options"));
 		jPanelAdditionalCustomizations
 				.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
+		jPanelAdditionalCustomizations.getVerticalScrollBar().setUnitIncrement(16);
 		javax.swing.GroupLayout jPanelAddOptionsLayout = new javax.swing.GroupLayout(jPanelAddOptions);
 		jPanelAddOptions.setLayout(jPanelAddOptionsLayout);
 		jPanelAddOptionsLayout.setHorizontalGroup(jPanelAddOptionsLayout
@@ -1042,7 +1071,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 		jButtonSeeAppliedFilters.setIcon(new javax.swing.ImageIcon(
 				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\funnel.png")); // NOI18N
-		jButtonSeeAppliedFilters.setToolTipText("<html>Show current filters</html>");
+		jButtonSeeAppliedFilters.setToolTipText("Show currently applied filters.");
 		jButtonSeeAppliedFilters.setEnabled(false);
 		jButtonSeeAppliedFilters.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -1054,7 +1083,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		jButtonShowTable.setIcon(new javax.swing.ImageIcon(
 				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\table.png")); // NOI18N
 		jButtonShowTable.setToolTipText(
-				"<html>Show the whole dataset in a table.<br>You will be able to sort and filter data quickly.</html>");
+				"<html>\r\nClick here to show the whole dataset in a table.<br>\r\nYou will be able to sort and filter data quickly.\r\n</html>");
 		jButtonShowTable.setEnabled(false);
 		jButtonShowTable.addMouseListener(new java.awt.event.MouseAdapter() {
 			@Override
@@ -1072,7 +1101,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		jButtonSaveAsFiltered.setIcon(new javax.swing.ImageIcon(
 				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\star.png")); // NOI18N
 		jButtonSaveAsFiltered.setToolTipText(
-				"<html>Save the experiments of the project as <b>curated experiments</b>.<br>\r\nThis will save the experiments containing just the peptides<br> and proteins that have passed the filters.<br>\r\nThey will be saved individually in a separate location.</html>");
+				"<html>\r\nSave the datasets of the project as <b>curated experiments</b>.<br>\r\nThis will save the datasets <b>AFTER</b> aplying some filters.<br>\r\nThey will be saved individually in a separate location and they will<br>\r\nbe available to be added to new comparison projects in the dropdown<br>\r\ncontrol of the Comparison Projects Manager.\r\n</html>");
 		jButtonSaveAsFiltered.setEnabled(false);
 		jButtonSaveAsFiltered.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -1084,7 +1113,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		jButtonExport2PRIDE.setIcon(new javax.swing.ImageIcon(
 				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\pride_logo_peq.jpg")); // NOI18N
 		jButtonExport2PRIDE.setToolTipText(
-				"<html>Export current data to PRIDE XML.<br>\r\nA PRIDE XML file will be created for each one<br>level 1 node,<br>\r\nintegrating all information in that node in a single file.</html>");
+				"<html>\r\nClick here to <b>export</b> current data to <b>PRIDE XML</b>.<br>\r\nA single PRIDE XML file will be created for each one level 1 node,<br>\r\nintegrating all information in that node in a single file.<br>\r\nIf the datasets were created with some peak list files associated,<br>\r\nthe generated PRIDE XML will include the spectra on it.\r\n</html>");
 		jButtonExport2PRIDE.setEnabled(false);
 		jButtonExport2PRIDE.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -1096,7 +1125,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		jButtonExport2Excel.setIcon(new javax.swing.ImageIcon(
 				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\excel_table.png")); // NOI18N
 		jButtonExport2Excel.setToolTipText(
-				"<html>Export current data to a Tab Separated Values (TSV) file<br>that can be opened by Excel.</html>");
+				"<html>\r\nClick here <b>export</b> current data to a<br>\r\n<b>Tab Separated Values (TSV) formatted file</b> that <br>\r\ncan be opened by Excel.</html>");
 		jButtonExport2Excel.setEnabled(false);
 		jButtonExport2Excel.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -1113,7 +1142,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			}
 		});
 		jButtonCancel.setToolTipText(
-				"<html>Cancel current task.<br>\r\nClick here to cancel data loading or chart creation.</html>");
+				"<html>\r\nClick here to <b>Cancel current task</b>,<br>\r\nthat is, data loading or chart creation.\r\n</html>");
 		jButtonCancel.setEnabled(false);
 
 		javax.swing.GroupLayout jPanelInformationLayout = new javax.swing.GroupLayout(jPanelInformation);
@@ -1197,52 +1226,23 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addComponent(jPanelAdditionalCustomizations, GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)));
 		jPanelLeft.setLayout(jPanelLeftLayout);
-
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 0;
-		gridBagConstraints.gridheight = 2;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
-		getContentPane().add(jPanelLeft, gridBagConstraints);
+		getContentPane().add(jPanelLeft, BorderLayout.WEST);
 
 		jPanelRigth.setBorder(
 				javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Chart"));
 
 		jScrollPaneChart.setBorder(null);
-
-		javax.swing.GroupLayout jPanelChartLayout = new javax.swing.GroupLayout(jPanelChart);
-		jPanelChart.setLayout(jPanelChartLayout);
-		jPanelChartLayout.setHorizontalGroup(jPanelChartLayout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGap(0, 577, Short.MAX_VALUE));
-		jPanelChartLayout.setVerticalGroup(jPanelChartLayout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGap(0, 570, Short.MAX_VALUE));
-
+		jScrollPaneChart.getVerticalScrollBar().setUnitIncrement(16);
 		jScrollPaneChart.setViewportView(jPanelChart);
-
-		javax.swing.GroupLayout jPanelRigthLayout = new javax.swing.GroupLayout(jPanelRigth);
-		jPanelRigth.setLayout(jPanelRigthLayout);
-		jPanelRigthLayout
-				.setHorizontalGroup(jPanelRigthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(jPanelRigthLayout.createSequentialGroup().addContainerGap()
-								.addComponent(jScrollPaneChart, javax.swing.GroupLayout.PREFERRED_SIZE, 577,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-		jPanelRigthLayout
-				.setVerticalGroup(jPanelRigthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
-								jPanelRigthLayout.createSequentialGroup()
-										.addComponent(jScrollPaneChart, javax.swing.GroupLayout.PREFERRED_SIZE, 570,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridx = 1;
-		gridBagConstraints.gridy = 0;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
-		gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 14);
-		getContentPane().add(jPanelRigth, gridBagConstraints);
+		GridBagLayout gbl_jPanelChart = new GridBagLayout();
+		gbl_jPanelChart.columnWidths = new int[] { 0 };
+		gbl_jPanelChart.rowHeights = new int[] { 0 };
+		gbl_jPanelChart.columnWeights = new double[] { Double.MIN_VALUE };
+		gbl_jPanelChart.rowWeights = new double[] { Double.MIN_VALUE };
+		jPanelChart.setLayout(gbl_jPanelChart);
+		getContentPane().add(jPanelRigth, BorderLayout.CENTER);
+		jPanelRigth.setLayout(new BorderLayout(0, 0));
+		jPanelRigth.add(jScrollPaneChart);
 
 		jMenuChartType.setText("Chart Type");
 		jMenuChartType.setEnabled(false);
@@ -1375,7 +1375,15 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		setJMenuBar(jMenuBar1);
 
 		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds((screenSize.width - 935) / 2, (screenSize.height - 836) / 2, 935, 836);
+		final int screenSizeWidth = screenSize.width;
+		final int screenSizeHeight = screenSize.height;
+		final int windowWidth = screenSizeWidth / 2;
+		final int windowHeight = screenSizeHeight * 2 / 3;
+		setPreferredSize(new Dimension(windowWidth, windowHeight));
+		final int x = screenSizeWidth / 4;
+		final int y = screenSizeHeight / 6;
+		setBounds(x, y, 1037, 900);
+
 	}// </editor-fold>
 
 	protected void cancelTask() {
@@ -3720,11 +3728,26 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 						final ImageIcon icon = (ImageIcon) label.getIcon();
 						final Image image = icon.getImage();
 						JFileChooser fileChooser = new JFileChooser(MainFrame.currentFolder);
-						fileChooser.addChoosableFileFilter(new ExtensionFileFilter("JPG images", "jpg"));
+						fileChooser.setDialogTitle("Save heatmap");
+						for (ImageFileFormat imageFileFormat : ImageFileFormat.values()) {
+							if (imageFileFormat == ImageFileFormat.GIF) {
+								continue;// if doesnt allow to zoom
+							}
+							fileChooser.addChoosableFileFilter(new ExtensionFileFilter(imageFileFormat.getDescription(),
+									imageFileFormat.getExtension()));
+						}
+						fileChooser.setAcceptAllFileFilterUsed(false);
+
 						int retVal = fileChooser.showSaveDialog(this);
 
 						if (retVal == JFileChooser.APPROVE_OPTION) {
 							file = fileChooser.getSelectedFile();
+							if ("".equals(FilenameUtils.getExtension(file.getAbsolutePath()))) {
+								file = new File(file.getAbsolutePath() + "."
+										+ ImageFileFormat
+												.getFromDescription(fileChooser.getFileFilter().getDescription())
+												.getExtension());
+							}
 							MainFrame.currentFolder = file.getParentFile();
 							String path = ImageUtils.saveImage(image, file);
 							appendStatus("Image file saved to:" + path);
@@ -3743,11 +3766,25 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 						final ImageIcon icon = (ImageIcon) label.getIcon();
 						final Image image = icon.getImage();
 						JFileChooser fileChooser = new JFileChooser(MainFrame.currentFolder);
-						fileChooser.addChoosableFileFilter(new ExtensionFileFilter("JPG images", "jpg"));
+						fileChooser.setDialogTitle("Save heatmap");
+						for (ImageFileFormat imageFileFormat : ImageFileFormat.values()) {
+							if (imageFileFormat == ImageFileFormat.GIF) {
+								continue;// if doesnt allow to zoom
+							}
+							fileChooser.addChoosableFileFilter(new ExtensionFileFilter(imageFileFormat.getDescription(),
+									imageFileFormat.getExtension()));
+						}
+						fileChooser.setAcceptAllFileFilterUsed(false);
 						int retVal = fileChooser.showSaveDialog(this);
 
 						if (retVal == JFileChooser.APPROVE_OPTION) {
 							file = fileChooser.getSelectedFile();
+							if ("".equals(FilenameUtils.getExtension(file.getAbsolutePath()))) {
+								file = new File(file.getAbsolutePath() + "."
+										+ ImageFileFormat
+												.getFromDescription(fileChooser.getFileFilter().getDescription())
+												.getExtension());
+							}
 							MainFrame.currentFolder = file.getParentFile();
 							String path = ImageUtils.saveImage(image, file);
 							appendStatus("Image file saved to:" + path);
@@ -3786,10 +3823,22 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 						final Component component3 = jpanel2.getComponent(0);
 						if (component3 instanceof JLabel) {
 							JLabel label = (JLabel) component3;
+							String title = "";
+							if (label instanceof ImageLabel) {
+								title = ((ImageLabel) label).getTitle();
+							}
 							final ImageIcon icon = (ImageIcon) label.getIcon();
+							if (icon == null) {// image not selected
+								continue;
+							}
 							final Image image = icon.getImage();
 
-							fileChooser.addChoosableFileFilter(new ExtensionFileFilter("JPG images", "jpg"));
+							for (ImageFileFormat imageFileFormat : ImageFileFormat.values()) {
+								fileChooser.addChoosableFileFilter(new ExtensionFileFilter(
+										imageFileFormat.getDescription(), imageFileFormat.getExtension()));
+							}
+							fileChooser.setDialogTitle("Saving overlap image '" + title + "'");
+							fileChooser.setAcceptAllFileFilterUsed(false);
 							int retVal = fileChooser.showSaveDialog(this);
 
 							if (retVal == JFileChooser.APPROVE_OPTION) {
@@ -3830,14 +3879,27 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				final Component component2 = jpanel.getComponent(0);
 				if (component2 instanceof JLabel) {
 					JLabel label = (JLabel) component2;
+					String title = "";
+					if (label instanceof ImageLabel) {
+						title = ((ImageLabel) label).getTitle();
+					}
 					final ImageIcon icon = (ImageIcon) label.getIcon();
 					final Image image = icon.getImage();
 					JFileChooser fileChooser = new JFileChooser(MainFrame.currentFolder);
-					fileChooser.addChoosableFileFilter(new ExtensionFileFilter("JPG images", "jpg"));
+					for (ImageFileFormat imageFileFormat : ImageFileFormat.values()) {
+						fileChooser.addChoosableFileFilter(new ExtensionFileFilter(imageFileFormat.getDescription(),
+								imageFileFormat.getExtension()));
+					}
+					fileChooser.setDialogTitle("Saving overlap image '" + title + "'");
+					fileChooser.setAcceptAllFileFilterUsed(false);
 					int retVal = fileChooser.showSaveDialog(this);
 
 					if (retVal == JFileChooser.APPROVE_OPTION) {
 						file = fileChooser.getSelectedFile();
+						if ("".equals(FilenameUtils.getExtension(file.getAbsolutePath()))) {
+							file = new File(file.getAbsolutePath() + "." + ImageFileFormat
+									.getFromDescription(fileChooser.getFileFilter().getDescription()).getExtension());
+						}
 						MainFrame.currentFolder = file.getParentFile();
 						String path = ImageUtils.saveImage(image, file);
 						appendStatus("Image file saved to:" + path);
@@ -4225,11 +4287,13 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	private javax.swing.JTextArea jTextAreaStatus;
 	private AdditionalOptionsPanelFactory additionalOptionsPanelFactory;
 	private JButton jButtonCancel;
+	private JButton jButtonHelp;
 
 	// End of variables declaration//GEN-END:variables
 
 	@Override
 	public synchronized void propertyChange(PropertyChangeEvent evt) {
+
 		if ("progress".equals(evt.getPropertyName())) {
 			int progress = (Integer) evt.getNewValue();
 			if (evt.getSource().equals(memoryChecker))
@@ -4315,42 +4379,54 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			enableStateKeeper.setToPreviousState(this);
 			jButtonCancel.setEnabled(false);
 			jPanelChart.removeAll();
-			jPanelChart.setLayout(new GridBagLayout());
-			GridBagConstraints c = new GridBagConstraints();
-			c.anchor = GridBagConstraints.WEST;
-			c.gridx = 0;
-			c.gridy = 0;
+			BorderLayout borderLayout = new BorderLayout();
+			jPanelChart.setLayout(borderLayout);
+
 			Object object = evt.getNewValue();
 
 			if (object instanceof JComponent) {
 				// this.jPanelChart.setGraphicPanel((JComponent) object);
-				jPanelChart.add((JComponent) object, c);
+				JComponent jComponent = (JComponent) object;
+				jPanelChart.add(jComponent, BorderLayout.CENTER);
+				if (jComponent instanceof ChartPanel) {
+					((ChartPanel) jComponent).updateUI();
+				} else {
+					if (jComponent.getComponent(0) instanceof JComponent) {
+						((JComponent) jComponent.getComponent(0)).updateUI();
+					}
+				}
 			} else if (object instanceof List) {
 				List lista = (List) object;
 				if (lista.get(0) instanceof JPanel) {
 					List<JPanel> chartList = (List<JPanel>) object;
 					JPanel panel = new JPanel();
-
-					c.insets = new Insets(10, 0, 0, 0);
-					panel.setLayout(new GridBagLayout());
+					panel.setLayout(new GridLayout(chartList.size(), 1, 0, 20));
+					jPanelChart.add(panel, BorderLayout.CENTER);
 					for (JPanel jPanel : chartList) {
-						panel.add(jPanel, c);
-						c.gridy++;
+						panel.add(jPanel);
+						if (jPanel instanceof ChartPanel) {
+							((ChartPanel) jPanel).updateUI();
+						} else {
+							if (jPanel.getComponent(0) instanceof JComponent) {
+								((JComponent) jPanel.getComponent(0)).updateUI();
+							}
+
+						}
 					}
-					c.gridy = 0;
-					jPanelChart.add(panel, c);
 				} else if (lista.get(0) instanceof Panel) {
 					List<Panel> chartList = (List<Panel>) object;
 					JPanel panel = new JPanel();
-
-					c.insets = new Insets(10, 0, 0, 0);
-					panel.setLayout(new GridBagLayout());
+					panel.setLayout(new GridLayout(chartList.size(), 1, 0, 20));
 					for (Panel jPanel : chartList) {
-						panel.add(jPanel, c);
-						c.gridy++;
+						panel.add(jPanel);
+						if (jPanel instanceof WordCramChart) {
+							WordCramChart wordCramChart = (WordCramChart) jPanel;
+							wordCramChart.addPropertyChangeListener(this);
+							wordCramChart.initialize(Double.valueOf(jPanelChart.getSize().getWidth()).intValue(), 550);
+						}
 					}
-					c.gridy = 0;
-					jPanelChart.add(panel, c);
+
+					jPanelChart.add(panel, BorderLayout.CENTER);
 					jScrollPaneChart.getViewport().addChangeListener(new ChangeListener() {
 
 						@Override
@@ -4362,11 +4438,27 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 				}
 				// this.jPanelChart.addGraphicPanel((List<JPanel>) object);
-			} else if (object instanceof Panel) {
-				jPanelChart.add((Panel) object, c);
+			} else if (object instanceof Component) {
+				jPanelChart.add((Component) object, BorderLayout.CENTER);
+				if (object instanceof WordCramChart) {
+					WordCramChart wordCramChart = (WordCramChart) object;
+					wordCramChart.addPropertyChangeListener(this);
+					wordCramChart.initialize(Double.valueOf(jPanelChart.getSize().getWidth()).intValue(),
+							Double.valueOf(jPanelChart.getSize().getHeight()).intValue());
+				}
 			}
 			jPanelChart.repaint();
 			if (ChartCreatorTask.CHART_GENERATED.equals(evt.getPropertyName())) {
+				// disable scroll in case of current chart is a word clod
+				if (currentChartType.equals(PROTEIN_NAME_CLOUD)) {
+					jScrollPaneChart.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+					jScrollPaneChart.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				} else {
+					jScrollPaneChart.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+					jScrollPaneChart.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+				}
+
 				setNumIdentificationsLabel();
 				setFDRLabel();
 				double t2 = System.currentTimeMillis() * 1.0;
@@ -4380,6 +4472,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 			}
 			setProgressBarIndeterminate(false);
 			updateControlStates();
+			jPanelAddOptions.updateUI();
 			if (!filterDialog.getFilters().isEmpty()) {
 				jButtonSeeAppliedFilters.setEnabled(true);
 				jButtonSaveAsFiltered.setEnabled(true);
@@ -4388,7 +4481,7 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 				jButtonSeeAppliedFilters.setEnabled(false);
 				jButtonSaveAsFiltered.setEnabled(false);
 			}
-			pack();
+
 		} else if (ChartCreatorTask.DATASET_PROGRESS.equals(evt.getPropertyName())) {
 			String message = (String) evt.getNewValue();
 			jProgressBar.setStringPainted(true);
@@ -4444,6 +4537,8 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		} else if (OntologyLoaderTask.ONTOLOGY_LOADING_ERROR.equals(evt.getPropertyName())) {
 			appendStatus("Error loading ontologies. Please contact to miape-support@proteored.org.");
 			appendStatus((String) evt.getNewValue());
+		} else if (WordCramChart.WORDCRAMCREATED.equals(evt.getPropertyName())) {
+			appendStatus("Protein words cloud created");
 		}
 
 	}
@@ -4478,6 +4573,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	}
 
 	public void appendStatus(String notificacion) {
+		if (notificacion == null) {
+			return;
+		}
 		String formatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG)
 				.format(new Date(System.currentTimeMillis()));
 		jTextAreaStatus.append(formatedDate + ": " + notificacion + "\n");
@@ -4486,6 +4584,9 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 	}
 
 	void setStatus(String notificacion) {
+		if (notificacion == null) {
+			return;
+		}
 		jTextAreaStatus.setText(notificacion + "\n");
 		jTextAreaStatus.setCaretPosition(jTextAreaStatus.getText().length() - 1);
 
@@ -4687,22 +4788,27 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 		if (charts != null && !charts.isEmpty()) {
 
 			JFileChooser fileChooser = new JFileChooser(MainFrame.currentFolder);
-			fileChooser.addChoosableFileFilter(new ExtensionFileFilter("TIF images", "tif"));
+			fileChooser.addChoosableFileFilter(new ExtensionFileFilter("TIFF Image File", "tif"));
+
+			fileChooser.setDialogTitle("Saving protein word cloud image");
+			fileChooser.setAcceptAllFileFilterUsed(false);
 			int retVal = fileChooser.showSaveDialog(this);
 
 			if (retVal == JFileChooser.APPROVE_OPTION) {
 				File file = fileChooser.getSelectedFile();
+				if ("".equals(FilenameUtils.getExtension(file.getAbsolutePath()))) {
+					file = new File(file.getAbsolutePath() + ".tif");
+				}
 				MainFrame.currentFolder = file.getParentFile();
 				for (int i = 0; i < charts.size(); i++) {
-					if ("".equals(FilenameUtils.getExtension(file.getAbsolutePath())))
-						file = new File(file.getAbsolutePath() + ".tif");
 					if (i > 0) {
 						file = getNextFile(file, i);
 					}
-
 					WordCramChart wordCram = charts.get(i);
 					wordCram.saveFrame(file.getAbsolutePath());
+
 					appendStatus("Image saved to:" + file.getAbsolutePath());
+
 				}
 
 			}
@@ -4768,5 +4874,11 @@ public class ChartManagerFrame extends javax.swing.JFrame implements PropertyCha
 
 	public AdditionalOptionsPanelFactory getAdditionalOptionsPanelFactory() {
 		return this.additionalOptionsPanelFactory;
+	}
+
+	@Override
+	public List<String> getHelpMessages() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

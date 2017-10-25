@@ -7,9 +7,11 @@ package org.proteored.pacom.analysis.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.List;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.UIManager;
@@ -18,6 +20,8 @@ import javax.swing.border.TitledBorder;
 
 import org.jfree.ui.RefineryUtilities;
 import org.proteored.miapeapi.experiment.model.datamanager.DataManager;
+import org.proteored.pacom.gui.AbstractJDialogWithAttachedHelpDialog;
+import org.proteored.pacom.gui.ImageManager;
 
 import com.lowagie.text.Font;
 
@@ -25,7 +29,7 @@ import com.lowagie.text.Font;
  *
  * @author __USER__
  */
-public class GeneralOptionsDialog extends javax.swing.JDialog {
+public class GeneralOptionsDialog extends AbstractJDialogWithAttachedHelpDialog {
 	private static GeneralOptionsDialog instance;
 	private Integer previousMinPeptideLength;
 	private Boolean previousGroupAtExperimentListLevel;
@@ -42,6 +46,7 @@ public class GeneralOptionsDialog extends javax.swing.JDialog {
 	}
 
 	public static GeneralOptionsDialog getInstance(ChartManagerFrame parent) {
+
 		if (instance == null) {
 			instance = new GeneralOptionsDialog(parent);
 		} else {
@@ -134,7 +139,7 @@ public class GeneralOptionsDialog extends javax.swing.JDialog {
 
 	/** Creates new form GeneralOptions */
 	public GeneralOptionsDialog(ChartManagerFrame parent) {
-		super(parent, true);
+		super(parent, true, 40);
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException
@@ -251,17 +256,40 @@ public class GeneralOptionsDialog extends javax.swing.JDialog {
 		jCheckBoxSeparateNonconclusivesubset.setToolTipText(
 				"<html>\r\nNon-Conclusive proteins are proteins which have all their peptides <br>\r\nshared with other proteins, so they are subset proteins.<br>\r\nIf this option is enabled, Non-Conclusive proteins will be separated <br>\r\nfrom the proteins which share peptides with them.<br>\r\nIf this options is disabled, Non-Conclusibe proteins will be integrated <br>\r\nin all other protein groups which share peptides with them.<br>\r\nTake into account this for protein group comparisons in overlapping of proteins.\r\n</html>\r\n</html>");
 
+		jButtonHelp = new JButton("");
+		jButtonHelp.setToolTipText("Click here to open the help window");
+		jButtonHelp.setIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON));
+		jButtonHelp.setPressedIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON_CLICKED));
+		jButtonHelp.setRolloverIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON));
+		jButtonHelp.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (getHelpDialog().isVisible()) {
+					getHelpDialog().setMinimized(true);
+					getHelpDialog().setVisible(false);
+				} else {
+					showAttachedHelpDialog();
+				}
+			}
+		});
 		javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-		jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanel3Layout.createSequentialGroup().addContainerGap()
-						.addGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING)
-								.addComponent(jCheckBoxGroupProteinsInExperimentList)
-								.addComponent(jCheckBoxSeparateNonconclusivesubset)
-								.addComponent(jCheckboxDiscardNonconclusiveor))
-						.addContainerGap(494, Short.MAX_VALUE)));
+		jPanel3Layout
+				.setHorizontalGroup(
+						jPanel3Layout.createParallelGroup(Alignment.LEADING)
+								.addGroup(jPanel3Layout.createSequentialGroup().addContainerGap()
+										.addGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING)
+												.addGroup(jPanel3Layout.createSequentialGroup()
+														.addComponent(jCheckBoxGroupProteinsInExperimentList)
+														.addPreferredGap(ComponentPlacement.RELATED, 105,
+																Short.MAX_VALUE)
+														.addComponent(jButtonHelp))
+												.addComponent(jCheckBoxSeparateNonconclusivesubset)
+												.addComponent(jCheckboxDiscardNonconclusiveor))
+										.addContainerGap()));
 		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(jPanel3Layout.createSequentialGroup().addContainerGap()
-						.addComponent(jCheckBoxGroupProteinsInExperimentList)
+						.addGroup(jPanel3Layout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(jCheckBoxGroupProteinsInExperimentList).addComponent(jButtonHelp))
 						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jCheckboxDiscardNonconclusiveor)
 						.addGap(1).addComponent(jCheckBoxSeparateNonconclusivesubset).addContainerGap()));
 		jPanel3.setLayout(jPanel3Layout);
@@ -417,4 +445,11 @@ public class GeneralOptionsDialog extends javax.swing.JDialog {
 	private javax.swing.JTextField jTextFieldPeptideLength;
 	private JCheckBox jCheckBoxSeparateNonconclusivesubset;
 	private JCheckBox jCheckboxDiscardNonconclusiveor;
+	private JButton jButtonHelp;
+
+	@Override
+	public List<String> getHelpMessages() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
