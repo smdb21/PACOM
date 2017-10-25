@@ -23,12 +23,20 @@ public class ImageManager {
 	public static final String PACOM_LOGO_64_CLICKED = "pacom_64_clicked.png";
 	public static final String PACOM_LOGO_64_HOVER = "pacom_64_hover.png";
 
+	public static final String PACOM_LOGO_32 = "pacom_32.png";
+	public static final String PACOM_LOGO_32_CLICKED = "pacom_32_clicked.png";
+
 	public static final String LOAD_LOGO_128 = "load_128.png";
 	public static final String LOAD_LOGO_128_CLICKED = "load_128_clicked.png";
 	public static final String LOAD_LOGO_128_HOVER = "load_128_hover.png";
+
+	public static final String LOAD_LOGO_32 = "load_32.png";
+	public static final String LOAD_LOGO_32_CLICKED = "load_32_clicked.png";
+
 	public static final String BATCH_LOAD_LOGO_128 = "pacom_batch_import_128.png";
 	public static final String BATCH_LOAD_LOGO_128_CLICKED = "pacom_batch_import_128_clicked.png";
 	public static final String BATCH_LOAD_LOGO_128_HOVER = "pacom_batch_import_128_hover.png";
+
 	public static final String CURATED_EXPERIMENT = "curated_experiment.png";
 	public static final String EXPERIMENT = "experiment.png";
 	public static final String REPLICATE = "replicate.png";
