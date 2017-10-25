@@ -421,8 +421,20 @@ public class ExtendedJTree extends JTree {
 		// reload();
 	}
 
+	/**
+	 * Expand all the children of this node
+	 * 
+	 * @param node
+	 */
 	public void expandNode(DefaultMutableTreeNode node) {
-		this.expandPath(new TreePath(node.getPath()));
+		if (node.isLeaf()) {
+			this.expandPath(new TreePath(node.getPath()));
+		} else {
+			for (int i = 0; i < node.getChildCount(); i++) {
+				expandNode((DefaultMutableTreeNode) node.getChildAt(i));
+			}
+		}
+
 	}
 
 	public void collapseNode(DefaultMutableTreeNode node) {
