@@ -124,7 +124,11 @@ public class MiapeLocalExtractor {
 			}
 
 			// save the file to local folders
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+					FilenameUtils.getName(inputFile.getAbsolutePath()));
 			inputFile = FileManager.saveLocalFile(inputFile, projectName);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+					"File copied to " + inputFile.getAbsolutePath());
 			// index file by project name
 			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, inputFile);
 
@@ -187,7 +191,11 @@ public class MiapeLocalExtractor {
 			if (schemaValidation) {
 				SchemaValidator.validateXMLFile(inputFile, SchemaValidator.prideXML);
 			}
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+					FilenameUtils.getName(inputFile.getAbsolutePath()));
 			inputFile = FileManager.saveLocalFile(inputFile, projectName);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+					"File copied to " + inputFile.getAbsolutePath());
 			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, inputFile);
 
 			log.info("parsing PRIDE XML to document MS");
@@ -250,7 +258,11 @@ public class MiapeLocalExtractor {
 			if (schemaValidation)
 				SchemaValidator.validateXMLFile(inputFile, SchemaValidator.prideXML);
 
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+					FilenameUtils.getName(inputFile.getAbsolutePath()));
 			inputFile = FileManager.saveLocalFile(inputFile, projectName);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+					"File copied to " + inputFile.getAbsolutePath());
 			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, inputFile);
 			log.info("createDocument");
 
@@ -311,7 +323,11 @@ public class MiapeLocalExtractor {
 			if (schemaValidation)
 				SchemaValidator.validateXMLFile(inputFile, SchemaValidator.prideXML);
 
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+					FilenameUtils.getName(inputFile.getAbsolutePath()));
 			inputFile = FileManager.saveLocalFile(inputFile, projectName);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+					"File copied to " + inputFile.getAbsolutePath());
 			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, inputFile);
 			log.info("createDocument");
 
@@ -377,7 +393,11 @@ public class MiapeLocalExtractor {
 				SchemaValidator.validateXMLFile(inputFile, SchemaValidator.prideXML);
 
 			log.info("createDocument");
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+					FilenameUtils.getName(inputFile.getAbsolutePath()));
 			inputFile = FileManager.saveLocalFile(inputFile, projectName);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+					"File copied to " + inputFile.getAbsolutePath());
 			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, inputFile);
 
 			log.info("parsing XML to document MS");
@@ -468,7 +488,11 @@ public class MiapeLocalExtractor {
 		}
 
 		try {
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+					FilenameUtils.getName(inputFile.getAbsolutePath()));
 			inputFile = FileManager.saveLocalFile(inputFile, projectName);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+					"File copied to " + inputFile.getAbsolutePath());
 			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, inputFile);
 
 			if (fastParsing) {
@@ -548,7 +572,11 @@ public class MiapeLocalExtractor {
 		}
 
 		try {
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+					FilenameUtils.getName(inputFile.getAbsolutePath()));
 			inputFile = FileManager.saveLocalFile(inputFile, projectName);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+					"File copied to " + inputFile.getAbsolutePath());
 			LocalFilesIndex.getInstance().indexFileByMiapeID(id_ms, inputFile);
 
 			if (fastParsing) {
@@ -645,7 +673,11 @@ public class MiapeLocalExtractor {
 		}
 		try {
 
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+					FilenameUtils.getName(inputmzMLFile.getAbsolutePath()));
 			inputmzMLFile = FileManager.saveLocalFile(inputmzMLFile, projectName);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+					"File copied to " + inputmzMLFile.getAbsolutePath());
 			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, inputmzMLFile);
 
 			if (fastParsing) {
@@ -681,7 +713,11 @@ public class MiapeLocalExtractor {
 			if (schemaValidation)
 				SchemaValidator.validateXMLFile(inputmzIdentMLFile, SchemaValidator.mzIdentML_1_0);
 
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+					FilenameUtils.getName(inputmzIdentMLFile.getAbsolutePath()));
 			inputmzIdentMLFile = FileManager.saveLocalFile(inputmzIdentMLFile, projectName);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+					"File copied to " + inputmzIdentMLFile.getAbsolutePath());
 			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, inputmzIdentMLFile);
 
 			log.info("create MIAPE MSI from mzIdentML");
@@ -760,7 +796,11 @@ public class MiapeLocalExtractor {
 				SchemaValidator.validateXMLFile(inputMzMLFile, SchemaValidator.mzML);
 		}
 		try {
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+					FilenameUtils.getName(inputMzMLFile.getAbsolutePath()));
 			inputMzMLFile = FileManager.saveLocalFile(inputMzMLFile, projectName);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+					"File copied to " + inputMzMLFile.getAbsolutePath());
 			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, inputMzMLFile);
 
 			if (fastParsing) {
@@ -803,7 +843,11 @@ public class MiapeLocalExtractor {
 			if (schemaValidation)
 				SchemaValidator.validateXMLFile(inputMzIdentMLFile, SchemaValidator.mzIdentML_1_0);
 
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+					FilenameUtils.getName(inputMzIdentMLFile.getAbsolutePath()));
 			inputMzIdentMLFile = FileManager.saveLocalFile(inputMzIdentMLFile, projectName);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+					"File copied to " + inputMzIdentMLFile.getAbsolutePath());
 			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, inputMzIdentMLFile);
 
 			log.info("create MIAPE MSI from mzIdentML");
@@ -887,7 +931,11 @@ public class MiapeLocalExtractor {
 				SchemaValidator.validateXMLFile(inputMzMLFile, SchemaValidator.mzML);
 		}
 		try {
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+					FilenameUtils.getName(inputMzMLFile.getAbsolutePath()));
 			inputMzMLFile = FileManager.saveLocalFile(inputMzMLFile, projectName);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+					"File copied to " + inputMzMLFile.getAbsolutePath());
 			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, inputMzMLFile);
 
 			if (fastParsing) {
@@ -1005,7 +1053,11 @@ public class MiapeLocalExtractor {
 				SchemaValidator.validateXMLFile(inputMzMLFile, SchemaValidator.mzML);
 		}
 		try {
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+					FilenameUtils.getName(inputMzMLFile.getAbsolutePath()));
 			inputMzMLFile = FileManager.saveLocalFile(inputMzMLFile, projectName);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+					"File copied to " + inputMzMLFile.getAbsolutePath());
 			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, inputMzMLFile);
 
 			if (fastParsing) {
@@ -1138,7 +1190,11 @@ public class MiapeLocalExtractor {
 		log.info("create Dataset MSI from mzIdentML");
 		try {
 			try {
+				swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+						FilenameUtils.getName(inputMzIdentMLFile.getAbsolutePath()));
 				inputMzIdentMLFile = FileManager.saveLocalFile(inputMzIdentMLFile, projectName);
+				swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+						"File copied to " + inputMzIdentMLFile.getAbsolutePath());
 				LocalFilesIndex.getInstance().indexFileByProjectName(projectName, inputMzIdentMLFile);
 
 				org.proteored.miapeapi.xml.mzidentml_1_1.MiapeMzIdentMLFile xmlFile = new org.proteored.miapeapi.xml.mzidentml_1_1.MiapeMzIdentMLFile(
@@ -1242,7 +1298,11 @@ public class MiapeLocalExtractor {
 				}
 			}
 			try {
+				swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+						FilenameUtils.getName(inputMzIdentMLFile.getAbsolutePath()));
 				inputMzIdentMLFile = FileManager.saveLocalFile(inputMzIdentMLFile, projectName);
+				swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+						"File copied to " + inputMzIdentMLFile.getAbsolutePath());
 				LocalFilesIndex.getInstance().indexFileByProjectName(projectName, inputMzIdentMLFile);
 
 				MiapeMzIdentMLFile xmlFile = new MiapeMzIdentMLFile(inputMzIdentMLFile);
@@ -1324,7 +1384,11 @@ public class MiapeLocalExtractor {
 
 		try {
 			inputXTandemXMLFile = new File(xTandemXMLURI);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+					FilenameUtils.getName(inputXTandemXMLFile.getAbsolutePath()));
 			inputXTandemXMLFile = FileManager.saveLocalFile(inputXTandemXMLFile, projectName);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+					"File copied to " + inputXTandemXMLFile.getAbsolutePath());
 			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, inputXTandemXMLFile);
 
 			// Dont Validate file because we don't have the schema
@@ -1400,7 +1464,11 @@ public class MiapeLocalExtractor {
 
 		try {
 			inputTSVFile = new File(tsvURI);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+					FilenameUtils.getName(inputTSVFile.getAbsolutePath()));
 			inputTSVFile = FileManager.saveLocalFile(inputTSVFile, projectName);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+					"File copied to " + inputTSVFile.getAbsolutePath());
 			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, inputTSVFile);
 
 			// Dont Validate file because we don't have the schema
@@ -1484,7 +1552,11 @@ public class MiapeLocalExtractor {
 			// copy mzIdentML file to a temp file
 			inputXTandemXMLFile = new File(xTandemXMLFileURL);
 
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+					FilenameUtils.getName(inputXTandemXMLFile.getAbsolutePath()));
 			inputXTandemXMLFile = FileManager.saveLocalFile(inputXTandemXMLFile, projectName);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+					"File copied to " + inputXTandemXMLFile.getAbsolutePath());
 			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, inputXTandemXMLFile);
 
 			MiapeXTandemFile xmlFile = new MiapeXTandemFile(inputXTandemXMLFile);
@@ -1562,7 +1634,11 @@ public class MiapeLocalExtractor {
 		try {
 			dtaSelectFile = new File(dtaSelectFileURI);
 
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+					FilenameUtils.getName(dtaSelectFile.getAbsolutePath()));
 			dtaSelectFile = FileManager.saveLocalFile(dtaSelectFile, projectName);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+					"File copied to " + dtaSelectFile.getAbsolutePath());
 			log.info("file saved to " + dtaSelectFile.getAbsolutePath());
 			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, dtaSelectFile);
 			log.info("indexed ok");
@@ -1617,8 +1693,12 @@ public class MiapeLocalExtractor {
 
 		try {
 			pepXMLFile = new File(pepXMLFileURI);
-
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+					FilenameUtils.getName(pepXMLFile.getAbsolutePath()));
 			pepXMLFile = FileManager.saveLocalFile(pepXMLFile, projectName);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+					"File copied to " + pepXMLFile.getAbsolutePath());
+
 			log.info("file saved to " + pepXMLFile.getAbsolutePath());
 			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, pepXMLFile);
 			log.info("indexed ok");
@@ -1683,8 +1763,12 @@ public class MiapeLocalExtractor {
 			log.info("create MIAPE MSI from DTASelect file");
 			// copy dtaselect file to a temp file
 			dtaSelectFile = new File(dtaSelectFileURL);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+					FilenameUtils.getName(dtaSelectFile.getAbsolutePath()));
 
 			dtaSelectFile = FileManager.saveLocalFile(dtaSelectFile, projectName);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+					"File copied to " + dtaSelectFile.getAbsolutePath());
 			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, dtaSelectFile);
 
 			MiapeDTASelectFile dtaSelectMIAPEFile = new MiapeDTASelectFile(dtaSelectFile);
@@ -1738,8 +1822,12 @@ public class MiapeLocalExtractor {
 			log.info("create MIAPE MSI from pepXML file");
 			// copy dtaselect file to a temp file
 			pepXMLFile = new File(pepXMLFileURL);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+					FilenameUtils.getName(pepXMLFile.getAbsolutePath()));
 
 			pepXMLFile = FileManager.saveLocalFile(pepXMLFile, projectName);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+					"File copied to " + pepXMLFile.getAbsolutePath());
 			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, pepXMLFile);
 
 			MiapePepXMLFile pepXMLMIAPEFile = new MiapePepXMLFile(pepXMLFile);
@@ -1795,7 +1883,11 @@ public class MiapeLocalExtractor {
 			// copy dtaselect file to a temp file
 			tsvFile = new File(tsvFileURL);
 
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+					FilenameUtils.getName(tsvFileURL));
 			tsvFile = FileManager.saveLocalFile(tsvFile, projectName);
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+					"File copied to " + tsvFile.getAbsolutePath());
 			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, tsvFile);
 
 			MiapeTSVFile tsvMIAPEFile = new MiapeTSVFile(tsvFile, separator);
