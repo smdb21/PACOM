@@ -1,8 +1,10 @@
 package org.proteored.pacom.analysis.charts;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -21,10 +23,10 @@ import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.FileImageOutputStream;
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
+import org.jfree.chart.encoders.ImageFormat;
 import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
 import org.proteored.miapeapi.experiment.VennData;
 import org.proteored.miapeapi.experiment.VennDataForPeptides;
@@ -61,11 +63,12 @@ public class VennChart {
 	private String label1;
 	private String label2;
 	private String label3;
+	private final String originalTitle;
 
 	public VennChart(String title, IdentificationSet idset1, String label1, IdentificationSet idset2, String label2,
 			IdentificationSet idset3, String label3, IdentificationItemEnum plotItem, Boolean distModPep,
 			ProteinGroupComparisonType proteinGroupComparisonType, Color color1, Color color2, Color color3) {
-
+		this.originalTitle = title;
 		if (title != null)
 			this.title = title.replace(" ", "%20");
 		if (label1 != null)
@@ -154,8 +157,7 @@ public class VennChart {
 
 	private URL createChartURL(String title, String label1, String label2, String label3) throws MalformedURLException {
 		StringBuilder sb = new StringBuilder();
-		sb.append("http://chart.apis.google.com/chart?chs=" + ChartProperties.DEFAULT_CHART_WIDTH + "x"
-				+ ChartProperties.DEFAULT_CHART_HEIGHT);
+		sb.append("http://chart.apis.google.com/chart?chs=547x547");
 		sb.append("&chd=t:" + getDataString(vennData));
 		sb.append("&cht=v");
 
@@ -371,7 +373,8 @@ public class VennChart {
 	private void addPicture(URL url) {
 		this.image = getImageFromURL(url);
 
-		ImageIcon imageIcon = new ImageIcon(image);
+		String imageDescription = "Venn diagram";
+		ImageIcon imageIcon = new ImageIcon(image, imageDescription);
 		// Rule rule = new Rule(0,false);
 		// Set up the picture
 		// ScrollablePicture picture = new ScrollablePicture(imageIcon,
@@ -381,9 +384,10 @@ public class VennChart {
 		// this.pictureScrollPane.setPreferredSize(new Dimension(500, 500));
 		// this.pictureScrollPane.setViewportBorder(BorderFactory.createLineBorder(Color.black));
 		this.chartPanel.removeAll();
-		JLabel label = new JLabel();
+		this.chartPanel.setLayout(new BorderLayout());
+		ImageLabel label = new ImageLabel("", originalTitle, true);
 		label.setIcon(imageIcon);
-		this.chartPanel.add(label);
+		this.chartPanel.add(label, BorderLayout.CENTER);
 		Container parent = chartPanel.getParent();
 		while (!(parent instanceof Window)) {
 			if (parent == null) {
@@ -398,7 +402,7 @@ public class VennChart {
 
 	private Image getImageFromURL(URL url) {
 		try {
-			image = java.awt.Toolkit.getDefaultToolkit().getDefaultToolkit().createImage(url);
+			image = Toolkit.getDefaultToolkit().createImage(url);
 		} catch (SecurityException e) {
 			throw new IllegalMiapeArgumentException(e.getMessage());
 		}
@@ -413,9 +417,10 @@ public class VennChart {
 		return outputFile.getAbsolutePath();
 	}
 
-	private void saveGraphicJpeg(BufferedImage chart, File outputFile, float quality) throws IOException {
+	private void saveGraphicByFormat(BufferedImage chart, File outputFile, float quality, String format)
+			throws IOException {
 		// Setup correct compression for jpeg.
-		Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("jpeg");
+		Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName(format);
 		ImageWriter writer = iter.next();
 		ImageWriteParam iwp = writer.getDefaultWriteParam();
 		iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
@@ -471,17 +476,19 @@ public class VennChart {
 		String ext = filename.substring(extPoint + 1);
 
 		// Handle jpg without transparency.
-		if (ext.toLowerCase().equals("jpg") || ext.toLowerCase().equals("jpeg")) {
-			BufferedImage chart = ImageUtils.toBufferedImage(this.image);
+
+		if (ext.toLowerCase().equals(ImageFormat.GIF) || ext.toLowerCase().equals(ImageFormat.JPEG)
+				|| ext.equals(ImageFormat.PNG)) {
+			BufferedImage bufferedImage = ImageUtils.toBufferedImage(this.image);
 			// BufferedImage chart = (BufferedImage) getChartImage(false);
 
 			// Save our graphic.
-			saveGraphicJpeg(chart, outputFile, 1.0f);
+			saveGraphicByFormat(bufferedImage, outputFile, 1.0f, ext);
 		} else {
-			BufferedImage chart = ImageUtils.toBufferedImage(this.image);
+			BufferedImage bufferedImage = ImageUtils.toBufferedImage(this.image);
 			// BufferedImage chart = (BufferedImage) getChartImage(true);
 
-			ImageIO.write(chart, ext, outputFile);
+			ImageIO.write(bufferedImage, ext, outputFile);
 		}
 	}
 
@@ -617,5 +624,9 @@ public class VennChart {
 		if (this.name3 != null && name3.equals(seriesName)) {
 			setColor3(color);
 		}
+	}
+
+	public String getOriginalTitle() {
+		return originalTitle;
 	}
 }
