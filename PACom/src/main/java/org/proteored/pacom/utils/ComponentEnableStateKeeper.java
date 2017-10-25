@@ -7,6 +7,8 @@ import java.util.Set;
 
 import javax.swing.JProgressBar;
 
+import org.apache.log4j.Logger;
+
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.set.hash.THashSet;
 
@@ -21,6 +23,7 @@ public class ComponentEnableStateKeeper {
 	private final Set<Component> reversecomponents = new THashSet<Component>();
 	private final Set<Component> invariableComponents = new THashSet<Component>();
 	private boolean skipProgressBar;
+	private final static Logger log = Logger.getLogger(ComponentEnableStateKeeper.class);
 
 	public ComponentEnableStateKeeper() {
 		this(true);
@@ -89,7 +92,11 @@ public class ComponentEnableStateKeeper {
 	}
 
 	public void keepEnableStates(Container container) {
-		componentToEnableStateMap.clear();
+		log.info("Keeping state of all components in the container");
+		synchronized (container.getTreeLock()) {
+			componentToEnableStateMap.clear();
+		}
+
 		keepEnableStatesPrivate(container);
 	}
 
