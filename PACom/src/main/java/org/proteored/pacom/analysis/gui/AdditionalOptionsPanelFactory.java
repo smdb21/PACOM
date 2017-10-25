@@ -1077,6 +1077,8 @@ public class AdditionalOptionsPanelFactory {
 
 		if (jComboBoxHighColorScale == null) {
 			jComboBoxHighColorScale = new JComboBox(getColors().toArray());
+			jComboBoxHighColorScale.setSelectedItem("blue");
+
 			getControlList().add(jComboBoxHighColorScale);
 			jComboBoxHighColorScale.addItemListener(new java.awt.event.ItemListener() {
 
@@ -1092,6 +1094,7 @@ public class AdditionalOptionsPanelFactory {
 		}
 		if (jComboBoxLowColorScale == null) {
 			jComboBoxLowColorScale = new JComboBox(getColors().toArray());
+			jComboBoxLowColorScale.setSelectedItem("yellow");
 			getControlList().add(jComboBoxLowColorScale);
 			jComboBoxLowColorScale.addItemListener(new java.awt.event.ItemListener() {
 				@Override
@@ -1132,7 +1135,7 @@ public class AdditionalOptionsPanelFactory {
 			if (color != null)
 				return color;
 		}
-		return Color.red;
+		return Color.blue;
 	}
 
 	public Color getLowColorScale() {
@@ -1141,7 +1144,7 @@ public class AdditionalOptionsPanelFactory {
 			if (color != null)
 				return color;
 		}
-		return Color.green;
+		return Color.yellow;
 	}
 
 	private Color getColor(String selectedItem) {
