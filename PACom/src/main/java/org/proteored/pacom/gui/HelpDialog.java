@@ -3,13 +3,14 @@ package org.proteored.pacom.gui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-public class HelpDialog extends javax.swing.JDialog {
+public class HelpDialog extends AbstractJDialogWithAttachedHelpDialog {
 
 	/**
 	 * 
@@ -17,7 +18,7 @@ public class HelpDialog extends javax.swing.JDialog {
 	private static final long serialVersionUID = -605019076274458268L;
 
 	public HelpDialog(JFrame parentFrame, String title, String label1Text) {
-		super(parentFrame);
+		super(parentFrame, 40);
 		setIconImage(ImageManager.getImageIcon(ImageManager.HELP_ICON).getImage());
 		setResizable(false);
 		this.setTitle(title);
@@ -70,6 +71,12 @@ public class HelpDialog extends javax.swing.JDialog {
 		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 		java.awt.Dimension dialogSize = getSize();
 		setLocation((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2);
+	}
+
+	@Override
+	public List<String> getHelpMessages() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
