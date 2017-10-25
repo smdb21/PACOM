@@ -1132,7 +1132,8 @@ public class DatasetFactory {
 		}
 
 		if (!someValueIsMoreThanZero)
-			throw new IllegalMiapeArgumentException("There is not data to show");
+			throw new IllegalMiapeArgumentException(
+					"<html>There is not data to show.<br>Try to lower the number in 'Do not paint rows with less than' text box,<br> which in this case means the number of psms per peptide across all datasets.</html>");
 		double[][] ret = new double[rowList.size()][columnList.size()];
 		for (int row = 0; row < rowList.size(); row++) {
 			for (int column = 0; column < columnList.size(); column++) {
