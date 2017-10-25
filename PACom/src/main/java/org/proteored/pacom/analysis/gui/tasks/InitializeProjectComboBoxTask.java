@@ -12,8 +12,7 @@ import org.proteored.pacom.analysis.gui.Miape2ExperimentListDialog;
 import org.proteored.pacom.analysis.util.FileManager;
 
 public class InitializeProjectComboBoxTask extends SwingWorker<Void, Void> {
-	private static final Logger log = Logger
-			.getLogger("log4j.logger.org.proteored");
+	private static final Logger log = Logger.getLogger("log4j.logger.org.proteored");
 
 	private final JComboBox savedProjectsCombo;
 	private final JComboBox curatedExperimentsCombo;
@@ -38,7 +37,7 @@ public class InitializeProjectComboBoxTask extends SwingWorker<Void, Void> {
 		}
 		log.info(projectList.size() + " projects");
 		// Sort by name
-		Collections.sort(projectList);
+		Collections.sort(projectList, (project1, project2) -> project1.compareToIgnoreCase(project2));
 		// this.jComboBox1 = new JComboBox();
 		this.savedProjectsCombo.removeAllItems();
 		this.savedProjectsCombo.addItem("");
@@ -67,8 +66,7 @@ public class InitializeProjectComboBoxTask extends SwingWorker<Void, Void> {
 			}
 			this.curatedExperimentsCombo.setSelectedIndex(0);
 		} else {
-			this.curatedExperimentsCombo
-					.addItem("No curated experiments available");
+			this.curatedExperimentsCombo.addItem("No curated experiments available");
 		}
 		log.info("Previously saved combo is loaded");
 		dialog.setCorrectlyInitialized(true);
