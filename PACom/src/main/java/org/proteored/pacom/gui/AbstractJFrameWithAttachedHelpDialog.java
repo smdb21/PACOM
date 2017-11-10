@@ -9,19 +9,21 @@ public abstract class AbstractJFrameWithAttachedHelpDialog extends JFrame implem
 	 */
 	private static final long serialVersionUID = -3356292958061016878L;
 	private AttachedHelpDialog help;
-	private final int maxCharactersInHelpMessageRow;
+	private final int maxWidth;
 
-	public AbstractJFrameWithAttachedHelpDialog(int maxCharactersInHelpMessageRow) {
-		this.maxCharactersInHelpMessageRow = maxCharactersInHelpMessageRow;
+	public AbstractJFrameWithAttachedHelpDialog(int maxWidth) {
+		this.maxWidth = maxWidth;
 	}
 
+	@Override
 	public void showAttachedHelpDialog() {
 		getHelpDialog().forceVisible();
 	}
 
-	protected AttachedHelpDialog getHelpDialog() {
+	@Override
+	public AttachedHelpDialog getHelpDialog() {
 		if (help == null) {
-			help = new AttachedHelpDialog(this, this.maxCharactersInHelpMessageRow);
+			help = new AttachedHelpDialog(this, this.maxWidth);
 		}
 		return help;
 	}
