@@ -70,8 +70,8 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog {
 	private Miape2ExperimentListDialog miape2experimentListDialog;
 	private MiapeExtractionBatchFrame miapeExtractionBatchFrame;
 	private final static String dataInspectionTooltip = "<html><br><ul><li>Inspect your data creating your own inspection projects.</li><li>Compare complex experiments in an intuitive way.</li><li>Get a lot of charts representing qualitative data from your experiments.</li><li>Filter data applying several filters (FDR, score thresholds, etc...)</li><li>Export your data into PRIDE XML format</li></ul><br></html>";
-	private final static String dataImportToolTip = "<html><br>Extract and import datasets from input data files such as:<br><ul><li>mzIdentML</li><li>mzML</li><li>PRIDE XML</li><li>X!Tandem output XML</li> <li>DTASelect output</li><li>Separated values tables</li></ul><br></html>";
-	private final static String batchDataImportToolTip = "<html><br>Batch data import from datasets files such as: <ul> <li>mzIdentML</li> <li>mzML</li> <li>PRIDE XML</li> <li>X!Tandem output XML</li> <li>DTASelect output</li> <li>Separated values tables</li> </ul>Using a batch data import file you can import multiple datasets.<br><br></html>";
+	private final static String dataImportToolTip = "<html><br>Extract and import datasets from input data files such as:<br><ul><li>mzIdentML</li><li>mzML</li><li>pepXML</li><li>PRIDE XML</li><li>X!Tandem output XML</li> <li>DTASelect output</li><li>Separated values tables</li></ul><br></html>";
+	private final static String batchDataImportToolTip = "<html><br>Batch data import from datasets files such as: <ul> <li>mzIdentML</li> <li>mzML</li> <li>pepXML</li> <li>PRIDE XML</li> <li>X!Tandem output XML</li> <li>DTASelect output</li> <li>Separated values tables</li> </ul>Using a batch data import file you can import multiple datasets.<br><br></html>";
 
 	public static final boolean parallelProcessingOnExtraction = true;
 
@@ -87,7 +87,7 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog {
 	 * @throws Exception
 	 */
 	public MainFrame() {
-		super(40);
+		super(300);
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException
@@ -133,8 +133,10 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog {
 			showAttachedHelpDialog();
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			String message = "";
-			if (e.getMessage().startsWith("XML reader error") || e.getMessage().contains("Failed to access")) {
+			if (e.getMessage() != null
+					&& (e.getMessage().startsWith("XML reader error") || e.getMessage().contains("Failed to access"))) {
 				message = "Webservice is unreachable.";
 			} else {
 				message = e.getMessage();
@@ -315,22 +317,7 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog {
 
 		setJMenuBar(jMenuBar1);
 
-		jButtonShowHelp = new JButton("");
-		jButtonShowHelp.setToolTipText("Click here to open the help dialog of this page");
-		jButtonShowHelp.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (getHelpDialog().isVisible()) {
-					getHelpDialog().setMinimized(true);
-					getHelpDialog().setVisible(false);
-				} else {
-					showAttachedHelpDialog();
-				}
-			}
-		});
-		jButtonShowHelp.setIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON));
-		jButtonShowHelp.setPressedIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON_CLICKED));
-		jButtonShowHelp.setRolloverIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON));
+		jButtonShowHelp = new OpenHelpButton(this);
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING)
@@ -717,13 +704,13 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog {
 	public List<String> getHelpMessages() {
 		String[] array = { "This is the main window in PACOM", //
 				"From here you can: ", //
-				"", //
+
 				"- click on <b>Import data</b> to go import datasets into PACOM", //
-				"", //
+
 				"- click on <b>Batch import data</b> to import several datasets in batch", //
-				"", //
+
 				"- click on <b>Data Inspection</b> to open the comparison project builder", //
-				"", //
+
 				"- select and click one of the available <b>example projects</b> and directly start to visualize the data." };
 		return Arrays.asList(array);
 	}
