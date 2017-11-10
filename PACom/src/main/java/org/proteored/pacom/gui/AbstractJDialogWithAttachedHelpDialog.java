@@ -28,11 +28,13 @@ public abstract class AbstractJDialogWithAttachedHelpDialog extends JDialog impl
 		this.maxCharactersInHelpMessageRow = maxCharactersInHelpMessageRow;
 	}
 
+	@Override
 	public void showAttachedHelpDialog() {
 		getHelpDialog().forceVisible();
 	}
 
-	protected AttachedHelpDialog getHelpDialog() {
+	@Override
+	public AttachedHelpDialog getHelpDialog() {
 		if (help == null) {
 			help = new AttachedHelpDialog(this, this.maxCharactersInHelpMessageRow);
 		}
