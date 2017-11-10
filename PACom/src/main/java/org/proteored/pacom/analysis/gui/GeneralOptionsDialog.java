@@ -7,6 +7,7 @@ package org.proteored.pacom.analysis.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.GroupLayout;
@@ -21,7 +22,7 @@ import javax.swing.border.TitledBorder;
 import org.jfree.ui.RefineryUtilities;
 import org.proteored.miapeapi.experiment.model.datamanager.DataManager;
 import org.proteored.pacom.gui.AbstractJDialogWithAttachedHelpDialog;
-import org.proteored.pacom.gui.ImageManager;
+import org.proteored.pacom.gui.OpenHelpButton;
 
 import com.lowagie.text.Font;
 
@@ -139,7 +140,7 @@ public class GeneralOptionsDialog extends AbstractJDialogWithAttachedHelpDialog 
 
 	/** Creates new form GeneralOptions */
 	public GeneralOptionsDialog(ChartManagerFrame parent) {
-		super(parent, true, 40);
+		super(parent, false, 400);
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException
@@ -256,22 +257,7 @@ public class GeneralOptionsDialog extends AbstractJDialogWithAttachedHelpDialog 
 		jCheckBoxSeparateNonconclusivesubset.setToolTipText(
 				"<html>\r\nNon-Conclusive proteins are proteins which have all their peptides <br>\r\nshared with other proteins, so they are subset proteins.<br>\r\nIf this option is enabled, Non-Conclusive proteins will be separated <br>\r\nfrom the proteins which share peptides with them.<br>\r\nIf this options is disabled, Non-Conclusibe proteins will be integrated <br>\r\nin all other protein groups which share peptides with them.<br>\r\nTake into account this for protein group comparisons in overlapping of proteins.\r\n</html>\r\n</html>");
 
-		jButtonHelp = new JButton("");
-		jButtonHelp.setToolTipText("Click here to open the help window");
-		jButtonHelp.setIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON));
-		jButtonHelp.setPressedIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON_CLICKED));
-		jButtonHelp.setRolloverIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON));
-		jButtonHelp.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (getHelpDialog().isVisible()) {
-					getHelpDialog().setMinimized(true);
-					getHelpDialog().setVisible(false);
-				} else {
-					showAttachedHelpDialog();
-				}
-			}
-		});
+		jButtonHelp = new OpenHelpButton(this);
 		javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
 		jPanel3Layout
 				.setHorizontalGroup(
@@ -449,7 +435,28 @@ public class GeneralOptionsDialog extends AbstractJDialogWithAttachedHelpDialog 
 
 	@Override
 	public List<String> getHelpMessages() {
-		// TODO Auto-generated method stub
-		return null;
+		List<String> ret = new ArrayList<String>();
+		ret.add("General Options help:");
+		ret.add("From here you can select these general options that will change how to load the datasets:");
+		ret.add("- <i>Minimum peptide length</i>: Any peptide in an imported dataset with a sequence "
+				+ "length shorter than the threshold will be ignored for the data comparison.");
+		ret.add("The next 3 options are related to how <b>PAnalyzer grouping algorithm</b> works. PAnalyzer algorithm groups proteins into protein groups and classify them "
+				+ "into different categories. One category is the <i>Non-conclusive</i> proteins. These are proteins that have all their peptides shared by other "
+				+ "proteins that have other additional peptides. These proteins are usually unlikely to exist, but it is up to the user to take them into account "
+				+ "or ignore them.");
+		ret.add("- <i>Group proteins at level 0</i>: If this option is <b>selected</b>, the data aggregated at the level 0, that is, "
+				+ "all the individual datasets in the comparison project, will be the result of applying the PAnalyzer grouping "
+				+ "algorithm to the peptides collected from all the individual datasets. If this option is <b>not selected</b>, "
+				+ "the proteins in the level 0 will be a set of protein groups collected from the protein groups generated in each level 1 node."
+				+ " Protein groups in level 1 nodes are in any case, the result of applying PAnalyzer grouping algorithm to the peptides in the "
+				+ "dependent level 2 nodes. Note that having this option unselected could lead to have the same protein group several times at the level 0 node.");
+		ret.add("- <i>Discard Non-conclusive (subset) proteins</i>: If this option is <b>selected</b>, all the non-conclusive proteins as result of the application of the "
+				+ "PAnalyzer grouping algorithm in each node will be ignored.");
+		ret.add("- <i>Separate Non-conclusive (subset) proteins</i>: If this option is <b>selected</b>, non-conclusive proteins will be counted as independent proteins. "
+				+ "However, if this option is <b>not selected</b>, non-conclusive proteins will be part of the protein groups with which they share their"
+				+ " peptides. This option is only available is the previous option <i>'Discard Non-conclusive'</i> proteins is not selected.");
+		ret.add("Select <i>'do not ask again'</i> if you don't want this dialod to appear everytime you load a new comparison project. Anyway, "
+				+ "this <i>General Options</i> are available from the bar manu of the <i>Chart Viewer</i> window");
+		return ret;
 	}
 }
