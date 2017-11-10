@@ -6,7 +6,6 @@ package org.proteored.pacom.gui;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -22,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
@@ -46,13 +44,14 @@ import org.proteored.pacom.utils.HttpUtilities;
 import org.proteored.pacom.utils.MiapeExtractionBatchManager;
 import org.proteored.pacom.utils.MiapeExtractionResult;
 
+import edu.scripps.yates.utilities.dates.DatesUtil;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
 /**
  *
  * @author __USER__
  */
-public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements PropertyChangeListener {
+public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDialog implements PropertyChangeListener {
 	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("log4j.logger.org.proteored");
 	private ControlVocabularyManager cvManager;
 	private final TIntObjectHashMap<List<JComponent>> miapeExtractionTaskJComponents = new TIntObjectHashMap<List<JComponent>>();
@@ -75,6 +74,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 	 * @param mainFrame
 	 */
 	private MiapeExtractionBatchFrame(MainFrame mainFrame) {
+		super(400);
 		setResizable(false);
 		this.setIconImage(ImageManager.getImageIcon(ImageManager.BATCH_LOAD_LOGO_128).getImage());
 		initComponents();
@@ -168,6 +168,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING).addComponent(jScrollPane1,
 				GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE));
 		jTextAreaStatus = new javax.swing.JTextArea();
+		jTextAreaStatus.setEditable(false);
 		jScrollPane1.setViewportView(jTextAreaStatus);
 
 		jTextAreaStatus.setColumns(20);
@@ -213,9 +214,9 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 				.addContainerGap()));
 		GridBagLayout gbl_jPanelImage = new GridBagLayout();
 		gbl_jPanelImage.columnWidths = new int[] { 0, 0 };
-		gbl_jPanelImage.rowHeights = new int[] { 0, 0, 0, 0, 0 };
+		gbl_jPanelImage.rowHeights = new int[] { 0, 0, 0, 0, 0, 0 };
 		gbl_jPanelImage.columnWeights = new double[] { 0.0, Double.MIN_VALUE };
-		gbl_jPanelImage.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_jPanelImage.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		jPanelImage.setLayout(gbl_jPanelImage);
 		jButtonStart = new javax.swing.JButton();
 		GridBagConstraints gbc_jButtonStart = new GridBagConstraints();
@@ -248,24 +249,13 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 		jButtonCancel.setText("Cancel all");
 		jButtonCancel.setEnabled(false);
 
-		JButton jButtonHelp = new JButton("");
-		GridBagConstraints gbc_jButtonHelp = new GridBagConstraints();
-		gbc_jButtonHelp.insets = new Insets(50, 0, 0, 0);
-		gbc_jButtonHelp.gridx = 0;
-		gbc_jButtonHelp.gridy = 3;
-		jPanelImage.add(jButtonHelp, gbc_jButtonHelp);
-		jButtonHelp.setBorder(BorderFactory.createEmptyBorder());
-		jButtonHelp.setContentAreaFilled(false);
-		jButtonHelp.setIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON_64));
-		jButtonHelp.setPressedIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON_64_CLICKED));
-		jButtonHelp.setRolloverIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON_64_HOVER));
-		jButtonHelp.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		jButtonHelp.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				showHelp();
-			}
-		});
+		JButton jButtonHelp2 = new OpenHelpButton(this);
+		GridBagConstraints gbc_jbuttonHelp2 = new GridBagConstraints();
+		gbc_jbuttonHelp2.anchor = GridBagConstraints.WEST;
+		gbc_jbuttonHelp2.insets = new Insets(0, 0, 5, 0);
+		gbc_jbuttonHelp2.gridx = 0;
+		gbc_jbuttonHelp2.gridy = 3;
+		jPanelImage.add(jButtonHelp2, gbc_jbuttonHelp2);
 		jButtonCancel.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -288,45 +278,6 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 
 		pack();
 	}// </editor-fold>
-
-	protected void showHelp() {
-		HelpDialog help = new HelpDialog(this, "Batch import file format", getBatchImportFileFormatHelpText());
-		help.setVisible(true);
-	}
-
-	private String getBatchImportFileFormatHelpText() {
-		StringBuilder sb = new StringBuilder();
-
-		sb.append("<html>");
-		sb.append(
-				"In order to import multiple input files as different datasets in PACOM you need to use an <b>Batch Import text file</b>.<br>");
-		sb.append(
-				"This file is composed by multiple blocks, each one corresponding to one <b>data import job</b>.<br>");
-		sb.append("<ul><li>Each block starts with '<b>" + MiapeExtractionBatchManager.START_MIAPE_EXTRACTION
-				+ "</b>' followed by a <b>job number</b>, and ends with '<b>"
-				+ MiapeExtractionBatchManager.END_MIAPE_EXTRACTION + "</b>'.</li></ul>");
-		sb.append("In each block you need to specify the following items (each one in one line):");
-		sb.append("<ul>");
-		sb.append("<li>(Mandatory) One '<b>" + MiapeExtractionBatchManager.MIAPE_PROJECT
-				+ "</b>' element followed by a name of the project. It is just a way of organizing the data into the system,<br>so it will appear under that folder when creating the inspection project.</li>");
-		sb.append("<li>(Mandatory) One input type element (<b>" + MiapeExtractionBatchManager.getInputTypesString()
-				+ "</b>) followed by the full path to the input file.</li>");
-		sb.append("<li>(Optional) One '<b>" + MiapeExtractionBatchManager.METADATA
-				+ "</b>' element followed by the name of a MS metadata template previously generated (in single Data Import option).</li>");
-		sb.append("<li>(Optional) One '<b>" + MiapeExtractionBatchManager.MS_JOB_REF
-				+ "</b>' element followed by the job number of a previous job in which a MS dataset has been generated, that is, using<br>'<b>"
-				+ MiapeExtractionBatchManager.MGF + "</b>' or '<b>" + MiapeExtractionBatchManager.MZML
-				+ "</b>' input data files alone. This will link the MS dataset to the identification dataset specified in the same job.</li>");
-
-		sb.append("</ul>");
-		sb.append("Each item in the block is specified in a <b>new line</b><br>");
-		sb.append(
-				"Once you have your Batch Import text file, you can load it here and it will be validated. If everything is ok, you will see a dataset import job in the <b>job queue</b>.<br>");
-		sb.append(
-				"After that, you can start all jobs sequencially by clicking on 'Start batch import' button, or you can start individual jobs in the job queue.");
-		sb.append("</html>");
-		return sb.toString();
-	}
 
 	// GEN-END:initComponents
 
@@ -557,7 +508,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 			}
 		});
 		msReportButton.setEnabled(false);
-		msReportButton.setToolTipText("Show MIAPE MS report on the online MIAPE Generator tool");
+		msReportButton.setToolTipText("Show imported dataset file in your local folderr");
 		componentList.add(msReportButton);
 
 		// report button
@@ -691,10 +642,10 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 
 			int jobID = result.getMiapeExtractionTaskIdentifier();
 			obtainedResults.put(jobID, result);
-			long sg = result.getMilliseconds() / 1000;
-			appendStatus("\nJob '" + jobID + "' finished at " + getFormatedDate() + ". It took " + sg + " sg.");
+			String timeElapsed = DatesUtil.getDescriptiveTimeFromMillisecs(result.getMilliseconds());
+			appendStatus("\nJob '" + jobID + "' finished at " + getFormatedDate() + ". It took " + timeElapsed + ".");
 			String message = "Created datasets are: ";
-			String extendedMessage = "";
+			String extendedMessage = "Datasets created in " + timeElapsed + "<br> ";
 			if (result.getMiapeMS_Identifier() != null) {
 				message = "MS Dataset ID: " + result.getMiapeMS_Identifier();
 				extendedMessage += message;
@@ -709,10 +660,12 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 					message += ", ";
 					extendedMessage += "<br>";
 				}
-				message += "Identification dataset ID: " + result.getMiapeMSI_Identifier();
-				extendedMessage += "Identification dataset ID: " + result.getMiapeMSI_Identifier();
-				if (result.getDirectLinkToMIAPEMSI() != null)
+				message += "Dataset ID: " + result.getMiapeMSI_Identifier();
+				extendedMessage += "Dataset ID: " + result.getMiapeMSI_Identifier();
+				if (result.getDirectLinkToMIAPEMSI() != null) {
 					extendedMessage += " Direct link: " + result.getDirectLinkToMIAPEMSI();
+					message += " Created file: " + result.getDirectLinkToMIAPEMSI();
+				}
 				// enable MSI report button if available
 				if (result.getDirectLinkToMIAPEMSI() != null)
 					enableMiapeMSIreport(jobID, true);
@@ -720,7 +673,7 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 			appendStatus(message);
 			JProgressBar progressBar = getProgressBar(jobID);
 			if (progressBar != null) {
-				progressBar.setString("FINISHED (" + sg + " sg.)");
+				progressBar.setString("FINISHED (" + timeElapsed + ".)");
 				progressBar.setValue(100);
 				progressBar.setForeground(Color.GREEN);
 				progressBar.setIndeterminate(false);
@@ -734,24 +687,30 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 			updateButtonsState();
 
 		} else if (MiapeExtractionTask.MIAPE_MS_CREATED_DONE.equals(evt.getPropertyName())) {
-			String ms_id = (String) evt.getNewValue();
-			log.info("MS dataset created with ID:" + ms_id);
+			File ms_id = (File) evt.getNewValue();
+			log.info("MS dataset created at:" + ms_id.getAbsolutePath());
 		} else if (MiapeExtractionTask.MIAPE_MSI_CREATED_DONE.equals(evt.getPropertyName())) {
-			String msi_id = (String) evt.getNewValue();
-			log.info("Identification dataset created with ID:" + msi_id);
-		} else if (MiapeExtractionTask.MIAPE_CREATION_UPLOADING_FILE.equals(evt.getPropertyName())) {
-			int jobID = (Integer) evt.getNewValue();
-			if (miapeExtractorBatchManager.isProcessing(jobID)) {
-				JProgressBar bar = getProgressBar(jobID);
-				if (bar != null)
-					bar.setString("Uploading file...");
+			File msi_id = (File) evt.getNewValue();
+			log.info("Identification dataset created at:" + msi_id.getAbsolutePath());
+		} else if (MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE.equals(evt.getPropertyName())) {
+			String description = (String) evt.getNewValue();
+			if (evt.getOldValue() != null) {
+				int jobID = (Integer) evt.getOldValue();
+				if (miapeExtractorBatchManager.isProcessing(jobID)) {
+					JProgressBar bar = getProgressBar(jobID);
+					if (bar != null)
+						bar.setString("Copying file...");
+				}
 			}
-		} else if (MiapeExtractionTask.MIAPE_CREATION_UPLOADING_FILE_DONE.equals(evt.getPropertyName())) {
-			int jobID = (Integer) evt.getNewValue();
-			if (miapeExtractorBatchManager.isProcessing(jobID)) {
-				JProgressBar bar = getProgressBar(jobID);
-				if (bar != null)
-					bar.setString("Uploading file done.");
+		} else if (MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE.equals(evt.getPropertyName())) {
+			String description = (String) evt.getNewValue();
+			if (evt.getOldValue() != null) {
+				int jobID = (Integer) evt.getOldValue();
+				if (miapeExtractorBatchManager.isProcessing(jobID)) {
+					JProgressBar bar = getProgressBar(jobID);
+					if (bar != null)
+						bar.setString("Extracting information...");
+				}
 			}
 		} else if (MiapeExtractionTask.MIAPE_CREATION_COMPRESSING_FILE.equals(evt.getPropertyName())) {
 			int jobID = (Integer) evt.getNewValue();
@@ -766,20 +725,6 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 				JProgressBar bar = getProgressBar(jobID);
 				if (bar != null)
 					bar.setString("Compressing file done.");
-			}
-		} else if (MiapeExtractionTask.MIAPE_CREATION_WAITING_FOR_SERVER.equals(evt.getPropertyName())) {
-			int jobID = (Integer) evt.getNewValue();
-			if (miapeExtractorBatchManager.isProcessing(jobID)) {
-				JProgressBar bar = getProgressBar(jobID);
-				if (bar != null)
-					bar.setString("Waiting for server...");
-			}
-		} else if (MiapeExtractionTask.MIAPE_CREATION_SENDING_MIAPE_TO_SERVER.equals(evt.getPropertyName())) {
-			int jobID = (Integer) evt.getNewValue();
-			if (miapeExtractorBatchManager.isProcessing(jobID)) {
-				JProgressBar bar = getProgressBar(jobID);
-				if (bar != null)
-					bar.setString("Sending dataset info to server...");
 			}
 		} else if (OntologyLoaderWaiter.ONTOLOGY_LOADED.equals(evt.getPropertyName())) {
 			cvManager = (ControlVocabularyManager) evt.getNewValue();
@@ -874,5 +819,40 @@ public class MiapeExtractionBatchFrame extends javax.swing.JFrame implements Pro
 			return progressBar;
 		}
 		return null;
+	}
+
+	@Override
+	public List<String> getHelpMessages() {
+		List<String> ret = new ArrayList<String>();
+
+		ret.add("Batch import data help");
+		ret.add("In order to import multiple input files as different datasets in PACOM you need to use an <b>Batch Import text file</b>.");
+		ret.add("<b>Batch import text file format:</b>");
+		ret.add("This file is composed by multiple blocks, each one corresponding to one <b>dataset import job</b>. Each block starts with '<b>"
+				+ MiapeExtractionBatchManager.START_MIAPE_EXTRACTION
+				+ "</b>' followed by a <b>job number</b>, and ends with '<b>"
+				+ MiapeExtractionBatchManager.END_MIAPE_EXTRACTION + "</b>'.");
+		ret.add("In each block you need to specify the following items (each one in one line):");
+		ret.add("- (Mandatory) One '<b>" + MiapeExtractionBatchManager.MIAPE_PROJECT
+				+ "</b>' element followed by a name of the project. It is just a way of organizing the data into the system, so it will appear under that folder when creating the inspection project.");
+		ret.add("- (Mandatory) One input type element (<b>" + MiapeExtractionBatchManager.getInputTypesString()
+				+ "</b>) followed by the full path to the input file.");
+		ret.add("- (Optional) One '<b>" + MiapeExtractionBatchManager.METADATA
+				+ "</b>' element followed by the name of a MS metadata template previously generated (in single Data Import option).");
+		ret.add("- (Optional) One '<b>" + MiapeExtractionBatchManager.MS_JOB_REF
+				+ "</b>' element followed by the job number of a previous job in which a MS dataset has been generated, that is, using '<b>"
+				+ MiapeExtractionBatchManager.MGF + "</b>' or '<b>" + MiapeExtractionBatchManager.MZML
+				+ "</b>' input data files alone. This will link the MS dataset to the identification dataset specified in the same job.");
+		ret.add("");
+		ret.add("Once you have your Batch Import text file, you can load it here and it will be validated. If everything is ok, you will see a dataset import job in the <b>job queue</b>.");
+		ret.add("After that, you can start all jobs sequencially by clicking on <i>'Start batch import'</i> button, or you can start individual jobs in the job queue.");
+		ret.add("<b>Example batch import text files</b>");
+		ret.add("PACOM package contains some <b>example batch import text files</b> located at the installation folder (<i>'"
+				+ System.getProperty("user.dir") + "'</i>) that you can use as templates, such as:");
+		ret.add("- <i>Batch_Import_from_DTASelect_files.txt</i>");
+		ret.add("- <i>Batch_Import_from_mzIdentML_MGF_files.txt</i>");
+		ret.add("- <i>Batch_Import_from_Xtandem_files.txt</i>");
+
+		return ret;
 	}
 }
