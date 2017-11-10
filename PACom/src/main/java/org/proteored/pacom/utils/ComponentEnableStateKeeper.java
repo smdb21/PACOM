@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.JProgressBar;
 
@@ -22,7 +23,9 @@ public class ComponentEnableStateKeeper {
 	private final Map<Component, Boolean> componentToEnableStateMap = new THashMap<Component, Boolean>();
 	private final Set<Component> reversecomponents = new THashSet<Component>();
 	private final Set<Component> invariableComponents = new THashSet<Component>();
+	private final ReentrantLock lock = new ReentrantLock(true);
 	private boolean skipProgressBar;
+	private boolean callDisabled = false;
 	private final static Logger log = Logger.getLogger(ComponentEnableStateKeeper.class);
 
 	public ComponentEnableStateKeeper() {
@@ -50,6 +53,17 @@ public class ComponentEnableStateKeeper {
 	}
 
 	public void setToPreviousState(Container container) {
+		lock.lock();
+		try {
+			setToPreviousStatePrivate(container);
+		} finally {
+			callDisabled = false;
+			lock.unlock();
+		}
+	}
+
+	private void setToPreviousStatePrivate(Container container) {
+
 		synchronized (container.getTreeLock()) {
 			if (!invariableComponents.contains(container) && componentToEnableStateMap.containsKey(container)) {
 				container.setEnabled(componentToEnableStateMap.get(container));
@@ -57,18 +71,22 @@ public class ComponentEnableStateKeeper {
 			Component[] components = container.getComponents();
 			for (Component component : components) {
 				if (component instanceof Container) {
-					setToPreviousState((Container) component);
+					setToPreviousStatePrivate((Container) component);
 				}
 			}
 		}
-	}
 
-	public void enable(Container container) {
-		setEnable(true, container);
 	}
 
 	public void disable(Container container) {
-		setEnable(false, container);
+		lock.lock();
+		try {
+
+			setEnable(false, container);
+		} finally {
+			callDisabled = true;
+			lock.unlock();
+		}
 	}
 
 	private void setEnable(boolean b, Container container) {
@@ -92,12 +110,26 @@ public class ComponentEnableStateKeeper {
 	}
 
 	public void keepEnableStates(Container container) {
-		log.info("Keeping state of all components in the container");
-		synchronized (container.getTreeLock()) {
-			componentToEnableStateMap.clear();
-		}
 
-		keepEnableStatesPrivate(container);
+		try {
+			while (callDisabled) {
+				try {
+					Thread.sleep(1);
+					log.info("Waiting for keeping enabling state");
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			lock.lock();
+			log.info("Keeping state of all components in the container");
+			synchronized (container.getTreeLock()) {
+				componentToEnableStateMap.clear();
+			}
+
+			keepEnableStatesPrivate(container);
+		} finally {
+			lock.unlock();
+		}
 	}
 
 	private void keepEnableStatesPrivate(Container container) {
