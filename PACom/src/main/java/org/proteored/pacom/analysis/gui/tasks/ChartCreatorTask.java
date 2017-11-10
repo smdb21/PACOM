@@ -58,6 +58,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	public static final String CHART_GENERATION_STARTED = "Chart started";
 	public static final String CHART_ERROR_GENERATED = "Chart error generated";
 	public static final String DATASET_PROGRESS = "Data set progress";
+	public static final String CHART_CANCELED = "Chart creation cancelled";
 	private final String chartType;
 	private final String option;
 	private final ChartManagerFrame parent;
@@ -190,7 +191,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			}
 			if (ret != null) {
 				if (ret instanceof ChartPanel)
-					log.info("Chart panel with dimension: " + ((ChartPanel) ret).getSize());
+					log.info("Chart creator task, creating a panel with dimension: " + ((ChartPanel) ret).getSize());
 				return ret;
 			}
 		} catch (IllegalMiapeArgumentException e) {
@@ -1345,6 +1346,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				log.info("chart passed to the dialog");
 			} else {
 				log.info("Cancelled by user");
+				firePropertyChange(CHART_CANCELED, null, null);
 			}
 			return;
 		} catch (InterruptedException e) {
