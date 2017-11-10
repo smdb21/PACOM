@@ -1347,7 +1347,7 @@ public class DatasetFactory {
 		}
 		if (rowList.isEmpty() || columnList.isEmpty()) {
 			throw new IllegalMiapeArgumentException(
-					"There is not data to show. Check the occurrence filter and write a lower value.");
+					"<html>There is not data to show.<br> Check the occurrence filter and write a lower value.</html>");
 		}
 		double[][] ret = new double[rowList.size()][columnList.size()];
 		for (int row = 0; row < rowList.size(); row++) {
@@ -2042,8 +2042,8 @@ public class DatasetFactory {
 		}
 		if (!thereisData)
 			throw new IllegalMiapeArgumentException(
-					"There is not data to show. Please, be sure that the datasets contains the score '" + scoreName
-							+ "' and that the overlapping is not zero.");
+					"<html>There is not data to show.<br>Please, be sure that the datasets contains the score '"
+							+ scoreName + "' <br>and that the overlapping is not zero.</html>");
 		return xySeriesCollection;
 	}
 
@@ -3723,7 +3723,7 @@ public class DatasetFactory {
 		}
 		if (!thereisData)
 			throw new IllegalMiapeArgumentException(
-					"There is not data to show. Please, be sure that the overlapping is not zero or that retention times are captured.");
+					"<html>There is not data to show.<br>Please, be sure that the overlapping is not zero<br> or that retention times are captured.</html>");
 		return xySeriesCollection;
 	}
 
@@ -4050,7 +4050,7 @@ public class DatasetFactory {
 		serie.setType(histogramType);
 		if (serie.getSeriesCount() < 1)
 			throw new IllegalMiapeArgumentException(
-					"There is not data to show. Please, be sure that the datasets contains common proteins were the overlapping is not zero.");
+					"<html>There is not data to show.<br>Please, be sure that the datasets contains common proteins<br>were the overlapping is not zero.</html>");
 		return serie;
 	}
 
@@ -4138,7 +4138,7 @@ public class DatasetFactory {
 		}
 		if (serie.getItemCount() < 1)
 			throw new IllegalMiapeArgumentException(
-					"There is not data to show. Please, be sure that the datasets contains common proteins were the overlapping is not zero.");
+					"<html>There is not data to show.<br>Please, be sure that the datasets contains common proteins<br>were the overlapping is not zero.</html>");
 		return xySeriesCollection;
 	}
 }
