@@ -48,13 +48,13 @@ public class MiapeExtractionParametersUtil {
 			ret = ret + "DTASelect (" + FilenameUtils.getName(new File(params.getDtaSelectFileName()).getAbsolutePath())
 					+ ")";
 			// miape_extraction = "MSI";
-		} else if (params.isDTASelectSelected()) {
-			ret = ret + "pepXML (" + FilenameUtils.getName(new File(params.getDtaSelectFileName()).getAbsolutePath())
+		} else if (params.isPepXMLSelected()) {
+			ret = ret + "pepXML (" + FilenameUtils.getName(new File(params.getPepXMLFileName()).getAbsolutePath())
 					+ ")";
 			// miape_extraction = "MSI";
 		} else if (params.isTSVSelected()) {
 			ret = ret + "Text Table ("
-					+ FilenameUtils.getName(new File(params.getDtaSelectFileName()).getAbsolutePath()) + ")";
+					+ FilenameUtils.getName(new File(params.getTSVSelectFileName()).getAbsolutePath()) + ")";
 			// miape_extraction = "MSI";
 		} else if (params.isDTASelectPlusMGFSelected()) {
 			ret = ret + "MGF (" + FilenameUtils.getName(new File(params.getMgfFileName()).getAbsolutePath())
