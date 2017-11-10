@@ -9,8 +9,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -245,16 +245,12 @@ public class AdditionalOptionsPanelFactory {
 			jComboBoxPlotOrientation.setSelectedItem(getPreviousPlotOrientation());
 		jComboBoxPlotOrientation.addItemListener(new java.awt.event.ItemListener() {
 			@Override
-			public void itemStateChanged(ItemEvent evt) {
-				// if (evt.getStateChange() == ItemEvent.SELECTED) {
-				frame.startShowingChart(evt.getSource());
-				// } else {
-				// log.info(evt.getStateChange());
-				// }
-
+			public void itemStateChanged(java.awt.event.ItemEvent evt) {
+				if (evt.getStateChange() == ItemEvent.SELECTED) {
+					frame.startShowingChart(evt.getSource());
+				}
 			}
 		});
-
 		c.anchor = GridBagConstraints.NORTHWEST;
 
 		c.gridx = 0;
@@ -286,11 +282,12 @@ public class AdditionalOptionsPanelFactory {
 		else
 			jComboBoxMaximumOccurrence.setSelectedItem(selectedNumber);
 
-		jComboBoxMaximumOccurrence.addItemListener(new ItemListener() {
-
+		jComboBoxMaximumOccurrence.addItemListener(new java.awt.event.ItemListener() {
 			@Override
-			public void itemStateChanged(ItemEvent evt) {
-				frame.startShowingChart(evt.getSource());
+			public void itemStateChanged(java.awt.event.ItemEvent evt) {
+				if (evt.getStateChange() == ItemEvent.SELECTED) {
+					frame.startShowingChart(evt.getSource());
+				}
 			}
 		});
 
@@ -320,10 +317,12 @@ public class AdditionalOptionsPanelFactory {
 		else
 			jComboBoxMinimumOccurrence.setSelectedItem(selectedNumber);
 
-		jComboBoxMinimumOccurrence.addActionListener(new java.awt.event.ActionListener() {
+		jComboBoxMinimumOccurrence.addItemListener(new java.awt.event.ItemListener() {
 			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				frame.startShowingChart(evt.getSource());
+			public void itemStateChanged(java.awt.event.ItemEvent evt) {
+				if (evt.getStateChange() == ItemEvent.SELECTED) {
+					frame.startShowingChart(evt.getSource());
+				}
 			}
 		});
 
@@ -364,11 +363,10 @@ public class AdditionalOptionsPanelFactory {
 		}
 		jCheckBoxAsPercentage.setEnabled(true);
 
-		jCheckBoxAsPercentage.addItemListener(new java.awt.event.ItemListener() {
+		jCheckBoxAsPercentage.addActionListener(new java.awt.event.ActionListener() {
 			@Override
-			public void itemStateChanged(ItemEvent evt) {
-				frame.startShowingChart(evt.getSource());
-
+			public void actionPerformed(ActionEvent e) {
+				frame.startShowingChart(e.getSource());
 			}
 		});
 
@@ -384,17 +382,17 @@ public class AdditionalOptionsPanelFactory {
 		if (jCheckBoxAsPercentage != null)
 			jCheckBoxAsPercentage.setEnabled(false);
 		jCheckBoxShowAsStackedChart.setEnabled(true);
-		jCheckBoxShowAsStackedChart.addItemListener(new java.awt.event.ItemListener() {
+		jCheckBoxShowAsStackedChart.addActionListener(new java.awt.event.ActionListener() {
 			@Override
-			public void itemStateChanged(ItemEvent evt) {
-
+			public void actionPerformed(ActionEvent e) {
 				AdditionalOptionsPanelFactory.this.enableShowAsPieChart(!jCheckBoxShowAsStackedChart.isSelected());
 				AdditionalOptionsPanelFactory.this.enableAsPercentage(jCheckBoxShowAsStackedChart.isSelected());
 				AdditionalOptionsPanelFactory.this.enableShowTotalSerie(!jCheckBoxShowAsStackedChart.isSelected());
 				AdditionalOptionsPanelFactory.this
 						.enableShowTotalVersusDifferent(!jCheckBoxShowAsStackedChart.isSelected());
-				frame.startShowingChart(evt.getSource());
+				frame.startShowingChart(e.getSource());
 			}
+
 		});
 
 		return jCheckBoxShowAsStackedChart;
@@ -474,10 +472,10 @@ public class AdditionalOptionsPanelFactory {
 					"<html>Sensitivity relates to the test's ability to identify positive results<br>Sensitivity or True Positive Rate = TP/(TP+FN)</html>");
 			jCheckBoxSensitivity.setSelected(true);
 		}
-		jCheckBoxSensitivity.addItemListener(new java.awt.event.ItemListener() {
+		jCheckBoxSensitivity.addActionListener(new java.awt.event.ActionListener() {
 			@Override
-			public void itemStateChanged(ItemEvent evt) {
-				frame.startShowingChart(evt.getSource());
+			public void actionPerformed(ActionEvent e) {
+				frame.startShowingChart(e.getSource());
 			}
 		});
 		return jCheckBoxSensitivity;
@@ -491,10 +489,10 @@ public class AdditionalOptionsPanelFactory {
 					"<html>Accuracy is the proportion of true results (True Positives and True Negatives) in the identified proteins.<br>Accuracy = (TP+TN)/(TP+TN+FP+FN)</html>");
 			jCheckBoxAccuracy.setSelected(true);
 		}
-		jCheckBoxAccuracy.addItemListener(new java.awt.event.ItemListener() {
+		jCheckBoxAccuracy.addActionListener(new java.awt.event.ActionListener() {
 			@Override
-			public void itemStateChanged(ItemEvent evt) {
-				frame.startShowingChart(evt.getSource());
+			public void actionPerformed(ActionEvent e) {
+				frame.startShowingChart(e.getSource());
 			}
 		});
 		return jCheckBoxAccuracy;
@@ -508,10 +506,10 @@ public class AdditionalOptionsPanelFactory {
 					"<html>Specificity or True Negative Rate, relates to the ability to identify negative results.<br>Specificity = TN/(FP+TN) = 1-FPR</html>");
 			jCheckBoxSpecificity.setSelected(true);
 		}
-		jCheckBoxSpecificity.addItemListener(new java.awt.event.ItemListener() {
+		jCheckBoxSpecificity.addActionListener(new java.awt.event.ActionListener() {
 			@Override
-			public void itemStateChanged(ItemEvent evt) {
-				frame.startShowingChart(evt.getSource());
+			public void actionPerformed(ActionEvent e) {
+				frame.startShowingChart(e.getSource());
 			}
 		});
 		return jCheckBoxSpecificity;
@@ -524,10 +522,10 @@ public class AdditionalOptionsPanelFactory {
 			jCheckBoxPrecision.setToolTipText(
 					"<html>Precision is the fraction of True Positives over proteins reported as positives.<br>Precision = TP/(TP+FP)</html>");
 		}
-		jCheckBoxPrecision.addItemListener(new java.awt.event.ItemListener() {
+		jCheckBoxPrecision.addActionListener(new java.awt.event.ActionListener() {
 			@Override
-			public void itemStateChanged(ItemEvent evt) {
-				frame.startShowingChart(evt.getSource());
+			public void actionPerformed(ActionEvent e) {
+				frame.startShowingChart(e.getSource());
 			}
 		});
 		return jCheckBoxPrecision;
@@ -540,10 +538,10 @@ public class AdditionalOptionsPanelFactory {
 			jCheckBoxNPV.setToolTipText(
 					"<html>NPV is the fraction of True Negatives over proteins reported as negatives.<br>Negative Predictive Value (NPV) = TN/(TN+FN)</html>");
 		}
-		jCheckBoxNPV.addItemListener(new java.awt.event.ItemListener() {
+		jCheckBoxNPV.addActionListener(new java.awt.event.ActionListener() {
 			@Override
-			public void itemStateChanged(ItemEvent evt) {
-				frame.startShowingChart(evt.getSource());
+			public void actionPerformed(ActionEvent e) {
+				frame.startShowingChart(e.getSource());
 			}
 		});
 		return jCheckBoxNPV;
@@ -555,10 +553,10 @@ public class AdditionalOptionsPanelFactory {
 			getControlList().add(jCheckBoxFDR);
 			jCheckBoxFDR.setToolTipText("<html>Error rate.<br>False Discovery Rate (FDR) = FP/(FP+TP)</html>");
 		}
-		jCheckBoxFDR.addItemListener(new java.awt.event.ItemListener() {
+		jCheckBoxFDR.addActionListener(new java.awt.event.ActionListener() {
 			@Override
-			public void itemStateChanged(ItemEvent evt) {
-				frame.startShowingChart(evt.getSource());
+			public void actionPerformed(ActionEvent e) {
+				frame.startShowingChart(e.getSource());
 			}
 		});
 		return jCheckBoxFDR;
@@ -572,13 +570,12 @@ public class AdditionalOptionsPanelFactory {
 			jCheckBoxOverReplicates = new JCheckBox("Repeatibility over next level");
 			getControlList().add(jCheckBoxOverReplicates);
 		}
-		jCheckBoxOverReplicates.addItemListener(new java.awt.event.ItemListener() {
+		jCheckBoxOverReplicates.addActionListener(new java.awt.event.ActionListener() {
 			@Override
-			public void itemStateChanged(ItemEvent evt) {
-				frame.startShowingChart(evt.getSource());
+			public void actionPerformed(ActionEvent e) {
+				frame.startShowingChart(e.getSource());
 			}
 		});
-
 		jPanelAdditional4.setLayout(new BorderLayout());
 
 		jPanelAdditional4.add(jCheckBoxOverReplicates, BorderLayout.CENTER);
@@ -962,11 +959,10 @@ public class AdditionalOptionsPanelFactory {
 		jComboBoxProteinScoreNames.setSelectedIndex(0); // select the
 														// first
 														// score
-		jComboBoxProteinScoreNames.addItemListener(new java.awt.event.ItemListener() {
+		jComboBoxProteinScoreNames.addActionListener(new java.awt.event.ActionListener() {
 			@Override
-			public void itemStateChanged(java.awt.event.ItemEvent evt) {
-				if (evt.getStateChange() == ItemEvent.SELECTED)
-					frame.startShowingChart(evt.getSource());
+			public void actionPerformed(ActionEvent e) {
+				frame.startShowingChart(e.getSource());
 			}
 		});
 		jPanelAdditional3.setLayout(new BorderLayout());
@@ -987,11 +983,10 @@ public class AdditionalOptionsPanelFactory {
 		}
 		jComboBoxPeptideScoreNames = new JComboBox(peptideScoreNames);
 
-		jComboBoxPeptideScoreNames.addItemListener(new java.awt.event.ItemListener() {
+		jComboBoxPeptideScoreNames.addActionListener(new java.awt.event.ActionListener() {
 			@Override
-			public void itemStateChanged(java.awt.event.ItemEvent evt) {
-				if (evt.getStateChange() == ItemEvent.SELECTED)
-					frame.startShowingChart(evt.getSource());
+			public void actionPerformed(ActionEvent e) {
+				frame.startShowingChart(e.getSource());
 			}
 		});
 		jPanelAdditional4.setLayout(new BorderLayout());
@@ -1008,10 +1003,10 @@ public class AdditionalOptionsPanelFactory {
 			jCheckBoxAddRegressionLine.setSelected(true);
 		}
 
-		jCheckBoxAddRegressionLine.addItemListener(new java.awt.event.ItemListener() {
+		jCheckBoxAddRegressionLine.addActionListener(new java.awt.event.ActionListener() {
 			@Override
-			public void itemStateChanged(java.awt.event.ItemEvent evt) {
-				frame.startShowingChart(evt.getSource());
+			public void actionPerformed(ActionEvent e) {
+				frame.startShowingChart(e.getSource());
 			}
 		});
 		jPanelAdditional5.setLayout(new BorderLayout());
@@ -1027,10 +1022,10 @@ public class AdditionalOptionsPanelFactory {
 			jCheckBoxAddDiagonalLine.setSelected(true);
 		}
 
-		jCheckBoxAddDiagonalLine.addItemListener(new java.awt.event.ItemListener() {
+		jCheckBoxAddDiagonalLine.addActionListener(new java.awt.event.ActionListener() {
 			@Override
-			public void itemStateChanged(java.awt.event.ItemEvent evt) {
-				frame.startShowingChart(evt.getSource());
+			public void actionPerformed(ActionEvent e) {
+				frame.startShowingChart(e.getSource());
 			}
 		});
 		jPanelAdditional6.setLayout(new BorderLayout());
@@ -1063,8 +1058,6 @@ public class AdditionalOptionsPanelFactory {
 				public void itemStateChanged(ItemEvent evt) {
 					if (evt.getStateChange() == ItemEvent.SELECTED) {
 						frame.startShowingChart(evt.getSource());
-					} else {
-						log.info(evt.getStateChange());
 					}
 				}
 			});
@@ -1086,8 +1079,6 @@ public class AdditionalOptionsPanelFactory {
 				public void itemStateChanged(ItemEvent evt) {
 					if (evt.getStateChange() == ItemEvent.SELECTED) {
 						frame.startShowingChart(evt.getSource());
-					} else {
-						log.info(evt.getStateChange());
 					}
 				}
 			});
@@ -1101,8 +1092,6 @@ public class AdditionalOptionsPanelFactory {
 				public void itemStateChanged(ItemEvent evt) {
 					if (evt.getStateChange() == ItemEvent.SELECTED) {
 						frame.startShowingChart(evt.getSource());
-					} else {
-						log.info(evt.getStateChange());
 					}
 				}
 			});
@@ -1289,8 +1278,6 @@ public class AdditionalOptionsPanelFactory {
 						frame.startShowingChart(evt.getSource());
 
 					}
-				} else {
-					log.info(evt.getStateChange());
 				}
 			}
 		});
@@ -1498,10 +1485,10 @@ public class AdditionalOptionsPanelFactory {
 			if (numExperiment <= numSelected || selectAll)
 				selected = true;
 			JCheckBox checkBox = new JCheckBox(experiment.getName(), selected);
-			checkBox.addItemListener(new java.awt.event.ItemListener() {
+			checkBox.addActionListener(new java.awt.event.ActionListener() {
 				@Override
-				public void itemStateChanged(ItemEvent evt) {
-					frame.startShowingChart(evt.getSource());
+				public void actionPerformed(ActionEvent e) {
+					frame.startShowingChart(e.getSource());
 				}
 			});
 
@@ -1601,10 +1588,10 @@ public class AdditionalOptionsPanelFactory {
 					selected = true;
 
 				JCheckBox checkBox = new JCheckBox(replicate.getName(), selected);
-				checkBox.addItemListener(new java.awt.event.ItemListener() {
+				checkBox.addActionListener(new java.awt.event.ActionListener() {
 					@Override
-					public void itemStateChanged(ItemEvent evt) {
-						frame.startShowingChart(evt.getSource());
+					public void actionPerformed(ActionEvent e) {
+						frame.startShowingChart(e.getSource());
 					}
 				});
 				idSetsJCheckBoxes.put(replicate.getFullName(), checkBox);
@@ -1878,15 +1865,16 @@ public class AdditionalOptionsPanelFactory {
 			// sometimes has to be disabled
 		}
 
-		jCheckBoxShowAsPieChart.addItemListener(new java.awt.event.ItemListener() {
+		jCheckBoxShowAsPieChart.addActionListener(new java.awt.event.ActionListener() {
 			@Override
-			public void itemStateChanged(ItemEvent evt) {
+			public void actionPerformed(ActionEvent e) {
 				AdditionalOptionsPanelFactory.this.enableAsPercentage(!jCheckBoxShowAsPieChart.isSelected());
 				AdditionalOptionsPanelFactory.this.enableShowAsStackedChart(!jCheckBoxShowAsPieChart.isSelected());
 				AdditionalOptionsPanelFactory.this.enableShowTotalSerie(!jCheckBoxShowAsPieChart.isSelected());
 				AdditionalOptionsPanelFactory.this
 						.enableShowTotalVersusDifferent(!jCheckBoxShowAsPieChart.isSelected());
-				frame.startShowingChart(evt.getSource());
+				frame.startShowingChart(e.getSource());
+
 			}
 		});
 
@@ -1901,10 +1889,10 @@ public class AdditionalOptionsPanelFactory {
 			// sometimes has to be disabled
 		}
 
-		jCheckBoxShowAverage.addItemListener(new java.awt.event.ItemListener() {
+		jCheckBoxShowAverage.addActionListener(new java.awt.event.ActionListener() {
 			@Override
-			public void itemStateChanged(ItemEvent evt) {
-				frame.startShowingChart(evt.getSource());
+			public void actionPerformed(ActionEvent e) {
+				frame.startShowingChart(e.getSource());
 			}
 		});
 
@@ -2016,10 +2004,10 @@ public class AdditionalOptionsPanelFactory {
 			// controlList.add(jCheckBoxShowAsPieChart);not add becaouse
 			// sometimes has to be disabled
 
-			jCheckBoxShowTotalSerie.addItemListener(new java.awt.event.ItemListener() {
+			jCheckBoxShowTotalSerie.addActionListener(new java.awt.event.ActionListener() {
 				@Override
-				public void itemStateChanged(ItemEvent evt) {
-					frame.startShowingChart(evt.getSource());
+				public void actionPerformed(ActionEvent e) {
+					frame.startShowingChart(e.getSource());
 				}
 			});
 		}
@@ -2043,12 +2031,13 @@ public class AdditionalOptionsPanelFactory {
 		}
 		jCheckBoxShowDifferentIdentifications.setText(text);
 		jCheckBoxShowDifferentIdentifications.setSelected(true);
-		jCheckBoxShowDifferentIdentifications.addItemListener(new java.awt.event.ItemListener() {
+		jCheckBoxShowDifferentIdentifications.addActionListener(new java.awt.event.ActionListener() {
 			@Override
-			public void itemStateChanged(ItemEvent evt) {
+			public void actionPerformed(ActionEvent e) {
 				AdditionalOptionsPanelFactory.this
 						.enableShowTotalVersusDifferent(!jCheckBoxShowDifferentIdentifications.isSelected());
-				frame.startShowingChart(evt.getSource());
+				frame.startShowingChart(e.getSource());
+
 			}
 		});
 
@@ -2069,9 +2058,9 @@ public class AdditionalOptionsPanelFactory {
 			// controlList.add(jCheckBoxShowAsPieChart);not add becaouse
 			// sometimes has to be disabled
 		}
-		jCheckBoxTotalVersusDifferent.addItemListener(new java.awt.event.ItemListener() {
+		jCheckBoxTotalVersusDifferent.addActionListener(new java.awt.event.ActionListener() {
 			@Override
-			public void itemStateChanged(ItemEvent evt) {
+			public void actionPerformed(ActionEvent e) {
 				AdditionalOptionsPanelFactory.this
 						.enableShowDifferentIdentifications(!jCheckBoxTotalVersusDifferent.isSelected());
 				AdditionalOptionsPanelFactory.this
@@ -2079,8 +2068,9 @@ public class AdditionalOptionsPanelFactory {
 				AdditionalOptionsPanelFactory.this.enableShowAsPieChart(!jCheckBoxTotalVersusDifferent.isSelected());
 				AdditionalOptionsPanelFactory.this
 						.enableShowAsAverageOfNextLevels(!jCheckBoxTotalVersusDifferent.isSelected());
-				frame.startShowingChart(evt.getSource());
+				frame.startShowingChart(e.getSource());
 			}
+
 		});
 
 		return jCheckBoxTotalVersusDifferent;
@@ -2193,10 +2183,11 @@ public class AdditionalOptionsPanelFactory {
 			getControlList().add(jCheckBoxShowPSM);
 		}
 
-		jCheckBoxShowPSM.addItemListener(new java.awt.event.ItemListener() {
+		jCheckBoxShowPSM.addActionListener(new java.awt.event.ActionListener() {
 			@Override
-			public void itemStateChanged(ItemEvent evt) {
-				frame.startShowingChart(evt.getSource());
+			public void actionPerformed(ActionEvent e) {
+				System.out.println(e.getID());
+				frame.startShowingChart(e.getSource());
 			}
 		});
 
@@ -2212,10 +2203,10 @@ public class AdditionalOptionsPanelFactory {
 			getControlList().add(jCheckBoxShowPeptides);
 		}
 
-		jCheckBoxShowPeptides.addItemListener(new java.awt.event.ItemListener() {
+		jCheckBoxShowPeptides.addActionListener(new java.awt.event.ActionListener() {
 			@Override
-			public void itemStateChanged(ItemEvent evt) {
-				frame.startShowingChart(evt.getSource());
+			public void actionPerformed(ActionEvent e) {
+				frame.startShowingChart(e.getSource());
 			}
 		});
 
@@ -2231,10 +2222,10 @@ public class AdditionalOptionsPanelFactory {
 			getControlList().add(jCheckBoxShowPeptidesPlusCharge);
 		}
 
-		jCheckBoxShowPeptidesPlusCharge.addItemListener(new java.awt.event.ItemListener() {
+		jCheckBoxShowPeptidesPlusCharge.addActionListener(new java.awt.event.ActionListener() {
 			@Override
-			public void itemStateChanged(ItemEvent evt) {
-				frame.startShowingChart(evt.getSource());
+			public void actionPerformed(ActionEvent e) {
+				frame.startShowingChart(e.getSource());
 			}
 		});
 
@@ -2249,12 +2240,10 @@ public class AdditionalOptionsPanelFactory {
 			getControlList().add(jCheckBoxShowProteins);
 		}
 
-		jCheckBoxShowProteins.addItemListener(new ItemListener() {
-
+		jCheckBoxShowProteins.addActionListener(new java.awt.event.ActionListener() {
 			@Override
-			public void itemStateChanged(ItemEvent evt) {
-
-				frame.startShowingChart(jCheckBoxShowProteins);
+			public void actionPerformed(ActionEvent e) {
+				frame.startShowingChart(e.getSource());
 			}
 		});
 		return jCheckBoxShowProteins;
@@ -2268,13 +2257,12 @@ public class AdditionalOptionsPanelFactory {
 			getControlList().add(jCheckBoxShowScoreVsFDR);
 		}
 
-		jCheckBoxShowScoreVsFDR.addItemListener(new java.awt.event.ItemListener() {
+		jCheckBoxShowScoreVsFDR.addActionListener(new java.awt.event.ActionListener() {
 			@Override
-			public void itemStateChanged(ItemEvent evt) {
-				frame.startShowingChart(jCheckBoxShowScoreVsFDR);
+			public void actionPerformed(ActionEvent e) {
+				frame.startShowingChart(e.getSource());
 			}
 		});
-
 		return jCheckBoxShowScoreVsFDR;
 	}
 
@@ -2316,10 +2304,10 @@ public class AdditionalOptionsPanelFactory {
 	public JCheckBox getShowTotalChromosomeProteins() {
 		if (jCheckBoxShowTotalChromosomeProteins == null) {
 			jCheckBoxShowTotalChromosomeProteins = new JCheckBox("Show total prots. from chrms.");
-			jCheckBoxShowTotalChromosomeProteins.addItemListener(new java.awt.event.ItemListener() {
+			jCheckBoxShowTotalChromosomeProteins.addActionListener(new java.awt.event.ActionListener() {
 				@Override
-				public void itemStateChanged(ItemEvent evt) {
-					frame.startShowingChart(jCheckBoxShowTotalChromosomeProteins);
+				public void actionPerformed(ActionEvent e) {
+					frame.startShowingChart(e.getSource());
 				}
 			});
 		}
@@ -2336,15 +2324,17 @@ public class AdditionalOptionsPanelFactory {
 	public JCheckBox getHeatMapBinaryCheckBox(boolean b) {
 		if (jcheckBoxHeatMapBinary == null) {
 			jcheckBoxHeatMapBinary = new JCheckBox("presence/absence");
-			jcheckBoxHeatMapBinary.addItemListener(new java.awt.event.ItemListener() {
+			jcheckBoxHeatMapBinary.addActionListener(new java.awt.event.ActionListener() {
 				@Override
-				public void itemStateChanged(ItemEvent evt) {
-					frame.startShowingChart(evt.getSource());
+				public void actionPerformed(ActionEvent e) {
+					frame.startShowingChart(e.getSource());
+
 					// Disable jcombobox of color scale if binary is
 					// selected
 					if (jComboBoxColorScale != null) {
-						jComboBoxColorScale.setEnabled(((JCheckBox) evt.getSource()).isSelected());
+						jComboBoxColorScale.setEnabled(((JCheckBox) e.getSource()).isSelected());
 					}
+
 				}
 			});
 			jcheckBoxHeatMapBinary.setToolTipText(
@@ -2372,10 +2362,12 @@ public class AdditionalOptionsPanelFactory {
 		if (proteinOrGeneSelector == null) {
 			proteinOrGeneSelector = new JComboBox(new DefaultComboBoxModel(new String[] { BOTH, PROTEIN, GENES }));
 			proteinOrGeneSelector.setToolTipText(string);
-			proteinOrGeneSelector.addActionListener(new java.awt.event.ActionListener() {
+			proteinOrGeneSelector.addItemListener(new java.awt.event.ItemListener() {
 				@Override
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					frame.startShowingChart(evt.getSource());
+				public void itemStateChanged(java.awt.event.ItemEvent evt) {
+					if (evt.getStateChange() == ItemEvent.SELECTED) {
+						frame.startShowingChart(evt.getSource());
+					}
 				}
 			});
 		}
@@ -2397,10 +2389,12 @@ public class AdditionalOptionsPanelFactory {
 		if (peptideOrPSMSelector == null) {
 			peptideOrPSMSelector = new JComboBox(new DefaultComboBoxModel(new String[] { BOTH, PEPTIDE, PSM }));
 			peptideOrPSMSelector.setToolTipText(string);
-			peptideOrPSMSelector.addActionListener(new java.awt.event.ActionListener() {
+			peptideOrPSMSelector.addItemListener(new java.awt.event.ItemListener() {
 				@Override
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					frame.startShowingChart(evt.getSource());
+				public void itemStateChanged(java.awt.event.ItemEvent evt) {
+					if (evt.getStateChange() == ItemEvent.SELECTED) {
+						frame.startShowingChart(evt.getSource());
+					}
 				}
 			});
 		}
@@ -2417,34 +2411,49 @@ public class AdditionalOptionsPanelFactory {
 		if (jradioButtonFirstProteinPerGroup == null || jradioButtonAllProteinsPerGroup == null
 				|| jradioButtonBestProteinPerGroup == null || jradioButtonShareOneProtein == null) {
 			jradioButtonAllProteinsPerGroup = new JRadioButton("share all proteins", true);
-			jradioButtonAllProteinsPerGroup.addActionListener(new java.awt.event.ActionListener() {
+			jradioButtonAllProteinsPerGroup.addItemListener(new java.awt.event.ItemListener() {
 				@Override
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					frame.startShowingChart(evt.getSource());
+				public void itemStateChanged(java.awt.event.ItemEvent evt) {
+					if (evt.getStateChange() == ItemEvent.SELECTED) {
+						frame.startShowingChart(evt.getSource());
+					}
+					frame.registerNewValue(evt.getSource());
 				}
 			});
 			this.getControlList().add(jradioButtonAllProteinsPerGroup);
 			jradioButtonFirstProteinPerGroup = new JRadioButton("share the protein with more evidence");
-			jradioButtonFirstProteinPerGroup.addActionListener(new java.awt.event.ActionListener() {
+			jradioButtonFirstProteinPerGroup.addItemListener(new java.awt.event.ItemListener() {
 				@Override
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					frame.startShowingChart(evt.getSource());
+				public void itemStateChanged(java.awt.event.ItemEvent evt) {
+					if (evt.getStateChange() == ItemEvent.SELECTED) {
+						frame.startShowingChart(evt.getSource());
+					}
+					frame.registerNewValue(evt.getSource());
+
 				}
 			});
 			this.getControlList().add(jradioButtonFirstProteinPerGroup);
 			jradioButtonBestProteinPerGroup = new JRadioButton("share the best protein per group");
 			jradioButtonBestProteinPerGroup.addItemListener(new java.awt.event.ItemListener() {
 				@Override
-				public void itemStateChanged(ItemEvent evt) {
-					frame.startShowingChart(evt.getSource());
+				public void itemStateChanged(java.awt.event.ItemEvent evt) {
+					if (evt.getStateChange() == ItemEvent.SELECTED) {
+						frame.startShowingChart(evt.getSource());
+					}
+					frame.registerNewValue(evt.getSource());
+
 				}
 			});
 			this.getControlList().add(jradioButtonBestProteinPerGroup);
 			jradioButtonShareOneProtein = new JRadioButton("share any protein");
 			jradioButtonShareOneProtein.addItemListener(new java.awt.event.ItemListener() {
 				@Override
-				public void itemStateChanged(ItemEvent evt) {
-					frame.startShowingChart(evt.getSource());
+				public void itemStateChanged(java.awt.event.ItemEvent evt) {
+					if (evt.getStateChange() == ItemEvent.SELECTED) {
+						frame.startShowingChart(evt.getSource());
+					}
+					frame.registerNewValue(evt.getSource());
+
 				}
 			});
 			getControlList().add(jradioButtonShareOneProtein);
@@ -2522,10 +2531,10 @@ public class AdditionalOptionsPanelFactory {
 
 		if (jcheckBoxShowSpiderPlot == null) {
 			jcheckBoxShowSpiderPlot = new JCheckBox("show spider plot");
-			jcheckBoxShowSpiderPlot.addItemListener(new java.awt.event.ItemListener() {
+			jcheckBoxShowSpiderPlot.addActionListener(new java.awt.event.ActionListener() {
 				@Override
-				public void itemStateChanged(ItemEvent evt) {
-					frame.startShowingChart(evt.getSource());
+				public void actionPerformed(ActionEvent e) {
+					frame.startShowingChart(e.getSource());
 				}
 			});
 
@@ -2541,10 +2550,10 @@ public class AdditionalOptionsPanelFactory {
 			jcheckBoxAccumulativeTrend = new JCheckBox("show accumulative trend");
 			jcheckBoxAccumulativeTrend.setSelected(true);
 			getControlList().add(jcheckBoxAccumulativeTrend);
-			jcheckBoxAccumulativeTrend.addItemListener(new java.awt.event.ItemListener() {
+			jcheckBoxAccumulativeTrend.addActionListener(new java.awt.event.ActionListener() {
 				@Override
-				public void itemStateChanged(ItemEvent evt) {
-					frame.startShowingChart(evt.getSource());
+				public void actionPerformed(ActionEvent e) {
+					frame.startShowingChart(e.getSource());
 				}
 			});
 
@@ -2565,10 +2574,10 @@ public class AdditionalOptionsPanelFactory {
 					+ "If this option is selected, only one gene per protein group will be used in the chart.</html>");
 			jCheckBoxTakeGeneFromFirstProtein.setSelected(true);
 			getControlList().add(jCheckBoxTakeGeneFromFirstProtein);
-			jCheckBoxTakeGeneFromFirstProtein.addItemListener(new java.awt.event.ItemListener() {
+			jCheckBoxTakeGeneFromFirstProtein.addActionListener(new java.awt.event.ActionListener() {
 				@Override
-				public void itemStateChanged(ItemEvent evt) {
-					frame.startShowingChart(evt.getSource());
+				public void actionPerformed(ActionEvent e) {
+					frame.startShowingChart(e.getSource());
 				}
 			});
 
@@ -2592,10 +2601,10 @@ public class AdditionalOptionsPanelFactory {
 			getControlList().add(jCheckBoxShowProteinFDR);
 			jCheckBoxShowProteinFDR.setSelected(true);
 
-			jCheckBoxShowProteinFDR.addItemListener(new java.awt.event.ItemListener() {
+			jCheckBoxShowProteinFDR.addActionListener(new java.awt.event.ActionListener() {
 				@Override
-				public void itemStateChanged(ItemEvent evt) {
-					frame.startShowingChart(evt.getSource());
+				public void actionPerformed(ActionEvent e) {
+					frame.startShowingChart(e.getSource());
 				}
 			});
 		}
@@ -2605,11 +2614,10 @@ public class AdditionalOptionsPanelFactory {
 		if (jCheckBoxShowPeptideFDR == null) {
 			jCheckBoxShowPeptideFDR = new JCheckBox("show FDR at peptide level");
 			getControlList().add(jCheckBoxShowPeptideFDR);
-			jCheckBoxShowPeptideFDR.addItemListener(new java.awt.event.ItemListener() {
-
+			jCheckBoxShowPeptideFDR.addActionListener(new java.awt.event.ActionListener() {
 				@Override
-				public void itemStateChanged(ItemEvent evt) {
-					frame.startShowingChart(evt.getSource());
+				public void actionPerformed(ActionEvent e) {
+					frame.startShowingChart(e.getSource());
 				}
 			});
 		}
@@ -2618,10 +2626,10 @@ public class AdditionalOptionsPanelFactory {
 		if (jCheckBoxShowPSMFDR == null) {
 			jCheckBoxShowPSMFDR = new JCheckBox("show FDR at PSM level");
 			getControlList().add(jCheckBoxShowPSMFDR);
-			jCheckBoxShowPSMFDR.addItemListener(new java.awt.event.ItemListener() {
+			jCheckBoxShowPSMFDR.addActionListener(new java.awt.event.ActionListener() {
 				@Override
-				public void itemStateChanged(ItemEvent evt) {
-					frame.startShowingChart(evt.getSource());
+				public void actionPerformed(ActionEvent e) {
+					frame.startShowingChart(e.getSource());
 				}
 			});
 		}
@@ -2655,10 +2663,12 @@ public class AdditionalOptionsPanelFactory {
 			jComboBoxFont = new JComboBox();
 
 			getControlList().add(jComboBoxFont);
-			jComboBoxFont.addActionListener(new java.awt.event.ActionListener() {
+			jComboBoxFont.addItemListener(new java.awt.event.ItemListener() {
 				@Override
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					frame.startShowingChart(evt.getSource());
+				public void itemStateChanged(java.awt.event.ItemEvent evt) {
+					if (evt.getStateChange() == ItemEvent.SELECTED) {
+						frame.startShowingChart(evt.getSource());
+					}
 				}
 			});
 		}
@@ -2811,10 +2821,10 @@ public class AdditionalOptionsPanelFactory {
 		if (jCheckBoxApplyLog == null) {
 			jCheckBoxApplyLog = new JCheckBox("Apply logs");
 			jCheckBoxApplyLog.setToolTipText("Apply logarithm to base=10 to values");
-			jCheckBoxApplyLog.addItemListener(new java.awt.event.ItemListener() {
+			jCheckBoxApplyLog.addActionListener(new java.awt.event.ActionListener() {
 				@Override
-				public void itemStateChanged(ItemEvent evt) {
-					frame.startShowingChart(evt.getSource());
+				public void actionPerformed(ActionEvent e) {
+					frame.startShowingChart(e.getSource());
 				}
 			});
 			getControlList().add(jCheckBoxApplyLog);
@@ -2833,10 +2843,10 @@ public class AdditionalOptionsPanelFactory {
 		if (jCheckBoxSeparatedDecoyHits == null) {
 			jCheckBoxSeparatedDecoyHits = new JCheckBox("Separate decoy hits");
 			jCheckBoxSeparatedDecoyHits.setToolTipText("Show a separate series for decoy hits");
-			jCheckBoxSeparatedDecoyHits.addItemListener(new java.awt.event.ItemListener() {
+			jCheckBoxSeparatedDecoyHits.addActionListener(new java.awt.event.ActionListener() {
 				@Override
-				public void itemStateChanged(ItemEvent evt) {
-					frame.startShowingChart(evt.getSource());
+				public void actionPerformed(ActionEvent e) {
+					frame.startShowingChart(e.getSource());
 				}
 			});
 			getControlList().add(jCheckBoxSeparatedDecoyHits);
@@ -2855,10 +2865,10 @@ public class AdditionalOptionsPanelFactory {
 		if (jCheckBoxShowInMinutes == null) {
 			jCheckBoxShowInMinutes = new JCheckBox("Show time in minutes");
 			jCheckBoxShowInMinutes.setToolTipText("Show times in minutes if selected or in seconds if not selected");
-			jCheckBoxShowInMinutes.addItemListener(new java.awt.event.ItemListener() {
+			jCheckBoxShowInMinutes.addActionListener(new java.awt.event.ActionListener() {
 				@Override
-				public void itemStateChanged(ItemEvent evt) {
-					frame.startShowingChart(evt.getSource());
+				public void actionPerformed(ActionEvent e) {
+					frame.startShowingChart(e.getSource());
 				}
 			});
 			jCheckBoxShowInMinutes.setSelected(true);
@@ -2880,10 +2890,10 @@ public class AdditionalOptionsPanelFactory {
 			jCheckBoxIsPSMorPeptide
 					.setToolTipText("<html>If selected, the colors represent the number of PSMs per protein.<br>"
 							+ "If not selected, the colors represent the number of peptides per protein.</html>");
-			jCheckBoxIsPSMorPeptide.addItemListener(new java.awt.event.ItemListener() {
+			jCheckBoxIsPSMorPeptide.addActionListener(new java.awt.event.ActionListener() {
 				@Override
-				public void itemStateChanged(ItemEvent evt) {
-					frame.startShowingChart(evt.getSource());
+				public void actionPerformed(ActionEvent e) {
+					frame.startShowingChart(e.getSource());
 				}
 			});
 			jCheckBoxIsPSMorPeptide.setSelected(true);
