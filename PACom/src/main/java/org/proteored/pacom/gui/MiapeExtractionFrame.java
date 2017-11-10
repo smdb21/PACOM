@@ -142,7 +142,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 
 	/** Creates new form Standard2MIAPEDialog */
 	private MiapeExtractionFrame(MainFrame parent, boolean modal) {
-		super(75);
+		super(400);
 		// super(parent, modal);
 		initComponents();
 
@@ -773,7 +773,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 		});
 
 		jButtonSubmit.setText("Import data");
-		jButtonSubmit.setToolTipText("Start with the extraction of input data");
+		jButtonSubmit.setToolTipText("Start with the import of the dataset from the input file(s)");
 		jButtonSubmit.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -781,31 +781,16 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 			}
 		});
 
-		jButtonGoToData = new JButton("Go to Data Inspection");
+		jButtonGoToData = new JButton("Go to Comparison Project Manager");
 		jButtonGoToData.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				goToDataInspection();
 			}
 		});
-		jButtonGoToData.setToolTipText("Click here to go directly to Data Inspection");
+		jButtonGoToData.setToolTipText("Click here to go directly to the Comparison Project Manager");
 
-		jButtonHelp = new JButton("");
-		jButtonHelp.setToolTipText("Click here to open the help window.");
-		jButtonHelp.setIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON));
-		jButtonHelp.setPressedIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON_CLICKED));
-		jButtonHelp.setRolloverIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON));
-		jButtonHelp.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (getHelpDialog().isVisible()) {
-					getHelpDialog().setMinimized(true);
-					getHelpDialog().setVisible(false);
-				} else {
-					showAttachedHelpDialog();
-				}
-			}
-		});
+		jButtonHelp = new OpenHelpButton(this);
 
 		javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
 		jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING)
@@ -2011,27 +1996,27 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 	public List<String> getHelpMessages() {
 		String[] array = { "Import datasets into PACOM:", //
 				"Here is the steps you have to follow:", //
-				"", //
+
 				"1. Select the <b>type of input file</b> you are going to import. "
-						+ "You can either select it from the '<b>Input type</b>' panel or from the '<b>Input type + MS data file</b>' panel.", //
-				"", //
-				"If you select one of option in 'Input type + MS data file' panel, "
+						+ "You can either select it from the '<i>Input type</i>' panel or from the '<i>Input type + MS data file</i>' panel.", //
+
+				"If you select one of option in <i>'Input type + MS data file'</i> panel, "
 						+ "you will be able to import a peak list file (MGF file) and "
-						+ "a <b>Mass Spectrometry metadata template</b>. "
-						+ "This option is useful in case you want to generate a <b>PRIDE XML</b> "
-						+ "file containing the spectra in the peak list file.", //
-				"", //
+						+ "a <i>Mass Spectrometry metadata template</i>. "
+						+ "This option is useful in case you want to generate a <i>PRIDE XML</i> "
+						+ "file containing the spectra from the peak list file.", //
+
 				"2. Select the <b>Input file(s)</b> from your file system using the file selectors in the top.", //
-				"", //
-				"3. Type the <b>name of the project</b> or select one by clicking on 'Select project' button. "
+
+				"3. Type the <b>name of the project</b> or select one by clicking on <i>'Select project'</i> button. "
 						+ "These projects in which the input datasets will be stored, "
 						+ "are just a way for organizing your imported datasets.", //
-				"", //
-				"If you type a new project name, it will appear the next time you click on 'Select project'.", //
-				"", //
+
+				"If you type a new project name, it will appear the next time you click on <i>'Select project'</i>.", //
+
 				"4. Click on <b>'Import data'</b> to start the import data process.", //
-				"", //
-				"Click on <b>'Go to Data Inspection</b> to go directly to the Data Inspection project builder "
+
+				"Click on <b>'Go to Data Inspection</b> to go directly to the <i>Comparison Project Manager</i> "
 						+ "without the need of going through the main dialog." };
 		return Arrays.asList(array);
 	}
