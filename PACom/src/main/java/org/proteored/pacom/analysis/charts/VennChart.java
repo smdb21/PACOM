@@ -198,7 +198,7 @@ public class VennChart {
 			}
 			sb.append(getRGBHEX(getColor3()));
 		}
-		log.info("URL created=" + sb.toString());
+		log.debug("URL created=" + sb.toString());
 		return new URL(sb.toString());
 		// return new URL(
 		// "https://chart.googleapis.com/chart?chs=400x300&chd=t:100,80,60,30,30,30,10"
