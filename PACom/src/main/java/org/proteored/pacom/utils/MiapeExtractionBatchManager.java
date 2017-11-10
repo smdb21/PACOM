@@ -36,6 +36,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 	public static final String PRIDE = "PRIDE";
 	public static final String XTANDEM = "XTANDEM";
 	public static final String DTASELECT = "DTASELECT";
+	public static final String PEPXML = "PEPXML";
 	public static final String TEXT_DATA_TABLE = "TEXT_TABLE";
 	public static final String END_MIAPE_EXTRACTION = "END";
 	public static final String METADATA = "METADATA";
@@ -161,6 +162,14 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 							throw new IllegalMiapeArgumentException("File not found: " + params.getDtaSelectFileName());
 						params.addInputFile(inputFile);
 						params.setMIAPEMSIChecked(true);
+					} else if (strLine.startsWith(PEPXML)) {
+						String[] split = strLine.split("\t");
+						params.setPepXMLFileName(split[1]);
+						File inputFile = new File(params.getPepXMLFileName());
+						if (!inputFile.exists() || !inputFile.isFile())
+							throw new IllegalMiapeArgumentException("File not found: " + params.getPepXMLFileName());
+						params.addInputFile(inputFile);
+						params.setMIAPEMSIChecked(true);
 					} else if (strLine.startsWith(TEXT_DATA_TABLE)) {
 						String[] split = strLine.split("\t");
 						params.setTSVFileName(split[1]);
@@ -236,12 +245,14 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			if (e instanceof ArrayIndexOutOfBoundsException)
-				throw new IllegalMiapeArgumentException("Line " + numLine
+				throw new IllegalMiapeArgumentException("Error in batch import file: Line " + numLine
 						+ " is bad formatted. Please ensure that separation between tags and values is a TAB character.");
-			if (!e.getMessage().contains("Please wait"))
-				throw new IllegalMiapeArgumentException(e.getMessage() + " - line:" + numLine);
-			throw new IllegalMiapeArgumentException(e.getMessage());
+			if (e.getMessage() != null && !e.getMessage().contains("Please wait"))
+				throw new IllegalMiapeArgumentException(
+						"Error in batch import file: " + e.getMessage() + " - line:" + numLine);
+			throw new IllegalMiapeArgumentException("Error in batch import file: " + e.getMessage());
 		} finally {
 			if (br != null) {
 				try {
@@ -544,6 +555,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 	}
 
 	public static String getInputTypesString() {
-		return MZIDENTML + ", " + MZML + ", " + DTASELECT + ", " + XTANDEM + ", " + PRIDE + ", " + MGF;
+		return "'" + MZIDENTML + "', '" + MZML + "', '" + DTASELECT + "', '" + XTANDEM + "', '" + PEPXML + "', '"
+				+ PRIDE + "', '" + MGF + "'";
 	}
 }
