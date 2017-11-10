@@ -27,6 +27,7 @@ import java.sql.Date;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
@@ -107,6 +109,7 @@ import org.proteored.pacom.analysis.util.ImageUtils;
 import org.proteored.pacom.gui.AbstractJFrameWithAttachedHelpDialog;
 import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.gui.MainFrame;
+import org.proteored.pacom.gui.OpenHelpButton;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 import org.proteored.pacom.utils.AppVersion;
 import org.proteored.pacom.utils.ComponentEnableStateKeeper;
@@ -233,6 +236,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 	private Map<Object, Object> previousTogleValues = new THashMap<Object, Object>();
 	private long t1;
 	private final ComponentEnableStateKeeper enableStateKeeper = new ComponentEnableStateKeeper();
+	private ReentrantLock chartCreatorlock = new ReentrantLock(true);
+	private boolean creatingChartLock = false;;
 
 	@Override
 	public void dispose() {
@@ -255,7 +260,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 	 */
 	@SuppressWarnings("restriction")
 	private ChartManagerFrame(JFrame parentDialog, File cfgFile) {
-		super(75);
+		super(400);
 		parentFrame = parentDialog;
 		this.cfgFile = cfgFile;
 		if (parentFrame != null)
@@ -307,7 +312,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		}
 		enableStateKeeper.addReverseComponent(jButtonCancel);
 		enableStateKeeper.addInvariableComponent(jTextAreaStatus);
-
+		enableStateKeeper.addInvariableComponent(jButtonHelp);
 	}
 
 	public static ChartManagerFrame getInstance(Miape2ExperimentListDialog parentDialog, File cfgFile) {
@@ -527,13 +532,15 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 					if (e.getStateChange() == ItemEvent.SELECTED) {
 						currentChartType = chartType;
 						addCustomizationControls();
+						startShowingChart(menuItem);
 					}
-					startShowingChart(menuItem);
+					registerNewValue(menuItem);
 				}
 			});
 
-			if (chartType.equals(currentChartType))
+			if (chartType.equals(currentChartType)) {
 				menuItem.setSelected(true);
+			}
 			buttonGroup2.add(menuItem);
 			radioButtonMenuMap.put(chartType, menuItem);
 		}
@@ -916,6 +923,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		jLabelInformation2 = new javax.swing.JLabel();
 		jLabelInformation3 = new javax.swing.JLabel();
 		jButtonSeeAppliedFilters = new javax.swing.JButton();
+		jButtonSeeAppliedFilters.setEnabled(false);
 		jButtonShowTable = new javax.swing.JButton();
 		jButtonSaveAsFiltered = new javax.swing.JButton();
 		jButtonExport2PRIDE = new javax.swing.JButton();
@@ -958,22 +966,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		jProgressBarMemoryUsage.setToolTipText("Memory usage");
 		jProgressBarMemoryUsage.setStringPainted(true);
 
-		jButtonHelp = new JButton("");
-		jButtonHelp.setToolTipText("Click here to show the help dialog");
-		jButtonHelp.setIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON));
-		jButtonHelp.setPressedIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON_CLICKED));
-		jButtonHelp.setRolloverIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON));
-		jButtonHelp.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (getHelpDialog().isVisible()) {
-					getHelpDialog().setMinimized(true);
-					getHelpDialog().setVisible(false);
-				} else {
-					showAttachedHelpDialog();
-				}
-			}
-		});
+		jButtonHelp = new OpenHelpButton(this);
 		javax.swing.GroupLayout jPanelStatusLayout = new javax.swing.GroupLayout(jPanelStatus);
 		jPanelStatusLayout
 				.setHorizontalGroup(jPanelStatusLayout.createParallelGroup(Alignment.TRAILING)
@@ -1010,10 +1003,11 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		jPanelChartType.setBorder(javax.swing.BorderFactory
 				.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Comparison level"));
 
-		jComboBoxChartOptions.addItemListener(new java.awt.event.ItemListener() {
+		jComboBoxChartOptions.addActionListener(new java.awt.event.ActionListener() {
+
 			@Override
-			public void itemStateChanged(java.awt.event.ItemEvent evt) {
-				jComboBoxChartOptionsItemStateChanged(evt);
+			public void actionPerformed(ActionEvent e) {
+				jComboBoxChartOptionsItemStateChanged();
 			}
 		});
 
@@ -1050,10 +1044,10 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		jCheckBoxUniquePeptides.setText("distinguish modified peptides");
 		jCheckBoxUniquePeptides.setToolTipText(
 				"<html>If this option is not selected:<br>\nA peptide identified as unmodified and for<br>\ninstance containing an oxidized Methionine is<br>\ncounted as one.<br>\n</html>");
-		jCheckBoxUniquePeptides.addItemListener(new java.awt.event.ItemListener() {
+		jCheckBoxUniquePeptides.addActionListener(new java.awt.event.ActionListener() {
 			@Override
-			public void itemStateChanged(java.awt.event.ItemEvent evt) {
-				jCheckBoxUniquePeptidesItemStateChanged(evt);
+			public void actionPerformed(ActionEvent e) {
+				jCheckBoxUniquePeptidesItemStateChanged();
 			}
 		});
 
@@ -1072,7 +1066,6 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		jButtonSeeAppliedFilters.setIcon(new javax.swing.ImageIcon(
 				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\funnel.png")); // NOI18N
 		jButtonSeeAppliedFilters.setToolTipText("Show currently applied filters.");
-		jButtonSeeAppliedFilters.setEnabled(false);
 		jButtonSeeAppliedFilters.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1101,7 +1094,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		jButtonSaveAsFiltered.setIcon(new javax.swing.ImageIcon(
 				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\star.png")); // NOI18N
 		jButtonSaveAsFiltered.setToolTipText(
-				"<html>\r\nSave the datasets of the project as <b>curated experiments</b>.<br>\r\nThis will save the datasets <b>AFTER</b> aplying some filters.<br>\r\nThey will be saved individually in a separate location and they will<br>\r\nbe available to be added to new comparison projects in the dropdown<br>\r\ncontrol of the Comparison Projects Manager.\r\n</html>");
+				"<html>\r\nSave the datasets of the project as <b>curated datasets</b>.<br>\r\nThis will save the datasets <b>AFTER</b> aplying some filters.<br>\r\nThey will be saved individually in a separate location and they will<br>\r\nbe available to be added to new comparison projects in the dropdown<br>\r\ncontrol of the Comparison Projects Manager.\r\n</html>");
 		jButtonSaveAsFiltered.setEnabled(false);
 		jButtonSaveAsFiltered.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -1379,7 +1372,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		final int screenSizeHeight = screenSize.height;
 		final int windowWidth = screenSizeWidth / 2;
 		final int windowHeight = screenSizeHeight * 2 / 3;
-		setPreferredSize(new Dimension(windowWidth, windowHeight));
+		setPreferredSize(new Dimension(960, 860));
 		final int x = screenSizeWidth / 4;
 		final int y = screenSizeHeight / 6;
 		setBounds(x, y, 1037, 900);
@@ -1583,7 +1576,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		}
 	}
 
-	private void jComboBoxChartOptionsItemStateChanged(java.awt.event.ItemEvent evt) {
+	private void jComboBoxChartOptionsItemStateChanged() {
 		// if (evt.getStateChange() == ItemEvent.SELECTED) {
 		if (dataLoader == null || !dataLoader.isDone())
 			return;
@@ -1674,7 +1667,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		filterDialog.setVisible(true);
 	}
 
-	private void jCheckBoxUniquePeptidesItemStateChanged(java.awt.event.ItemEvent evt) {
+	private void jCheckBoxUniquePeptidesItemStateChanged() {
 
 		optionsFactory.updatePeptideSequenceList();
 		startShowingChart(jCheckBoxUniquePeptides);
@@ -4149,25 +4142,37 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 
 	public void showChart() {
 
-		// String chartType = (String)
-		// this.jComboBoxChartType.getSelectedItem();
 		String chartType = currentChartType;
-
 		String option = (String) jComboBoxChartOptions.getSelectedItem();
-		// log.info("showing chart (" + chartType + " / " + option + ")");
-		if (chartCreator != null && chartCreator.getState().equals(StateValue.STARTED)) {
 
-			while (!chartCreator.cancel(true)) {
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		if ((chartCreator == null || chartCreator.getState().equals(StateValue.DONE))
+		// if (chartCreator != null &&
+		// chartCreator.getState().equals(StateValue.STARTED)) {
+		// log.info("Trying to cancel chart creator from thread " +
+		// Thread.currentThread().getId());
+		// while (!chartCreator.cancel(true)) {
+		// try {
+		// Thread.sleep(1000);
+		// } catch (InterruptedException e) {
+		// e.printStackTrace();
+		// }
+		// }
+		// log.info("Chart creator cancelled from thread " +
+		// Thread.currentThread().getId());
+		//
+		// }
+
+		if (!creatingChartLock && (chartCreator == null || chartCreator.getState().equals(StateValue.DONE))
 				&& filterDialog.isFilterTaskFinished()) {
-
+			log.info("Trying to acquire the lock by thread " + Thread.currentThread().getId());
+			if (!chartCreatorlock.tryLock()) {
+				log.info(
+						"Chart creation in progress. Skiping this call... by thread " + Thread.currentThread().getId());
+				return;
+			}
+			log.info("lock acquired by thread " + Thread.currentThread().getId());
+			creatingChartLock = true;
+			enableStateKeeper.keepEnableStates(this);
+			enableStateKeeper.disable(this);
 			appendStatus("Creating chart '" + chartType + " (" + option + ")...");
 			setProgressBarIndeterminate(true);
 
@@ -4175,10 +4180,16 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 			chartCreator.addPropertyChangeListener(this);
 			chartCreator.execute();
 			t1 = System.currentTimeMillis();
+
 		} else {
 			log.info("The chart cannot be generated until the previous chart is finished");
 			// this.appendStatus("Wait to finish the chart");
 		}
+	}
+
+	public void registerNewValue(Object component) {
+		Object currentValue = getcurrentvalueFromComponent(component);
+		previousTogleValues.put(component, currentValue);
 	}
 
 	public void startShowingChart(Object causantComponent) {
@@ -4190,7 +4201,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 						Object previousValuesOfSelection = previousTogleValues.get(causantComponent);
 
 						if (currentValue.equals(previousValuesOfSelection)) {
-							log.debug("Component didnt really changed: " + currentValue + ", causant: "
+							log.info("Component didnt really changed: " + currentValue + ", causant: "
 									+ causantComponent);
 							return;
 						}
@@ -4200,11 +4211,12 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 			} catch (IllegalArgumentException e) {
 				// this is because the causant is a menu and it is not selected,
 				// so we dont want it to trigger the chart generator
-				log.debug("component is a menu but it is not selected. Skipping execution of chart creator");
+				log.info("component is a menu but it is not selected. Skipping execution of chart creator");
 				previousTogleValues.put(causantComponent, false);
 				return;
 			}
 		}
+
 		if (dataLoader == null || !dataLoader.isDone()) {
 			// appendStatus("Datasets are being loaded. Please wait...");
 			return;
@@ -4224,10 +4236,6 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 			return checkBox.isSelected();
 		} else if (causantComponent instanceof JRadioButtonMenuItem) {
 			JRadioButtonMenuItem ratioItem = (JRadioButtonMenuItem) causantComponent;
-			if (!ratioItem.isSelected()) {
-				throw new IllegalArgumentException(
-						"If the menu is not selected, we shouldnt run the chart creator task");
-			}
 			return ratioItem.isSelected();
 		} else if (causantComponent instanceof JComboBox) {
 			JComboBox combo = (JComboBox) causantComponent;
@@ -4302,8 +4310,12 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 				jProgressBar.setValue(progress);
 
 		} else if (ChartCreatorTask.CHART_GENERATION_STARTED.equals(evt.getPropertyName())) {
-			enableStateKeeper.keepEnableStates(this);
-			enableStateKeeper.disable(this);
+
+		} else if (ChartCreatorTask.CHART_CANCELED.equals(evt.getPropertyName())) {
+			enableStateKeeper.setToPreviousState(this);
+			log.info("Unlocking lock because task cancelled from thread: " + Thread.currentThread().getId());
+			chartCreatorlock.unlock();
+			creatingChartLock = false;
 		}
 		// else if ("state".equals(evt.getPropertyName())) {
 		// if (task != null && !task.isCancelled()) {
@@ -4351,11 +4363,10 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 			// controls)
 			updateControlStates();
 			enableMenus(true);
-			startShowingChart(null);
 			jButtonShowTable.setEnabled(true);
 			jButtonExport2Excel.setEnabled(true);
-			// jButtonExport2PEX.setEnabled(true);
 			jButtonExport2PRIDE.setEnabled(true);
+			startShowingChart(null);
 
 		} else if (DataLoaderTask.DATA_LOADED_ERROR.equals(evt.getPropertyName())) {
 			enableStateKeeper.setToPreviousState(this);
@@ -4376,112 +4387,122 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 			dispose();
 		} else if (ChartCreatorTask.CHART_GENERATED.equals(evt.getPropertyName())
 				|| ChartCreatorTask.CHART_ERROR_GENERATED.equals(evt.getPropertyName())) {
-			enableStateKeeper.setToPreviousState(this);
-			jButtonCancel.setEnabled(false);
-			jPanelChart.removeAll();
-			BorderLayout borderLayout = new BorderLayout();
-			jPanelChart.setLayout(borderLayout);
 
-			Object object = evt.getNewValue();
+			try { // to release the lock
 
-			if (object instanceof JComponent) {
-				// this.jPanelChart.setGraphicPanel((JComponent) object);
-				JComponent jComponent = (JComponent) object;
-				jPanelChart.add(jComponent, BorderLayout.CENTER);
-				if (jComponent instanceof ChartPanel) {
-					((ChartPanel) jComponent).updateUI();
-				} else {
-					if (jComponent.getComponent(0) instanceof JComponent) {
-						((JComponent) jComponent.getComponent(0)).updateUI();
+				jPanelChart.removeAll();
+				BorderLayout borderLayout = new BorderLayout();
+				jPanelChart.setLayout(borderLayout);
+
+				Object object = evt.getNewValue();
+
+				if (object instanceof JComponent) {
+					// this.jPanelChart.setGraphicPanel((JComponent) object);
+					JComponent jComponent = (JComponent) object;
+					jPanelChart.add(jComponent, BorderLayout.CENTER);
+					if (jComponent instanceof ChartPanel) {
+						((ChartPanel) jComponent).updateUI();
+					} else {
+						if (jComponent.getComponent(0) instanceof JComponent) {
+							((JComponent) jComponent.getComponent(0)).updateUI();
+						}
 					}
-				}
-			} else if (object instanceof List) {
-				List lista = (List) object;
-				if (lista.get(0) instanceof JPanel) {
-					List<JPanel> chartList = (List<JPanel>) object;
-					JPanel panel = new JPanel();
-					panel.setLayout(new GridLayout(chartList.size(), 1, 0, 20));
-					jPanelChart.add(panel, BorderLayout.CENTER);
-					for (JPanel jPanel : chartList) {
-						panel.add(jPanel);
-						if (jPanel instanceof ChartPanel) {
-							((ChartPanel) jPanel).updateUI();
-						} else {
-							if (jPanel.getComponent(0) instanceof JComponent) {
-								((JComponent) jPanel.getComponent(0)).updateUI();
+				} else if (object instanceof List) {
+					List lista = (List) object;
+					if (lista.get(0) instanceof JPanel) {
+						List<JPanel> chartList = (List<JPanel>) object;
+						JPanel panel = new JPanel();
+						panel.setLayout(new GridLayout(chartList.size(), 1, 0, 20));
+						jPanelChart.add(panel, BorderLayout.CENTER);
+						for (JPanel jPanel : chartList) {
+							panel.add(jPanel);
+							if (jPanel instanceof ChartPanel) {
+								((ChartPanel) jPanel).updateUI();
+							} else {
+								if (jPanel.getComponent(0) instanceof JComponent) {
+									((JComponent) jPanel.getComponent(0)).updateUI();
+								}
+
 							}
-
 						}
+					} else if (lista.get(0) instanceof Panel) {
+						List<Panel> chartList = (List<Panel>) object;
+						JPanel panel = new JPanel();
+						panel.setLayout(new GridLayout(chartList.size(), 1, 0, 20));
+						for (Panel jPanel : chartList) {
+							panel.add(jPanel);
+							if (jPanel instanceof WordCramChart) {
+								WordCramChart wordCramChart = (WordCramChart) jPanel;
+								wordCramChart.addPropertyChangeListener(this);
+								wordCramChart.initialize(Double.valueOf(jPanelChart.getSize().getWidth()).intValue(),
+										550);
+							}
+						}
+
+						jPanelChart.add(panel, BorderLayout.CENTER);
+						jScrollPaneChart.getViewport().addChangeListener(new ChangeListener() {
+
+							@Override
+							public void stateChanged(ChangeEvent e) {
+								jScrollPaneChart.revalidate();
+								ChartManagerFrame.this.repaint();
+							}
+						});
+
 					}
-				} else if (lista.get(0) instanceof Panel) {
-					List<Panel> chartList = (List<Panel>) object;
-					JPanel panel = new JPanel();
-					panel.setLayout(new GridLayout(chartList.size(), 1, 0, 20));
-					for (Panel jPanel : chartList) {
-						panel.add(jPanel);
-						if (jPanel instanceof WordCramChart) {
-							WordCramChart wordCramChart = (WordCramChart) jPanel;
-							wordCramChart.addPropertyChangeListener(this);
-							wordCramChart.initialize(Double.valueOf(jPanelChart.getSize().getWidth()).intValue(), 550);
-						}
+					// this.jPanelChart.addGraphicPanel((List<JPanel>) object);
+				} else if (object instanceof Component) {
+					jPanelChart.add((Component) object, BorderLayout.CENTER);
+					if (object instanceof WordCramChart) {
+						WordCramChart wordCramChart = (WordCramChart) object;
+						wordCramChart.addPropertyChangeListener(this);
+						wordCramChart.initialize(Double.valueOf(jPanelChart.getSize().getWidth()).intValue(),
+								Double.valueOf(jPanelChart.getSize().getHeight()).intValue());
+					}
+				}
+				jPanelChart.repaint();
+				if (ChartCreatorTask.CHART_GENERATED.equals(evt.getPropertyName())) {
+					// disable scroll in case of current chart is a word clod
+					if (currentChartType.equals(PROTEIN_NAME_CLOUD)) {
+						jScrollPaneChart.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+						jScrollPaneChart.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+					} else {
+						jScrollPaneChart.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+						jScrollPaneChart.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
 					}
 
-					jPanelChart.add(panel, BorderLayout.CENTER);
-					jScrollPaneChart.getViewport().addChangeListener(new ChangeListener() {
+					setNumIdentificationsLabel();
+					setFDRLabel();
+					double t2 = System.currentTimeMillis() * 1.0;
+					appendStatus("Chart created in " + DatesUtil.getDescriptiveTimeFromMillisecs(t2 - t1));
+					if (currentChartType.equals(PROTEIN_NAME_CLOUD)) {
+						appendStatus("Wait some seconds for the cloud loading...");
+					}
 
-						@Override
-						public void stateChanged(ChangeEvent e) {
-							jScrollPaneChart.revalidate();
-							ChartManagerFrame.this.repaint();
-						}
-					});
+				} else if (ChartCreatorTask.CHART_ERROR_GENERATED.equals(evt.getPropertyName())) {
+					appendStatus("Error generating the chart.");
+				}
+				setProgressBarIndeterminate(false);
 
-				}
-				// this.jPanelChart.addGraphicPanel((List<JPanel>) object);
-			} else if (object instanceof Component) {
-				jPanelChart.add((Component) object, BorderLayout.CENTER);
-				if (object instanceof WordCramChart) {
-					WordCramChart wordCramChart = (WordCramChart) object;
-					wordCramChart.addPropertyChangeListener(this);
-					wordCramChart.initialize(Double.valueOf(jPanelChart.getSize().getWidth()).intValue(),
-							Double.valueOf(jPanelChart.getSize().getHeight()).intValue());
-				}
-			}
-			jPanelChart.repaint();
-			if (ChartCreatorTask.CHART_GENERATED.equals(evt.getPropertyName())) {
-				// disable scroll in case of current chart is a word clod
-				if (currentChartType.equals(PROTEIN_NAME_CLOUD)) {
-					jScrollPaneChart.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-					jScrollPaneChart.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			} finally {
+				log.info("Unlocking lock from thread " + Thread.currentThread().getId());
+				enableStateKeeper.setToPreviousState(this);
+
+				updateControlStates();
+				jPanelAddOptions.updateUI();
+				if (!filterDialog.getFilters().isEmpty()) {
+					jButtonSeeAppliedFilters.setEnabled(true);
+					jButtonSaveAsFiltered.setEnabled(true);
+
 				} else {
-					jScrollPaneChart.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-					jScrollPaneChart.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
+					jButtonSeeAppliedFilters.setEnabled(false);
+					jButtonSaveAsFiltered.setEnabled(false);
 				}
-
-				setNumIdentificationsLabel();
-				setFDRLabel();
-				double t2 = System.currentTimeMillis() * 1.0;
-				appendStatus("Chart created in " + DatesUtil.getDescriptiveTimeFromMillisecs(t2 - t1));
-				if (currentChartType.equals(PROTEIN_NAME_CLOUD)) {
-					appendStatus("Wait some seconds for the cloud loading...");
-				}
-
-			} else if (ChartCreatorTask.CHART_ERROR_GENERATED.equals(evt.getPropertyName())) {
-				appendStatus("Error generating the chart.");
+				jButtonCancel.setEnabled(false);
+				chartCreatorlock.unlock();
+				creatingChartLock = false;
 			}
-			setProgressBarIndeterminate(false);
-			updateControlStates();
-			jPanelAddOptions.updateUI();
-			if (!filterDialog.getFilters().isEmpty()) {
-				jButtonSeeAppliedFilters.setEnabled(true);
-				jButtonSaveAsFiltered.setEnabled(true);
-
-			} else {
-				jButtonSeeAppliedFilters.setEnabled(false);
-				jButtonSaveAsFiltered.setEnabled(false);
-			}
-
 		} else if (ChartCreatorTask.DATASET_PROGRESS.equals(evt.getPropertyName())) {
 			String message = (String) evt.getNewValue();
 			jProgressBar.setStringPainted(true);
@@ -4494,7 +4515,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		} else if (CuratedExperimentSaver.CURATED_EXP_SAVER_START.equals(evt.getPropertyName())) {
 			enableStateKeeper.keepEnableStates(this);
 			enableStateKeeper.disable(this);
-			appendStatus("Saving experiment(s) as curated...");
+			appendStatus("Saving dataset(s) as curated...");
 			appendStatus("This task will be performed in background");
 			jButtonSaveAsFiltered.setEnabled(false);
 		} else if (CuratedExperimentSaver.CURATED_EXP_SAVER_END.equals(evt.getPropertyName())) {
@@ -4503,7 +4524,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 			setProgressBarIndeterminate(false);
 			jProgressBar.setString("");
 			jProgressBar.setValue(0);
-			appendStatus("Experiments saved as curated.");
+			appendStatus("Datasets saved as curated.");
 			jButtonSaveAsFiltered.setEnabled(true);
 
 		} else if (CuratedExperimentSaver.CURATED_EXP_SAVER_ERROR.equals(evt.getPropertyName())) {
@@ -4511,7 +4532,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 			jButtonCancel.setEnabled(false);
 			setProgressBarIndeterminate(false);
 			jProgressBar.setString("");
-			appendStatus("Error saving curated experiments: " + evt.getNewValue());
+			appendStatus("Error saving curated datasets: " + evt.getNewValue());
 			jButtonSaveAsFiltered.setEnabled(true);
 
 		} else if (CuratedExperimentSaver.CURATED_EXP_SAVER_PROGRESS.equals(evt.getPropertyName())) {
@@ -4696,12 +4717,12 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		setInformation2(fdrString);
 		if (fdrString.equals(FDR_CANNOT_BE_CALCULATED_MESSAGE))
 			setToolTipInformation2("<html>Global FDR cannot be calculated due the following reasons:<br>"
-					+ "<ul><li>Lower levels (level 1, that is, experiment level, or level 2, that is, fractions/bands/replicates level) have different FDR thresholds.</li>"
+					+ "<ul><li>Lower levels (level 1 or level 2) have different FDR thresholds.</li>"
 					+ "<li>Lower levels have used different search engines and therefore, the score used to calculate the FDR filter is different.</li></ul>");
 		else
 			setToolTipInformation2("<html>Global False Discovery Rates: " + "<ul><li>at Protein level </li>"
 					+ "<li>at Peptide level</li>" + "<li>at Peptide Spectrum Match level</li></ul>"
-					+ "These values are calculated at level 0 (experiment list).</html>");
+					+ "These values are calculated at level 0.</html>");
 
 	}
 
@@ -4709,7 +4730,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		setInformation3(getNumberIdentificationsString());
 		setToolTipInformation3(
 				"<html>These numbers means:<ul><li>Number of peptides and unique peptides, NOT distinguishing differently modificated peptides.</li>"
-						+ "<li>Number of proteins/protein groups and unique proteins/protein groups (not considering NON_CONCLUSIVE groups).</li>"
+						+ "<li>Number of proteins/protein groups and unique proteins/protein groups (not considering Non-conclusive proteins).</li>"
 						+ "<li>Number of different human genes (if mapped) and, in brackets number of human genes just taking one per proteing group.</li></ul></html>");
 	}
 
@@ -4878,7 +4899,45 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 
 	@Override
 	public List<String> getHelpMessages() {
-		// TODO Auto-generated method stub
-		return null;
+		String[] ret = { "Chart Viewer help", //
+				"This window is where you will be able to explore and compare your datasets. The main panel will contain the chart the corresponds to the <b>Chart Type</b> selected in the <i>'Chart Type'</i> menu at the top.", //
+				"<b>Select a chart</b>", //
+				"You will be able to change the chart type by selecting a different <i>'Chart Type'</i> in the menu at any time. The chart types are arranged into 10 categories.", //
+				"<b>Customize your chart</b>", //
+				"Most of the charts provide a set of controls inside of the <b>'Additional options'</b> panel at the left.", //
+				"Using those options (clicking on checkboxes, radio buttons, selecting from drop-down menus, etc), will automatically reload the chart.", //
+				"You can also <b>edit the appearance of the chart</b> by right-clicking on the chart surface and selecting the desired option. You can export the charts in different formats (PNG, SVG or PDF), copy the chart image to the clipboard, or change some chart properties such as the font family, size and color, the axis scales or the tick labels and marks.", //
+				"<b>Peptide counting</b>", //
+				"At the middle left you can find the <i>'Peptide counting'</i> panel with a checkbox to <i>distinguish modified peptides</i>. If this option is <b>selected</b>, peptides with the same sequence but having different modification states will be counted as different peptides. If this option is <b>not selected</b>, peptides with the same sequence will be counted once regardless the modification state. You can try to select and deselect the checkbox and observe how the number of peptides changes in the charts that shows the number of peptides.", //
+				"<b>Comparison level</b>", //
+				"Just above the <i>Peptide counting</i> option, you will find the <i>Comparison level</i> drop-down menu.", //
+				"Depending on which option you select, you will be able to explore different levels of aggregation of the data, depending on the organization of the <i>three-level Comparison Project Tree</i>:", //
+				"- <i>one single data series (level 0)</i>: a chart with just one data series which aggregates all the individual datasets,", //
+				"- <i>one data series per level 1</i>: a chart with one data series per each of the level 1 nodes which aggregates all the individual datasets pending from that node, ", //
+				"- <i>one data series per level 2</i>: a chart with one data series per each of the level 2 nodes which aggregates all the individual datasets pending from that node,", //
+				"- <i>one separate chart per level 1</i>: this will generate a different chart per each one of the level 1 nodes. Each of these charts will contain a data series per level 2 nodes pending on that level 1 node.", //
+				"<b>Information data</b>", //
+				"At the top left of the window you can see some text lines with information about the current dataset and chart:", //
+				"- the chart type that is currently selected,", //
+				"- the dataset FDR values at protein, peptide and PSM level, if a <i>FDR filter</i> has applied. Note that although the FDR filter is applied independently in each level 1 node, here you will find the global FDR calculated after applying the threshold defined in the filter and aggregating all the data.", //
+				"- the number of PSMs and number of peptides (which depends on the <i>distinguish modified peptides</i> option,", //
+				"- the number of protein groups, that will correspond to the number of protein groups at the level 0 of the Comparison Project Tree,", //
+				"- the number of Human genes, in case of having recognizable Human proteins (from UniProt), and in brackets, the number of Human genes just counting one per protein group.", //
+				"<b>Curate and Export buttons</b>", //
+				"Just below the information text lines, you will find the following buttons:", //
+				"- <i>Show current applied filters:</i> This button will open a panel showing the filters that have been applied to the dataset. If more than one filter has been applied, it will show the order in which they were applied.", //
+				"- <i>Save the datasets as curated datasets:</i> This button will open a new panel for saving the datasets as curated, which means that they will be available for adding them to a new Comparison Project Tree containing the current data after applying the filters that are currently active. Note that this option is only available if a filter has been applied.", //
+				"- <i>Show the whole datasets in a table:</i> This button will open a table in which you can explore all the data in a single table. The table will show either the proteins or the peptides and all their associated information will be shown in different sortable columns.", //
+				"- <i>Export datasets to an Excel file:</i> This button will open a new panel containing different options for exporting the data into a single <b>tab-separated text file</b>.", //
+				"- <i>Export datasets to PRIDE XML:</i> This option will open a new panel containing the different options for exporting the data into PRIDE XML files. This will create a different PRIDE XML file per level 1 node, aggregating all the data pending from that into a single file. If the dataset was imported with an associated Mass Spectrometry metadata and peak list file, these metadata and these spectra will be incorporated into the PRIDE XML. Currently, only <i>MGF</i> files are compatible with this option.", //
+				"- <i>Cancel current task:</i> This button will cancel any running task, such as loading the datasets, applying the filters, etc...", //
+				"<b>Filter menu</b>", //
+				"This menu provides the list of filters that can be applied to the datasets. See the <i>filters help</i> in the filters panel.", //
+				"By selecting one of the filters, the filters panel will appear to configure the selected filter parameters. If the filter parameters were already set up, the filter will be automatically applied without opening the filters panel. When a filter is active, its option in this menu remains selected.", //
+				"In order to deactivate a filter, either open the filters panel or just click on it on this menu.",
+				"<b>General options menu</b>", //
+				"By selecting this option, the <i>General options panel</i> will appear, even if you checked the option for not showing this panel again. Any change in the options of this panel will reload the entire project again." };
+
+		return Arrays.asList(ret);
 	}
 }
