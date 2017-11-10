@@ -1,0 +1,16 @@
+
+START	1
+PEPXML	\full\path\to\your\pepXML1.xml
+PROJECT	project_name
+END
+
+START	2
+PEPXML	\full\path\to\your\pepXML2.xml
+PROJECT	project_name
+END
+
+START	3
+PEPXML	\full\path\to\your\pepXML3.xml
+PROJECT	project_name
+END
+

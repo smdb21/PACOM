@@ -1,0 +1,31 @@
+
+START	1
+PEPXML	Z:\share\Salva\data\pepxml\Export_PD1_4\Export_PD1_4\irbb_TiO2_S1_01.pep.xml
+PROJECT	pepxml in batch
+END
+
+START	2
+PEPXML	Z:\share\Salva\data\pepxml\PD2_1\Bp_IP_45_Fusion.pep.xml
+PROJECT	pepxml in batch
+END
+
+START	3
+PEPXML	Z:\share\Salva\data\pepxml\041117_DDA_Rep2.pep.xml
+PROJECT	pepxml in batch
+END
+
+START	4
+PEPXML	Z:\share\Salva\data\pepxml\041117_DDA_Rep3.pep.xml
+PROJECT	pepxml in batch
+END
+
+START	5
+PEPXML	Z:\share\Salva\data\pepxml\example.pep.xml
+PROJECT	pepxml in batch
+END
+
+START	6
+PEPXML	Z:\share\Salva\data\pepxml\interact-041117_DDA_Rep2.ipro.pep.xml
+PROJECT	pepxml in batch
+END
+

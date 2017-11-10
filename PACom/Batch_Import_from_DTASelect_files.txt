@@ -1,15 +1,15 @@
 
 START	1
-DTASELECT	Z:\path_to_dtaselect
-PROJECT	my_project
+DTASELECT	\full\path\to\your\dtaselect_file1.txt
+PROJECT	project_name
 END
 
 START	2
-DTASELECT	Z:\path_to_dtaselect2
-PROJECT	my_project
+DTASELECT	\full\path\to\your\dtaselect_file2.txt
+PROJECT	project_name
 END
 
 START	3
-DTASELECT	Z:\path_to_dtaselect3
-PROJECT	my_project
+DTASELECT	\full\path\to\your\dtaselect_file3.txt
+PROJECT	project_name
 END

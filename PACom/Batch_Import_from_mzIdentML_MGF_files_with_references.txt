@@ -1,13 +1,11 @@
 
 START	1
 MGF	\full\path\to\your\mgf_file1.mgf
-MZIDENTML	\full\path\to\your\mzIdentML_file1.mzid
 PROJECT	project_name
 METADATA	miape_ms_metadata_template_name	
 END
 
 START	2
-MGF	\full\path\to\your\mgf_file2.mgf
 MZIDENTML	\full\path\to\your\mzIdentML_file2.mzid
 PROJECT	project_name
 METADATA	miape_ms_metadata_template_name	

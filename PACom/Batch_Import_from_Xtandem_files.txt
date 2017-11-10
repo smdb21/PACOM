@@ -1,25 +1,22 @@
 
 START	1
-MGF	C:\Users\Salva\Desktop\data\Xtandem\SPHPP_UPV_JURKAT_QE_CHAPS_RPB_R2_1_10.mgf
-XTANDEM	C:\Users\Salva\Desktop\data\Xtandem\SPHPP_UPV_JURKAT_QE_CHAPS_RPB_R2_1_10.t.xml
-PROJECT	xtandem local project 1
+MGF	\full\path\to\your\mgf_file1.mgf
+XTANDEM	\full\path\to\your\XTandem_file1.xml
+PROJECT	xtandem project 1
 METADATA	miape_ms_metadata_template_name	
-LOCAL
 END
 
 START	2
-MGF	C:\Users\Salva\Desktop\data\Xtandem\SPHPP_UPV_JURKAT_QE_CHAPS_RPB_R2_1_10.mgf
-XTANDEM	C:\Users\Salva\Desktop\data\Xtandem\SPHPP_UPV_JURKAT_QE_CHAPS_RPB_R2_1_10.t.xml
-PROJECT	xtandem local project 1
+MGF	\full\path\to\your\mgf_file2.mgf
+XTANDEM	\full\path\to\your\XTandem_file2.xml
+PROJECT	xtandem project 1
 METADATA	miape_ms_metadata_template_name	
-LOCAL
 END
 
 START	3
-MGF	C:\Users\Salva\Desktop\data\Xtandem\SPHPP_UPV_JURKAT_QE_CHAPS_RPB_R2_1_10.mgf
-XTANDEM	C:\Users\Salva\Desktop\data\Xtandem\SPHPP_UPV_JURKAT_QE_CHAPS_RPB_R2_1_10.t.xml
-PROJECT	xtandem local project 2
+MGF	\full\path\to\your\mgf_file3.mgf
+XTANDEM	\full\path\to\your\XTandem_file3.xml
+PROJECT	xtandem project 2
 METADATA	miape_ms_metadata_template_name	
-LOCAL
 END
 
