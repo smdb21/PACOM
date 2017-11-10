@@ -1090,11 +1090,6 @@ public class MiapeLocalExtractor {
 
 			log.info("MIAPE MS document created in memory");
 			log.info("Storing that MIAPE MS");
-			swingWorker.firePropertyChange(MiapeExtractionTask.NOTIFICATION, null,
-					"Storing MIAPE in the ProteoRed MIAPE repository\n");
-			swingWorker.firePropertyChange(MiapeExtractionTask.NOTIFICATION, null, "Waiting for server response...\n");
-			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_SENDING_MIAPE_TO_SERVER, null, idJob);
-
 			MiapeXmlFile<MiapeMSDocument> msDocumentXML = miapeMSMerged.toXml();
 			id_ms = LocalFilesIndex.getInstance().getFreeIndex();
 			identifiers[0] = saveMSLocally(id_ms, msDocumentXML, projectName);
@@ -1693,10 +1688,10 @@ public class MiapeLocalExtractor {
 
 		try {
 			pepXMLFile = new File(pepXMLFileURI);
-			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, null,
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE, idJob,
 					FilenameUtils.getName(pepXMLFile.getAbsolutePath()));
 			pepXMLFile = FileManager.saveLocalFile(pepXMLFile, projectName);
-			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, null,
+			swingWorker.firePropertyChange(MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE, idJob,
 					"File copied to " + pepXMLFile.getAbsolutePath());
 
 			log.info("file saved to " + pepXMLFile.getAbsolutePath());
