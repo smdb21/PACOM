@@ -106,6 +106,8 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 				try {
 					firePropertyChange(PROTEIN_SEQUENCE_RETRIEVAL, null, "Retrieving protein annotations from "
 							+ uniprotAccs.size() + " different proteins in UniprotKB");
+					firePropertyChange(PROTEIN_SEQUENCE_RETRIEVAL, null,
+							"This could take several minutes depending on the number of proteins to retrieve. However, once it is done, it won't be necessary to do it again in the future.");
 					UniprotProteinLocalRetriever upr = FileManager.getUniprotProteinLocalRetriever();
 					upr.setCacheEnabled(true);
 					upr.getAnnotatedProteins(null, uniprotAccs);
