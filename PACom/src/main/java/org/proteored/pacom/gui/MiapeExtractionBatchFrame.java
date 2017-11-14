@@ -67,6 +67,7 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 	private final TIntObjectHashMap<MiapeExtractionResult> obtainedResults = new TIntObjectHashMap<MiapeExtractionResult>();
 	private static MiapeExtractionBatchFrame instance;
 	private boolean startAllJobsRequested = false;
+	private File selectedFile;
 
 	/**
 	 * Creates new form MiapeExtractionBatchFrame
@@ -214,16 +215,31 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 				.addContainerGap()));
 		GridBagLayout gbl_jPanelImage = new GridBagLayout();
 		gbl_jPanelImage.columnWidths = new int[] { 0, 0 };
-		gbl_jPanelImage.rowHeights = new int[] { 0, 0, 0, 0, 0, 0 };
+		gbl_jPanelImage.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0 };
 		gbl_jPanelImage.columnWeights = new double[] { 0.0, Double.MIN_VALUE };
-		gbl_jPanelImage.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_jPanelImage.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		jPanelImage.setLayout(gbl_jPanelImage);
+
+		jButtonReloadInputFile = new JButton("Realod input file");
+		jButtonReloadInputFile.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				startMiapeExtractionBatchManager(selectedFile);
+			}
+		});
+		jButtonReloadInputFile.setEnabled(false);
+		GridBagConstraints gbc_jButtonReloadInputFile = new GridBagConstraints();
+		gbc_jButtonReloadInputFile.fill = GridBagConstraints.HORIZONTAL;
+		gbc_jButtonReloadInputFile.insets = new Insets(0, 0, 5, 0);
+		gbc_jButtonReloadInputFile.gridx = 0;
+		gbc_jButtonReloadInputFile.gridy = 0;
+		jPanelImage.add(jButtonReloadInputFile, gbc_jButtonReloadInputFile);
 		jButtonStart = new javax.swing.JButton();
 		GridBagConstraints gbc_jButtonStart = new GridBagConstraints();
 		gbc_jButtonStart.fill = GridBagConstraints.HORIZONTAL;
 		gbc_jButtonStart.insets = new Insets(0, 0, 5, 0);
 		gbc_jButtonStart.gridx = 0;
-		gbc_jButtonStart.gridy = 0;
+		gbc_jButtonStart.gridy = 1;
 		jPanelImage.add(jButtonStart, gbc_jButtonStart);
 
 		jButtonStart.setText("Start batch import");
@@ -233,7 +249,7 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 		gbc_jButtonRestartFailedTasks.fill = GridBagConstraints.HORIZONTAL;
 		gbc_jButtonRestartFailedTasks.insets = new Insets(0, 0, 5, 0);
 		gbc_jButtonRestartFailedTasks.gridx = 0;
-		gbc_jButtonRestartFailedTasks.gridy = 1;
+		gbc_jButtonRestartFailedTasks.gridy = 2;
 		jPanelImage.add(jButtonRestartFailedTasks, gbc_jButtonRestartFailedTasks);
 
 		jButtonRestartFailedTasks.setText("Restart failed tasks");
@@ -243,7 +259,7 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 		gbc_jButtonCancel.fill = GridBagConstraints.HORIZONTAL;
 		gbc_jButtonCancel.insets = new Insets(0, 0, 5, 0);
 		gbc_jButtonCancel.gridx = 0;
-		gbc_jButtonCancel.gridy = 2;
+		gbc_jButtonCancel.gridy = 3;
 		jPanelImage.add(jButtonCancel, gbc_jButtonCancel);
 
 		jButtonCancel.setText("Cancel all");
@@ -254,7 +270,7 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 		gbc_jbuttonHelp2.anchor = GridBagConstraints.WEST;
 		gbc_jbuttonHelp2.insets = new Insets(0, 0, 5, 0);
 		gbc_jbuttonHelp2.gridx = 0;
-		gbc_jbuttonHelp2.gridy = 3;
+		gbc_jbuttonHelp2.gridy = 4;
 		jPanelImage.add(jButtonHelp2, gbc_jbuttonHelp2);
 		jButtonCancel.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -366,25 +382,34 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 		jFileChooser1.setDialogTitle("Select a import batch file");
 		jFileChooser1.setFileFilter(new TFileExtension("txt files", new String[] { "txt" }));
 		jFileChooser1.showOpenDialog(this);
-		File file;
-		File selectedFile = jFileChooser1.getSelectedFile();
-		if (selectedFile != null) {
+
+		selectedFile = jFileChooser1.getSelectedFile();
+		if (selectedFile != null && selectedFile.exists()) {
 			MainFrame.currentFolder = selectedFile.getParentFile();
-			jTextAreaStatus.setText("");
-			appendStatus("Loading batch file...");
-			file = selectedFile;
-			MiapeExtractionTask.resetIdentifiers();
+			jButtonReloadInputFile.setEnabled(true);
+			startMiapeExtractionBatchManager(selectedFile);
 
-			jTextFieldBatchFile.setText(file.getAbsolutePath());
-			log.info("Selected File: " + file.getAbsolutePath());
-
-			startMiapeExtractionBatchManager(file);
+		} else {
+			jButtonReloadInputFile.setEnabled(false);
+			jButtonCancel.setEnabled(false);
+			jButtonRestartFailedTasks.setEnabled(false);
+			jButtonStart.setEnabled(false);
 
 		}
 	}
 
 	private void startMiapeExtractionBatchManager(File file) {
 		try {
+			if (file == null) {
+				appendStatus("Please, select first a input batch file");
+				return;
+			}
+			jTextAreaStatus.setText("");
+			appendStatus("Loading batch file...");
+			MiapeExtractionTask.resetIdentifiers();
+
+			jTextFieldBatchFile.setText(file.getAbsolutePath());
+			log.info("Selected File: " + file.getAbsolutePath());
 			miapeExtractorBatchManager = new MiapeExtractionBatchManager(file, this, cvManager);
 			List<MiapeExtractionTask> miapeExtractionQueue = miapeExtractorBatchManager.getMiapeExtractionQueue();
 			loadJobQueuePanel(miapeExtractionQueue);
@@ -585,6 +610,7 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 	private javax.swing.JScrollPane jScrollPaneJobQueue;
 	private javax.swing.JTextArea jTextAreaStatus;
 	private javax.swing.JTextField jTextFieldBatchFile;
+	private JButton jButtonReloadInputFile;
 
 	// End of variables declaration//GEN-END:variables
 
@@ -843,9 +869,15 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 				+ "</b>' element followed by the job number of a previous job in which a MS dataset has been generated, that is, using '<b>"
 				+ MiapeExtractionBatchManager.MGF + "</b>' or '<b>" + MiapeExtractionBatchManager.MZML
 				+ "</b>' input data files alone. This will link the MS dataset to the identification dataset specified in the same job.");
-		ret.add("");
-		ret.add("Once you have your Batch Import text file, you can load it here and it will be validated. If everything is ok, you will see a dataset import job in the <b>job queue</b>.");
-		ret.add("After that, you can start all jobs sequencially by clicking on <i>'Start batch import'</i> button, or you can start individual jobs in the job queue.");
+		ret.add("<b>Start dataset import batch</b>");
+		ret.add("1. Select and load the batch import text file. It will be validated, so if it contains some error they will be detected and shown. If everything is ok, you will see a dataset import job in the <b>job queue</b>.");
+		ret.add("2. After that, you can start all jobs sequencially by clicking on <i>'Start batch import'</i> button. The jobs will be processed one by one in order.");
+		ret.add("3. Alternativelly, you can start the process by a different job, by clicking on its respective <i>'start'</i> button. After its completion, subsequent jobs will be processed.");
+		ret.add("<b>Other buttons</b> ");
+		ret.add("- <b>Reload input file</b>: it reads again the selected input file.");
+		ret.add("- <b>cancel</b>: it cancels an ongoing import process.");
+		ret.add("- <b>Restart failed tasks</b>: it will restart, in order, the failed or cancelled import jobs.");
+		ret.add("- <b>Cancel all</b>: it cancells the ongoing dataset import job and stops the queue.");
 		ret.add("<b>Example batch import text files</b>");
 		ret.add("PACOM package contains some <b>example batch import text files</b> located at the installation folder (<i>'"
 				+ System.getProperty("user.dir") + "'</i>) that you can use as templates, such as:");
