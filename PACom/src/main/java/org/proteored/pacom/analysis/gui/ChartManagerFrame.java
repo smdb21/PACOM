@@ -1061,7 +1061,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		jPanelPeptideCounting.setLayout(jPanelPeptideCountingLayout);
 
 		jPanelInformation.setBorder(javax.swing.BorderFactory
-				.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Information"));
+				.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Global Information"));
 
 		jButtonSeeAppliedFilters.setIcon(new javax.swing.ImageIcon(
 				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\funnel.png")); // NOI18N
@@ -4900,40 +4900,45 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 	@Override
 	public List<String> getHelpMessages() {
 		String[] ret = { "Chart Viewer help", //
-				"This window is where you will be able to explore and compare your datasets. The main panel will contain the chart the corresponds to the <b>Chart Type</b> selected in the <i>'Chart Type'</i> menu at the top.", //
+				"This window is where you will be able to explore and compare your datasets. The main panel will contain the chart and it will be automatically updated with any customization option selected.", //
 				"<b>Select a chart</b>", //
-				"You will be able to change the chart type by selecting a different <i>'Chart Type'</i> in the menu at any time. The chart types are arranged into 10 categories.", //
+				"You will be able to change the chart type by selecting a different <b>'Chart Type'</b> in the menu at any time. The chart types are arranged into 10 categories.", //
 				"<b>Customize your chart</b>", //
 				"Most of the charts provide a set of controls inside of the <b>'Additional options'</b> panel at the left.", //
 				"Using those options (clicking on checkboxes, radio buttons, selecting from drop-down menus, etc), will automatically reload the chart.", //
-				"You can also <b>edit the appearance of the chart</b> by right-clicking on the chart surface and selecting the desired option. You can export the charts in different formats (PNG, SVG or PDF), copy the chart image to the clipboard, or change some chart properties such as the font family, size and color, the axis scales or the tick labels and marks.", //
+				"You can also edit the appearance of the chart <b>by right-clicking on the chart</b> panel surface and selecting the desired option. Among them, you can change the font family, size and color, the axis scales or the tick labels and marks.", //
+				"<b>Export chart images</b>", //
+				"You can export the charts in different formats (<b>PNG</b>, <b>SVG</b> or <b>PDF</b>), copy the chart image to the clipboard, ", //
 				"<b>Peptide counting</b>", //
-				"At the middle left you can find the <i>'Peptide counting'</i> panel with a checkbox to <i>distinguish modified peptides</i>. If this option is <b>selected</b>, peptides with the same sequence but having different modification states will be counted as different peptides. If this option is <b>not selected</b>, peptides with the same sequence will be counted once regardless the modification state. You can try to select and deselect the checkbox and observe how the number of peptides changes in the charts that shows the number of peptides.", //
+				"At the middle left you can find the <b>'Peptide counting'</b> panel with a checkbox to <b>distinguish modified peptides</b>. "
+						+ "If this option is <i>selected</i>, peptides with the same sequence but having different modification states will be counted "
+						+ "as different peptides. If this option is <i>not selected</i>, peptides with the same sequence will be counted once regardless"
+						+ " the modification state. You can try to select and deselect the checkbox and observe how the number of peptides changes in the charts that shows the number of peptides.", //
 				"<b>Comparison level</b>", //
-				"Just above the <i>Peptide counting</i> option, you will find the <i>Comparison level</i> drop-down menu.", //
+				"Just above the <i>Peptide counting</i> option, you will find the <b>Comparison level</b> drop-down menu.", //
 				"Depending on which option you select, you will be able to explore different levels of aggregation of the data, depending on the organization of the <i>three-level Comparison Project Tree</i>:", //
-				"- <i>one single data series (level 0)</i>: a chart with just one data series which aggregates all the individual datasets,", //
-				"- <i>one data series per level 1</i>: a chart with one data series per each of the level 1 nodes which aggregates all the individual datasets pending from that node, ", //
-				"- <i>one data series per level 2</i>: a chart with one data series per each of the level 2 nodes which aggregates all the individual datasets pending from that node,", //
-				"- <i>one separate chart per level 1</i>: this will generate a different chart per each one of the level 1 nodes. Each of these charts will contain a data series per level 2 nodes pending on that level 1 node.", //
-				"<b>Information data</b>", //
+				"- <b>one single data series (level 0)</b>: a chart with just one data series which aggregates all the individual datasets,", //
+				"- <b>one data series per level 1</b>: a chart with one data series per each of the level 1 nodes which aggregates all the individual datasets pending from that node, ", //
+				"- <b>one data series per level 2</b>: a chart with one data series per each of the level 2 nodes which aggregates all the individual datasets pending from that node,", //
+				"- <b>one separate chart per level 1</b>: this will generate a different chart per each one of the level 1 nodes. Each of these charts will contain a data series per level 2 nodes pending on that level 1 node.", //
+				"<b>Global information</b>", //
 				"At the top left of the window you can see some text lines with information about the current dataset and chart:", //
-				"- the chart type that is currently selected,", //
-				"- the dataset FDR values at protein, peptide and PSM level, if a <i>FDR filter</i> has applied. Note that although the FDR filter is applied independently in each level 1 node, here you will find the global FDR calculated after applying the threshold defined in the filter and aggregating all the data.", //
-				"- the number of PSMs and number of peptides (which depends on the <i>distinguish modified peptides</i> option,", //
-				"- the number of protein groups, that will correspond to the number of protein groups at the level 0 of the Comparison Project Tree,", //
-				"- the number of Human genes, in case of having recognizable Human proteins (from UniProt), and in brackets, the number of Human genes just counting one per protein group.", //
-				"<b>Curate and Export buttons</b>", //
+				"- the <b>chart type</b> that is currently selected,", //
+				"- the dataset <b>FDR values</b> at protein, peptide and PSM level, if a <i>FDR filter</i> has applied. Note that although the FDR filter is applied independently in each level 1 node, here you will find the global FDR calculated after applying the threshold defined in the filter and aggregating all the data.", //
+				"- the <b>number of PSMs and number of peptides</b> (which depends on the <i>distinguish modified peptides</i> option,", //
+				"- the <b>number of protein groups</b>, that will correspond to the number of protein groups at the level 0 of the Comparison Project Tree,", //
+				"- the <b>number of Human genes</b>, in case of having recognizable Human proteins (from UniProt), and in brackets, the number of Human genes just counting one per protein group.", //
+				"<b>Save as curated, show table, and export (Excel and PRIDE XML) buttons</b>", //
 				"Just below the information text lines, you will find the following buttons:", //
-				"- <i>Show current applied filters:</i> This button will open a panel showing the filters that have been applied to the dataset. If more than one filter has been applied, it will show the order in which they were applied.", //
-				"- <i>Save the datasets as curated datasets:</i> This button will open a new panel for saving the datasets as curated, which means that they will be available for adding them to a new Comparison Project Tree containing the current data after applying the filters that are currently active. Note that this option is only available if a filter has been applied.", //
-				"- <i>Show the whole datasets in a table:</i> This button will open a table in which you can explore all the data in a single table. The table will show either the proteins or the peptides and all their associated information will be shown in different sortable columns.", //
-				"- <i>Export datasets to an Excel file:</i> This button will open a new panel containing different options for exporting the data into a single <b>tab-separated text file</b>.", //
-				"- <i>Export datasets to PRIDE XML:</i> This option will open a new panel containing the different options for exporting the data into PRIDE XML files. This will create a different PRIDE XML file per level 1 node, aggregating all the data pending from that into a single file. If the dataset was imported with an associated Mass Spectrometry metadata and peak list file, these metadata and these spectra will be incorporated into the PRIDE XML. Currently, only <i>MGF</i> files are compatible with this option.", //
-				"- <i>Cancel current task:</i> This button will cancel any running task, such as loading the datasets, applying the filters, etc...", //
-				"<b>Filter menu</b>", //
+				"- <b>Show current applied filters:</b> This button will open a panel showing the filters that have been applied to the dataset. If more than one filter has been applied, it will show the order in which they were applied.", //
+				"- <b>Save the datasets as curated datasets:</b> This button will open a new panel for saving the datasets as curated, which means that they will be available for adding them to a new Comparison Project Tree containing the current data after applying the filters that are currently active. Note that this option is only available if a filter has been applied.", //
+				"- <b>Show the whole datasets in a table:</b> This button will open a table in which you can explore all the data in a single table. The table will show either the proteins or the peptides and all their associated information will be shown in different sortable columns.", //
+				"- <b>Export datasets to an Excel file:</b> This button will open a new panel containing different options for exporting the data into a single <b>tab-separated text file</b>.", //
+				"- <b>Export datasets to PRIDE XML:</b> This option will open a new panel containing the different options for exporting the data into PRIDE XML files. This will create a different PRIDE XML file per level 1 node, aggregating all the data pending from it into a single file. If the dataset was imported with an associated Mass Spectrometry metadata and peak list file, these metadata and these spectra will be incorporated into the PRIDE XML. Currently, only <i>MGF</i> and <i>mzML</i> files are compatible with this option.", //
+				"- <b>Cancel current task:</b> This button will cancel any running task, such as loading the datasets, applying the filters, etc...", //
+				"<b>Filters menu</b>", //
 				"This menu provides the list of filters that can be applied to the datasets. See the <i>filters help</i> in the filters panel.", //
-				"By selecting one of the filters, the filters panel will appear to configure the selected filter parameters. If the filter parameters were already set up, the filter will be automatically applied without opening the filters panel. When a filter is active, its option in this menu remains selected.", //
+				"By selecting one of the filters, the filters panel will appear to configure the parametersof the selected filter. If the filter parameters were already set up, the filter will be automatically applied without opening the filters panel. When a filter is active, its option in this menu remains selected.", //
 				"In order to deactivate a filter, either open the filters panel or just click on it on this menu.",
 				"<b>General options menu</b>", //
 				"By selecting this option, the <i>General options panel</i> will appear, even if you checked the option for not showing this panel again. Any change in the options of this panel will reload the entire project again." };
