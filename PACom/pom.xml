@@ -138,10 +138,12 @@
       <plugins>
          <plugin>
             <artifactId>maven-jar-plugin</artifactId>
-            <version>2.4</version>
+            <version>3.0.2</version>
             <configuration>
                <finalName>pacom</finalName>
+               <useUniqueVersions>false</useUniqueVersions>
                <archive>
+               	  <index>true</index>
                   <manifest>
                      <addClasspath>true</addClasspath>
                      <mainClass>org.proteored.pacom.gui.MainFrame</mainClass>
