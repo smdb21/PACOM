@@ -336,7 +336,7 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog {
 		gbl_jPanel1.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0 };
 		jPanel1.setLayout(gbl_jPanel1);
 
-		JLabel lblExamples = new JLabel("Examples project");
+		JLabel lblExamples = new JLabel("Inspect examples");
 		lblExamples.setVerticalAlignment(SwingConstants.TOP);
 		lblExamples.setHorizontalAlignment(SwingConstants.LEFT);
 		lblExamples.setFont(new Font("Dialog", Font.PLAIN, 18));
@@ -367,12 +367,11 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog {
 		c2.gridy = 1;
 		c2.gridwidth = 1;
 		jPanel1.add(jLabelInit2, c2);
-		JLabel jLabelInit3 = new javax.swing.JLabel("Data Inspection");
-		jLabelInit3.setHorizontalAlignment(SwingConstants.LEFT);
+		JLabel jLabelInit3 = new javax.swing.JLabel("Inspect data");
+		jLabelInit3.setHorizontalAlignment(SwingConstants.CENTER);
 		jLabelInit3.setFont(new Font("Dialog", Font.PLAIN, 18));
 		jLabelInit3.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 		GridBagConstraints c3 = new GridBagConstraints();
-		c3.fill = GridBagConstraints.FIRST_LINE_START;
 		c3.insets = new Insets(10, 10, 10, 10);
 		c3.gridx = 2;
 		c3.gridy = 1;
