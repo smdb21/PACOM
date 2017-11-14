@@ -223,7 +223,10 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 
 		id_msi = null;
 		id_ms = null;
-		MiapeMSDocument miapeMSMetadata = miapeExtractorInputParameters.getMiapeMSMetadata();
+		MiapeMSDocument miapeMSMetadata = null;
+		if (miapeExtractorInputParameters.isMIAPEMSChecked()) {
+			miapeMSMetadata = miapeExtractorInputParameters.getMiapeMSMetadata();
+		}
 		MiapeXmlFile<MiapeMSDocument> tinnyMiapeMS = null;
 		if (miapeMSMetadata != null)
 			tinnyMiapeMS = miapeMSMetadata.toXml();
