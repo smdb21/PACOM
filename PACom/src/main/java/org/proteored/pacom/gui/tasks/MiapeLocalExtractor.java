@@ -1829,11 +1829,13 @@ public class MiapeLocalExtractor {
 
 			msiDocument = org.proteored.miapeapi.xml.pepxml.MSIMiapeFactory.getFactory().toDocument(pepXMLMIAPEFile,
 					null, getControlVocabularyManager(), null, null, projectName);
-			((MiapeMsiDocumentImpl) msiDocument).setAttachedFileURL(pepXMLFile.getAbsolutePath());
+			((org.proteored.miapeapi.xml.pepxml.MiapeMsiDocumentImpl) msiDocument)
+					.setAttachedFileURL(pepXMLFile.getAbsolutePath());
 
 			if (id_ms > 0) {
 				log.info("Associating the MIAPE MSI document to the previously created MIAPE MS document");
-				((MiapeMsiDocumentImpl) msiDocument).setReferencedMSDocument(Integer.valueOf(id_ms));
+				((org.proteored.miapeapi.xml.pepxml.MiapeMsiDocumentImpl) msiDocument)
+						.setReferencedMSDocument(Integer.valueOf(id_ms));
 			}
 			log.info("MIAPE created");
 			log.info("Storing document MSI");
@@ -1894,7 +1896,8 @@ public class MiapeLocalExtractor {
 
 			if (id_ms > 0) {
 				log.info("Associating the MIAPE MSI document to the previously created MIAPE MS document");
-				((MiapeMsiDocumentImpl) msiDocument).setReferencedMSDocument(Integer.valueOf(id_ms));
+				((org.proteored.miapeapi.text.tsv.msi.MiapeMsiDocumentImpl) msiDocument)
+						.setReferencedMSDocument(Integer.valueOf(id_ms));
 			}
 			log.info("MIAPE created");
 			log.info("Storing document MSI");
