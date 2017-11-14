@@ -704,13 +704,13 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog {
 		String[] array = { "This is the main window in PACOM", //
 				"From here you can: ", //
 
-				"- click on <b>Import data</b> to go import datasets into PACOM", //
+				"- click on <b>Import data</b> to import datasets into PACOM,", //
 
-				"- click on <b>Batch import data</b> to import several datasets in batch", //
+				"- click on <b>Batch import data</b> to import several datasets in batch,", //
 
-				"- click on <b>Data Inspection</b> to open the comparison project builder", //
+				"- click on <b>Inspect data</b> to open the comparison project builder,", //
 
-				"- select and click one of the available <b>example projects</b> and directly start to visualize the data." };
+				"- select and click one of the available <b>example projects</b> and directly start to visualize data." };
 		return Arrays.asList(array);
 	}
 
