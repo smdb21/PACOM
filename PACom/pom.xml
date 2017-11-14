@@ -141,13 +141,13 @@
             <version>3.0.2</version>
             <configuration>
                <finalName>pacom</finalName>
-               <useUniqueVersions>false</useUniqueVersions>
                <archive>
                	  <index>true</index>
                   <manifest>
                      <addClasspath>true</addClasspath>
                      <mainClass>org.proteored.pacom.gui.MainFrame</mainClass>
                      <classpathPrefix>lib</classpathPrefix>
+                     <useUniqueVersions>false</useUniqueVersions>
                   </manifest>
                </archive>
                <outputDirectory>${project.build.directory}</outputDirectory>
