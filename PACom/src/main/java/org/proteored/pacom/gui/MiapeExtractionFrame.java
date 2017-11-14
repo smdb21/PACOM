@@ -35,6 +35,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingWorker.StateValue;
 import javax.swing.ToolTipManager;
@@ -128,6 +129,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 	public boolean isShallowParsing = false;
 	private MIAPEMSChecker miapeMSChecker;
 	private boolean showProjectTable;
+	// private AutoSuggestor autoSuggestor;
 
 	public static MiapeExtractionFrame getInstance(MainFrame mainFrame2, boolean b) {
 		if (instance == null) {
@@ -159,7 +161,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 		}
 		changeRadioStatus();
 		// Load projects in background
-		loadProjects(false);
+		loadProjects(false, false);
 
 		FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_MZML);
 		FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_PRIDEXML);
@@ -188,6 +190,13 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 			this.setTitle(getTitle() + suffix);
 		}
 		enableStateKeeper.addReverseComponent(jButtonCancel);
+
+		// setup the autosuggestor
+		// autoSuggestor = new AutoSuggestor(jTextFieldProjectName, this, null,
+		// Color.WHITE.brighter(), Color.blue,
+		// Color.red, 0.75f);
+		// loadProjectsFromDisk();
+
 	}
 
 	/*
@@ -200,7 +209,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 		// check if the mainFrame user id has change. In that case, remove the
 		// loaded projects
 
-		loadProjects(true);
+		loadProjects(true, true);
 
 		if (mainFrame != null) {
 			mainFrame.setVisible(!b);
@@ -210,19 +219,27 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 
 	/**
 	 * Loads projects from repository in background
+	 * 
+	 * @param b
 	 */
-	private void loadProjects(boolean forceChange) {
+	private void loadProjects(boolean forceChange, boolean silence) {
 		if (loadedProjects == null || loadedProjects.isEmpty() || forceChange) {
 			if (loadedProjects != null)
 				loadedProjects.clear();
-			LoadProjectsTask loadProjectsThread = new LoadProjectsTask(this);
-			loadProjectsThread.addPropertyChangeListener(this);
-			loadProjectsThread.execute();
+			loadProjectsFromDisk(silence);
 
 		} else {
 			showLoadedProjectTable();
 		}
 
+	}
+
+	private void loadProjectsFromDisk(boolean silence) {
+		LoadProjectsTask loadProjectsThread = new LoadProjectsTask(this);
+		if (!silence) {
+			loadProjectsThread.addPropertyChangeListener(this);
+		}
+		loadProjectsThread.execute();
 	}
 
 	public void initMetadataCombo(String selectedConfigurationName, ControlVocabularyManager cvManager) {
@@ -245,8 +262,6 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 		}
 		if (!metadataList.isEmpty() && !"".equals(metadataList.get(0))) {
 			appendStatus("Metadata templates loaded.");
-		} else {
-			appendStatus("No metadata templates found in the file system.");
 		}
 	}
 
@@ -297,10 +312,9 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 		jScrollPane2 = new javax.swing.JScrollPane();
 		jPanel5 = new javax.swing.JPanel();
 		jComboBoxMetadata = new javax.swing.JComboBox<String>();
-		jComboBoxMetadata.setEnabled(false);
+
 		jLabelMiapeMSMetadata = new javax.swing.JLabel();
 		jButtonEditMetadata = new javax.swing.JButton();
-		jButtonEditMetadata.setEnabled(false);
 		jPanel2 = new javax.swing.JPanel();
 		jTextFieldProjectName = new javax.swing.JTextField();
 		jButtonProject = new javax.swing.JButton();
@@ -719,8 +733,9 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 						.addContainerGap()));
 		jPanel1.setLayout(jPanel1Layout);
 
-		jPanel2.setBorder(new TitledBorder(null, "Select (or create) a project name", TitledBorder.LEADING,
-				TitledBorder.TOP, null, null));
+		jPanel2.setBorder(new TitledBorder(null,
+				"Type a name to create a new project, or select one from the list (çlick on 'Select project')",
+				TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		jPanel2.setToolTipText(
 				"<html>Write directly a new project name to create a new<br>\n project in which the data will be stored.</html>");
 
@@ -876,8 +891,6 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 	}
 
 	private void jRadioButtonPepXMLSelected() {
-		jComboBoxMetadata.setEnabled(false);
-		jButtonEditMetadata.setEnabled(false);
 
 		// the same as for mzIdentML
 		jRadioButtonMzIdentMLActionPerformed();
@@ -919,8 +932,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 	}
 
 	protected void jRatioButtonTabseparatedTextFileActionPerformed() {
-		jComboBoxMetadata.setEnabled(false);
-		jButtonEditMetadata.setEnabled(false);
+
 		jComboBoxTableSeparators.setEnabled(jRatioButtonTabseparatedTextFile.isSelected());
 
 		// the same as for mzIdentML
@@ -938,8 +950,8 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 		if (!jCheckBoxMS.isSelected()) {
 			jComboBoxMetadata.setSelectedIndex(0);
 		}
-		jComboBoxMetadata.setEnabled(jCheckBoxMS.isSelected());
-		jButtonEditMetadata.setEnabled(jCheckBoxMS.isSelected());
+		// jComboBoxMetadata.setEnabled(jCheckBoxMS.isSelected());
+		// jButtonEditMetadata.setEnabled(jCheckBoxMS.isSelected());
 	}
 
 	private void jButtonEditMetadataActionPerformed(java.awt.event.ActionEvent evt) {
@@ -965,11 +977,11 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 			metadataLoader.addPropertyChangeListener(this);
 			metadataLoader.execute();
 
-			if (metadataFileName != null && !"".equals(metadataFileName)) {
-				jCheckBoxMS.setSelected(true);
-			} else {
-				jCheckBoxMS.setSelected(false);
-			}
+			// if (metadataFileName != null && !"".equals(metadataFileName)) {
+			// jCheckBoxMS.setSelected(true);
+			// } else {
+			// jCheckBoxMS.setSelected(false);
+			// }
 		}
 	}
 
@@ -1058,8 +1070,6 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 	}
 
 	private void jRadioButtonXTandemActionPerformed() {
-		jComboBoxMetadata.setEnabled(false);
-		jButtonEditMetadata.setEnabled(false);
 
 		// the same as for mzIdentML
 		jRadioButtonMzIdentMLActionPerformed();
@@ -1073,8 +1083,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 	}
 
 	private void jRadioButtonDTASelectActionPerformed() {
-		jComboBoxMetadata.setEnabled(false);
-		jButtonEditMetadata.setEnabled(false);
+
 		// disable and not select MIAPE MS
 		jCheckBoxMS.setEnabled(false);
 		jCheckBoxMS.setSelected(false);
@@ -1103,8 +1112,6 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 	}
 
 	private void jRadioButtonMzIdentMLActionPerformed() {
-		jComboBoxMetadata.setEnabled(false);
-		jButtonEditMetadata.setEnabled(false);
 
 		// disable and not select MIAPE MS
 		jCheckBoxMS.setEnabled(false);
@@ -1124,8 +1131,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 	}
 
 	private void jRadioButtonPRIDEActionPerformed(java.awt.event.ActionEvent evt) {
-		jComboBoxMetadata.setEnabled(false);
-		jButtonEditMetadata.setEnabled(false);
+
 		// disable additional data labels
 		// enable and check MIAPE MS checkbox
 		jCheckBoxMS.setEnabled(true);
@@ -1439,7 +1445,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 	private void jButtonProjectActionPerformed(java.awt.event.ActionEvent evt) {
 		appendStatus("Opening project table");
 		showProjectTable = true;
-		loadProjects(true);
+		loadProjects(true, true);
 
 	}
 
@@ -1515,7 +1521,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 	private javax.swing.JTextArea jTextAreaStatus;
 	private javax.swing.JTextField jTextFieldInputFile;
 	private javax.swing.JTextField jTextFieldInputFile2;
-	private javax.swing.JTextField jTextFieldProjectName;
+	private JTextField jTextFieldProjectName;
 	// End of variables declaration//GEN-END:variables
 
 	private TFrmInputTable additionalDataForm;
@@ -1587,12 +1593,12 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 			FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_MZML);
 			initMetadataCombo(null, getControlVocabularyManager());
 			// load new projects
-			loadProjects(false);
+			loadProjects(false, true);
 		} else if (MiapeExtractionTask.MIAPE_MS_CREATED_DONE.equals(evt.getPropertyName())) {
 			File miapeIDString = (File) evt.getNewValue();
 			log.info("Miape MS created done finished: " + miapeIDString.getAbsolutePath());
 			// load new projects
-			loadProjects(false);
+			loadProjects(false, true);
 		} else if (OntologyLoaderWaiter.ONTOLOGY_LOADED.equals(evt.getPropertyName())) {
 			ControlVocabularyManager cvManager = (ControlVocabularyManager) evt.getNewValue();
 			appendStatus("Ontologies loaded.");
@@ -1627,6 +1633,10 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 
 		} else if (LoadProjectsTask.PROJECT_LOADED_DONE.equals(evt.getPropertyName())) {
 			showLoadedProjectTable();
+			// ArrayList<String> list = new ArrayList<String>();
+			// list.addAll(loadedProjects.valueCollection());
+			// AutoCompleteDecorator.decorate(this.jTextFieldProjectName, list,
+			// false);
 		} else if (MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE.equals(evt.getPropertyName())) {
 			appendStatus("Copying file '" + evt.getNewValue() + "' to the local file structure");
 		} else if (MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE.equals(evt.getPropertyName())) {
@@ -1995,16 +2005,16 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 	@Override
 	public List<String> getHelpMessages() {
 		String[] array = { "Import datasets into PACOM:", //
-				"Here is the steps you have to follow:", //
+				"<b>How to import datasets:</b>", //
 
 				"1. Select the <b>type of input file</b> you are going to import. "
 						+ "You can either select it from the '<i>Input type</i>' panel or from the '<i>Input type + MS data file</i>' panel.", //
 
 				"If you select one of option in <i>'Input type + MS data file'</i> panel, "
-						+ "you will be able to import a peak list file (MGF file) and "
+						+ "you will be able to import a spectra file (MGF or MZML file) and "
 						+ "a <i>Mass Spectrometry metadata template</i>. "
 						+ "This option is useful in case you want to generate a <i>PRIDE XML</i> "
-						+ "file containing the spectra from the peak list file.", //
+						+ "file containing the mass spectra.", //
 
 				"2. Select the <b>Input file(s)</b> from your file system using the file selectors in the top.", //
 
@@ -2015,9 +2025,14 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 				"If you type a new project name, it will appear the next time you click on <i>'Select project'</i>.", //
 
 				"4. Click on <b>'Import data'</b> to start the import data process.", //
-
-				"Click on <b>'Go to Data Inspection</b> to go directly to the <i>Comparison Project Manager</i> "
-						+ "without the need of going through the main dialog." };
+				"<b>Other buttons:</b>", //
+				"- Click on <b>'Go to Data Inspection</b> to go directly to the <i>Comparison Project Manager</i> "
+						+ "without the need of going through the main dialog.", //
+				"- Click on the small <b>'?'</b> button for help about the format of the <i>table text input file</i>", //
+				"Mass spectrometry metadata template <b>'Edit'</b> button: clicking here will open the <i>mass spectrometry metadata editor</i>."
+						+ " After saving some metadata under a name in that editor,"
+						+ " it will be available for being selected at the drop-down menu of <i>mass spectrometry metadatas</i>.", //
+				"- Click on <i>'Go to Comparison Project Manager'</i> to close this window and go directly to the Comparison Project Manager." };
 		return Arrays.asList(array);
 	}
 
