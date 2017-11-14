@@ -2,12 +2,13 @@
 START	1
 MGF	\full\path\to\your\mgf_file1.mgf
 PROJECT	project_name
-METADATA	miape_ms_metadata_template_name	
+METADATA	ms_metadata_template_name	
 END
 
+# this second job wil import a mzIdentML and it will use the Mass Spectrometry dataset imported in job 1 with the mgf + the MS metadata template
 START	2
+MS_JOB_REF	1
 MZIDENTML	\full\path\to\your\mzIdentML_file2.mzid
 PROJECT	project_name
-METADATA	miape_ms_metadata_template_name	
 END
 
