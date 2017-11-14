@@ -83,6 +83,47 @@ public class ExtendedJTree extends JTree {
 		return null;
 	}
 
+	/**
+	 * This method takes the node string and traverses the tree till it finds
+	 * the node matching the string. If the match is found the node is returned
+	 * else null is returned. It keeps looking for the node until it gets a node
+	 * with the same string and with the same level.
+	 *
+	 * @param nodeStr
+	 *            node string to search for
+	 * @param level
+	 *            level, starting by 0 as the root level
+	 * @return tree node
+	 */
+	public DefaultMutableTreeNode searchNode(String nodeStr, int level) {
+		DefaultMutableTreeNode node = null;
+
+		// Get the enumeration
+		Enumeration enumer = ((DefaultMutableTreeNode) getModel().getRoot()).breadthFirstEnumeration();
+
+		// iterate through the enumeration
+		while (enumer.hasMoreElements()) {
+			// get the node
+			node = (DefaultMutableTreeNode) enumer.nextElement();
+			// match the string with the user-object of the node
+			if (node.getUserObject().toString().startsWith(nodeStr)) {
+				final int levelFromNode = getLevelFromNode(node);
+				if (levelFromNode == level) {
+					// tree node with string found
+					return node;
+				}
+			}
+		}
+
+		// tree node with string node found return null
+		return null;
+	}
+
+	private int getLevelFromNode(DefaultMutableTreeNode node) {
+		final TreeNode[] path = node.getPath();
+		return path.length - 1;
+	}
+
 	public DefaultMutableTreeNode searchNodeByPath(TreePath selectionPath) {
 		DefaultMutableTreeNode node = null;
 
@@ -338,17 +379,35 @@ public class ExtendedJTree extends JTree {
 		return false;
 	}
 
-	public void selectNode(String nodeName) {
+	public boolean selectNode(String nodeName) {
 		final DefaultMutableTreeNode foundNode = searchNode(nodeName);
 		if (foundNode != null) {
 			setSelectionPath(new TreePath(foundNode.getPath()));
+			return true;
 		}
+		return false;
 	}
 
-	public void selectNode(DefaultMutableTreeNode node) {
+	public boolean selectNode(String nodeName, int level) {
+		final DefaultMutableTreeNode foundNode = searchNode(nodeName, level);
+		if (foundNode != null) {
+			setSelectionPath(new TreePath(foundNode.getPath()));
+			return true;
+		}
+		return false;
+	}
+
+	public boolean selectRoot() {
+		DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) getModel().getRoot();
+		return selectNode(rootNode);
+	}
+
+	public boolean selectNode(DefaultMutableTreeNode node) {
 		if (node != null) {
 			setSelectionPath(new TreePath(node.getPath()));
+			return true;
 		}
+		return false;
 		// this.expandAll();
 	}
 
