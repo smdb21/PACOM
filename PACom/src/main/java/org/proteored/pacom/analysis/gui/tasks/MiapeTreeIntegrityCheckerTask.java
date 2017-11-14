@@ -93,7 +93,8 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 				for (CPExperiment cpExperiment : cpExperiments) {
 					if (uniqueIds.contains(cpExperiment.getName())) {
 						throw new IllegalMiapeArgumentException("'" + cpExperiment.getName()
-								+ "' node name is repeated. You can not name different nodes with the same name. Please rename one of them with a unique name");
+								+ "' node name is repeated. You can not name different nodes with the same name."
+								+ " Please rename one of them with a unique name");
 					}
 					uniqueIds.add(cpExperiment.getName());
 					setProgress(n * 100 / total);
@@ -104,7 +105,8 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 							String uniqueName = cpExperiment.getName() + cpReplicate.getName();
 							if (uniqueIds.contains(uniqueName)) {
 								throw new IllegalMiapeArgumentException("'" + cpReplicate.getName()
-										+ "' node name is repeated. You can not name different nodes with the same name. Please rename one of them with a unique name");
+										+ "' node name is repeated. You can not name different nodes with the same name."
+										+ " Please rename one of them with a unique name");
 							}
 							uniqueIds.add(uniqueName);
 							List<String> repScoreNames = new ArrayList<String>();
@@ -159,8 +161,8 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 											}
 											Collections.sort(repScoreNames);
 										} else {
-											String message = "<html>Some MIAPEs seems to have been searched by different search engines in level 2 node "
-													+ "'" + cpExperiment.getName()
+											String message = "<html>Some datasets seems to have been searched by different search engines"
+													+ " in level 2 node " + "'" + cpExperiment.getName()
 													+ "'<br>If you continue, you will not be able to apply a valid FDR threshold at level 2."
 													+ "<br>Do you want to continue?</html>";
 
@@ -199,19 +201,16 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 		}
 		// if there is more than one database name, throw a warning
 		if (databaseNames.size() > 1) {
-			throw new IllegalMiapeArgumentException(
-					"<html><b>Warning:</b><br>" + "Not all data have been searched with the same protein database:<br>"
-							+ "'" + getCSVStringFromStringList(databaseNames) + "'<br>"
-							+ "If you continue it is possible that identifiers from different databases<br>"
-							+ "will not have the same format and the comparisons will not be performed correctly.<br>"
-							+ "Do you want to continue?</html>");
+			throw new IllegalMiapeArgumentException("<html><b>Warning:</b><br>"
+					+ "Not all datasets have been searched with the same protein database:<br>" + "'"
+					+ getCSVStringFromStringList(databaseNames) + "'<br>"
+					+ "If you continue it is possible that identifiers from different databases<br>"
+					+ "will not have the same format and the comparisons will not be performed correctly." + "</html>");
 		}
 		if (!listofNonExistingFiles.isEmpty()) {
 			// Check if they are in the UnnatendedRetriever waiting to be
 			// dowloaded
 			List<Integer> miapesNotBeingDownloaded = new ArrayList<Integer>();
-			List<Integer> miapesWaitingToBeDownloaded = new ArrayList<Integer>();
-			List<Integer> miapesBeingDownloaded = new ArrayList<Integer>();
 			for (Integer miapeId : listofNonExistingFiles) {
 				miapesNotBeingDownloaded.add(miapeId);
 
@@ -220,23 +219,9 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 					+ FileManager.getMiapeDataPath() + ".<br>" + "Some datasets in the comparison project";
 			if (!miapesNotBeingDownloaded.isEmpty()) {
 				message = message + " ('" + getCSVStringFromIntegerList(miapesNotBeingDownloaded)
-						+ "') are not being downloaded from server."
-						+ "<br>Please, go back and login in the ProteoRed MIAPE repository.<br>";
-
-			} else {
-				if (!miapesBeingDownloaded.isEmpty()) {
-					message = message + " ('" + getCSVStringFromIntegerList(miapesBeingDownloaded)
-							+ "') are still being downloaded from server."
-							+ "<br>Please, wait some minutes and then try again.<br>";
-				} else if (!miapesWaitingToBeDownloaded.isEmpty()) {
-					message = message + " ('" + getCSVStringFromIntegerList(miapesWaitingToBeDownloaded)
-							+ "') are waiting in the queue for being downloaded from server."
-							+ "<br>Please, wait some minutes and then try again.<br>";
-				}
-
+						+ "') are not being downloaded from server.";
 			}
 
-			message = message + "If you continue some data will be missing.<br>" + "Do you want to continue?</html>";
 			throw new IllegalMiapeArgumentException(message);
 		}
 		// check names
@@ -278,8 +263,8 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 					String expName = cpExperiment.getName();
 					if (experimentNames.contains(expName))
 						throw new IllegalMiapeArgumentException(
-								"<html>Error in project tree.<br>Experiment name duplicated: '" + expName
-										+ "'.<br>If two experiments have the same name, some charts can show not valid data!.<br>Do you want to continue?</html>");
+								"<html>Error in comparison project tree.<br>Level 1 node name duplicated: '" + expName
+										+ "'.<br>If two experiments have the same name, some charts can show not valid data!.</html>");
 					else
 						experimentNames.add(expName);
 					final List<CPReplicate> replicates = cpExperiment.getCPReplicate();
@@ -288,23 +273,28 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 						for (CPReplicate cpReplicate : replicates) {
 							thereIsAReplicate = true;
 							String repName = cpReplicate.getName();
-							if (replicateNames.contains(repName))
+							if (replicateNames.contains(repName)) {
 								throw new IllegalMiapeArgumentException(
-										"<html>Error in project tree: Replicate name duplicated: '" + repName
-												+ "' in experiment: '" + expName
-												+ "'.<br>Do you want to continue?</html>");
-							else
+										"<html>Error in comparison project tree.<br>Level 2 node name duplicated: '"
+												+ repName + "' in level 1 node: '" + expName + "'.</html>");
+							} else {
 								replicateNames.add(repName);
+							}
+							if (cpReplicate.getCPMSIList() == null || cpReplicate.getCPMSIList().getCPMSI().isEmpty()) {
+								throw new IllegalMiapeArgumentException("<html>Error in comparison project tree.<br>"
+										+ "Level 2 node '" + repName + "' is not associated with any dataset.<br>"
+										+ "In order to associate a dataset to it, just select it, and <br>double click on one dataset from the left tree</html>");
+							}
 						}
 					}
 				}
 				if (!thereIsAReplicate) {
 					throw new IllegalMiapeArgumentException(
-							"<html>Error in project tree: A replicate is needed.<br>Do you want to continue?</html>");
+							"<html>Error in comparison project tree.<br>At least a level 2 node is needed.</html>");
 				}
 			} else {
 				throw new IllegalMiapeArgumentException(
-						"<html>Error in project tree: An experiment is needed.<br>Do you want to continue?</html>");
+						"<html>Error in project tree.<br>At least a level 1 and a level 2 node is needed.</html>");
 			}
 		}
 	}
