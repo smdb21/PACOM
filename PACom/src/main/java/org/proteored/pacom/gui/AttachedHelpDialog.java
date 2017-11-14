@@ -53,7 +53,6 @@ public class AttachedHelpDialog extends JDialog {
 	private Style italicText;
 	private Style headingText;
 	private JTextPane textPane;
-	private boolean scrolledToBeggining = false;
 	private Style subheadingText;
 
 	/**
@@ -112,12 +111,18 @@ public class AttachedHelpDialog extends JDialog {
 				boolean lookingForItalicStart = true;
 				boolean insideBold = false;
 				boolean insideItalic = false;
+				boolean firstTime = true;
 				for (int i = 0; i < helpMessages.size(); i++) {
 					String helpMessage = helpMessages.get(i);
+					if (firstTime) {
+						helpMessage = helpMessage.trim();
+						firstTime = false;
+					}
 
 					if (helpMessage.startsWith(HTML_BOLD_START) && helpMessage.endsWith(HTML_BOLD_END)) {
 						this.document.insertString(document.getLength(), removeHTMLTags(helpMessage) + "\n",
 								subheadingText);
+						firstTime = true;
 						continue;
 					}
 
@@ -185,6 +190,7 @@ public class AttachedHelpDialog extends JDialog {
 					}
 
 					this.document.insertString(document.getLength(), "\n", style);
+					firstTime = true;
 				}
 
 			} catch (BadLocationException e) {
@@ -198,10 +204,10 @@ public class AttachedHelpDialog extends JDialog {
 		// scroll to beginning
 		Rectangle r;
 		try {
-			r = textPane.modelToView(0);
+			r = textPane.modelToView(1);
 			if (r != null) {
 				textPane.scrollRectToVisible(r);
-				scrolledToBeggining = true;
+				textPane.repaint();
 			}
 		} catch (BadLocationException e) {
 			e.printStackTrace();
@@ -237,10 +243,10 @@ public class AttachedHelpDialog extends JDialog {
 		this.subheadingText = sc.addStyle("subheadingText", regularText);
 		StyleConstants.setBold(subheadingText, true);
 		StyleConstants.setForeground(subheadingText, Color.decode("0x000099"));
-		StyleConstants.setFontSize(subheadingText, 13);
+		StyleConstants.setFontSize(subheadingText, 14);
 		StyleConstants.setItalic(subheadingText, true);
 		StyleConstants.setSpaceBelow(subheadingText, 8);
-
+		StyleConstants.setSpaceAbove(subheadingText, 30);
 		// italic text
 		this.italicText = sc.addStyle("italicText", regularText);
 		StyleConstants.setItalic(italicText, true);
@@ -494,12 +500,12 @@ public class AttachedHelpDialog extends JDialog {
 				super.setVisible(b);
 				positionNextToParent();
 				parentFrame.requestFocus();
-				if (!scrolledToBeggining) {
-					scrollToBeginning();
-				}
+				// if (!scrolledToBeggining) {
+				scrollToBeginning();
+				// }
 			}
 		} else {
-			log.info("setting help dialog visible to " + b);
+			log.debug("setting help dialog visible to " + b);
 			super.setVisible(b);
 		}
 	}
