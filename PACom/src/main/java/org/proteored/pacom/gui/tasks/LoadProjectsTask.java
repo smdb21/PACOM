@@ -54,8 +54,7 @@ public class LoadProjectsTask extends SwingWorker<Void, Void> {
 			return getLocalCachedProjects();
 		try {
 			log.info("Loading projects from local folder");
-			firePropertyChange(MiapeExtractionTask.NOTIFICATION, null,
-					"Pre-loading projects from local file system...");
+			firePropertyChange(MiapeExtractionTask.NOTIFICATION, null, "Loading projects from local file system...");
 			final List<String> localMIAPEProjects = FileManager.getlocalMIAPEProjects();
 			TIntObjectHashMap<String> projectsHashMap = new TIntObjectHashMap<String>();
 			int counter = 1;
