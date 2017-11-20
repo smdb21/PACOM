@@ -859,20 +859,20 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 				+ "</b>' followed by a <b>job number</b>, and ends with '<b>"
 				+ MiapeExtractionBatchManager.END_MIAPE_EXTRACTION + "</b>'.");
 		ret.add("In each block you need to specify the following items (each one in one line):");
-		ret.add("- (Mandatory) One '<b>" + MiapeExtractionBatchManager.MIAPE_PROJECT
-				+ "</b>' element followed by a name of the project. It is just a way of organizing the data into the system, so it will appear under that folder when creating the inspection project.");
-		ret.add("- (Mandatory) One input type element (<b>" + MiapeExtractionBatchManager.getInputTypesString()
-				+ "</b>) followed by the full path to the input file.");
-		ret.add("- (Optional) One '<b>" + MiapeExtractionBatchManager.METADATA
-				+ "</b>' element followed by the name of a MS metadata template previously generated (in single Data Import option).");
-		ret.add("- (Optional) One '<b>" + MiapeExtractionBatchManager.MS_JOB_REF
+		ret.add("- One '<b>" + MiapeExtractionBatchManager.MIAPE_PROJECT
+				+ "</b>' element followed by a name of the project. It is just a way of organizing the data into the system, so it will appear under that folder when creating the inspection project. (Mandatory)");
+		ret.add("- One input type element (<b>" + MiapeExtractionBatchManager.getInputTypesString()
+				+ "</b>) followed by the full path to the input file. (Mandatory)");
+		ret.add("- One '<b>" + MiapeExtractionBatchManager.METADATA
+				+ "</b>' element followed by the name of a MS metadata template previously generated (in single Data Import option). (Optional)");
+		ret.add("- One '<b>" + MiapeExtractionBatchManager.MS_JOB_REF
 				+ "</b>' element followed by the job number of a previous job in which a MS dataset has been generated, that is, using '<b>"
 				+ MiapeExtractionBatchManager.MGF + "</b>' or '<b>" + MiapeExtractionBatchManager.MZML
-				+ "</b>' input data files alone. This will link the MS dataset to the identification dataset specified in the same job.");
+				+ "</b>' input data files alone. This will link the MS dataset to the identification dataset specified in the same job. (Optional)");
 		ret.add("<b>Start dataset import batch</b>");
 		ret.add("1. Select and load the batch import text file. It will be validated, so if it contains some error they will be detected and shown. If everything is ok, you will see a dataset import job in the <b>job queue</b>.");
-		ret.add("2. After that, you can start all jobs sequencially by clicking on <i>'Start batch import'</i> button. The jobs will be processed one by one in order.");
-		ret.add("3. Alternativelly, you can start the process by a different job, by clicking on its respective <i>'start'</i> button. After its completion, subsequent jobs will be processed.");
+		ret.add("2. After that, you can start all jobs sequencially by clicking on <b>'Start batch import'</b> button. The jobs will be processed one by one in order.");
+		ret.add("3. Alternativelly, you can start the process by a different job, by clicking on its respective <b>'start'</b> button. After its completion, subsequent jobs will be processed.");
 		ret.add("<b>Other buttons</b> ");
 		ret.add("- <b>Reload input file</b>: it reads again the selected input file.");
 		ret.add("- <b>cancel</b>: it cancels an ongoing import process.");
