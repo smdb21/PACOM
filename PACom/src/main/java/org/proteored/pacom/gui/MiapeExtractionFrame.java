@@ -161,7 +161,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 		}
 		changeRadioStatus();
 		// Load projects in background
-		loadProjects(false, false);
+		loadProjects(false, true);
 
 		FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_MZML);
 		FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_PRIDEXML);
@@ -1445,7 +1445,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 	private void jButtonProjectActionPerformed(java.awt.event.ActionEvent evt) {
 		appendStatus("Opening project table");
 		showProjectTable = true;
-		loadProjects(true, true);
+		loadProjects(true, false);
 
 	}
 
