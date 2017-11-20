@@ -115,7 +115,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 						params.setId(Integer.valueOf(split[1]));
 					} else if (strLine.startsWith(MZIDENTML)) {
 						String[] split = strLine.split("\t");
-						params.setMzIdentMLFileName(split[1]);
+						params.setMzIdentMLFileName(getLocationOfFile(split[1]));
 						params.setMIAPEMSIChecked(true);
 						File inputFile = new File(params.getMzIdentMLFileName());
 						if (!inputFile.exists() || !inputFile.isFile())
@@ -126,14 +126,14 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 					} else if (strLine.startsWith(MGF)) {
 						String[] split = strLine.split("\t");
 						params.setMgfFileName(split[1]);
-						File inputFile = new File(params.getMgfFileName());
+						File inputFile = new File(getLocationOfFile(params.getMgfFileName()));
 						if (!inputFile.exists() || !inputFile.isFile())
 							throw new IllegalMiapeArgumentException("File not found: " + params.getMgfFileName());
 						params.addInputFile(inputFile);
 						params.setMIAPEMSChecked(true);
 					} else if (strLine.startsWith(MZML)) {
 						String[] split = strLine.split("\t");
-						params.setMzMLFileName(split[1]);
+						params.setMzMLFileName(getLocationOfFile(split[1]));
 						File inputFile = new File(params.getMzMLFileName());
 						if (!inputFile.exists() || !inputFile.isFile())
 							throw new IllegalMiapeArgumentException("File not found: " + params.getMzMLFileName());
@@ -141,14 +141,15 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 						params.setMIAPEMSChecked(true);
 					} else if (strLine.startsWith(PRIDE)) {
 						String[] split = strLine.split("\t");
-						params.setPRIDEXMLFileName(split[1]);
+						params.setPRIDEXMLFileName(getLocationOfFile(split[1]));
 						File inputFile = new File(params.getPRIDEXMLFileName());
 						if (!inputFile.exists() || !inputFile.isFile())
 							throw new IllegalMiapeArgumentException("File not found: " + params.getPRIDEXMLFileName());
 						params.addInputFile(inputFile);
+						params.setMIAPEMSIChecked(true);
 					} else if (strLine.startsWith(XTANDEM)) {
 						String[] split = strLine.split("\t");
-						params.setxTandemFileName(split[1]);
+						params.setxTandemFileName(getLocationOfFile(split[1]));
 						File inputFile = new File(params.getXTandemFileName());
 						if (!inputFile.exists() || !inputFile.isFile())
 							throw new IllegalMiapeArgumentException("File not found: " + params.getXTandemFileName());
@@ -156,7 +157,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 						params.setMIAPEMSIChecked(true);
 					} else if (strLine.startsWith(DTASELECT)) {
 						String[] split = strLine.split("\t");
-						params.setDtaSelectFileName(split[1]);
+						params.setDtaSelectFileName(getLocationOfFile(split[1]));
 						File inputFile = new File(params.getDtaSelectFileName());
 						if (!inputFile.exists() || !inputFile.isFile())
 							throw new IllegalMiapeArgumentException("File not found: " + params.getDtaSelectFileName());
@@ -164,7 +165,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 						params.setMIAPEMSIChecked(true);
 					} else if (strLine.startsWith(PEPXML)) {
 						String[] split = strLine.split("\t");
-						params.setPepXMLFileName(split[1]);
+						params.setPepXMLFileName(getLocationOfFile(split[1]));
 						File inputFile = new File(params.getPepXMLFileName());
 						if (!inputFile.exists() || !inputFile.isFile())
 							throw new IllegalMiapeArgumentException("File not found: " + params.getPepXMLFileName());
@@ -172,7 +173,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 						params.setMIAPEMSIChecked(true);
 					} else if (strLine.startsWith(TEXT_DATA_TABLE)) {
 						String[] split = strLine.split("\t");
-						params.setTSVFileName(split[1]);
+						params.setTSVFileName(getLocationOfFile(split[1]));
 						File inputFile = new File(params.getTSVSelectFileName());
 						if (!inputFile.exists() || !inputFile.isFile())
 							throw new IllegalMiapeArgumentException("File not found: " + params.getTSVSelectFileName());
@@ -262,6 +263,31 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 				}
 			}
 		}
+	}
+
+	/**
+	 * It checks whether the file exists or not. If exists, it returns the file
+	 * path. If not, it will try it to localize the file as a relative path to
+	 * the application.
+	 * 
+	 * @param string
+	 * @return
+	 */
+	private String getLocationOfFile(String filePath) {
+		if (filePath != null) {
+			File file = new File(filePath.trim());
+			if (file.exists()) {
+				return file.getAbsolutePath();
+			} else {
+				file = new File(System.getProperty("user.dir") + File.separator + filePath);
+				if (file.exists()) {
+					log.info("File '" + filePath + "' found at application folder " + file.getParent());
+					return file.getAbsolutePath();
+				}
+			}
+		}
+		// do nothing and return the same as input
+		return filePath;
 	}
 
 	/**
