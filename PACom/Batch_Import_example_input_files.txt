@@ -1,0 +1,22 @@
+
+START	1
+MZIDENTML	example_input_files\mzIdentML.mzid
+PROJECT	input files examples
+END
+
+START	2
+DTASELECT	example_input_files\DTASelect-filter.txt
+PROJECT	input files examples
+END
+
+START	3
+PEPXML	example_input_files\pepXML.xml
+PROJECT	input files examples
+END
+
+START	4
+PRIDE	example_input_files\PRIDE.xml
+PROJECT	input files examples
+END
+ 
+
