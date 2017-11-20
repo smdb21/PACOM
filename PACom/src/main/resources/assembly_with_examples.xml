@@ -79,7 +79,13 @@
             </includes>
             <outputDirectory>${assembly.output.folder}</outputDirectory>
         </fileSet>
-        
+        <fileSet>
+            <directory>example_input_files</directory>
+            <includes>
+                <include>*.*</include>
+            </includes>
+            <outputDirectory>${assembly.output.folder}/example_input_files</outputDirectory>
+        </fileSet>
     </fileSets>
 
 
