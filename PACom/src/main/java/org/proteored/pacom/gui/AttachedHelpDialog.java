@@ -54,6 +54,7 @@ public class AttachedHelpDialog extends JDialog {
 	private Style headingText;
 	private JTextPane textPane;
 	private Style subheadingText;
+	private JScrollPane scrollPane;
 
 	/**
 	 * @wbp.parser.constructor
@@ -85,7 +86,7 @@ public class AttachedHelpDialog extends JDialog {
 		}
 		this.parentFrame = parentWindow;
 
-		JScrollPane scrollPane = new JScrollPane();
+		scrollPane = new JScrollPane();
 		scrollPane.setBorder(null);
 		scrollPane.setViewportBorder(null);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -197,17 +198,19 @@ public class AttachedHelpDialog extends JDialog {
 				e.printStackTrace();
 			}
 		}
-
+		log.info("Messages added to help window");
 	}
 
 	private void scrollToBeginning() {
+
 		// scroll to beginning
 		Rectangle r;
 		try {
-			r = textPane.modelToView(1);
+			textPane.repaint();
+			r = textPane.modelToView(textPane.getDocument().getStartPosition().getOffset());
 			if (r != null) {
+				log.info("scrolling to the top " + r);
 				textPane.scrollRectToVisible(r);
-				textPane.repaint();
 			}
 		} catch (BadLocationException e) {
 			e.printStackTrace();
@@ -225,7 +228,7 @@ public class AttachedHelpDialog extends JDialog {
 		StyleConstants.setSpaceAbove(regularText, 1);
 		StyleConstants.setSpaceBelow(regularText, 3);
 		StyleConstants.setLeftIndent(regularText, 10);
-		StyleConstants.setRightIndent(regularText, 10);
+		StyleConstants.setRightIndent(regularText, 12);
 		// StyleConstants.setFirstLineIndent(regularText, 20);
 
 		// bold text
@@ -305,7 +308,7 @@ public class AttachedHelpDialog extends JDialog {
 
 			@Override
 			public void componentResized(ComponentEvent e) {
-				log.info(e.getID());
+				log.debug(e.getID());
 				AttachedHelpDialog.this.setVisible(true);
 
 			}
@@ -345,7 +348,7 @@ public class AttachedHelpDialog extends JDialog {
 
 			@Override
 			public void windowIconified(WindowEvent e) {
-				log.info(e.getID() + " from " + e.getOldState() + " to " + e.getNewState());
+				log.debug(e.getID() + " from " + e.getOldState() + " to " + e.getNewState());
 				minimized = true;
 				AttachedHelpDialog.this.setVisible(false);
 
@@ -370,7 +373,7 @@ public class AttachedHelpDialog extends JDialog {
 			public void windowDeactivated(WindowEvent e) {
 				log.debug(
 						e.getID() + " from " + e.getOldState() + " to " + e.getNewState() + " minimized=" + minimized);
-				AttachedHelpDialog.this.setVisible(false);
+				// AttachedHelpDialog.this.setVisible(false);
 			}
 
 		});
@@ -501,7 +504,6 @@ public class AttachedHelpDialog extends JDialog {
 				positionNextToParent();
 				parentFrame.requestFocus();
 				// if (!scrolledToBeggining) {
-				scrollToBeginning();
 				// }
 			}
 		} else {
@@ -513,6 +515,8 @@ public class AttachedHelpDialog extends JDialog {
 	public void forceVisible() {
 		minimized = false;
 		setVisible(true);
+		scrollToBeginning();
+
 	}
 
 	@Override
