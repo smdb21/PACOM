@@ -10,25 +10,26 @@ public class MiapeExtractionParametersUtil {
 		String ret = "";
 		// String miape_extraction = "";
 		if (params.isMzIdentMLPlusMGFSelected()) {
-			ret = ret + "MGF (" + FilenameUtils.getName(new File(params.getMgfFileName()).getAbsolutePath())
-					+ ") + <br> mzIdentML("
-					+ FilenameUtils.getName(new File(params.getMzIdentMLFileName()).getAbsolutePath()) + ")";
+			ret = ret + "MGF <i>(" + FilenameUtils.getName(new File(params.getMgfFileName()).getAbsolutePath())
+					+ ")</i> + <br> mzIdentML<i>("
+					+ FilenameUtils.getName(new File(params.getMzIdentMLFileName()).getAbsolutePath()) + ")</i>";
 			// miape_extraction = "MS & MSI";
 		} else if (params.isMzMLPlusMzIdentMLSelected()) {
-			ret = ret + "mzML (" + FilenameUtils.getName(new File(params.getMzMLFileName()).getAbsolutePath())
-					+ ") + <br> mzIdentML ("
-					+ FilenameUtils.getName(new File(params.getMzIdentMLFileName()).getAbsolutePath()) + ")";
+			ret = ret + "mzML <i>(" + FilenameUtils.getName(new File(params.getMzMLFileName()).getAbsolutePath())
+					+ ")</i> + <br> mzIdentML <i>("
+					+ FilenameUtils.getName(new File(params.getMzIdentMLFileName()).getAbsolutePath()) + ")</i>";
 			// miape_extraction = "MS & MSI";
 		} else if (params.isMzIdentMLSelected()) {
-			ret = ret + "mzIdentML (" + FilenameUtils.getName(new File(params.getMzIdentMLFileName()).getAbsolutePath())
-					+ ")";
+			ret = ret + "mzIdentML <i>("
+					+ FilenameUtils.getName(new File(params.getMzIdentMLFileName()).getAbsolutePath()) + ")</i>";
 			// miape_extraction = "MSI";
 		} else if (params.isMzMLSelected()) {
-			ret = ret + "mzML (" + FilenameUtils.getName(new File(params.getMzMLFileName()).getAbsolutePath()) + ")";
+			ret = ret + "mzML <i>(" + FilenameUtils.getName(new File(params.getMzMLFileName()).getAbsolutePath())
+					+ ")</i>";
 			// miape_extraction = "MS";
 		} else if (params.isPRIDESelected()) {
-			ret = ret + "PRIDE XML (" + FilenameUtils.getName(new File(params.getPRIDEXMLFileName()).getAbsolutePath())
-					+ ")";
+			ret = ret + "PRIDE XML <i>("
+					+ FilenameUtils.getName(new File(params.getPRIDEXMLFileName()).getAbsolutePath()) + ")</i>";
 			// if (params.isMIAPEMSChecked() && params.isMIAPEMSIChecked())
 			// miape_extraction = "MS & MSI";
 			// else if (params.isMIAPEMSChecked())
@@ -36,39 +37,39 @@ public class MiapeExtractionParametersUtil {
 			// else if (params.isMIAPEMSIChecked())
 			// miape_extraction = "MSI";
 		} else if (params.isXTandemSelected()) {
-			ret = ret + "X!Tandem XML ("
-					+ FilenameUtils.getName(new File(params.getXTandemFileName()).getAbsolutePath()) + ")";
+			ret = ret + "X!Tandem XML <i>("
+					+ FilenameUtils.getName(new File(params.getXTandemFileName()).getAbsolutePath()) + ")</i>";
 			// miape_extraction = "MSI";
 		} else if (params.isXTandemPlusMGFSelected()) {
-			ret = ret + "MGF (" + FilenameUtils.getName(new File(params.getMgfFileName()).getAbsolutePath())
-					+ ") + <br> X!Tandem XML ("
-					+ FilenameUtils.getName(new File(params.getXTandemFileName()).getAbsolutePath()) + ")";
+			ret = ret + "MGF <i>(" + FilenameUtils.getName(new File(params.getMgfFileName()).getAbsolutePath())
+					+ ")</i> + <br> X!Tandem XML <i>("
+					+ FilenameUtils.getName(new File(params.getXTandemFileName()).getAbsolutePath()) + ")</i>";
 			// miape_extraction = "MSI";
 		} else if (params.isDTASelectSelected()) {
-			ret = ret + "DTASelect (" + FilenameUtils.getName(new File(params.getDtaSelectFileName()).getAbsolutePath())
-					+ ")";
+			ret = ret + "DTASelect <i>("
+					+ FilenameUtils.getName(new File(params.getDtaSelectFileName()).getAbsolutePath()) + ")</i>";
 			// miape_extraction = "MSI";
 		} else if (params.isPepXMLSelected()) {
-			ret = ret + "pepXML (" + FilenameUtils.getName(new File(params.getPepXMLFileName()).getAbsolutePath())
-					+ ")";
+			ret = ret + "pepXML <i>(" + FilenameUtils.getName(new File(params.getPepXMLFileName()).getAbsolutePath())
+					+ ")</i>";
 			// miape_extraction = "MSI";
 		} else if (params.isTSVSelected()) {
-			ret = ret + "Text Table ("
-					+ FilenameUtils.getName(new File(params.getTSVSelectFileName()).getAbsolutePath()) + ")";
+			ret = ret + "Text Table <i>("
+					+ FilenameUtils.getName(new File(params.getTSVSelectFileName()).getAbsolutePath()) + ")</i>";
 			// miape_extraction = "MSI";
 		} else if (params.isDTASelectPlusMGFSelected()) {
-			ret = ret + "MGF (" + FilenameUtils.getName(new File(params.getMgfFileName()).getAbsolutePath())
-					+ ") + <br> DTASelect ("
-					+ FilenameUtils.getName(new File(params.getDtaSelectFileName()).getAbsolutePath()) + ")";
+			ret = ret + "MGF <i>(" + FilenameUtils.getName(new File(params.getMgfFileName()).getAbsolutePath())
+					+ ")</i> + <br> DTASelect <i>("
+					+ FilenameUtils.getName(new File(params.getDtaSelectFileName()).getAbsolutePath()) + ")</i>";
 			// miape_extraction = "MSI";
 		} else if (params.isPepXMLPlusMGFSelected()) {
-			ret = ret + "MGF (" + FilenameUtils.getName(new File(params.getMgfFileName()).getAbsolutePath())
-					+ ") + <br> pepXML ("
-					+ FilenameUtils.getName(new File(params.getPepXMLFileName()).getAbsolutePath()) + ")";
+			ret = ret + "MGF <i>(" + FilenameUtils.getName(new File(params.getMgfFileName()).getAbsolutePath())
+					+ ")</i> + <br> pepXML <i>("
+					+ FilenameUtils.getName(new File(params.getPepXMLFileName()).getAbsolutePath()) + ")</i>";
 			// miape_extraction = "MSI";
 		}
 
-		ret = "Dataset from " + ret;
+		ret = ret + " into project <i>" + params.getProjectName() + "</i>";
 		if (params.getMiapeMSMetadata() != null) {
 			ret += " + <br> template (" + params.getTemplateName() + ")";
 		}
