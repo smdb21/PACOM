@@ -3,7 +3,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.proteored</groupId>
    <artifactId>pacom</artifactId>
-   <version>1.50</version>
+   <version>1.51</version>
    <distributionManagement>
       <repository>
          <id>internal</id>
@@ -86,11 +86,28 @@
       	<groupId>org.proteored.miape.api</groupId>
       	<artifactId>miape-api</artifactId>
       	<version>1.9.2-SNAPSHOT</version>
+      	<exclusions>
+      		<exclusion>
+      			<groupId>ch.qos.logback</groupId>
+      			<artifactId>logback-classic</artifactId>
+      		</exclusion>
+      	</exclusions>
       </dependency>
       <dependency>
       	<groupId>edu.scripps.yates</groupId>
       	<artifactId>pint.annotations</artifactId>
       	<version>1.0.1-SNAPSHOT</version>
+      	<exclusions>
+      		<exclusion>
+      			<groupId>ch.qos.logback</groupId>
+      			<artifactId>logback-classic</artifactId>
+      		</exclusion>
+      	</exclusions>
+      </dependency>
+      <dependency>
+      	<groupId>org.slf4j</groupId>
+      	<artifactId>slf4j-log4j12</artifactId>
+      	<version>1.7.25</version>
       </dependency>
    </dependencies>
    <repositories>
