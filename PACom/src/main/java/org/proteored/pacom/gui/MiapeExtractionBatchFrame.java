@@ -220,7 +220,7 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 		gbl_jPanelImage.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		jPanelImage.setLayout(gbl_jPanelImage);
 
-		jButtonReloadInputFile = new JButton("Realod input file");
+		jButtonReloadInputFile = new JButton("Reload input file");
 		jButtonReloadInputFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -304,6 +304,7 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 	}
 
 	private void restartFailedJobs() {
+		jButtonRestartFailedTasks.setEnabled(false);
 		boolean anyJobRestarted = miapeExtractorBatchManager.startMiapeExtractions(true);
 		if (!anyJobRestarted) {
 			appendStatus("No jobs have been restarted. Failed jobs can only be restarted twice.");
@@ -470,10 +471,8 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 		componentList.add(bar);
 
 		// BUttons
-		final JButton startButton = new JButton("start");
-		final JButton stopButton = new JButton("cancel");
-		final JButton msReportButton = new JButton("MS dataset");
-		msReportButton.setIcon(ImageManager.getImageIcon(ImageManager.DOC));
+		final JButton startButton = new JButton("Start");
+		final JButton stopButton = new JButton("Cancel");
 		final JButton msiReportButton = new JButton("Id dataset");
 		msiReportButton.setIcon(ImageManager.getImageIcon(ImageManager.DOC));
 
@@ -504,37 +503,6 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 		});
 		stopButton.setEnabled(false);
 		componentList.add(stopButton);
-
-		// report button
-		msReportButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int runIdentifier = miapeExtractionTask.getRunIdentifier();
-				if (obtainedResults.containsKey(runIdentifier)) {
-					MiapeExtractionResult miapeExtractionResult = obtainedResults.get(runIdentifier);
-					Integer miapeID = miapeExtractionResult.getMiapeMS_Identifier();
-					if (miapeID != null) {
-
-						File directLink = obtainedResults.get(runIdentifier).getDirectLinkToMIAPEMS();
-						if (directLink != null) {
-
-							Object[] dialog_options = { "Yes, open data file", "No, close this dialog" };
-							int selected_option = JOptionPane.showOptionDialog(MiapeExtractionBatchFrame.this,
-									"Click on yes to open the data file." + "\n", "Show data file",
-									JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-									dialog_options, dialog_options[1]);
-							if (selected_option == 0) { // Yes
-								HttpUtilities.openURL(directLink.toString());
-							}
-						}
-
-					}
-				}
-			}
-		});
-		msReportButton.setEnabled(false);
-		msReportButton.setToolTipText("Show imported dataset file in your local folderr");
-		componentList.add(msReportButton);
 
 		// report button
 		msiReportButton.addActionListener(new ActionListener() {
@@ -573,14 +541,55 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 		msiReportButton.setToolTipText("Show imported dataset file in your local folder");
 		componentList.add(msiReportButton);
 
+		final JButton msReportButton = new JButton("MS dataset");
+		msReportButton.setIcon(ImageManager.getImageIcon(ImageManager.DOC));
+
+		// report button
+		msReportButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int runIdentifier = miapeExtractionTask.getRunIdentifier();
+				if (obtainedResults.containsKey(runIdentifier)) {
+					MiapeExtractionResult miapeExtractionResult = obtainedResults.get(runIdentifier);
+					Integer miapeID = miapeExtractionResult.getMiapeMS_Identifier();
+					if (miapeID != null) {
+
+						File directLink = obtainedResults.get(runIdentifier).getDirectLinkToMIAPEMS();
+						if (directLink != null) {
+
+							Object[] dialog_options = { "Yes, open data file", "No, close this dialog" };
+							int selected_option = JOptionPane.showOptionDialog(MiapeExtractionBatchFrame.this,
+									"Click on yes to open the data file." + "\n", "Show data file",
+									JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+									dialog_options, dialog_options[1]);
+							if (selected_option == 0) { // Yes
+								HttpUtilities.openURL(directLink.toString());
+							}
+						}
+
+					}
+				}
+			}
+		});
+		msReportButton.setEnabled(false);
+		msReportButton.setToolTipText("Show imported dataset file in your local folderr");
+		componentList.add(msReportButton);
+
 		miapeExtractionTaskJComponents.put(miapeExtractionTask.getRunIdentifier(), componentList);
 
 		return componentList;
 	}
 
-	private void appendStatus(String text) {
-		jTextAreaStatus.append(text + "\n");
+	private void appendStatus(String notification) {
+
+		if (notification == null) {
+			return;
+		}
+		String formatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG)
+				.format(new Date(System.currentTimeMillis()));
+		jTextAreaStatus.append(formatedDate + ": " + notification + "\n");
 		jTextAreaStatus.setCaretPosition(jTextAreaStatus.getText().length() - 1);
+
 	}
 
 	/**
@@ -621,6 +630,10 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 			jButtonStart.setEnabled(false);
 			// enable cancel button
 			jButtonCancel.setEnabled(true);
+			// disable reloadinput file button
+			jButtonReloadInputFile.setEnabled(false);
+			// set button to open file to disable
+			this.jButtonSelectBatchFile.setEnabled(false);
 
 			int jobID = (Integer) evt.getNewValue();
 			enableMiapeMSIreport(jobID, false);
@@ -666,11 +679,18 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 		} else if (MiapeExtractionTask.MIAPE_CREATION_TOTAL_DONE.equals(evt.getPropertyName())) {
 			MiapeExtractionResult result = (MiapeExtractionResult) evt.getNewValue();
 
+			// set button to open file to enable
+			this.jButtonSelectBatchFile.setEnabled(true);
+			// disable reloadinput file button
+			this.jButtonReloadInputFile.setEnabled(true);
+			// set button to open file to disable
+			this.jButtonSelectBatchFile.setEnabled(true);
+
 			int jobID = result.getMiapeExtractionTaskIdentifier();
 			obtainedResults.put(jobID, result);
 			String timeElapsed = DatesUtil.getDescriptiveTimeFromMillisecs(result.getMilliseconds());
 			appendStatus("\nJob '" + jobID + "' finished at " + getFormatedDate() + ". It took " + timeElapsed + ".");
-			String message = "Created datasets are: ";
+			String message = "";
 			String extendedMessage = "Datasets created in " + timeElapsed + "<br> ";
 			if (result.getMiapeMS_Identifier() != null) {
 				message = "MS Dataset ID: " + result.getMiapeMS_Identifier();
@@ -690,7 +710,7 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 				extendedMessage += "Dataset ID: " + result.getMiapeMSI_Identifier();
 				if (result.getDirectLinkToMIAPEMSI() != null) {
 					extendedMessage += " Direct link: " + result.getDirectLinkToMIAPEMSI();
-					message += " Created file: " + result.getDirectLinkToMIAPEMSI();
+					message += " Location: " + result.getDirectLinkToMIAPEMSI();
 				}
 				// enable MSI report button if available
 				if (result.getDirectLinkToMIAPEMSI() != null)
@@ -853,6 +873,26 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 
 		ret.add("Batch import data help");
 		ret.add("In order to import multiple input files as different datasets in PACOM you need to use an <b>Batch Import text file</b>.");
+		ret.add("<b>Start dataset import batch</b>");
+		ret.add("1. Select and load the batch import text file. It will be validated, so if it contains some error they will be detected and shown. If everything is ok, you will see a dataset import job in the <b>job queue</b>.");
+		ret.add("2. After that, you can start all jobs sequencially by clicking on <b>'Start batch import'</b> button. The jobs will be processed one by one in order.");
+		ret.add("3. Alternativelly, you can start the process by a different job, by clicking on its respective <b>'start'</b> button. After its completion, subsequent jobs will be processed.");
+		ret.add("<b>Other buttons</b> ");
+		ret.add("- <b>Reload input file</b>: it reads again the selected input file.");
+		ret.add("- <b>Restart failed tasks</b>: it will restart, in order, the failed or cancelled import jobs.");
+		ret.add("- <b>Cancel all</b>: it cancells the ongoing dataset import job and stops the queue.");
+		ret.add("- <b>Start</b>: it starts the batch import process by that individual import job. After finishing it, the system will continue with remaining processes.");
+		ret.add("- <b>Cancel</b>: it cancels an ongoing import process. It will be tagged as failed job and painted in orange. It can be resubmitted by clicking on <i>Start</i> or on <i>Restart failed tasks</i>");
+		ret.add("<b>Example batch import text files</b>");
+		ret.add("PACOM package contains some <b>example batch import text files</b> located at the installation folder (<i>'"
+				+ System.getProperty("user.dir") + "'</i>) that you can use as templates, such as:");
+		ret.add("- <i>Batch_Import_example_input_files.txt</i> (This file is ready to be used with example input files");
+		ret.add("- <i>Batch_Import_from_DTASelect_files.txt</i>");
+		ret.add("- <i>Batch_Import_from_mzIdentML_MGF_files.txt</i>");
+		ret.add("- <i>Batch_Import_from_mzIdentML_MGF_files_with_references.txt</i>");
+		ret.add("- <i>Batch_Import_from_pepXML.txt</i>");
+		ret.add("- <i>Batch_Import_from_Xtandem_files.txt</i>");
+
 		ret.add("<b>Batch import text file format:</b>");
 		ret.add("This file is composed by multiple blocks, each one corresponding to one <b>dataset import job</b>. Each block starts with '<b>"
 				+ MiapeExtractionBatchManager.START_MIAPE_EXTRACTION
@@ -869,21 +909,6 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 				+ "</b>' element followed by the job number of a previous job in which a MS dataset has been generated, that is, using '<b>"
 				+ MiapeExtractionBatchManager.MGF + "</b>' or '<b>" + MiapeExtractionBatchManager.MZML
 				+ "</b>' input data files alone. This will link the MS dataset to the identification dataset specified in the same job. (Optional)");
-		ret.add("<b>Start dataset import batch</b>");
-		ret.add("1. Select and load the batch import text file. It will be validated, so if it contains some error they will be detected and shown. If everything is ok, you will see a dataset import job in the <b>job queue</b>.");
-		ret.add("2. After that, you can start all jobs sequencially by clicking on <b>'Start batch import'</b> button. The jobs will be processed one by one in order.");
-		ret.add("3. Alternativelly, you can start the process by a different job, by clicking on its respective <b>'start'</b> button. After its completion, subsequent jobs will be processed.");
-		ret.add("<b>Other buttons</b> ");
-		ret.add("- <b>Reload input file</b>: it reads again the selected input file.");
-		ret.add("- <b>cancel</b>: it cancels an ongoing import process.");
-		ret.add("- <b>Restart failed tasks</b>: it will restart, in order, the failed or cancelled import jobs.");
-		ret.add("- <b>Cancel all</b>: it cancells the ongoing dataset import job and stops the queue.");
-		ret.add("<b>Example batch import text files</b>");
-		ret.add("PACOM package contains some <b>example batch import text files</b> located at the installation folder (<i>'"
-				+ System.getProperty("user.dir") + "'</i>) that you can use as templates, such as:");
-		ret.add("- <i>Batch_Import_from_DTASelect_files.txt</i>");
-		ret.add("- <i>Batch_Import_from_mzIdentML_MGF_files.txt</i>");
-		ret.add("- <i>Batch_Import_from_Xtandem_files.txt</i>");
 
 		return ret;
 	}
