@@ -8,6 +8,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -18,6 +19,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -106,7 +109,7 @@ import org.proteored.pacom.analysis.gui.tasks.MemoryCheckerTask;
 import org.proteored.pacom.analysis.util.DataLevel;
 import org.proteored.pacom.analysis.util.DoSomethingToChangeColorInChart;
 import org.proteored.pacom.analysis.util.ImageUtils;
-import org.proteored.pacom.gui.AbstractJFrameWithAttachedHelpDialog;
+import org.proteored.pacom.gui.AbstractJFrameWithAttachedHelpAndAttachedChartTypeDialog;
 import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.gui.MainFrame;
 import org.proteored.pacom.gui.OpenHelpButton;
@@ -125,78 +128,16 @@ import gnu.trove.set.hash.THashSet;
  *
  * @author __USER__
  */
-public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
+public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttachedChartTypeDialog
 		implements PropertyChangeListener, TreeDialog {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5566179230963643716L;
+
 	private FiltersDialog filterDialog = null;
-	public static final String PROTEIN_SCORE_DISTRIBUTION = "Protein score Distribution";
-	public static final String PEPTIDE_SCORE_DISTRIBUTION = "Peptide score Distribution";
-	public static final String PROTEIN_SCORE_COMPARISON = "Protein score Comparison";
-	public static final String PEPTIDE_SCORE_COMPARISON = "Peptide score Comparison";
-	public static final String PROTEIN_NUMBER_HISTOGRAM = "Protein number";
-	public static final String PEPTIDE_NUMBER_HISTOGRAM = "Peptide number";
-	public static final String PROTEIN_OVERLAPING = "Protein overlapping";
-	public static final String PEPTIDE_OVERLAPING = "Peptide overlapping";
-	public static final String PROTEIN_OCURRENCE_HEATMAP = "Protein heatMap";
-	public static final String PEPTIDE_OCCURRENCE_HEATMAP = "Peptide heatMap";
-	public static final String PSMS_PER_PEPTIDE_HEATMAP = "PSMs per peptide heatmap";
-	public static final String MODIFICATION_SITES_NUMBER = "Number of modified sites";
-	public static final String MODIFICATED_PEPTIDE_NUMBER = "Number of modified peptides";
-	public static final String PEPTIDE_MODIFICATION_DISTRIBUTION = "Peptide modification distribution";
-	public static final String PEPTIDE_MONITORING = "Peptide monitoring";
-	public static final String PROTEIN_COVERAGE_DISTRIBUTION = "Protein coverage distribution";
-	public static final String FDR = "False Discovery Rate";
-	public static final String PROTEIN_REPEATABILITY = "Protein repeatability";
-	public static final String PEPTIDE_REPEATABILITY = "Peptide repeatability";
-	public static final String PROTEIN_SENSITIVITY_SPECIFICITY = "Protein sensitivity and specificity";
-	public static final String MISSEDCLEAVAGE_DISTRIBUTION = "Missed cleavages distribution";
-	public static final String PEPTIDE_MASS_DISTRIBUTION = "Peptide mass distribution";
-	public static final String PEPTIDE_LENGTH_DISTRIBUTION = "Peptide length distribution";
 
-	public static final String PROTEIN_COVERAGE = "Protein coverage";
-	public static final String PEPTIDE_CHARGE_HISTOGRAM = "Peptide charge distribution";
-	public static final String SINGLE_HIT_PROTEINS = "Single hit proteins";
-	public static final String PEPTIDE_NUMBER_IN_PROTEINS = "Number of proteins with x peptides";
-	public static final String DELTA_MZ_OVER_MZ = "Peptide mass error";
-	public static final String PSM_PEP_PROT = "PSMs/Peptides/Proteins";
-	public static final String FDR_VS_SCORE = "FDRs vs Score & num. proteins vs Score";
-	public static final String EXCLUSIVE_PROTEIN_NUMBER = "Number of exclusive proteins";
-	public static final String EXCLUSIVE_PEPTIDE_NUMBER = "Number of exclusive peptides";
-	public static final String PEPTIDE_PRESENCY_HEATMAP = "Peptide presence HeatMap";
-	public static final String PEPTIDES_PER_PROTEIN_HEATMAP = "Peptides per protein heatMap";
-	public static final String PSMS_PER_PROTEIN_HEATMAP = "PSMs per protein heatmap";
-	public static final String PEPTIDE_NUM_PER_PROTEIN_MASS = "Number of peptides / protein molecular weight";
-	public static final String HUMAN_CHROMOSOME_COVERAGE = "Human chromosome coverage";
-	// public static final String CHR16_MAPPING = "Human chromosome 16 mapping
-	// (SPanish-HPP)";
-	public static final String CHR_MAPPING = "Proteins and genes per chromosome";
-	public static final String CHR_PEPTIDES_MAPPING = "Peptides and PSMs per chromosome";
-	public static final String PROTEIN_NAME_CLOUD = "Protein words cloud";
-	public static final String PROTEIN_GROUP_TYPES = "Protein group type distribution";
-	public static final String PEPTIDE_RT = "Peptide Retention Times distribution";
-	public static final String PEPTIDE_RT_COMPARISON = "Peptide Retention Times Comparison";
-	public static final String SINGLE_RT_COMPARISON = "Single Retention Times Comparison";
-	public static final String SPECTROMETERS = "Spectrometers";
-	public static final String INPUT_PARAMETERS = "Input parameters";
-	public static final String PEPTIDE_COUNTING_HISTOGRAM = "Peptide counting ratio histogram";
-	public static final String PEPTIDE_COUNTING_VS_SCORE = "Peptide counting ratio vs score";
-
-	private final String[] chartTypes = new String[] { PROTEIN_SCORE_DISTRIBUTION, PEPTIDE_SCORE_DISTRIBUTION,
-			PROTEIN_SCORE_COMPARISON, PEPTIDE_SCORE_COMPARISON, PROTEIN_NUMBER_HISTOGRAM, PEPTIDE_NUMBER_HISTOGRAM,
-			PSM_PEP_PROT, SINGLE_HIT_PROTEINS, PEPTIDE_NUMBER_IN_PROTEINS, PEPTIDE_NUM_PER_PROTEIN_MASS,
-			PROTEIN_REPEATABILITY, PEPTIDE_REPEATABILITY, PROTEIN_GROUP_TYPES, EXCLUSIVE_PROTEIN_NUMBER,
-			EXCLUSIVE_PEPTIDE_NUMBER, PROTEIN_SENSITIVITY_SPECIFICITY, PEPTIDE_RT, PEPTIDE_RT_COMPARISON,
-			SINGLE_RT_COMPARISON, SINGLE_HIT_PROTEINS, SPECTROMETERS, INPUT_PARAMETERS, PROTEIN_OVERLAPING,
-			PEPTIDE_OVERLAPING, PROTEIN_COVERAGE, PROTEIN_COVERAGE_DISTRIBUTION, PROTEIN_OCURRENCE_HEATMAP,
-			PEPTIDES_PER_PROTEIN_HEATMAP, PSMS_PER_PROTEIN_HEATMAP, PEPTIDE_OCCURRENCE_HEATMAP,
-			PSMS_PER_PEPTIDE_HEATMAP, PEPTIDE_PRESENCY_HEATMAP, MODIFICATED_PEPTIDE_NUMBER, MODIFICATION_SITES_NUMBER,
-			PEPTIDE_MODIFICATION_DISTRIBUTION, PEPTIDE_MONITORING, MISSEDCLEAVAGE_DISTRIBUTION, FDR, FDR_VS_SCORE,
-			PEPTIDE_MASS_DISTRIBUTION, PEPTIDE_LENGTH_DISTRIBUTION, PEPTIDE_CHARGE_HISTOGRAM, CHR_MAPPING,
-			CHR_PEPTIDES_MAPPING, HUMAN_CHROMOSOME_COVERAGE,
-			// CHR16_MAPPING,
-			DELTA_MZ_OVER_MZ, PROTEIN_NAME_CLOUD, PEPTIDE_COUNTING_HISTOGRAM, PEPTIDE_COUNTING_VS_SCORE
-			// ,LABELLED_PEPTIDE_MONITORING
-	};
-	private String currentChartType = PSM_PEP_PROT;
+	private ChartType currentChartType = ChartType.PSM_PEP_PROT;
 	private final String FDR_CANNOT_BE_CALCULATED_MESSAGE = "Global FDR cannot be calculated";
 
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
@@ -212,7 +153,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 	public static final String ONE_SERIES_PER_REPLICATE = "One data series per level 2";
 	public static final String ONE_CHART_PER_EXPERIMENT = "One separate chart per level 1";
 	public static final String ONE_SERIES_PER_EXPERIMENT_LIST = "One single data series (level 0)";
-	private static final String MENU_SEPARATION = "menu separation";
+	public static final String MENU_SEPARATION = "menu separation";
 
 	private final JFrame parentFrame;
 	private ChartCreatorTask chartCreator;
@@ -301,7 +242,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		updateControlStates();
 
 		loadButtonIcons();
-		RefineryUtilities.centerFrameOnScreen(this);
+		RefineryUtilities.positionFrameOnScreen(this, 0.3, 0.5);
 
 		jTextAreaStatus.setFont(new JTextField().getFont());
 
@@ -360,7 +301,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 			memoryChecker.addPropertyChangeListener(this);
 			memoryChecker.execute();
 
-			currentChartType = ChartManagerFrame.PSM_PEP_PROT;
+			currentChartType = ChartType.PSM_PEP_PROT;
 
 			pack();
 		}
@@ -451,7 +392,11 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		isLocalProcessingInParallel = processInParallel;
 		CPExperimentList cpExpList = getCPExperimentList(cfgFile);
 		setTitle(cpExpList.getName() + " - Chart Viewer");
-
+		AppVersion version = MainFrame.getVersion();
+		if (version != null) {
+			String suffix = " (v" + version.toString() + ")";
+			this.setTitle(getTitle() + suffix);
+		}
 		// set to "loading data..." the information labels
 		setInformation1("Loading data...");
 		setInformation2("Loading data...");
@@ -520,182 +465,264 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 	}
 
 	private void initializeChartTypeMenu() {
-		// Store all chartTypes in a mapping
-		Map<String, JRadioButtonMenuItem> radioButtonMenuMap = new THashMap<String, JRadioButtonMenuItem>();
-		for (final String chartType : chartTypes) {
-
-			JRadioButtonMenuItem menuItem = new JRadioButtonMenuItem(chartType);
-			menuItem.addItemListener(new ItemListener() {
-
-				@Override
-				public void itemStateChanged(ItemEvent e) {
-					if (e.getStateChange() == ItemEvent.SELECTED) {
-						currentChartType = chartType;
-						addCustomizationControls();
-						startShowingChart(menuItem);
-					}
-					registerNewValue(menuItem);
-				}
-			});
-
-			if (chartType.equals(currentChartType)) {
-				menuItem.setSelected(true);
-			}
-			buttonGroup2.add(menuItem);
-			radioButtonMenuMap.put(chartType, menuItem);
-		}
 
 		// Identification numbers
 		JMenu menuIdNumbers = new JMenu("Number of identifications");
 		List<String> idNumbersMenus = new ArrayList<String>();
-		idNumbersMenus.add(PSM_PEP_PROT);
+		idNumbersMenus.add(ChartType.PSM_PEP_PROT.getName());
 		idNumbersMenus.add(MENU_SEPARATION); // MENU SEPARATION
-		idNumbersMenus.add(PEPTIDE_NUMBER_HISTOGRAM);
-		idNumbersMenus.add(PEPTIDE_REPEATABILITY);
-		idNumbersMenus.add(EXCLUSIVE_PEPTIDE_NUMBER);
-		idNumbersMenus.add(PEPTIDE_NUMBER_IN_PROTEINS);
+		idNumbersMenus.add(ChartType.PEPTIDE_NUMBER_HISTOGRAM.getName());
+		idNumbersMenus.add(ChartType.PEPTIDE_REPEATABILITY.getName());
+		idNumbersMenus.add(ChartType.EXCLUSIVE_PEPTIDE_NUMBER.getName());
+		idNumbersMenus.add(ChartType.PEPTIDE_NUMBER_IN_PROTEINS.getName());
 		idNumbersMenus.add(MENU_SEPARATION); // MENU SEPARATION
-		idNumbersMenus.add(PROTEIN_NUMBER_HISTOGRAM);
-		idNumbersMenus.add(PROTEIN_REPEATABILITY);
-		idNumbersMenus.add(EXCLUSIVE_PROTEIN_NUMBER);
-		idNumbersMenus.add(SINGLE_HIT_PROTEINS);
-		idNumbersMenus.add(PROTEIN_SENSITIVITY_SPECIFICITY);
-		idNumbersMenus.add(PROTEIN_OVERLAPING);
-		idNumbersMenus.add(PROTEIN_GROUP_TYPES);
-		addSubmenus(menuIdNumbers, idNumbersMenus, radioButtonMenuMap, jMenuChartType);
+		idNumbersMenus.add(ChartType.PROTEIN_NUMBER_HISTOGRAM.getName());
+		idNumbersMenus.add(ChartType.PROTEIN_REPEATABILITY.getName());
+		idNumbersMenus.add(ChartType.EXCLUSIVE_PROTEIN_NUMBER.getName());
+		idNumbersMenus.add(ChartType.SINGLE_HIT_PROTEINS.getName());
+		addSubmenus(menuIdNumbers, idNumbersMenus, jMenuChartType);
+		// add action to show right panel
+		menuIdNumbers.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(idNumbersMenus));
 
 		// Overlappings
-		JMenu menuOverlappings = new JMenu("Overlappings");
+		JMenu menuOverlappings = new JMenu("Reproducibility and Overlap");
 		List<String> overlappingMenus = new ArrayList<String>();
-		overlappingMenus.add(PEPTIDE_OVERLAPING);
-		overlappingMenus.add(EXCLUSIVE_PEPTIDE_NUMBER);
-		overlappingMenus.add(PEPTIDE_REPEATABILITY);
-		overlappingMenus.add(PEPTIDE_PRESENCY_HEATMAP);
-		overlappingMenus.add(PEPTIDE_OCCURRENCE_HEATMAP);
-		overlappingMenus.add(PSMS_PER_PEPTIDE_HEATMAP);
+		overlappingMenus.add(ChartType.PEPTIDE_OVERLAPING.getName());
+		overlappingMenus.add(ChartType.EXCLUSIVE_PEPTIDE_NUMBER.getName());
+		overlappingMenus.add(ChartType.PEPTIDE_REPEATABILITY.getName());
+		overlappingMenus.add(ChartType.PEPTIDE_PRESENCY_HEATMAP.getName());
+		overlappingMenus.add(ChartType.PEPTIDE_OCCURRENCE_HEATMAP.getName());
 		overlappingMenus.add(MENU_SEPARATION); // MENU SEPARATION
-		overlappingMenus.add(PROTEIN_OVERLAPING);
-		overlappingMenus.add(EXCLUSIVE_PROTEIN_NUMBER);
-		overlappingMenus.add(PROTEIN_REPEATABILITY);
-		overlappingMenus.add(PROTEIN_OCURRENCE_HEATMAP);
-		addSubmenus(menuOverlappings, overlappingMenus, radioButtonMenuMap, jMenuChartType);
+		overlappingMenus.add(ChartType.PROTEIN_OVERLAPING.getName());
+		overlappingMenus.add(ChartType.EXCLUSIVE_PROTEIN_NUMBER.getName());
+		overlappingMenus.add(ChartType.PROTEIN_REPEATABILITY.getName());
+		overlappingMenus.add(ChartType.PROTEIN_OCURRENCE_HEATMAP.getName());
+		addSubmenus(menuOverlappings, overlappingMenus, jMenuChartType);
+		// add action to show right panel
+		menuOverlappings.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(overlappingMenus));
+
+		// Sensibility
+		JMenu menuSensitivity = new JMenu("FDR, Sensitivity, Specificity, Accuracy");
+		List<String> sensitivityMenus = new ArrayList<String>();
+		sensitivityMenus.add(ChartType.FDR.getName());
+		sensitivityMenus.add(ChartType.FDR_VS_SCORE.getName());
+		sensitivityMenus.add(MENU_SEPARATION);
+		sensitivityMenus.add(ChartType.PROTEIN_SENSITIVITY_SPECIFICITY.getName());
+		addSubmenus(menuSensitivity, sensitivityMenus, jMenuChartType);
+		// add action to show right panel
+		menuSensitivity.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(sensitivityMenus));
 
 		// Scores
 		JMenu menuScores = new JMenu("Scores");
 		List<String> scoreMenus = new ArrayList<String>();
-		scoreMenus.add(PEPTIDE_SCORE_COMPARISON);
-		scoreMenus.add(PEPTIDE_SCORE_DISTRIBUTION);
+		scoreMenus.add(ChartType.PEPTIDE_SCORE_COMPARISON.getName());
+		scoreMenus.add(ChartType.PEPTIDE_SCORE_DISTRIBUTION.getName());
 		scoreMenus.add(MENU_SEPARATION); // MENU SEPARATION
-		scoreMenus.add(PROTEIN_SCORE_COMPARISON);
-		scoreMenus.add(PROTEIN_SCORE_DISTRIBUTION);
+		scoreMenus.add(ChartType.PROTEIN_SCORE_COMPARISON.getName());
+		scoreMenus.add(ChartType.PROTEIN_SCORE_DISTRIBUTION.getName());
 		scoreMenus.add(MENU_SEPARATION); // MENU SEPARATION
-		scoreMenus.add(FDR_VS_SCORE);
-		addSubmenus(menuScores, scoreMenus, radioButtonMenuMap, jMenuChartType);
+		scoreMenus.add(ChartType.FDR_VS_SCORE.getName());
+		addSubmenus(menuScores, scoreMenus, jMenuChartType);
+		// add action to show right panel
+		menuScores.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(scoreMenus));
 
 		// protein features
 		JMenu menuProteinFeatures = new JMenu("Protein features");
 		List<String> proteinFeaturesMenus = new ArrayList<String>();
-		proteinFeaturesMenus.add(PROTEIN_NAME_CLOUD);
+		proteinFeaturesMenus.add(ChartType.PROTEIN_NAME_CLOUD.getName());
 		proteinFeaturesMenus.add(MENU_SEPARATION); // MENU SEPARATION
-		proteinFeaturesMenus.add(PROTEIN_GROUP_TYPES);
+		proteinFeaturesMenus.add(ChartType.PROTEIN_GROUP_TYPES.getName());
 		proteinFeaturesMenus.add(MENU_SEPARATION); // MENU SEPARATION
-		proteinFeaturesMenus.add(EXCLUSIVE_PROTEIN_NUMBER);
-		proteinFeaturesMenus.add(PROTEIN_REPEATABILITY);
-		proteinFeaturesMenus.add(PEPTIDE_NUM_PER_PROTEIN_MASS);
-		addSubmenus(menuProteinFeatures, proteinFeaturesMenus, radioButtonMenuMap, jMenuChartType);
-
-		// protein coverage as submenu of protein features
-		JMenu menuProteinCoverage = new JMenu("Protein coverage");
-		List<String> proteinCoveragesMenus = new ArrayList<String>();
-		proteinCoveragesMenus.add(PROTEIN_COVERAGE);
-
-		proteinCoveragesMenus.add(PROTEIN_COVERAGE_DISTRIBUTION);
-		addSubmenus(menuProteinCoverage, proteinCoveragesMenus, radioButtonMenuMap, menuProteinFeatures);
+		proteinFeaturesMenus.add(ChartType.EXCLUSIVE_PROTEIN_NUMBER.getName());
+		proteinFeaturesMenus.add(ChartType.PROTEIN_REPEATABILITY.getName());
+		proteinFeaturesMenus.add(ChartType.PEPTIDE_NUM_PER_PROTEIN_MASS.getName());
+		proteinFeaturesMenus.add(MENU_SEPARATION);
+		proteinFeaturesMenus.add(ChartType.PROTEIN_OCURRENCE_HEATMAP.getName());
+		proteinFeaturesMenus.add(ChartType.PEPTIDES_PER_PROTEIN_HEATMAP.getName());
+		proteinFeaturesMenus.add(ChartType.PSMS_PER_PROTEIN_HEATMAP.getName());
+		proteinFeaturesMenus.add(MENU_SEPARATION);
+		proteinFeaturesMenus.add(ChartType.PROTEIN_COVERAGE.getName());
+		proteinFeaturesMenus.add(ChartType.PROTEIN_COVERAGE_DISTRIBUTION.getName());
+		addSubmenus(menuProteinFeatures, proteinFeaturesMenus, jMenuChartType);
+		// add action to show right panel
+		menuProteinFeatures
+				.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(proteinFeaturesMenus));
 
 		// peptide features
 		JMenu menuPeptideFeatures = new JMenu("Peptide features");
 		List<String> peptideFeaturesMenus = new ArrayList<String>();
-		peptideFeaturesMenus.add(MISSEDCLEAVAGE_DISTRIBUTION);
+		peptideFeaturesMenus.add(ChartType.MISSEDCLEAVAGE_DISTRIBUTION.getName());
 		peptideFeaturesMenus.add(MENU_SEPARATION); // MENU SEPARATION
-		peptideFeaturesMenus.add(PEPTIDE_MASS_DISTRIBUTION);
+		peptideFeaturesMenus.add(ChartType.PEPTIDE_MASS_DISTRIBUTION.getName());
 		peptideFeaturesMenus.add(MENU_SEPARATION); // MENU SEPARATION
-		peptideFeaturesMenus.add(PEPTIDE_LENGTH_DISTRIBUTION);
+		peptideFeaturesMenus.add(ChartType.PEPTIDE_LENGTH_DISTRIBUTION.getName());
 		peptideFeaturesMenus.add(MENU_SEPARATION); // MENU SEPARATION
-		peptideFeaturesMenus.add(PEPTIDE_CHARGE_HISTOGRAM);
+		peptideFeaturesMenus.add(ChartType.PEPTIDE_CHARGE_HISTOGRAM.getName());
 		peptideFeaturesMenus.add(MENU_SEPARATION); // MENU SEPARATION
-		peptideFeaturesMenus.add(DELTA_MZ_OVER_MZ);
+		peptideFeaturesMenus.add(ChartType.DELTA_MZ_OVER_MZ.getName());
 		peptideFeaturesMenus.add(MENU_SEPARATION); // MENU SEPARATION
-		peptideFeaturesMenus.add(PEPTIDE_RT);
-		peptideFeaturesMenus.add(PEPTIDE_RT_COMPARISON);
-		peptideFeaturesMenus.add(SINGLE_RT_COMPARISON);
+		peptideFeaturesMenus.add(ChartType.PEPTIDE_RT.getName());
+		peptideFeaturesMenus.add(ChartType.PEPTIDE_RT_COMPARISON.getName());
+		peptideFeaturesMenus.add(ChartType.SINGLE_RT_COMPARISON.getName());
 		peptideFeaturesMenus.add(MENU_SEPARATION); // MENU SEPARATION
-		peptideFeaturesMenus.add(EXCLUSIVE_PEPTIDE_NUMBER);
-		peptideFeaturesMenus.add(PEPTIDE_REPEATABILITY);
+		peptideFeaturesMenus.add(ChartType.EXCLUSIVE_PEPTIDE_NUMBER.getName());
+		peptideFeaturesMenus.add(ChartType.PEPTIDE_REPEATABILITY.getName());
 		peptideFeaturesMenus.add(MENU_SEPARATION); // MENU SEPARATION
-		addSubmenus(menuPeptideFeatures, peptideFeaturesMenus, radioButtonMenuMap, jMenuChartType);
+		peptideFeaturesMenus.add(ChartType.PEPTIDE_OCCURRENCE_HEATMAP.getName());
+		peptideFeaturesMenus.add(ChartType.PSMS_PER_PEPTIDE_HEATMAP.getName());
+		peptideFeaturesMenus.add(ChartType.PEPTIDE_PRESENCY_HEATMAP.getName());
+		addSubmenus(menuPeptideFeatures, peptideFeaturesMenus, jMenuChartType);
+		peptideFeaturesMenus.add(MENU_SEPARATION); // MENU SEPARATION
+		// add action to show right panel
+		menuPeptideFeatures
+				.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(peptideFeaturesMenus));
 
 		// Peptide modifications as submenu of peptide features
-		JMenu menuPeptideModifications = new JMenu("Peptide modifications");
+		JMenu subMenuPeptideModifications = new JMenu("Peptide modifications");
 		List<String> peptideModificationsMenus = new ArrayList<String>();
-		peptideModificationsMenus.add(PEPTIDE_MODIFICATION_DISTRIBUTION);
-		peptideModificationsMenus.add(PEPTIDE_MONITORING);
-		peptideModificationsMenus.add(MODIFICATED_PEPTIDE_NUMBER);
-		peptideModificationsMenus.add(MODIFICATION_SITES_NUMBER);
-		addSubmenus(menuPeptideModifications, peptideModificationsMenus, radioButtonMenuMap, menuPeptideFeatures);
+		peptideModificationsMenus.add(ChartType.PEPTIDE_MODIFICATION_DISTRIBUTION.getName());
+		peptideModificationsMenus.add(ChartType.PEPTIDE_MONITORING.getName());
+		peptideModificationsMenus.add(ChartType.MODIFICATED_PEPTIDE_NUMBER.getName());
+		peptideModificationsMenus.add(ChartType.MODIFICATION_SITES_NUMBER.getName());
+		addSubmenus(subMenuPeptideModifications, peptideModificationsMenus, menuPeptideFeatures);
+		// add action to show right panel
+		subMenuPeptideModifications
+				.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(peptideModificationsMenus));
+
+		JMenu menuPeptideModifications = new JMenu("Peptide modifications");
+		addSubmenus(menuPeptideModifications, peptideModificationsMenus, jMenuChartType);
+		// add action to show right panel
+		menuPeptideModifications
+				.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(peptideModificationsMenus));
 
 		// heatmaps
 		JMenu menuHeatMaps = new JMenu("Heatmaps");
 		List<String> heatMapsMenus = new ArrayList<String>();
-		heatMapsMenus.add(PROTEIN_OCURRENCE_HEATMAP);
-		heatMapsMenus.add(PEPTIDE_OCCURRENCE_HEATMAP);
-		heatMapsMenus.add(PEPTIDES_PER_PROTEIN_HEATMAP);
-		heatMapsMenus.add(PSMS_PER_PROTEIN_HEATMAP);
-		heatMapsMenus.add(PSMS_PER_PEPTIDE_HEATMAP);
-		heatMapsMenus.add(PEPTIDE_PRESENCY_HEATMAP);
-		addSubmenus(menuHeatMaps, heatMapsMenus, radioButtonMenuMap, jMenuChartType);
-
-		// False Discovery Rates
-		JMenu menuFalseDiscoveryRate = new JMenu("False discovery Rates");
-		List<String> fdrMenus = new ArrayList<String>();
-		fdrMenus.add(FDR);
-		fdrMenus.add(FDR_VS_SCORE);
-		addSubmenus(menuFalseDiscoveryRate, fdrMenus, radioButtonMenuMap, jMenuChartType);
+		heatMapsMenus.add(ChartType.PROTEIN_OCURRENCE_HEATMAP.getName());
+		heatMapsMenus.add(ChartType.PEPTIDE_OCCURRENCE_HEATMAP.getName());
+		heatMapsMenus.add(ChartType.PEPTIDES_PER_PROTEIN_HEATMAP.getName());
+		heatMapsMenus.add(ChartType.PSMS_PER_PROTEIN_HEATMAP.getName());
+		heatMapsMenus.add(ChartType.PSMS_PER_PEPTIDE_HEATMAP.getName());
+		heatMapsMenus.add(ChartType.PEPTIDE_PRESENCY_HEATMAP.getName());
+		addSubmenus(menuHeatMaps, heatMapsMenus, jMenuChartType);
+		// add action to show right panel
+		menuHeatMaps.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(heatMapsMenus));
 
 		// Gene mapping
 		JMenu menuHumanGenes = new JMenu("Human genes and chromosomes");
 		List<String> humanGenesMenus = new ArrayList<String>();
-		humanGenesMenus.add(HUMAN_CHROMOSOME_COVERAGE);
-		humanGenesMenus.add(CHR_MAPPING);
-		humanGenesMenus.add(CHR_PEPTIDES_MAPPING);
+		humanGenesMenus.add(ChartType.HUMAN_CHROMOSOME_COVERAGE.getName());
+		humanGenesMenus.add(ChartType.CHR_MAPPING.getName());
+		humanGenesMenus.add(ChartType.CHR_PEPTIDES_MAPPING.getName());
 		// humanGenesMenus.add(MENU_SEPARATION); // MENU SEPARATION
 		// humanGenesMenus.add(CHR16_MAPPING);
-		addSubmenus(menuHumanGenes, humanGenesMenus, radioButtonMenuMap, jMenuChartType);
+		addSubmenus(menuHumanGenes, humanGenesMenus, jMenuChartType);
+		// add action to show right panel
+		menuHumanGenes.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(humanGenesMenus));
 
 		// Peptide counting
 		JMenu menuPeptideCounting = new JMenu("Peptide counting");
 		List<String> peptideCountingMenus = new ArrayList<String>();
-		peptideCountingMenus.add(PEPTIDE_COUNTING_HISTOGRAM);
-		peptideCountingMenus.add(PEPTIDE_COUNTING_VS_SCORE);
-		addSubmenus(menuPeptideCounting, peptideCountingMenus, radioButtonMenuMap, jMenuChartType);
+		peptideCountingMenus.add(ChartType.PEPTIDE_COUNTING_HISTOGRAM.getName());
+		peptideCountingMenus.add(ChartType.PEPTIDE_COUNTING_VS_SCORE.getName());
+		addSubmenus(menuPeptideCounting, peptideCountingMenus, jMenuChartType);
+		// add action to show right panel
+		menuPeptideCounting
+				.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(peptideCountingMenus));
 
 		// Metadata
 		JMenu menuMetadata = new JMenu("Metadata");
 		List<String> metadataMenus = new ArrayList<String>();
-		metadataMenus.add(SPECTROMETERS);
-		metadataMenus.add(INPUT_PARAMETERS);
-		addSubmenus(menuMetadata, metadataMenus, radioButtonMenuMap, jMenuChartType);
+		metadataMenus.add(ChartType.SPECTROMETERS.getName());
+		metadataMenus.add(ChartType.INPUT_PARAMETERS.getName());
+		addSubmenus(menuMetadata, metadataMenus, jMenuChartType);
+		// add action to show right panel
+		menuMetadata.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(metadataMenus));
+
 	}
 
-	private void addSubmenus(JMenu menu, List<String> chartTypesForSubmenus,
-			Map<String, JRadioButtonMenuItem> radioButtonMenuMap, JMenu parentMenu) {
+	private MouseListener getMouseListenerForShowingAttachedPanelForChartTypes(List<String> idNumbersMenus) {
+		MouseListener ret = new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				showAttachedHelpDialog(idNumbersMenus);
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+		};
+		return ret;
+	}
+
+	private void addSubmenus(JMenu menu, List<String> chartTypesForSubmenus, JMenu parentMenu) {
 
 		for (String chartType : chartTypesForSubmenus) {
-			if (MENU_SEPARATION.equals(chartType))
+			if (MENU_SEPARATION.equals(chartType)) {
 				menu.addSeparator();
-			else if (radioButtonMenuMap.containsKey(chartType))
-				menu.add(radioButtonMenuMap.get(chartType));
+				// } else if (radioButtonMenuMap.containsKey(chartType)){
+				// menu.add(radioButtonMenuMap.get(chartType));
+				// }
+			} else {
+				JRadioButtonMenuItem menuItem = new JRadioButtonMenuItem(chartType);
+				ChartType chartTypeObj = ChartType.getFromName(chartType);
+				String menuTooltip = "<html><b>" + chartTypeObj.getName() + "</b><br>" + splitWordsInLines(
+						chartTypeObj.getDescription(), menuItem.getFontMetrics(menuItem.getFont()), 300) + "</html>";
+				menuItem.setToolTipText(menuTooltip);
+				chartTypeMenuButtonGroup.add(menuItem);
+				menuItem.addItemListener(new ItemListener() {
+
+					@Override
+					public void itemStateChanged(ItemEvent e) {
+						if (e.getStateChange() == ItemEvent.SELECTED) {
+							currentChartType = ChartType.getFromName(chartType);
+							addCustomizationControls();
+							startShowingChart(menuItem);
+						}
+						registerNewValue(menuItem);
+					}
+				});
+				List<String> list = new ArrayList<String>();
+				list.add(chartType);
+				menuItem.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(list));
+
+				menu.add(menuItem);
+			}
 		}
 		parentMenu.add(menu);
+	}
+
+	private String splitWordsInLines(String description, FontMetrics fontMetrics, int maxwidth) {
+		StringBuilder sb = new StringBuilder();
+		if (description.contains(" ")) {
+			final String[] split = description.split(" ");
+			StringBuilder sb2 = new StringBuilder();
+			for (String string : split) {
+				sb2.append(string).append(" ");
+				if (fontMetrics.stringWidth(sb2.toString()) >= maxwidth) {
+					sb.append(sb2).append("<br>");
+					sb2 = new StringBuilder();
+				}
+			}
+			sb.append(sb2);
+		} else {
+			sb.append(description);
+		}
+		return sb.toString();
 	}
 
 	protected void applyFilters() {
@@ -802,7 +829,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 	}
 
 	private void updateOptionComboBox() {
-		String chartType = currentChartType;
+		ChartType chartType = currentChartType;
 		String[] options = getOptionsByChartType(chartType);
 		final DefaultComboBoxModel model = (DefaultComboBoxModel) jComboBoxChartOptions.getModel();
 		if (options == null) {
@@ -837,18 +864,18 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		}
 	}
 
-	private String[] getOptionsByChartType(String chartType) {
+	private String[] getOptionsByChartType(ChartType chartType) {
 		// TODO
 		String[] ret = null;
 
 		if (
 		// CHR16_MAPPING.equals(chartType) ||
-		CHR_MAPPING.equals(chartType) || CHR_PEPTIDES_MAPPING.equals(chartType)
-				|| PROTEIN_NAME_CLOUD.equals(chartType)) {
+		ChartType.CHR_MAPPING.equals(chartType) || ChartType.CHR_PEPTIDES_MAPPING.equals(chartType)
+				|| ChartType.PROTEIN_NAME_CLOUD.equals(chartType)) {
 			ret = new String[2];
 			ret[0] = ONE_SERIES_PER_EXPERIMENT_LIST;
 			ret[1] = ONE_CHART_PER_EXPERIMENT;
-		} else if (INPUT_PARAMETERS.equals(chartType) || SPECTROMETERS.equals(chartType)) {
+		} else if (ChartType.INPUT_PARAMETERS.equals(chartType) || ChartType.SPECTROMETERS.equals(chartType)) {
 			ret = new String[2];
 			ret[0] = ONE_SERIES_PER_REPLICATE;
 			ret[1] = ONE_CHART_PER_EXPERIMENT;
@@ -859,27 +886,31 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 			ret[2] = ONE_SERIES_PER_REPLICATE;
 			ret[3] = ONE_CHART_PER_EXPERIMENT;
 
-			if (chartType.equals(FDR_VS_SCORE)) {
+			if (chartType.equals(ChartType.FDR_VS_SCORE)) {
 
 				ret = new String[3];
 				ret[0] = ONE_SERIES_PER_EXPERIMENT_LIST;
 				ret[1] = ONE_SERIES_PER_EXPERIMENT;
 				ret[2] = ONE_CHART_PER_EXPERIMENT;
 
-			} else if (chartType.equals(PEPTIDE_REPEATABILITY) || chartType.equals(PROTEIN_REPEATABILITY)) {
+			} else if (chartType.equals(ChartType.PEPTIDE_REPEATABILITY)
+					|| chartType.equals(ChartType.PROTEIN_REPEATABILITY)) {
 				if (getOptionsFactory().getOverReplicates()) {
 					ret = new String[2];
 					ret[0] = ONE_SERIES_PER_EXPERIMENT;
 					ret[1] = ONE_CHART_PER_EXPERIMENT;
-				} else if (chartType.equals(PROTEIN_REPEATABILITY)) {
+				} else if (chartType.equals(ChartType.PROTEIN_REPEATABILITY)) {
 					ret = new String[1];
 					ret[0] = ONE_SERIES_PER_EXPERIMENT_LIST;
 				}
-			} else if (chartType.equals(PROTEIN_OVERLAPING) || chartType.equals(PEPTIDE_OVERLAPING)
-					|| chartType.equals(PROTEIN_SCORE_COMPARISON) || chartType.equals(PEPTIDE_SCORE_COMPARISON)
-					|| chartType.equals(EXCLUSIVE_PROTEIN_NUMBER) || chartType.equals(EXCLUSIVE_PEPTIDE_NUMBER)
-					|| chartType.equals(PEPTIDE_RT_COMPARISON) || chartType.equals(PEPTIDE_COUNTING_HISTOGRAM)
-					|| chartType.equals(PEPTIDE_COUNTING_VS_SCORE)) {
+			} else if (chartType.equals(ChartType.PROTEIN_OVERLAPING) || chartType.equals(ChartType.PEPTIDE_OVERLAPING)
+					|| chartType.equals(ChartType.PROTEIN_SCORE_COMPARISON)
+					|| chartType.equals(ChartType.PEPTIDE_SCORE_COMPARISON)
+					|| chartType.equals(ChartType.EXCLUSIVE_PROTEIN_NUMBER)
+					|| chartType.equals(ChartType.EXCLUSIVE_PEPTIDE_NUMBER)
+					|| chartType.equals(ChartType.PEPTIDE_RT_COMPARISON)
+					|| chartType.equals(ChartType.PEPTIDE_COUNTING_HISTOGRAM)
+					|| chartType.equals(ChartType.PEPTIDE_COUNTING_VS_SCORE)) {
 				ret = new String[3];
 				ret[0] = ONE_SERIES_PER_EXPERIMENT;
 				ret[1] = ONE_SERIES_PER_REPLICATE;
@@ -905,7 +936,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 	private void initComponents() {
 		java.awt.GridBagConstraints gridBagConstraints;
 
-		buttonGroup2 = new javax.swing.ButtonGroup();
+		chartTypeMenuButtonGroup = new javax.swing.ButtonGroup();
 		jPanelStatus = new javax.swing.JPanel();
 		jScrollPane3 = new javax.swing.JScrollPane();
 		jTextAreaStatus = new javax.swing.JTextArea();
@@ -1677,85 +1708,94 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 	public void addCustomizationControls() {
 		// TODO add more customizations if you add more chart types
 
-		String chartType = currentChartType;
+		ChartType chartType = currentChartType;
 		String options = (String) jComboBoxChartOptions.getSelectedItem();
 
 		// remove all content
 		jPanelAddOptions.removeAll();
 
-		if (PROTEIN_SCORE_DISTRIBUTION.equals(chartType) || PEPTIDE_SCORE_DISTRIBUTION.equals(chartType)) {
+		if (ChartType.PROTEIN_SCORE_DISTRIBUTION.equals(chartType)
+				|| ChartType.PEPTIDE_SCORE_DISTRIBUTION.equals(chartType)) {
 			addLineHistogramControls(true, false);
-		} else if (PROTEIN_COVERAGE_DISTRIBUTION.equals(chartType)) {
+		} else if (ChartType.PROTEIN_COVERAGE_DISTRIBUTION.equals(chartType)) {
 			addLineHistogramControls(false, false);
-		} else if (PEPTIDE_MASS_DISTRIBUTION.equals(chartType)) {
+		} else if (ChartType.PEPTIDE_MASS_DISTRIBUTION.equals(chartType)) {
 			addLineHistogramControls(false, true);
-		} else if (PROTEIN_SCORE_COMPARISON.equals(chartType) || PEPTIDE_SCORE_COMPARISON.equals(chartType)) {
+		} else if (ChartType.PROTEIN_SCORE_COMPARISON.equals(chartType)
+				|| ChartType.PEPTIDE_SCORE_COMPARISON.equals(chartType)) {
 			addScoreComparisonControls(options);
-		} else if (PEPTIDE_NUMBER_HISTOGRAM.equals(chartType) || PROTEIN_NUMBER_HISTOGRAM.equals(chartType)) {
-			addHistogramBarControls(PEPTIDE_NUMBER_HISTOGRAM.equals(chartType));
-		} else if (PROTEIN_COVERAGE.equals(chartType)) {
+		} else if (ChartType.PEPTIDE_NUMBER_HISTOGRAM.equals(chartType)
+				|| ChartType.PROTEIN_NUMBER_HISTOGRAM.equals(chartType)) {
+			addHistogramBarControls(ChartType.PEPTIDE_NUMBER_HISTOGRAM.equals(chartType));
+		} else if (ChartType.PROTEIN_COVERAGE.equals(chartType)) {
 			addProteinCoverageHistogramBarControls();
-		} else if (PEPTIDE_CHARGE_HISTOGRAM.equals(chartType)) {
+		} else if (ChartType.PEPTIDE_CHARGE_HISTOGRAM.equals(chartType)) {
 			addChargeHistogramBarControls();
-		} else if (PEPTIDE_OVERLAPING.equals(chartType) || PROTEIN_OVERLAPING.equals(chartType)) {
+		} else if (ChartType.PEPTIDE_OVERLAPING.equals(chartType) || ChartType.PROTEIN_OVERLAPING.equals(chartType)) {
 			addOverlapingControls(options, 0, false, true);
-		} else if (EXCLUSIVE_PROTEIN_NUMBER.equals(chartType) || EXCLUSIVE_PEPTIDE_NUMBER.equals(chartType)) {
+		} else if (ChartType.EXCLUSIVE_PROTEIN_NUMBER.equals(chartType)
+				|| ChartType.EXCLUSIVE_PEPTIDE_NUMBER.equals(chartType)) {
 			addOverlapingControls(options, null, false, false);
-		} else if (PEPTIDES_PER_PROTEIN_HEATMAP.equals(chartType) || PSMS_PER_PEPTIDE_HEATMAP.equals(chartType)
-				|| PSMS_PER_PROTEIN_HEATMAP.equals(chartType)) {
+		} else if (ChartType.PEPTIDES_PER_PROTEIN_HEATMAP.equals(chartType)
+				|| ChartType.PSMS_PER_PEPTIDE_HEATMAP.equals(chartType)
+				|| ChartType.PSMS_PER_PROTEIN_HEATMAP.equals(chartType)) {
 			addHeatMapControls(false);
-		} else if (PEPTIDE_OCCURRENCE_HEATMAP.equals(chartType) || PROTEIN_OCURRENCE_HEATMAP.equals(chartType)) {
+		} else if (ChartType.PEPTIDE_OCCURRENCE_HEATMAP.equals(chartType)
+				|| ChartType.PROTEIN_OCURRENCE_HEATMAP.equals(chartType)) {
 			addHeatMapControls(true);
-		} else if (MODIFICATION_SITES_NUMBER.equals(chartType) || MODIFICATED_PEPTIDE_NUMBER.equals(chartType)) {
-			addPeptideModificationControls();
-		} else if (PEPTIDE_MODIFICATION_DISTRIBUTION.equals(chartType)) {
-			addPeptideModificationControls();
-		} else if (PEPTIDE_MONITORING.equals(chartType)) {
+		} else if (ChartType.MODIFICATION_SITES_NUMBER.equals(chartType)
+				|| ChartType.MODIFICATED_PEPTIDE_NUMBER.equals(chartType)) {
+			addPeptideModificationControls(true);
+		} else if (ChartType.PEPTIDE_MODIFICATION_DISTRIBUTION.equals(chartType)) {
+			addPeptideModificationControls(false);
+		} else if (ChartType.PEPTIDE_MONITORING.equals(chartType)) {
 			addPeptideMonitoringControls();
-		} else if (PROTEIN_REPEATABILITY.equals(chartType) || PEPTIDE_REPEATABILITY.equals(chartType)) {
+		} else if (ChartType.PROTEIN_REPEATABILITY.equals(chartType)
+				|| ChartType.PEPTIDE_REPEATABILITY.equals(chartType)) {
 			addRepeatibilityControls();
-		} else if (PROTEIN_SENSITIVITY_SPECIFICITY.equals(chartType)) {
+		} else if (ChartType.PROTEIN_SENSITIVITY_SPECIFICITY.equals(chartType)) {
 			addSensitivitySpecificityControls();
-		} else if (MISSEDCLEAVAGE_DISTRIBUTION.equals(chartType)) {
+		} else if (ChartType.MISSEDCLEAVAGE_DISTRIBUTION.equals(chartType)) {
 			addMissedCleavageDistributionControls(options);
-		} else if (PEPTIDE_LENGTH_DISTRIBUTION.equals(chartType)) {
+		} else if (ChartType.PEPTIDE_LENGTH_DISTRIBUTION.equals(chartType)) {
 			addPeptideLengthDistributionControls(options);
 			// } else if (CHR16_MAPPING.equals(chartType)) {
 			// // this.isChr16ChartShowed = true;
 			// addChr16MappingControls();
-		} else if (SINGLE_HIT_PROTEINS.equals(chartType)) {
+		} else if (ChartType.SINGLE_HIT_PROTEINS.equals(chartType)) {
 			addSingleHitProteinControls();
-		} else if (PEPTIDE_NUMBER_IN_PROTEINS.equals(chartType)) {
+		} else if (ChartType.PEPTIDE_NUMBER_IN_PROTEINS.equals(chartType)) {
 			addPeptideNumberInProteinsControls();
-		} else if (DELTA_MZ_OVER_MZ.equals(chartType)) {
+		} else if (ChartType.DELTA_MZ_OVER_MZ.equals(chartType)) {
 			addDeltaOverZControls(options);
-		} else if (PSM_PEP_PROT.equals(chartType)) {
+		} else if (ChartType.PSM_PEP_PROT.equals(chartType)) {
 			addPSM_PEP_PROT_Controls(options);
-		} else if (FDR_VS_SCORE.equals(chartType)) {
+		} else if (ChartType.FDR_VS_SCORE.equals(chartType)) {
 			addFDR_VS_Score_Controls(options);
-		} else if (CHR_MAPPING.equals(chartType)) {
+		} else if (ChartType.CHR_MAPPING.equals(chartType)) {
 			addAllHumanChromosomeMappingControls();
-		} else if (CHR_PEPTIDES_MAPPING.equals(chartType)) {
+		} else if (ChartType.CHR_PEPTIDES_MAPPING.equals(chartType)) {
 			addAllHumanChromosomePeptideMappingControls();
-		} else if (FDR.equals(chartType)) {
+		} else if (ChartType.FDR.equals(chartType)) {
 			addFDR_Plots_Controls();
-		} else if (PEPTIDE_PRESENCY_HEATMAP.equals(chartType)) {
+		} else if (ChartType.PEPTIDE_PRESENCY_HEATMAP.equals(chartType)) {
 			addPeptidePresencyControls();
-		} else if (PEPTIDE_NUM_PER_PROTEIN_MASS.equals(chartType)) {
+		} else if (ChartType.PEPTIDE_NUM_PER_PROTEIN_MASS.equals(chartType)) {
 			addLineHistogramControls(false, false);
-		} else if (HUMAN_CHROMOSOME_COVERAGE.equals(chartType)) {
+		} else if (ChartType.HUMAN_CHROMOSOME_COVERAGE.equals(chartType)) {
 			addHumanChromosomeCoverageControls();
-		} else if (PROTEIN_NAME_CLOUD.equals(chartType)) {
+		} else if (ChartType.PROTEIN_NAME_CLOUD.equals(chartType)) {
 			addWordCramControls();
-		} else if (PROTEIN_GROUP_TYPES.equals(chartType)) {
+		} else if (ChartType.PROTEIN_GROUP_TYPES.equals(chartType)) {
 			addProteingGroupTypesDistributionControls(options);
-		} else if (PEPTIDE_RT_COMPARISON.equals(chartType)) {
+		} else if (ChartType.PEPTIDE_RT_COMPARISON.equals(chartType)) {
 			addPeptideRTComparisonControls(options);
-		} else if (PEPTIDE_RT.equals(chartType)) {
+		} else if (ChartType.PEPTIDE_RT.equals(chartType)) {
 			addPeptideRTControls(options);
-		} else if (SINGLE_RT_COMPARISON.equals(chartType)) {
+		} else if (ChartType.SINGLE_RT_COMPARISON.equals(chartType)) {
 			addSingleRTControls(options);
-		} else if (PEPTIDE_COUNTING_HISTOGRAM.equals(chartType) || PEPTIDE_COUNTING_VS_SCORE.equals(chartType)) {
+		} else if (ChartType.PEPTIDE_COUNTING_HISTOGRAM.equals(chartType)
+				|| ChartType.PEPTIDE_COUNTING_VS_SCORE.equals(chartType)) {
 			addPeptideCoutingControls(options);
 		}
 		jPanelAddOptions.repaint();
@@ -1771,11 +1811,11 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 
 		c.gridy = 0;
 
-		if (PEPTIDE_COUNTING_VS_SCORE.equals(currentChartType)) {
+		if (ChartType.PEPTIDE_COUNTING_VS_SCORE.equals(currentChartType)) {
 			DefaultComboBoxModel peptideScoreNames = getPeptideScoreNames();
 			jPanelAddOptions.add(optionsFactory.getPeptideScorePanel(peptideScoreNames), c);
 		}
-		if (PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
+		if (ChartType.PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
 			c.gridy++;
 			jPanelAddOptions.add(optionsFactory.getBinsPanel(), c);
 		}
@@ -2057,6 +2097,10 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		JPanel colorScalePanel = optionsFactory.getColorScalePanel(false);
 		c.gridy++;
 		panel.add(colorScalePanel, c);
+
+		JButton jbuttonSave = optionsFactory.getSaveButton();
+		c.gridy++;
+		panel.add(jbuttonSave, c);
 
 		jPanelAddOptions.setLayout(new BorderLayout());
 		jPanelAddOptions.add(panel, BorderLayout.NORTH);
@@ -2537,6 +2581,10 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 			}
 		}
 
+		JPanel jPanelCleavage = optionsFactory.getCleavagePanel();
+		c.gridx = 0;
+		c.gridy++;
+		panel.add(jPanelCleavage, c);
 		jPanelAddOptions.setLayout(new BorderLayout());
 		jPanelAddOptions.add(panel, BorderLayout.NORTH);
 
@@ -2793,7 +2841,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		return null;
 	}
 
-	private void addPeptideModificationControls() {
+	private void addPeptideModificationControls(boolean multipleSelectionOfPTMList) {
 		jPanelAddOptions.removeAll();
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -2807,19 +2855,19 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		panel.add(jPanelAdditional1, c);
 
 		// ////////////// ROW2
-		JPanel jPanelAdditional2 = optionsFactory.getModificationListPanel();
+		JPanel jPanelAdditional2 = optionsFactory.getModificationListPanel(multipleSelectionOfPTMList);
 
 		c.gridx = 0;
 		c.gridy++;
 		c.fill = GridBagConstraints.BOTH;
 		panel.add(jPanelAdditional2, c);
-
-		JLabel jlabel = new JLabel("(Multiple selections are allowed)");
-		jlabel.setToolTipText(
-				"<html>Multiple selections are allowed:<br>Press CTRL key and select more than one modification.</html>");
-		c.gridy++;
-		panel.add(jlabel, c);
-
+		if (multipleSelectionOfPTMList) {
+			JLabel jlabel = new JLabel("(Multiple selections are allowed)");
+			jlabel.setToolTipText(
+					"<html>Multiple selections are allowed:<br>Press CTRL key and select more than one modification.</html>");
+			c.gridy++;
+			panel.add(jlabel, c);
+		}
 		// /////////////// ROW4
 		JCheckBox checkBox4 = optionsFactory.getShowAsStackedChartCheckBox();
 		c.gridx = 0;
@@ -2844,7 +2892,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 0;
 		c.gridy = 0;
-		if (currentChartType.equals(PROTEIN_SCORE_COMPARISON)) {
+		if (currentChartType.equals(ChartType.PROTEIN_SCORE_COMPARISON)) {
 			// //////////////// ROW1
 			final DefaultComboBoxModel proteinScoreNames = getProteinScoreNames();
 			if (proteinScoreNames != null) {
@@ -2854,7 +2902,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 			}
 		}
 
-		if (currentChartType.equals(PEPTIDE_SCORE_COMPARISON)) {
+		if (currentChartType.equals(ChartType.PEPTIDE_SCORE_COMPARISON)) {
 			// //////////////// ROW2
 			final DefaultComboBoxModel peptideScoreNames = getPeptideScoreNames();
 			if (peptideScoreNames != null) {
@@ -2919,13 +2967,6 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		JPanel jPanelAdditional2 = optionsFactory.getHeatMapThresholdPanel(occurrenceThreshold);
 		c.gridy++;
 		panel.add(jPanelAdditional2, c);
-
-		// // //////////////// ROW3
-		// if (currentChartType.equals(PEPTIDES_PER_PROTEIN_HEATMAP)) {
-		// JCheckBox checkbox = optionsFactory.getIsPSMorPeptideCheckBox();
-		// c.gridy++;
-		// panel.add(checkbox, c);
-		// }
 
 		JButton jbuttonSave = optionsFactory.getSaveButton();
 		c.gridy++;
@@ -3012,19 +3053,21 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 			jPanelAddOptions.add(label, c);
 			c.gridy++;
 		}
-		if (PROTEIN_OVERLAPING.equals(currentChartType) || EXCLUSIVE_PROTEIN_NUMBER.equals(currentChartType)
-				|| PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
+		if (ChartType.PROTEIN_OVERLAPING.equals(currentChartType)
+				|| ChartType.EXCLUSIVE_PROTEIN_NUMBER.equals(currentChartType)
+				|| ChartType.PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
 			jPanelAddOptions.add(new JLabel("Protein groups are equal if (select one option):"), c);
 			c.gridy++;
 			// take into account just one protein per group
 			jPanelAddOptions.add(optionsFactory.getJcheckBoxOneProteinPerGroup(), c);
 			c.gridy++;
 		}
-		if (EXCLUSIVE_PROTEIN_NUMBER.equals(currentChartType) || EXCLUSIVE_PEPTIDE_NUMBER.equals(currentChartType)) {
+		if (ChartType.EXCLUSIVE_PROTEIN_NUMBER.equals(currentChartType)
+				|| ChartType.EXCLUSIVE_PEPTIDE_NUMBER.equals(currentChartType)) {
 			jPanelAddOptions.add(optionsFactory.getAccumulativeTrendCheckBox(), c);
 			c.gridy++;
 		}
-		if (PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
+		if (ChartType.PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
 			jPanelAddOptions.add(optionsFactory.getBinsPanel(), c);
 			c.gridy++;
 			jPanelAddOptions.add(optionsFactory.getHistogramTypePanel(), c);
@@ -3037,7 +3080,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		c.gridy++;
 
 		if (!numberOfSelectedCheckBoxes.equals(Integer.MAX_VALUE)
-				&& !PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
+				&& !ChartType.PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
 			// Add save image button
 			JButton jbuttonSave = new JButton("Save image(s)");
 			jbuttonSave.addActionListener(new java.awt.event.ActionListener() {
@@ -3363,7 +3406,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		ExporterDialog exporterDialog = new ExporterDialog(this, this, idSets, getDataLevel(), true);
 
 		Filters filter = null;
-		if (currentChartType.equals(PROTEIN_OVERLAPING)) {
+		if (currentChartType.equals(ChartType.PROTEIN_OVERLAPING)) {
 
 			Set<Object> keys = new THashSet<Object>();
 			ProteinGroupComparisonType proteinGroupComparisonType = additionalOptionsPanelFactory
@@ -3393,7 +3436,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 						GeneralOptionsDialog.getInstance(this).isDoNotGroupNonConclusiveProteins(),
 						GeneralOptionsDialog.getInstance(this).isSeparateNonConclusiveProteins());
 			}
-		} else if (currentChartType.equals(PEPTIDE_OVERLAPING)) {
+		} else if (currentChartType.equals(ChartType.PEPTIDE_OVERLAPING)) {
 			Set<String> sequences = new THashSet<String>();
 			for (Object object : collection) {
 				if (object instanceof PeptideOccurrence) {
@@ -3475,20 +3518,22 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 			c.gridy++;
 		}
 		// Just in case of proteins
-		if (PROTEIN_OVERLAPING.equals(currentChartType) || EXCLUSIVE_PROTEIN_NUMBER.equals(currentChartType)
-				|| PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
+		if (ChartType.PROTEIN_OVERLAPING.equals(currentChartType)
+				|| ChartType.EXCLUSIVE_PROTEIN_NUMBER.equals(currentChartType)
+				|| ChartType.PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
 			jPanelAddOptions.add(new JLabel("Protein groups are equal if (select one option):"), c);
 			c.gridy++;
 			// take into account just one protein per group
 			jPanelAddOptions.add(optionsFactory.getJcheckBoxOneProteinPerGroup(), c);
 			c.gridy++;
 		}
-		if (EXCLUSIVE_PROTEIN_NUMBER.equals(currentChartType) || EXCLUSIVE_PEPTIDE_NUMBER.equals(currentChartType)) {
+		if (ChartType.EXCLUSIVE_PROTEIN_NUMBER.equals(currentChartType)
+				|| ChartType.EXCLUSIVE_PEPTIDE_NUMBER.equals(currentChartType)) {
 			jPanelAddOptions.add(optionsFactory.getAccumulativeTrendCheckBox(), c);
 			c.gridy++;
 		}
 
-		if (PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
+		if (ChartType.PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
 			jPanelAddOptions.add(optionsFactory.getBinsPanel(), c);
 			c.gridy++;
 			jPanelAddOptions.add(optionsFactory.getHistogramTypePanel(), c);
@@ -3504,7 +3549,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 				getMethodToUpdateColorInChart()), c);
 		c.gridy++;
 		if (!numberOfSelectedCheckBoxes.equals(Integer.MAX_VALUE)
-				&& !PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
+				&& !ChartType.PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
 			// Add save image button
 			JButton jbuttonSave = new JButton("Save image");
 			jbuttonSave.addActionListener(new java.awt.event.ActionListener() {
@@ -3604,20 +3649,22 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		}
 
 		// Just in case of proteins
-		if (PROTEIN_OVERLAPING.equals(currentChartType) || EXCLUSIVE_PROTEIN_NUMBER.equals(currentChartType)
-				|| PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
+		if (ChartType.PROTEIN_OVERLAPING.equals(currentChartType)
+				|| ChartType.EXCLUSIVE_PROTEIN_NUMBER.equals(currentChartType)
+				|| ChartType.PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
 			jPanelAddOptions.add(new JLabel("Protein groups are equal if (select one option):"), c);
 			c.gridy++;
 			// take into account just one protein per group
 			jPanelAddOptions.add(optionsFactory.getJcheckBoxOneProteinPerGroup(), c);
 			c.gridy++;
 		}
-		if (EXCLUSIVE_PROTEIN_NUMBER.equals(currentChartType) || EXCLUSIVE_PEPTIDE_NUMBER.equals(currentChartType)) {
+		if (ChartType.EXCLUSIVE_PROTEIN_NUMBER.equals(currentChartType)
+				|| ChartType.EXCLUSIVE_PEPTIDE_NUMBER.equals(currentChartType)) {
 			jPanelAddOptions.add(optionsFactory.getAccumulativeTrendCheckBox(), c);
 			c.gridy++;
 		}
 
-		if (PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
+		if (ChartType.PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
 			jPanelAddOptions.add(optionsFactory.getBinsPanel(), c);
 			c.gridy++;
 			jPanelAddOptions.add(optionsFactory.getHistogramTypePanel(), c);
@@ -3630,7 +3677,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 				getMethodToUpdateColorInChart()), c);
 		c.gridy++;
 		if (!numberOfSelectedCheckBoxes.equals(Integer.MAX_VALUE)
-				&& !PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
+				&& !ChartType.PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
 			// Add save image button
 			JButton jbuttonSave = new JButton("Save image");
 			jbuttonSave.addActionListener(new java.awt.event.ActionListener() {
@@ -3934,7 +3981,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		panel.add(jPanelAdditional2, c);
 
 		if (showScoreNames) {
-			if (currentChartType.contains("rotein")) {
+			if (currentChartType.getName().contains("rotein")) {
 				// //////////////// ROW3
 				final DefaultComboBoxModel proteinScoreNames = getProteinScoreNames();
 				if (proteinScoreNames != null) {
@@ -3943,7 +3990,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 					panel.add(jPanelAdditional3, c);
 				}
 			}
-			if (currentChartType.contains("eptide")) {
+			if (currentChartType.getName().contains("eptide")) {
 				// //////////////// ROW4
 				final DefaultComboBoxModel peptideScoreNames = getPeptideScoreNames();
 				if (peptideScoreNames != null) {
@@ -3974,8 +4021,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 			}
 		}
 
-		if (currentChartType.equals(PEPTIDE_SCORE_DISTRIBUTION)
-				|| currentChartType.equals(PROTEIN_SCORE_DISTRIBUTION)) {
+		if (currentChartType.equals(ChartType.PEPTIDE_SCORE_DISTRIBUTION)
+				|| currentChartType.equals(ChartType.PROTEIN_SCORE_DISTRIBUTION)) {
 			JCheckBox separateDecoyHits = optionsFactory.getSeparatedDecoyHitsCheckBox();
 			separateDecoyHits.setEnabled(experimentList.getFDRFilter() != null);
 			c.gridy++;
@@ -4082,28 +4129,32 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 	}
 
 	void updateControlStates() {
-		String chartType = currentChartType;
+		ChartType chartType = currentChartType;
 		// String options = (String)
 		// this.jComboBoxChartOptions.getSelectedItem();
 		// TODO
 
 		// ENABLE PROTEIN AND DISABLE PEPTIDE CONTROLS
-		if (PROTEIN_SCORE_COMPARISON.equals(chartType) || PROTEIN_SCORE_DISTRIBUTION.equals(chartType)) {
+		if (ChartType.PROTEIN_SCORE_COMPARISON.equals(chartType)
+				|| ChartType.PROTEIN_SCORE_DISTRIBUTION.equals(chartType)) {
 			optionsFactory.enablePeptideScoreNameControls(false);
 			optionsFactory.enableProteinScoreNameControls(true);
 
 			// ENABLE PEPTIDE AND DISABLE PROTEIN CONTROLS
-		} else if (PEPTIDE_SCORE_COMPARISON.equals(chartType) || PEPTIDE_SCORE_DISTRIBUTION.equals(chartType)
-				|| FDR.equals(chartType) || PEPTIDE_REPEATABILITY.equals(chartType)) {
+		} else if (ChartType.PEPTIDE_SCORE_COMPARISON.equals(chartType)
+				|| ChartType.PEPTIDE_SCORE_DISTRIBUTION.equals(chartType) || ChartType.FDR.equals(chartType)
+				|| ChartType.PEPTIDE_REPEATABILITY.equals(chartType)) {
 			optionsFactory.enablePeptideScoreNameControls(true);
 			optionsFactory.enableProteinScoreNameControls(false);
 		}
-		if (PEPTIDE_NUMBER_HISTOGRAM.equals(chartType) || PEPTIDE_OVERLAPING.equals(chartType)
-				|| PEPTIDE_OCCURRENCE_HEATMAP.equals(chartType) || PSMS_PER_PEPTIDE_HEATMAP.contentEquals(chartType)
-				|| PEPTIDE_SCORE_COMPARISON.equals(chartType) || PEPTIDE_MONITORING.equals(chartType)
-				|| PEPTIDE_REPEATABILITY.equals(chartType) || PEPTIDE_PRESENCY_HEATMAP.equals(chartType)
-				|| PSM_PEP_PROT.equals(chartType) || EXCLUSIVE_PEPTIDE_NUMBER.equals(chartType)
-				|| PEPTIDES_PER_PROTEIN_HEATMAP.equals(chartType))
+		if (ChartType.PEPTIDE_NUMBER_HISTOGRAM.equals(chartType) || ChartType.PEPTIDE_OVERLAPING.equals(chartType)
+				|| ChartType.PEPTIDE_OCCURRENCE_HEATMAP.equals(chartType)
+				|| ChartType.PSMS_PER_PEPTIDE_HEATMAP.equals(chartType)
+				|| ChartType.PEPTIDE_SCORE_COMPARISON.equals(chartType)
+				|| ChartType.PEPTIDE_MONITORING.equals(chartType) || ChartType.PEPTIDE_REPEATABILITY.equals(chartType)
+				|| ChartType.PEPTIDE_PRESENCY_HEATMAP.equals(chartType) || ChartType.PSM_PEP_PROT.equals(chartType)
+				|| ChartType.EXCLUSIVE_PEPTIDE_NUMBER.equals(chartType)
+				|| ChartType.PEPTIDES_PER_PROTEIN_HEATMAP.equals(chartType))
 			jCheckBoxUniquePeptides.setEnabled(true);
 		else
 			jCheckBoxUniquePeptides.setEnabled(false);
@@ -4119,7 +4170,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		return jCheckBoxUniquePeptides.isSelected();
 	}
 
-	public String getChartSubtitle(String chartType, String option) {
+	public String getChartSubtitle(ChartType chartType, String option) {
 		// if (chartType.equals(PROTEIN_SCORE_DISTRIBUTION)) {
 		// if (option.equals(ONE_SERIES_PER_REPLICATE))
 		// return ONE_SERIES_PER_REPLICATE;
@@ -4130,19 +4181,19 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 
 	}
 
-	public String getChartTitle(String chartType) {
+	public String getChartTitle(ChartType chartType) {
 		// if (chartType.equals(PROTEIN_SCORE_DISTRIBUTION)) {
 		// return "Protein score distribution";
 		// }else if (PEPTIDE_SCORE_DISTRIBUTION.equals(chartType)){
 		// return "Peptide score distribution";
 		// }
-		return chartType;
+		return chartType.getName();
 
 	}
 
 	public void showChart() {
 
-		String chartType = currentChartType;
+		ChartType chartType = currentChartType;
 		String option = (String) jComboBoxChartOptions.getSelectedItem();
 
 		// if (chartCreator != null &&
@@ -4173,7 +4224,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 			creatingChartLock = true;
 			enableStateKeeper.keepEnableStates(this);
 			enableStateKeeper.disable(this);
-			appendStatus("Creating chart '" + chartType + " (" + option + ")...");
+			appendStatus("Creating chart '" + chartType.getName() + "' (" + option + ")...");
 			setProgressBarIndeterminate(true);
 
 			chartCreator = new ChartCreatorTask(this, chartType, option, experimentList);
@@ -4251,7 +4302,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 
 	// GEN-BEGIN:variables
 	// Variables declaration - do not modify
-	private javax.swing.ButtonGroup buttonGroup2;
+	private javax.swing.ButtonGroup chartTypeMenuButtonGroup;
 	private javax.swing.JButton jButtonExport2Excel;
 	private javax.swing.JButton jButtonExport2PRIDE;
 	private javax.swing.JButton jButtonSaveAsFiltered;
@@ -4463,7 +4514,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 				jPanelChart.repaint();
 				if (ChartCreatorTask.CHART_GENERATED.equals(evt.getPropertyName())) {
 					// disable scroll in case of current chart is a word clod
-					if (currentChartType.equals(PROTEIN_NAME_CLOUD)) {
+					if (currentChartType.equals(ChartType.PROTEIN_NAME_CLOUD)) {
 						jScrollPaneChart.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 						jScrollPaneChart.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 					} else {
@@ -4476,7 +4527,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 					setFDRLabel();
 					double t2 = System.currentTimeMillis() * 1.0;
 					appendStatus("Chart created in " + DatesUtil.getDescriptiveTimeFromMillisecs(t2 - t1));
-					if (currentChartType.equals(PROTEIN_NAME_CLOUD)) {
+					if (currentChartType.equals(ChartType.PROTEIN_NAME_CLOUD)) {
 						appendStatus("Wait some seconds for the cloud loading...");
 					}
 
@@ -4677,6 +4728,10 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 		jLabelInformation1.setText(string);
 	}
 
+	public void setInformation1(ChartType chartType) {
+		jLabelInformation1.setText(chartType.getName());
+	}
+
 	public void setInformation2(String string) {
 		jLabelInformation2.setText(string);
 	}
@@ -4690,7 +4745,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 
 	}
 
-	public String getCurrentChartType() {
+	public ChartType getCurrentChartType() {
 		return currentChartType;
 	}
 
@@ -4773,7 +4828,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpDialog
 	}
 
 	public void saveWordCramImage() {
-		if (currentChartType.equals(PROTEIN_NAME_CLOUD)) {
+		if (currentChartType.equals(ChartType.PROTEIN_NAME_CLOUD)) {
 			log.info("Saving Protein name cloud");
 			String error = "";
 			try {

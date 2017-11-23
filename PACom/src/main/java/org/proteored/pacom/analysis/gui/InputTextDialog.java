@@ -15,12 +15,14 @@ import java.util.Set;
  * @author __USER__
  */
 public class InputTextDialog extends javax.swing.JDialog {
-	private java.awt.Frame parent;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8512374427052990524L;
 
 	/** Creates new form InputTextDialog */
 	public InputTextDialog(java.awt.Frame parent, String title, String explanation, Set<String> list) {
 		super(parent, true);
-		this.parent = parent;
 		initComponents();
 		this.jLabelExplanation.setText(explanation);
 		this.setTitle(title);

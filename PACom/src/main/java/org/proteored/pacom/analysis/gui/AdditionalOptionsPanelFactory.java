@@ -11,6 +11,8 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -215,6 +217,10 @@ public class AdditionalOptionsPanelFactory {
 	private JCheckBox jCheckBoxIsPSMorPeptide;
 
 	private JCheckBox jCheckBoxShowPeptidesPlusCharge;
+
+	private JPanel jPanelCleavage;
+
+	private JTextField jTextboxCleavage;
 
 	public AdditionalOptionsPanelFactory(ChartManagerFrame frame) {
 		this.frame = frame;
@@ -429,7 +435,9 @@ public class AdditionalOptionsPanelFactory {
 		JPanel jPanelAdditional1 = new JPanel();
 
 		if (jButtonShowInputTextFrame == null) {
-			jButtonShowInputTextFrame = new JButton("Define/show proteins in sample");
+			jButtonShowInputTextFrame = new JButton("Define proteins in sample");
+			jButtonShowInputTextFrame
+					.setToolTipText("Click to define or edit the list of known proteins in the sample");
 			getControlList().add(jButtonShowInputTextFrame);
 		}
 
@@ -685,13 +693,16 @@ public class AdditionalOptionsPanelFactory {
 	public JPanel getUserPeptideListPanel(boolean addAddToPlotButton) {
 		JPanel jPanelAdditional3 = new JPanel();
 		JLabel jlabelUserPeptideList = new JLabel("Insert a peptide list:");
+		String peptideListTooltip = "<html>Insert a peptide list here (one peptide per line).<br>Peptide modifications are allowed.</html>";
+		jlabelUserPeptideList.setToolTipText(peptideListTooltip);
 		GridBagConstraints c = new GridBagConstraints();
 		// c.fill = GridBagConstraints.HORIZONTAL;
-		c.insets = new Insets(0, 0, 0, 0);
+		c.insets = new Insets(10, 0, 0, 0);
 
 		if (jTextAreaUserPeptideList == null) {
 			jTextAreaUserPeptideList = new JTextArea();
 			jTextAreaUserPeptideList.setFont(new JTextField().getFont());
+			jTextAreaUserPeptideList.setToolTipText(peptideListTooltip);
 			getControlList().add(jTextAreaUserPeptideList);
 		}
 		jTextAreaUserPeptideList.setColumns(22);
@@ -715,9 +726,10 @@ public class AdditionalOptionsPanelFactory {
 		c.gridy++;
 
 		if (addAddToPlotButton) {
-			JButton jbuttonAddToPlot = new JButton("Select on peptide list");
+			JButton jbuttonAddToPlot = new JButton("Select from peptide list");
 			jbuttonAddToPlot.setToolTipText(
-					"Click here to automatically select the inserted peptides in the peptide list (if present)");
+					"<html>Click here to automatically select the peptides in the peptide list (if present)<br>"
+							+ " that contain the sequence tag or that are present in the Inserted peptide list.</html>");
 			getControlList().add(jbuttonAddToPlot);
 			jbuttonAddToPlot.addActionListener(new java.awt.event.ActionListener() {
 				@Override
@@ -732,7 +744,12 @@ public class AdditionalOptionsPanelFactory {
 			}
 
 			c.gridx = 0;
-			jPanelAdditional3.add(new JLabel("Containing:"), c);
+			final JLabel containingLabel = new JLabel("Containing (sequence tag):");
+			final String containingTooltip = "<html>Insert a sequence tag here and click on <i>Select on peptide list</i><br>"
+					+ "to filter the peptide list by peptides containing that sequence tag.</html>";
+			containingLabel.setToolTipText(containingTooltip);
+			jTextContaining.setToolTipText(containingTooltip);
+			jPanelAdditional3.add(containingLabel, c);
 			c.gridy++;
 			c.gridy++;
 			jPanelAdditional3.add(jTextContaining, c);
@@ -766,14 +783,14 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	protected void addUserPeptideListToPeptideSelection() {
-		String containing = jTextContaining.getText();
+		String sequenceTag = jTextContaining.getText();
 		boolean distinguishModPep = frame.distinguishModifiedPeptides();
 		final String userPeptideList = jTextAreaUserPeptideList.getText();
 		List<String> resultingSequences = new ArrayList<String>();
 		if (userPeptideList != null && !"".equals(userPeptideList)) {
 			this.userPeptideList = userPeptideList;
 			String[] splitted = this.userPeptideList.split("\n");
-			log.info("the user has input " + splitted.length + " sequences");
+			log.info("User has entered " + splitted.length + " sequences");
 
 			for (String userSequence : splitted) {
 				final Collection<PeptideOccurrence> peptideSequences = frame.experimentList
@@ -783,15 +800,18 @@ public class AdditionalOptionsPanelFactory {
 							.getPeptides();
 					for (ExtendedIdentifiedPeptide extendedIdentifiedPeptide : identificationItemList) {
 						final String sequence = extendedIdentifiedPeptide.getSequence();
-						if (sequence.equalsIgnoreCase(userSequence)) {
+						final String sequence_charge = extendedIdentifiedPeptide.getSequence()
+								+ extendedIdentifiedPeptide.getCharge() != null
+										? "_" + extendedIdentifiedPeptide.getSequence() : "";
+						if (sequence.equalsIgnoreCase(userSequence) && sequence_charge.equalsIgnoreCase(userSequence)) {
 							if (distinguishModPep) {
 								final List<String> modifiedSequences = ExtendedIdentifiedPeptide
 										.getModifiedSequences(sequence);
 								if (modifiedSequences != null && !modifiedSequences.isEmpty()) {
 									for (String modifiedSequence : modifiedSequences) {
 										if (!resultingSequences.contains(modifiedSequence)) {
-											if ((!"".equals(containing) && modifiedSequence.contains(containing))
-													|| "".equals(containing)) {
+											if ((!"".equals(sequenceTag) && modifiedSequence.contains(sequenceTag))
+													|| "".equals(sequenceTag)) {
 												resultingSequences.add(modifiedSequence);
 												log.info(resultingSequences.size() + " -> " + modifiedSequence);
 
@@ -805,8 +825,8 @@ public class AdditionalOptionsPanelFactory {
 							}
 						} else if (extendedIdentifiedPeptide.getModificationString().equals(userSequence)) {
 							if (!resultingSequences.contains(userSequence)) {
-								if ((!"".equals(containing) && userSequence.contains(containing))
-										|| "".equals(containing)) {
+								if ((!"".equals(sequenceTag) && userSequence.contains(sequenceTag))
+										|| "".equals(sequenceTag)) {
 									resultingSequences.add(userSequence);
 								}
 							}
@@ -819,7 +839,7 @@ public class AdditionalOptionsPanelFactory {
 			// if there is not a peptide list, look to the containing text box
 			// and select the peptides that contain that string in their
 			// modification strings
-			if (!"".equals(containing)) {
+			if (!"".equals(sequenceTag)) {
 				final Collection<PeptideOccurrence> peptideSequences = frame.experimentList
 						.getPeptideChargeOccurrenceList(distinguishModPep).values();
 				for (PeptideOccurrence identificationOccurrence : peptideSequences) {
@@ -827,14 +847,20 @@ public class AdditionalOptionsPanelFactory {
 							.getPeptides();
 					for (ExtendedIdentifiedPeptide extendedIdentifiedPeptide : identificationItemList) {
 						if (distinguishModPep) {
-							final String modifiedSequence = extendedIdentifiedPeptide.getModificationString();
-							if (modifiedSequence.contains(containing)) {
+							String modifiedSequence = extendedIdentifiedPeptide.getModificationString();
+							if (extendedIdentifiedPeptide.getCharge() != null) {
+								modifiedSequence += "_" + extendedIdentifiedPeptide.getCharge();
+							}
+							if (modifiedSequence.contains(sequenceTag)) {
 								if (!resultingSequences.contains(modifiedSequence))
 									resultingSequences.add(modifiedSequence);
 							}
 						} else {
-							final String sequence = extendedIdentifiedPeptide.getSequence();
-							if (sequence.contains(containing)) {
+							String sequence = extendedIdentifiedPeptide.getSequence();
+							if (extendedIdentifiedPeptide.getCharge() != null) {
+								sequence += "_" + extendedIdentifiedPeptide.getCharge();
+							}
+							if (sequence.contains(sequenceTag)) {
 								if (!resultingSequences.contains(sequence))
 
 									resultingSequences.add(sequence);
@@ -842,20 +868,33 @@ public class AdditionalOptionsPanelFactory {
 						}
 					}
 				}
+			} else {
+				// no sequence tag and no user peptide list
+				// reset the peptide list
+				Set<String> peptides = frame.experimentList.getPeptideChargeOccurrenceList(distinguishModPep).keySet();
+				jListPeptides.jListPeptides.setListData(peptides.toArray(new String[0]));
+				jListPeptides.jListPeptides.clearSelection();
+				jListPeptides.repaint();
+				jlabelPeptideListHeader.setText(peptides.size() + " peptides sequences");
 			}
 		}
 		if (!resultingSequences.isEmpty()) {
 			jListPeptides.jListPeptides.setListData(resultingSequences.toArray(new String[0]));
 			jListPeptides.repaint();
-			jListPeptides.jListPeptides.setSelectionInterval(0, resultingSequences.size() - 1);
+			jListPeptides.jListPeptides.clearSelection();
+			// jListPeptides.jListPeptides.setSelectionInterval(0,
+			// resultingSequences.size() - 1);
 			jlabelPeptideListHeader.setText(resultingSequences.size() + " peptides sequences");
-			frame.startShowingChart(null);
+			// frame.startShowingChart(null);
 		}
 	}
 
-	public JPanel getModificationListPanel() {
-		int selectionModel = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
+	public JPanel getModificationListPanel(boolean multipleSelection) {
 
+		int selectionModel = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
+		if (!multipleSelection) {
+			selectionModel = ListSelectionModel.SINGLE_SELECTION;
+		}
 		JPanel jPanelAdditional2 = new JPanel();
 		Object[] modifications = getModifications();
 		String num = "";
@@ -1670,12 +1709,12 @@ public class AdditionalOptionsPanelFactory {
 		}
 		if (jListModifications != null) {
 
-			final Object[] selectedValues = jListModifications.getSelectedValues();
-			if (selectedValues != null && selectedValues.length > 0) {
-				String[] ret = new String[selectedValues.length];
+			final List<String> selectedValues = jListModifications.getSelectedValuesList();
+			if (selectedValues != null && !selectedValues.isEmpty()) {
+				String[] ret = new String[selectedValues.size()];
 				int i = 0;
-				for (Object object : selectedValues) {
-					ret[i] = (String) object;
+				for (String object : selectedValues) {
+					ret[i] = object;
 					i++;
 				}
 				return ret;
@@ -2769,7 +2808,8 @@ public class AdditionalOptionsPanelFactory {
 
 	public JButton getDrawWordCramButton() {
 		if (jButtonDrawWordCram == null) {
-			jButtonDrawWordCram = new JButton("Redraw");
+			jButtonDrawWordCram = new JButton("Redraw chart");
+			jButtonDrawWordCram.setToolTipText("Click here to redraw the word cloud chart");
 			getControlList().add(jButtonDrawWordCram);
 			jButtonDrawWordCram.addActionListener(new java.awt.event.ActionListener() {
 				@Override
@@ -2913,5 +2953,46 @@ public class AdditionalOptionsPanelFactory {
 
 	public List<JComponent> getControlList() {
 		return controlList;
+	}
+
+	public JPanel getCleavagePanel() {
+		if (jPanelCleavage == null) {
+			jPanelCleavage = new JPanel();
+			getControlList().add(jPanelCleavage);
+			jPanelCleavage.setLayout(new GridBagLayout());
+			final GridBagConstraints c = new GridBagConstraints();
+			c.gridx = 0;
+			c.gridy = 0;
+
+			JLabel label = new JLabel("Cleavage aminoacids:");
+			jTextboxCleavage = new JTextField("KR", 10);
+			String tooltip = "<html>Enter the aminacid in which the enzyme you used is cleaving.<br>"
+					+ "Example: KR for trypsin.</html>";
+			jTextboxCleavage.setToolTipText(tooltip);
+			getControlList().add(jTextboxCleavage);
+			jTextboxCleavage.addKeyListener(new KeyListener() {
+
+				@Override
+				public void keyTyped(KeyEvent e) {
+				}
+
+				@Override
+				public void keyReleased(KeyEvent e) {
+					frame.startShowingChart(jTextboxCleavage);
+				}
+
+				@Override
+				public void keyPressed(KeyEvent e) {
+				}
+			});
+			jPanelCleavage.add(label, c);
+			c.gridy++;
+			jPanelCleavage.add(jTextboxCleavage, c);
+		}
+		return jPanelCleavage;
+	}
+
+	public String getCleavageAminoacids() {
+		return jTextboxCleavage.getText();
 	}
 }

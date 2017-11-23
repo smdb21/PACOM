@@ -9,7 +9,7 @@ public abstract class AbstractJFrameWithAttachedHelpDialog extends JFrame implem
 	 */
 	private static final long serialVersionUID = -3356292958061016878L;
 	private AttachedHelpDialog help;
-	private final int maxWidth;
+	protected final int maxWidth;
 
 	public AbstractJFrameWithAttachedHelpDialog(int maxWidth) {
 		this.maxWidth = maxWidth;

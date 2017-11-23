@@ -820,7 +820,7 @@ public class DatasetFactory {
 	}
 
 	public static CategoryDataset createMissedCleavagesDistributionCategoryDataSet(List<IdentificationSet> idSets,
-			int maximum) {
+			String cleavageAminoacids, int maximum) {
 		int i = 0;
 
 		// create the dataset...
@@ -830,7 +830,8 @@ public class DatasetFactory {
 			for (IdentificationSet idSet : idSets) {
 				String experimentName = idSet.getFullName();
 				int maximumOccurrence = 0;
-				final TIntIntHashMap missCleavageOccurrence = idSet.getMissedCleavagesOccurrenceDistribution();
+				final TIntIntHashMap missCleavageOccurrence = idSet
+						.getMissedCleavagesOccurrenceDistribution(cleavageAminoacids);
 				if (missCleavageOccurrence != null && !missCleavageOccurrence.isEmpty()) {
 					final int[] keySet = missCleavageOccurrence.keys();
 					List<Integer> keyList = toSortedList(keySet);
@@ -1886,14 +1887,13 @@ public class DatasetFactory {
 
 		List<TIntObjectHashMap<Integer>> totalList = new ArrayList<TIntObjectHashMap<Integer>>();
 		for (IdentificationSet idSet : idSets) {
-			int[] values = getPeptideCharges(idSet);
+			int[] charges = getPeptideCharges(idSet);
 			TIntObjectHashMap<Integer> chargeHash = new TIntObjectHashMap<Integer>();
-			for (int charge : values) {
+			for (int charge : charges) {
 				if (charge > 0)
 					if (chargeHash.containsKey(charge)) {
 						Integer chargeOccurrence = chargeHash.get(charge);
 						chargeOccurrence++;
-						chargeHash.remove(charge);
 						chargeHash.put(charge, chargeOccurrence);
 					} else {
 						chargeHash.put(charge, 1);
@@ -1912,6 +1912,12 @@ public class DatasetFactory {
 		return dataset;
 	}
 
+	/**
+	 * Returns an array of charges, one per PSM in the dataset
+	 * 
+	 * @param idSet
+	 * @return
+	 */
 	private static int[] getPeptideCharges(IdentificationSet idSet) {
 		int[] ret = null;
 
@@ -2622,28 +2628,28 @@ public class DatasetFactory {
 				int tn = idSet.getProteinGroupTN(proteinsInSample, countNonConclusiveProteins);
 				int fp = idSet.getProteinGroupFP(proteinsInSample, countNonConclusiveProteins);
 				if (sensitivity && (tp + fn) > 0) {
-					double value = tp / Double.valueOf(tp + fn);
+					double value = 100.0 * tp / Double.valueOf(tp + fn);
 					dataset.addValue(value, "sensitivity", experimentName);
 				}
 
 				if (accuracy && (tp + tn + fp + fn) > 0) {
-					double value = (tp + tn) / Double.valueOf(tp + tn + fp + fn);
+					double value = 100.0 * (tp + tn) / Double.valueOf(tp + tn + fp + fn);
 					dataset.addValue(value, "accuracy", experimentName);
 				}
 				if (specificity && tn + fp > 0) {
-					double value = tn / Double.valueOf(tn + fp);
+					double value = 100.0 * tn / Double.valueOf(tn + fp);
 					dataset.addValue(value, "specifity", experimentName);
 				}
 				if (precision && (tp + fp) > 0) {
-					double value = Double.valueOf(tp) / Double.valueOf(tp + fp);
+					double value = 100.0 * Double.valueOf(tp) / Double.valueOf(tp + fp);
 					dataset.addValue(value, "precision", experimentName);
 				}
 				if (npv && (tn + fn) > 0) {
-					double value = Double.valueOf(tn) / Double.valueOf(tn + fn);
+					double value = 100.0 * Double.valueOf(tn) / Double.valueOf(tn + fn);
 					dataset.addValue(value, "npv", experimentName);
 				}
 				if (fdr && (fp + tp) > 0) {
-					double value = Double.valueOf(fp) / Double.valueOf(fp + tp);
+					double value = 100.0 * Double.valueOf(fp) / Double.valueOf(fp + tp);
 					dataset.addValue(value, "fdr", experimentName);
 				}
 			}

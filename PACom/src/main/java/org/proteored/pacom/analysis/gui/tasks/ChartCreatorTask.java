@@ -48,6 +48,7 @@ import org.proteored.pacom.analysis.charts.XYLineChart;
 import org.proteored.pacom.analysis.charts.XYPointChart;
 import org.proteored.pacom.analysis.gui.AdditionalOptionsPanelFactory;
 import org.proteored.pacom.analysis.gui.ChartManagerFrame;
+import org.proteored.pacom.analysis.gui.ChartType;
 
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.set.hash.THashSet;
@@ -59,7 +60,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	public static final String CHART_ERROR_GENERATED = "Chart error generated";
 	public static final String DATASET_PROGRESS = "Data set progress";
 	public static final String CHART_CANCELED = "Chart creation cancelled";
-	private final String chartType;
+	private final ChartType chartType;
 	private final String option;
 	private final ChartManagerFrame parent;
 	private final ExperimentList experimentList;
@@ -68,7 +69,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	private final boolean countNonConclusiveProteins;
 	private final Map<String, VennChart> vennChartMap = new THashMap<String, VennChart>();
 
-	public ChartCreatorTask(ChartManagerFrame parent, String chartType, String optionParam,
+	public ChartCreatorTask(ChartManagerFrame parent, ChartType chartType, String optionParam,
 			ExperimentList experimentList) {
 		this.chartType = chartType;
 		if (optionParam == null)
@@ -89,104 +90,104 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		error = null;
 		try {
 			Object ret = null;
-			if (ChartManagerFrame.PEPTIDE_SCORE_DISTRIBUTION.equals(chartType)) {
+			if (ChartType.PEPTIDE_SCORE_DISTRIBUTION.equals(chartType)) {
 				ret = showScoreDistributionHistogramLineChart(IdentificationItemEnum.PEPTIDE);
-			} else if (ChartManagerFrame.PROTEIN_SCORE_DISTRIBUTION.equals(chartType)) {
+			} else if (ChartType.PROTEIN_SCORE_DISTRIBUTION.equals(chartType)) {
 				ret = showScoreDistributionHistogramLineChart(IdentificationItemEnum.PROTEIN);
-			} else if (ChartManagerFrame.PEPTIDE_SCORE_COMPARISON.equals(chartType)) {
+			} else if (ChartType.PEPTIDE_SCORE_COMPARISON.equals(chartType)) {
 				ret = showScoreComparisonScatterChart(IdentificationItemEnum.PEPTIDE);
-			} else if (ChartManagerFrame.PROTEIN_SCORE_COMPARISON.equals(chartType)) {
+			} else if (ChartType.PROTEIN_SCORE_COMPARISON.equals(chartType)) {
 				ret = showScoreComparisonScatterChart(IdentificationItemEnum.PROTEIN);
-			} else if (ChartManagerFrame.PEPTIDE_NUMBER_HISTOGRAM.equals(chartType)) {
+			} else if (ChartType.PEPTIDE_NUMBER_HISTOGRAM.equals(chartType)) {
 				ret = showHistogramChart(IdentificationItemEnum.PEPTIDE);
-			} else if (ChartManagerFrame.PROTEIN_NUMBER_HISTOGRAM.equals(chartType)) {
+			} else if (ChartType.PROTEIN_NUMBER_HISTOGRAM.equals(chartType)) {
 				ret = showHistogramChart(IdentificationItemEnum.PROTEIN);
-			} else if (ChartManagerFrame.PROTEIN_REPEATABILITY.equals(chartType)) {
+			} else if (ChartType.PROTEIN_REPEATABILITY.equals(chartType)) {
 				ret = showRepeatabilityHistogramStackedChart(IdentificationItemEnum.PROTEIN);
-			} else if (ChartManagerFrame.PEPTIDE_REPEATABILITY.equals(chartType)) {
+			} else if (ChartType.PEPTIDE_REPEATABILITY.equals(chartType)) {
 				ret = showRepeatabilityHistogramStackedChart(IdentificationItemEnum.PEPTIDE);
-			} else if (ChartManagerFrame.PEPTIDE_OVERLAPING.equals(chartType)) {
+			} else if (ChartType.PEPTIDE_OVERLAPING.equals(chartType)) {
 				ret = showOverlappingChart(IdentificationItemEnum.PEPTIDE);
-			} else if (ChartManagerFrame.PROTEIN_OVERLAPING.equals(chartType)) {
+			} else if (ChartType.PROTEIN_OVERLAPING.equals(chartType)) {
 				ret = showOverlappingChart(IdentificationItemEnum.PROTEIN);
-			} else if (ChartManagerFrame.PEPTIDE_OCCURRENCE_HEATMAP.equals(chartType)) {
+			} else if (ChartType.PEPTIDE_OCCURRENCE_HEATMAP.equals(chartType)) {
 				ret = showPeptideOccurrenceHeatMapChart(false);
-			} else if (ChartManagerFrame.PSMS_PER_PEPTIDE_HEATMAP.equals(chartType)) {
+			} else if (ChartType.PSMS_PER_PEPTIDE_HEATMAP.equals(chartType)) {
 				ret = showPeptideOccurrenceHeatMapChart(true);
-			} else if (ChartManagerFrame.PROTEIN_OCURRENCE_HEATMAP.equals(chartType)) {
+			} else if (ChartType.PROTEIN_OCURRENCE_HEATMAP.equals(chartType)) {
 				ret = showProteinOccurrenceHeatMapChart();
-			} else if (ChartManagerFrame.PEPTIDES_PER_PROTEIN_HEATMAP.equals(chartType)) {
+			} else if (ChartType.PEPTIDES_PER_PROTEIN_HEATMAP.equals(chartType)) {
 				ret = showPeptidesPerProteinHeatMapChart(false);
-			} else if (ChartManagerFrame.PSMS_PER_PROTEIN_HEATMAP.equals(chartType)) {
+			} else if (ChartType.PSMS_PER_PROTEIN_HEATMAP.equals(chartType)) {
 				ret = showPeptidesPerProteinHeatMapChart(true);
-			} else if (ChartManagerFrame.MODIFICATED_PEPTIDE_NUMBER.equals(chartType)) {
+			} else if (ChartType.MODIFICATED_PEPTIDE_NUMBER.equals(chartType)) {
 				ret = showModificatedPeptidesBarChart();
-			} else if (ChartManagerFrame.MODIFICATION_SITES_NUMBER.equals(chartType)) {
+			} else if (ChartType.MODIFICATION_SITES_NUMBER.equals(chartType)) {
 				ret = showModificationsSitesBarChart();
-			} else if (ChartManagerFrame.PEPTIDE_MODIFICATION_DISTRIBUTION.equals(chartType)) {
+			} else if (ChartType.PEPTIDE_MODIFICATION_DISTRIBUTION.equals(chartType)) {
 				ret = showModificationsNumberDistributionBarChart();
-			} else if (ChartManagerFrame.PEPTIDE_MONITORING.equals(chartType)) {
+			} else if (ChartType.PEPTIDE_MONITORING.equals(chartType)) {
 				ret = showPeptideMonitoringBarChart();
-			} else if (ChartManagerFrame.PROTEIN_COVERAGE_DISTRIBUTION.equals(chartType)) {
+			} else if (ChartType.PROTEIN_COVERAGE_DISTRIBUTION.equals(chartType)) {
 				ret = showProteinCoverageDistributionChart();
-			} else if (ChartManagerFrame.PROTEIN_COVERAGE.equals(chartType)) {
+			} else if (ChartType.PROTEIN_COVERAGE.equals(chartType)) {
 				ret = showProteinCoverageHistogramChart();
-			} else if (ChartManagerFrame.FDR.equals(chartType)) {
+			} else if (ChartType.FDR.equals(chartType)) {
 				ret = showFDRChart();
-			} else if (ChartManagerFrame.PROTEIN_SENSITIVITY_SPECIFICITY.equals(chartType)) {
+			} else if (ChartType.PROTEIN_SENSITIVITY_SPECIFICITY.equals(chartType)) {
 				ret = showProteinSensitivitySpecificityChart();
-			} else if (ChartManagerFrame.MISSEDCLEAVAGE_DISTRIBUTION.equals(chartType)) {
+			} else if (ChartType.MISSEDCLEAVAGE_DISTRIBUTION.equals(chartType)) {
 				ret = showMissedCleavagesNumberDistributionBarChart();
-			} else if (ChartManagerFrame.PROTEIN_GROUP_TYPES.equals(chartType)) {
+			} else if (ChartType.PROTEIN_GROUP_TYPES.equals(chartType)) {
 				ret = showProteinGroupTypesDistributionBarChart();
-			} else if (ChartManagerFrame.PEPTIDE_MASS_DISTRIBUTION.equals(chartType)) {
+			} else if (ChartType.PEPTIDE_MASS_DISTRIBUTION.equals(chartType)) {
 				ret = showPeptideMassDistributionChart();
-			} else if (ChartManagerFrame.PEPTIDE_LENGTH_DISTRIBUTION.equals(chartType)) {
+			} else if (ChartType.PEPTIDE_LENGTH_DISTRIBUTION.equals(chartType)) {
 				ret = showPeptideLengthDistributionChart();
-			} else if (ChartManagerFrame.PEPTIDE_CHARGE_HISTOGRAM.equals(chartType)) {
+			} else if (ChartType.PEPTIDE_CHARGE_HISTOGRAM.equals(chartType)) {
 				ret = showPeptideChargeBarChart();
-				// } else if (ChartManagerFrame.CHR16_MAPPING.equals(chartType))
+				// } else if (ChartType.CHR16_MAPPING.equals(chartType))
 				// {
 				// ret = showChr16MappingBarChart();
-			} else if (ChartManagerFrame.SINGLE_HIT_PROTEINS.equals(chartType)) {
+			} else if (ChartType.SINGLE_HIT_PROTEINS.equals(chartType)) {
 				ret = showSingleHitProteinsChart();
-			} else if (ChartManagerFrame.PEPTIDE_NUMBER_IN_PROTEINS.equals(chartType)) {
+			} else if (ChartType.PEPTIDE_NUMBER_IN_PROTEINS.equals(chartType)) {
 				ret = showNumberPeptidesInProteinsChart();
-			} else if (ChartManagerFrame.DELTA_MZ_OVER_MZ.equals(chartType)) {
+			} else if (ChartType.DELTA_MZ_OVER_MZ.equals(chartType)) {
 				ret = showDeltaMzScatterChart();
-			} else if (ChartManagerFrame.PSM_PEP_PROT.equals(chartType)) {
+			} else if (ChartType.PSM_PEP_PROT.equals(chartType)) {
 				ret = shotPSMPEPPROT_LineChart();
-			} else if (ChartManagerFrame.FDR_VS_SCORE.equals(chartType)) {
+			} else if (ChartType.FDR_VS_SCORE.equals(chartType)) {
 				ret = showFDRPlots();
-			} else if (ChartManagerFrame.CHR_MAPPING.equals(chartType)) {
+			} else if (ChartType.CHR_MAPPING.equals(chartType)) {
 				ret = showAllChrMappingBarChart();
-			} else if (ChartManagerFrame.CHR_PEPTIDES_MAPPING.equals(chartType)) {
+			} else if (ChartType.CHR_PEPTIDES_MAPPING.equals(chartType)) {
 				ret = showAllChrPeptideMappingBarChart();
-			} else if (ChartManagerFrame.HUMAN_CHROMOSOME_COVERAGE.equals(chartType)) {
+			} else if (ChartType.HUMAN_CHROMOSOME_COVERAGE.equals(chartType)) {
 				ret = showAllChrCoverageSpiderChart();
-			} else if (ChartManagerFrame.EXCLUSIVE_PROTEIN_NUMBER.equals(chartType)) {
+			} else if (ChartType.EXCLUSIVE_PROTEIN_NUMBER.equals(chartType)) {
 				ret = showExclusiveIdentificationNumberChart(IdentificationItemEnum.PROTEIN);
-			} else if (ChartManagerFrame.EXCLUSIVE_PEPTIDE_NUMBER.equals(chartType)) {
+			} else if (ChartType.EXCLUSIVE_PEPTIDE_NUMBER.equals(chartType)) {
 				ret = showExclusiveIdentificationNumberChart(IdentificationItemEnum.PEPTIDE);
-			} else if (ChartManagerFrame.PEPTIDE_PRESENCY_HEATMAP.equals(chartType)) {
+			} else if (ChartType.PEPTIDE_PRESENCY_HEATMAP.equals(chartType)) {
 				ret = showPeptidePresencyHeatMapChart();
-			} else if (ChartManagerFrame.PEPTIDE_NUM_PER_PROTEIN_MASS.equals(chartType)) {
+			} else if (ChartType.PEPTIDE_NUM_PER_PROTEIN_MASS.equals(chartType)) {
 				ret = showPeptidePerProteinMassDistributionChart();
-			} else if (ChartManagerFrame.PROTEIN_NAME_CLOUD.equals(chartType)) {
+			} else if (ChartType.PROTEIN_NAME_CLOUD.equals(chartType)) {
 				ret = showWordCramChart();
-			} else if (ChartManagerFrame.PEPTIDE_RT.equals(chartType)) {
+			} else if (ChartType.PEPTIDE_RT.equals(chartType)) {
 				ret = showRetentionTimeDistributionChart();
-			} else if (ChartManagerFrame.PEPTIDE_RT_COMPARISON.equals(chartType)) {
+			} else if (ChartType.PEPTIDE_RT_COMPARISON.equals(chartType)) {
 				ret = showRetentionTimeComparisonChart();
-			} else if (ChartManagerFrame.SINGLE_RT_COMPARISON.equals(chartType)) {
+			} else if (ChartType.SINGLE_RT_COMPARISON.equals(chartType)) {
 				ret = showSingleRetentiontimeChart();
-			} else if (ChartManagerFrame.SPECTROMETERS.equals(chartType)) {
+			} else if (ChartType.SPECTROMETERS.equals(chartType)) {
 				ret = showSpectrometersChart();
-			} else if (ChartManagerFrame.INPUT_PARAMETERS.equals(chartType)) {
+			} else if (ChartType.INPUT_PARAMETERS.equals(chartType)) {
 				ret = showInputParametersChart();
-			} else if (ChartManagerFrame.PEPTIDE_COUNTING_HISTOGRAM.equals(chartType)) {
+			} else if (ChartType.PEPTIDE_COUNTING_HISTOGRAM.equals(chartType)) {
 				ret = showPeptideCountingHistogramChart();
-			} else if (ChartManagerFrame.PEPTIDE_COUNTING_VS_SCORE.equals(chartType)) {
+			} else if (ChartType.PEPTIDE_COUNTING_VS_SCORE.equals(chartType)) {
 				ret = showPeptideCountingVsScoreScatterChart();
 			}
 			if (ret != null) {
@@ -1363,7 +1364,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	private Object showProteinSensitivitySpecificityChart() {
 		parent.setInformation1(parent.getCurrentChartType());
 		String xAxisLabel;
-		String yAxisLabel = "0-1";
+		String yAxisLabel = "Percentage";
 
 		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
 		Set<String> proteinsInSample = optionsFactory.getProteinsInSample();
@@ -1508,7 +1509,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	private Object showPeptideLengthDistributionChart() {
 		parent.setInformation1(parent.getCurrentChartType());
 		String xAxisLabel = "Peptide length";
-		String yAxisLabel = "# peptides";
+		String yAxisLabel = "# PSMs";
 		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
 		boolean stacked = optionsFactory.showAsStackedChart();
 		boolean normalize = optionsFactory.getAsPercentage();
@@ -1728,15 +1729,17 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		parent.setInformation1(parent.getCurrentChartType());
 		String xAxisLabel;
 
-		String yAxisLabel = "# peptides";
+		String yAxisLabel = "# PSMs";
 		xAxisLabel = "# missedcleavages sites";
 		int maximum = optionsFactory.getMaximumOccurrence();
+		String cleavageAminoacids = optionsFactory.getCleavageAminoacids();
 		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
 		boolean stackedChart = optionsFactory.showAsStackedChart();
 		boolean asPercentage = optionsFactory.getAsPercentage();
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, optionsFactory.isTotalSerieShown());
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
-			CategoryDataset dataset = DatasetFactory.createMissedCleavagesDistributionCategoryDataSet(idSets, maximum);
+			CategoryDataset dataset = DatasetFactory.createMissedCleavagesDistributionCategoryDataSet(idSets,
+					cleavageAminoacids, maximum);
 			if (stackedChart) {
 				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
@@ -1748,7 +1751,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			CategoryDataset dataset = DatasetFactory.createMissedCleavagesDistributionCategoryDataSet(idSets, maximum);
+			CategoryDataset dataset = DatasetFactory.createMissedCleavagesDistributionCategoryDataSet(idSets,
+					cleavageAminoacids, maximum);
 			if (stackedChart) {
 				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
@@ -1760,7 +1764,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			CategoryDataset dataset = DatasetFactory.createMissedCleavagesDistributionCategoryDataSet(idSets, maximum);
+			CategoryDataset dataset = DatasetFactory.createMissedCleavagesDistributionCategoryDataSet(idSets,
+					cleavageAminoacids, maximum);
 			if (stackedChart) {
 				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
@@ -1776,7 +1781,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			for (Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, optionsFactory.isTotalSerieShown());
 				CategoryDataset dataset = DatasetFactory.createMissedCleavagesDistributionCategoryDataSet(idSets,
-						maximum);
+						cleavageAminoacids, maximum);
 				if (stackedChart) {
 					StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
@@ -2034,7 +2039,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		parent.setInformation1(parent.getCurrentChartType());
 
 		String xAxisLabel;
-		String yAxisLabel = "frecuency";
+		String yAxisLabel = "# PSMs";
 
 		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
 		boolean stackedChart = optionsFactory.showAsStackedChart();
@@ -3195,7 +3200,6 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		String xAxisLabel;
 		String yAxisLabel = "Average Protein Coverage";
 
-		String scoreName = null;
 		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
 		boolean retrieveProteinSeqs = false;
 		if (!parent.isProteinSequencesRetrieved()) {

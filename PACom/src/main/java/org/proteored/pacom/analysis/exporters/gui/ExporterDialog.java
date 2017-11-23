@@ -30,6 +30,7 @@ import org.proteored.pacom.analysis.exporters.tasks.JTableLoader;
 import org.proteored.pacom.analysis.exporters.tasks.TSVExporter;
 import org.proteored.pacom.analysis.exporters.util.ExporterUtil;
 import org.proteored.pacom.analysis.gui.ChartManagerFrame;
+import org.proteored.pacom.analysis.gui.ChartType;
 import org.proteored.pacom.analysis.gui.TsvFileFilter;
 import org.proteored.pacom.analysis.util.DataLevel;
 import org.proteored.pacom.gui.ImageManager;
@@ -79,16 +80,14 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 		} else {
 			isFDRApplied = false;
 		}
-		if (exportingSubSetsFromOverlappings
-				&& parent.getCurrentChartType().equals(ChartManagerFrame.PROTEIN_OVERLAPING)) {
+		if (exportingSubSetsFromOverlappings && parent.getCurrentChartType().equals(ChartType.PROTEIN_OVERLAPING)) {
 			// disable export peptides
 			this.jCheckBoxCollapsePeptides.setEnabled(false);
 			this.jRadioButtonExportPeptides.setEnabled(false);
 			this.jRadioButtonExportProteins.setSelected(true);
 			this.jCheckBoxCollapseProteins.setEnabled(true);
 		}
-		if (exportingSubSetsFromOverlappings
-				&& parent.getCurrentChartType().equals(ChartManagerFrame.PEPTIDE_OVERLAPING)) {
+		if (exportingSubSetsFromOverlappings && parent.getCurrentChartType().equals(ChartType.PEPTIDE_OVERLAPING)) {
 			// disable export proteins
 			this.jCheckBoxCollapseProteins.setEnabled(false);
 			this.jRadioButtonExportProteins.setEnabled(false);
@@ -395,8 +394,7 @@ public class ExporterDialog extends javax.swing.JDialog implements PropertyChang
 		final File file = getFile();
 
 		Set<IdentificationSet> idSets2 = ExporterUtil.getSelectedIdentificationSets(idSets, getDataLevel());
-		exporter = new TSVExporter(this, idSets2, file,
-				this.filter);
+		exporter = new TSVExporter(this, idSets2, file, this.filter);
 		exporter.setDistinguisModificatedPeptides(isDistinguishModifiedPeptides());
 		exporter.addPropertyChangeListener(this);
 		exporter.execute();
