@@ -154,8 +154,8 @@ public class AttachedChartTypesHelpDialog extends JDialog {
 				DefaultStyledDocument document = new DefaultStyledDocument(context);
 				document.setLogicalStyle(0, regularText);
 				JTextPane description = new JTextPane(document);
-				final String toolTip = ToolTipUtil.splitWordsInLines(chartType.getDescription(),
-						description.getFontMetrics(description.getFont()), 300);
+				final String toolTip = "<html>" + ToolTipUtil.splitWordsInHTMLLines(chartType.getDescription(),
+						description.getFontMetrics(description.getFont()), 300) + "</html> ";
 				description.setToolTipText(toolTip);
 				description.setPreferredSize(new Dimension(textWidth, 150));
 				insertTextToDocument(descriptionHTML, document);

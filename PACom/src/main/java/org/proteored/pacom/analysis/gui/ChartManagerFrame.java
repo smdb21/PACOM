@@ -680,7 +680,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			} else {
 				JRadioButtonMenuItem menuItem = new JRadioButtonMenuItem(chartType);
 				ChartType chartTypeObj = ChartType.getFromName(chartType);
-				String menuTooltip = "<html><b>" + chartTypeObj.getName() + "</b><br>" + ToolTipUtil.splitWordsInLines(
+				String menuTooltip = "<html><b>" + chartTypeObj.getName() + "</b><br>" + ToolTipUtil.splitWordsInHTMLLines(
 						chartTypeObj.getDescription(), menuItem.getFontMetrics(menuItem.getFont()), 300) + "</html>";
 				menuItem.setToolTipText(menuTooltip);
 				chartTypeMenuButtonGroup.add(menuItem);

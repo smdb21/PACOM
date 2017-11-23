@@ -3,7 +3,7 @@ package org.proteored.pacom.utils;
 import java.awt.FontMetrics;
 
 public class ToolTipUtil {
-	public static String splitWordsInLines(String description, FontMetrics fontMetrics, int maxwidth) {
+	public static String splitWordsInHTMLLines(String description, FontMetrics fontMetrics, int maxwidth) {
 		StringBuilder sb = new StringBuilder();
 		if (description.contains(" ")) {
 			final String[] split = description.split(" ");
