@@ -37,6 +37,7 @@ import javax.swing.text.StyleContext;
 
 import org.apache.log4j.Logger;
 import org.proteored.pacom.analysis.gui.ChartType;
+import org.proteored.pacom.utils.ToolTipUtil;
 
 public class AttachedChartTypesHelpDialog extends JDialog {
 	/**
@@ -153,7 +154,9 @@ public class AttachedChartTypesHelpDialog extends JDialog {
 				DefaultStyledDocument document = new DefaultStyledDocument(context);
 				document.setLogicalStyle(0, regularText);
 				JTextPane description = new JTextPane(document);
-				description.setToolTipText(chartType.getDescription());
+				final String toolTip = ToolTipUtil.splitWordsInLines(chartType.getDescription(),
+						description.getFontMetrics(description.getFont()), 300);
+				description.setToolTipText(toolTip);
 				description.setPreferredSize(new Dimension(textWidth, 150));
 				insertTextToDocument(descriptionHTML, document);
 
@@ -162,7 +165,7 @@ public class AttachedChartTypesHelpDialog extends JDialog {
 				JPanel imagePanel = new JPanel();
 				final ImageIcon imageIcon = new ImageIcon(
 						image.getScaledInstance(imageSize, imageSize, Image.SCALE_SMOOTH));
-				imageIcon.setDescription(chartType.getDescription());
+				imageIcon.setDescription(toolTip);
 				JLabel chartTypeImage = new JLabel(imageIcon);
 				imagePanel.add(chartTypeImage);
 

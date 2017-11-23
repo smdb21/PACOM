@@ -8,7 +8,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FontMetrics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -117,6 +116,7 @@ import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 import org.proteored.pacom.utils.AppVersion;
 import org.proteored.pacom.utils.ComponentEnableStateKeeper;
 import org.proteored.pacom.utils.PACOMSoftware;
+import org.proteored.pacom.utils.ToolTipUtil;
 
 import edu.scripps.yates.utilities.checksum.MD5Checksum;
 import edu.scripps.yates.utilities.dates.DatesUtil;
@@ -680,7 +680,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			} else {
 				JRadioButtonMenuItem menuItem = new JRadioButtonMenuItem(chartType);
 				ChartType chartTypeObj = ChartType.getFromName(chartType);
-				String menuTooltip = "<html><b>" + chartTypeObj.getName() + "</b><br>" + splitWordsInLines(
+				String menuTooltip = "<html><b>" + chartTypeObj.getName() + "</b><br>" + ToolTipUtil.splitWordsInLines(
 						chartTypeObj.getDescription(), menuItem.getFontMetrics(menuItem.getFont()), 300) + "</html>";
 				menuItem.setToolTipText(menuTooltip);
 				chartTypeMenuButtonGroup.add(menuItem);
@@ -704,25 +704,6 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			}
 		}
 		parentMenu.add(menu);
-	}
-
-	private String splitWordsInLines(String description, FontMetrics fontMetrics, int maxwidth) {
-		StringBuilder sb = new StringBuilder();
-		if (description.contains(" ")) {
-			final String[] split = description.split(" ");
-			StringBuilder sb2 = new StringBuilder();
-			for (String string : split) {
-				sb2.append(string).append(" ");
-				if (fontMetrics.stringWidth(sb2.toString()) >= maxwidth) {
-					sb.append(sb2).append("<br>");
-					sb2 = new StringBuilder();
-				}
-			}
-			sb.append(sb2);
-		} else {
-			sb.append(description);
-		}
-		return sb.toString();
 	}
 
 	protected void applyFilters() {
