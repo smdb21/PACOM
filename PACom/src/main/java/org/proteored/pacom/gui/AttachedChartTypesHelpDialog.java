@@ -167,6 +167,7 @@ public class AttachedChartTypesHelpDialog extends JDialog {
 						image.getScaledInstance(imageSize, imageSize, Image.SCALE_SMOOTH));
 				imageIcon.setDescription(toolTip);
 				JLabel chartTypeImage = new JLabel(imageIcon);
+				chartTypeImage.setToolTipText(toolTip);
 				imagePanel.add(chartTypeImage);
 
 				JPanel panel = new JPanel();
