@@ -7,6 +7,8 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
+import org.springframework.core.io.ClassPathResource;
+
 public enum ChartType {
 	PROTEIN_SCORE_DISTRIBUTION("Protein score Distribution",
 			"Histogram of the score values of the proteins per dataset. Change the score from the <i>Protein score</i> dropdown menu. Try <i>Apply logs</i>, specially for p-values or e-values scores."), //
@@ -139,15 +141,16 @@ public enum ChartType {
 			return image;
 		}
 		final String imageName = getImageName();
-		final URL resource = cl.getResource("charttypes" + File.separator + imageName);
-		if (resource != null) {
 
-			try {
+		final String fileName = "charttypes" + File.separator + imageName;
+		try {
+			final URL resource = new ClassPathResource(fileName).getURL();
+			if (resource != null) {
 				image = ImageIO.read(resource);
 				return image;
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
