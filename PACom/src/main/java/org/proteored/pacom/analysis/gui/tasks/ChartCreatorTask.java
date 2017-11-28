@@ -542,16 +542,16 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		String xAxisLabel;
 
 		xAxisLabel = "log2 (nº pept per protein / protein MW (Da))";
-		boolean retrieveProteinSeqs = false;
-		if (!parent.isProteinSequencesRetrieved()) {
-			final int selectedOption = JOptionPane.showConfirmDialog(parent,
-					"<html>In order to build this chart, the program will retrieve the protein sequence from the Internet,<br>which can take several minutes, depending on the number of proteins.<br>Are you sure you want to continue?</html>",
-					"Warning", JOptionPane.YES_NO_OPTION);
+		boolean retrieveProteinSeqs = true;
+		final int selectedOption = JOptionPane.showConfirmDialog(parent,
+				"<html>In order to build this chart, the program will retrieve the protein sequence from the Internet,<br>which can take several minutes, depending on the number of proteins.<br>Are you sure you want to continue?</html>",
+				"Warning", JOptionPane.YES_NO_OPTION);
 
-			if (selectedOption == JOptionPane.YES_OPTION)
-				retrieveProteinSeqs = true;
-			parent.setProteinSequencesRetrieved(retrieveProteinSeqs);
-		}
+		if (selectedOption == JOptionPane.NO_OPTION)
+			throw new IllegalMiapeArgumentException(
+					"In order to build this chart, the program will retrieve the protein sequence from the Internet");
+		parent.setProteinSequencesRetrieved(true);
+
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, totalSerieShown);
 
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
@@ -607,16 +607,15 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
 		String xAxisLabel = "log2 (nº pept per protein / protein MW (Da))";
 		String yAxisLabel = "Avg number of peptides";
-		boolean retrieveProteinSeqs = false;
-		if (!parent.isProteinSequencesRetrieved()) {
-			final int selectedOption = JOptionPane.showConfirmDialog(parent,
-					"<html>In order to build this chart, the program will retrieve the protein sequence from the Internet,<br>which can take several minutes, depending on the number of proteins.<br>Are you sure you want to continue?</html>",
-					"Warning", JOptionPane.YES_NO_OPTION);
+		boolean retrieveProteinSeqs = true;
+		final int selectedOption = JOptionPane.showConfirmDialog(parent,
+				"<html>In order to build this chart, the program will retrieve the protein sequence from the Internet,<br>which can take several minutes, depending on the number of proteins.<br>Are you sure you want to continue?</html>",
+				"Warning", JOptionPane.YES_NO_OPTION);
 
-			if (selectedOption == JOptionPane.YES_OPTION)
-				retrieveProteinSeqs = true;
-			parent.setProteinSequencesRetrieved(retrieveProteinSeqs);
-		}
+		if (selectedOption == JOptionPane.NO_OPTION)
+			throw new IllegalMiapeArgumentException(
+					"In order to build this chart, the program will retrieve the protein sequence from the Internet");
+		parent.setProteinSequencesRetrieved(true);
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, totalSerieShown);
 
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
@@ -3201,16 +3200,17 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		String yAxisLabel = "Average Protein Coverage";
 
 		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
-		boolean retrieveProteinSeqs = false;
-		if (!parent.isProteinSequencesRetrieved()) {
-			final int selectedOption = JOptionPane.showConfirmDialog(parent,
-					"<html>In order to calculate protein coverage, the program will retrieve the protein sequence from the Internet,<br>which can take several minutes, depending on the number of proteins.<br>Are you sure you want to continue?</html>",
-					"Warning", JOptionPane.YES_NO_OPTION);
+		boolean retrieveProteinSeqs = true;
+		final int selectedOption = JOptionPane.showConfirmDialog(parent,
+				"<html>In order to calculate protein coverage, the program will retrieve the protein sequence from the Internet,<br>which can take several minutes, depending on the number of proteins.<br>Are you sure you want to continue?</html>",
+				"Warning", JOptionPane.YES_NO_OPTION);
 
-			if (selectedOption == JOptionPane.YES_OPTION)
-				retrieveProteinSeqs = true;
-			parent.setProteinSequencesRetrieved(retrieveProteinSeqs);
+		if (selectedOption == JOptionPane.NO_OPTION) {
+			throw new IllegalMiapeArgumentException(
+					"In order to calculate protein coverage, the program will retrieve the protein sequence from the Internet");
 		}
+		parent.setProteinSequencesRetrieved(true);
+
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 
@@ -3267,16 +3267,16 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		HistogramType histogramType = optionsFactory.getHistogramType();
 
 		String xAxisLabel = "Protein coverage (%)";
-		boolean retrieveProteinSeqs = false;
-		if (!parent.isProteinSequencesRetrieved()) {
-			final int selectedOption = JOptionPane.showConfirmDialog(parent,
-					"<html>In order to calculate protein coverage, the program will retrieve the protein sequence from the Internet,<br>which can take several minutes, depending on the number of proteins.<br>Are you sure you want to continue?</html>",
-					"Warning", JOptionPane.YES_NO_OPTION);
+		boolean retrieveProteinSeqs = true;
+		final int selectedOption = JOptionPane.showConfirmDialog(parent,
+				"<html>In order to calculate protein coverage, the program will retrieve the protein sequence from the Internet,<br>which can take several minutes, depending on the number of proteins.<br>Are you sure you want to continue?</html>",
+				"Warning", JOptionPane.YES_NO_OPTION);
 
-			if (selectedOption == JOptionPane.YES_OPTION)
-				retrieveProteinSeqs = true;
-			parent.setProteinSequencesRetrieved(retrieveProteinSeqs);
-		}
+		if (selectedOption == JOptionPane.NO_OPTION)
+			throw new IllegalMiapeArgumentException(
+					"In order to calculate protein coverage, the program will retrieve the protein sequence from the Internet");
+		parent.setProteinSequencesRetrieved(true);
+
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 			HistogramDataset dataset = DatasetFactory.createProteinCoverageHistogramDataSet(idSets, bins, histogramType,
