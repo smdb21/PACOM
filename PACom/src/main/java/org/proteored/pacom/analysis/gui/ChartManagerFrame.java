@@ -162,7 +162,6 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	// private boolean isChr16ChartShowed;
 	private IdentificationTableFrame identificationTable;
 	private CuratedExperimentSaver curatedExperimentSaver;
-	private boolean proteinSequencesRetrieved;
 	private AppliedFiltersDialog filtersDialog;
 	private PEXBulkSubmissionSummaryFileCreatorDialog pexSubmissionDialog;
 	File cfgFile;
@@ -680,8 +679,10 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			} else {
 				JRadioButtonMenuItem menuItem = new JRadioButtonMenuItem(chartType);
 				ChartType chartTypeObj = ChartType.getFromName(chartType);
-				String menuTooltip = "<html><b>" + chartTypeObj.getName() + "</b><br>" + ToolTipUtil.splitWordsInHTMLLines(
-						chartTypeObj.getDescription(), menuItem.getFontMetrics(menuItem.getFont()), 300) + "</html>";
+				String menuTooltip = "<html><b>" + chartTypeObj.getName() + "</b><br>"
+						+ ToolTipUtil.splitWordsInHTMLLines(chartTypeObj.getDescription(),
+								menuItem.getFontMetrics(menuItem.getFont()), 300)
+						+ "</html>";
 				menuItem.setToolTipText(menuTooltip);
 				chartTypeMenuButtonGroup.add(menuItem);
 				menuItem.addItemListener(new ItemListener() {
@@ -4329,6 +4330,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	private JButton jButtonCancel;
 	private JButton jButtonHelp;
 
+	private boolean proteinSequencesRetrieved;
+
 	// End of variables declaration//GEN-END:variables
 
 	@Override
@@ -4367,6 +4370,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		} else if (DataLoaderTask.DATA_LOADED_START.equals(evt.getPropertyName())) {
 			enableStateKeeper.keepEnableStates(this);
 			enableStateKeeper.disable(this);
+			setProteinSequencesRetrieved(false);
 
 			appendStatus("Reading project data...");
 			appendStatus("Depending on the size of the data, it can take a few seconds or a couple of minutes...");
@@ -4792,14 +4796,6 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	}
 
-	public void setProteinSequencesRetrieved(boolean retrieveProteinSeqs) {
-		proteinSequencesRetrieved = retrieveProteinSeqs;
-	}
-
-	public boolean isProteinSequencesRetrieved() {
-		return proteinSequencesRetrieved;
-	}
-
 	public FiltersDialog getFiltersDialog() {
 		return filterDialog;
 	}
@@ -4980,5 +4976,13 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 				"By selecting this option, the <i>General options panel</i> will appear, even if you checked the option for not showing this panel again. Any change in the options of this panel will reload the entire project again." };
 
 		return Arrays.asList(ret);
+	}
+
+	public boolean isProteinSequencesRetrieved() {
+		return proteinSequencesRetrieved;
+	}
+
+	public void setProteinSequencesRetrieved(boolean b) {
+		this.proteinSequencesRetrieved = b;
 	}
 }
