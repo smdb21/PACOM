@@ -1623,11 +1623,18 @@ public class DatasetFactory {
 	public static HistogramDataset createNumPeptidesPerProteinMassDistribution(List<IdentificationSet> idSets, int bins,
 			HistogramType histogramType, boolean retrieveFromInternet, Boolean countNonConclusiveProteins) {
 		HistogramDataset dataset = new HistogramDataset();
-
+		boolean someDataset = false;
 		for (IdentificationSet idSet : idSets) {
 			double[] values = getNumPeptidesPerProteinMass(idSet, retrieveFromInternet, countNonConclusiveProteins);
-			if (values != null && values.length > 0)
+
+			if (values != null && values.length > 0) {
 				dataset.addSeries(idSet.getFullName(), values, bins);
+				someDataset = true;
+			}
+		}
+		if (!someDataset) {
+			throw new IllegalMiapeArgumentException(
+					"<html>No data to show.<br>Please be sure that the proteins in your datasets have Uniprot accessions in order to be retrieved in the internet</html>");
 		}
 		dataset.setType(histogramType);
 		return dataset;
