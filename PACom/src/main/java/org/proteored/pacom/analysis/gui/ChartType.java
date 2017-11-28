@@ -84,7 +84,8 @@ public enum ChartType {
 			"Heat-map in which each row represent a protein group and each column the number of peptide sequences (not PSMs) assigned to that protein group in a particular dataset. Try to change color scale. <i>Do not paint rows with less than</i> means that any row in which the sum of the peptides of that protein along all the datasets is less than that number will not be shown."), //
 	PSMS_PER_PROTEIN_HEATMAP("PSMs per protein heatmap",
 			"Heat-map in which each row represent a protein group and each column the number of PSMs assigned to that protein group in a particular dataset. Try to change color scale. <i>Do not paint rows with less than</i> means that any row in which the sum of the PSMs of that protein along all the datasets is less than that number will not be shown."), //
-	PEPTIDE_NUM_PER_PROTEIN_MASS("Number of peptides / protein molecular weight", ""), //
+	PEPTIDE_NUM_PER_PROTEIN_MASS("Number of peptides / protein molecular weight",
+			"Line graph showing an histogram of the ratio (log2) between the number of peptides per protein molecular weight (in Daltons). "), //
 	HUMAN_CHROMOSOME_COVERAGE("Human chromosome coverage",
 			"Bar graph or spider plot containing the number of Human genes per chromosome in each dataset. Activate <i>Normalize</i> to see the  percentage of the total Human genes in each chromosome that has been detected in each dataset."),
 	// CHR16_MAPPING ( "Human chromosome 16 mapping
