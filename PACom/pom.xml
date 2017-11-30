@@ -3,7 +3,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.proteored</groupId>
    <artifactId>pacom</artifactId>
-   <version>1.64</version>
+   <version>1.65</version>
    <distributionManagement>
       <repository>
          <id>internal</id>
@@ -193,9 +193,9 @@
                      <overWriteReleases>false</overWriteReleases>
                      <overWriteSnapshots>false</overWriteSnapshots>
                      <overWriteIfNewer>true</overWriteIfNewer>
-                     <!-- useBaseVersion=false makes the jar names match those 
-                     that maven-jar-plugin puts in the manifest classpath -->
-                	 <useBaseVersion>false</useBaseVersion>
+<!--                      useBaseVersion=false makes the jar names match those -->
+<!--                      that maven-jar-plugin puts in the manifest classpath  -->
+                	 <useBaseVersion>true</useBaseVersion>
                   </configuration>
                </execution>
             </executions>
