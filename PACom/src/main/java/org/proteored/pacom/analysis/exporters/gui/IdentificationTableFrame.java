@@ -98,7 +98,7 @@ public class IdentificationTableFrame extends AbstractJFrameWithAttachedHelpDial
 
 	/** Creates new form IdentificationTableFrame */
 	private IdentificationTableFrame(ChartManagerFrame parent, Collection<IdentificationSet> idSets) {
-		super(75);
+		super(400);
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException
@@ -879,8 +879,12 @@ public class IdentificationTableFrame extends AbstractJFrameWithAttachedHelpDial
 				"With this table view you can explore the data in a different way, through a table view that can show either "
 						+ "proteins or peptides, and that is sortable and filterable.", //
 				"<b>Sorting the table:</b>", //
-				"You can click on the header of any of the columns to sort them alphabetically or numerically (depending on the cells content).", //
-				""
+				"You can click on the header of any of the columns to sort them alphabetically or numerically (depending on the cells' content).", //
+				"<b>Filtering the table:</b>", //
+				"You can filter the table by: ", //
+				"- selecting a column to sort by in <i>Column</i> dropdown menu in the <i>Filter table</i> panel,", //
+				"- typing the text you want the columns to contain.", //
+				"While you type, the columns will be filtered dinamically."
 
 		};
 
