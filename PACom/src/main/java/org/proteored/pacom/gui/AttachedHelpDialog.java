@@ -328,20 +328,21 @@ public class AttachedHelpDialog extends JDialog {
 
 			@Override
 			public void windowOpened(WindowEvent e) {
-				log.info(e.getID() + " from " + e.getOldState() + " to " + e.getNewState());
+				log.debug(e.getID() + " from " + e.getOldState() + " to " + e.getNewState());
 				// open by default
 				AttachedHelpDialog.this.setVisible(true);
 			}
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-				log.info(e.getID() + " from " + e.getOldState() + " to " + e.getNewState());
+				log.debug(e.getID() + " from " + e.getOldState() + " to " + e.getNewState());
 
 			}
 
 			@Override
 			public void windowClosed(WindowEvent e) {
-				log.info(e.getID() + " from " + e.getOldState() + " to " + e.getNewState());
+				log.info("Window is closed. Now disposing help dialog");
+				log.debug(e.getID() + " from " + e.getOldState() + " to " + e.getNewState());
 				AttachedHelpDialog.this.dispose();
 
 			}
