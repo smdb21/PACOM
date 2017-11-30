@@ -12,6 +12,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -108,9 +109,9 @@ public class IdentificationTableFrame extends AbstractJFrameWithAttachedHelpDial
 		// MainFrame.autoScroll(jScrollPane3, jTextAreaStatus);
 		this.idSets.addAll(idSets);
 		if (!this.idSets.isEmpty()) {
-			setTitle("Identification table: '" + getIdentificationSetNameString() + "'");
+			setTitle("Dataset table view: '" + getIdentificationSetNameString() + "'");
 		} else {
-			setTitle("Identification table");
+			setTitle("Dataset table view");
 		}
 		loadTable();
 		// disable if the protein sequences have been retrieved before, but keep
@@ -261,20 +262,25 @@ public class IdentificationTableFrame extends AbstractJFrameWithAttachedHelpDial
 		jRadioButtonShowProteins.setSelected(true);
 		jRadioButtonShowProteins.setText("show proteins");
 		jRadioButtonShowProteins.setToolTipText("Show just proteins");
-		jRadioButtonShowProteins.addActionListener(new java.awt.event.ActionListener() {
+		jRadioButtonShowProteins.addItemListener(new java.awt.event.ItemListener() {
 			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jRadioButtonShowProteinsActionPerformed(evt);
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					jRadioButtonShowProteinsActionPerformed();
+				}
 			}
 		});
 
 		buttonGroupProteinOrPeptide.add(jRadioButtonShowPeptides);
 		jRadioButtonShowPeptides.setText("show peptides");
 		jRadioButtonShowPeptides.setToolTipText("Show just peptides");
-		jRadioButtonShowPeptides.addActionListener(new java.awt.event.ActionListener() {
+		jRadioButtonShowPeptides.addItemListener(new java.awt.event.ItemListener() {
+
 			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jRadioButtonShowPeptidesActionPerformed(evt);
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					jRadioButtonShowPeptidesActionPerformed();
+				}
 			}
 		});
 
@@ -543,7 +549,7 @@ public class IdentificationTableFrame extends AbstractJFrameWithAttachedHelpDial
 		}
 	}
 
-	private void jRadioButtonShowPeptidesActionPerformed(java.awt.event.ActionEvent evt) {
+	private void jRadioButtonShowPeptidesActionPerformed() {
 		if (jRadioButtonShowPeptides.isSelected()) {
 			jCheckBoxCollapsePeptides.setSelected(true);
 			jCheckBoxCollapsePeptides.setEnabled(true);
@@ -555,7 +561,7 @@ public class IdentificationTableFrame extends AbstractJFrameWithAttachedHelpDial
 		}
 	}
 
-	private void jRadioButtonShowProteinsActionPerformed(java.awt.event.ActionEvent evt) {
+	private void jRadioButtonShowProteinsActionPerformed() {
 		if (jRadioButtonShowProteins.isSelected()) {
 			jCheckBoxCollapseProteins.setSelected(true);
 			jCheckBoxCollapseProteins.setEnabled(true);
@@ -869,7 +875,15 @@ public class IdentificationTableFrame extends AbstractJFrameWithAttachedHelpDial
 
 	@Override
 	public List<String> getHelpMessages() {
-		// TODO Auto-generated method stub
-		return null;
+		String[] messages = { "Dataset table view help", //
+				"With this table view you can explore the data in a different way, through a table view that can show either "
+						+ "proteins or peptides, and that is sortable and filterable.", //
+				"<b>Sorting the table:</b>", //
+				"You can click on the header of any of the columns to sort them alphabetically or numerically (depending on the cells content).", //
+				""
+
+		};
+
+		return Arrays.asList(messages);
 	}
 }
