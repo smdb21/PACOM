@@ -184,7 +184,7 @@
             <executions>
                <execution>
                   <id>copy-dependencies</id>
-                  <phase>prepare-package</phase>
+                  <phase>package</phase>
                   <goals>
                      <goal>copy-dependencies</goal>
                   </goals>
