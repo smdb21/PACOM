@@ -195,6 +195,7 @@
                      <overWriteIfNewer>true</overWriteIfNewer>
 <!--                      useBaseVersion=false makes the jar names match those -->
 <!--                      that maven-jar-plugin puts in the manifest classpath  -->
+<!--  Either append the artifact's baseVersion or uniqueVersion to the filename. Will only be used if isStripVersion() is false. -->
                 	 <useBaseVersion>false</useBaseVersion>
                   </configuration>
                </execution>
