@@ -3,7 +3,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.proteored</groupId>
    <artifactId>pacom</artifactId>
-   <version>1.66</version>
+   <version>1.67</version>
    <distributionManagement>
       <repository>
          <id>internal</id>
@@ -164,7 +164,7 @@
                      <addClasspath>true</addClasspath>
                      <mainClass>org.proteored.pacom.gui.MainFrame</mainClass>
                      <classpathPrefix>lib</classpathPrefix>
-                     <useUniqueVersions>false</useUniqueVersions>
+                     <useUniqueVersions>true</useUniqueVersions>
                   </manifest>
                </archive>
                <outputDirectory>${project.build.directory}</outputDirectory>
@@ -260,38 +260,15 @@
                      <descriptors>
                         <descriptor>${basedir}/src/main/resources/assembly_with_examples.xml</descriptor>
                      </descriptors>
-                  </configuration>
-               </plugin>
-            </plugins>
-         </build>
-      </profile>
-      <profile>
-         <id>PACOM_no_examples</id>
-<!--          <activation> -->
-<!--             <activeByDefault>true</activeByDefault> -->
-<!--          </activation> -->
-         <build>
-            <plugins>
-               <plugin>
-                  <artifactId>maven-assembly-plugin</artifactId>
-                  <version>3.1.0</version>
-                  <executions>
-                     <execution>
-                        <id>assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                           <goal>single</goal>
-                        </goals>
-                     </execution>
-                  </executions>
-                  <configuration>
-                     <finalName>${assembly.dir}</finalName>
-                     <descriptors>
-                        <descriptor>${basedir}/src/main/resources/assembly.xml</descriptor>
-                     </descriptors>
-<!--                      <descriptorRefs> -->
-<!--                      	<descriptorRef>jar-with-dependencies</descriptorRef> -->
-<!--                      </descriptorRefs> -->
+                     <archive>
+	               	  <index>true</index>
+	                  <manifest>
+	                     <addClasspath>true</addClasspath>
+	                     <mainClass>org.proteored.pacom.gui.MainFrame</mainClass>
+	                     <classpathPrefix>lib</classpathPrefix>
+	                     <useUniqueVersions>true</useUniqueVersions>
+	                  </manifest>
+	               </archive>
                   </configuration>
                </plugin>
             </plugins>
