@@ -164,7 +164,7 @@
                      <addClasspath>true</addClasspath>
                      <mainClass>org.proteored.pacom.gui.MainFrame</mainClass>
                      <classpathPrefix>lib</classpathPrefix>
-                     <useUniqueVersions>false</useUniqueVersions>
+                     <useUniqueVersions>true</useUniqueVersions>
                   </manifest>
                </archive>
                <outputDirectory>${project.build.directory}</outputDirectory>
@@ -195,7 +195,7 @@
                      <overWriteIfNewer>true</overWriteIfNewer>
 <!--                      useBaseVersion=false makes the jar names match those -->
 <!--                      that maven-jar-plugin puts in the manifest classpath  -->
-                	 <useBaseVersion>true</useBaseVersion>
+                	 <useBaseVersion>false</useBaseVersion>
                   </configuration>
                </execution>
             </executions>
