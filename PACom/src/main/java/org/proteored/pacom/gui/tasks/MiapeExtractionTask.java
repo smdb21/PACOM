@@ -800,6 +800,7 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 				}
 
 			} else {
+				log.error("No results from this task");
 				firePropertyChange(MIAPE_CREATION_ERROR, null,
 						new MiapeExtractionResult(identifier, "Error: Internal error."));
 			}
