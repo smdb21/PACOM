@@ -85,7 +85,7 @@
       <dependency>
       	<groupId>org.proteored.miape.api</groupId>
       	<artifactId>miape-api</artifactId>
-      	<version>1.9.4</version>
+      	<version>1.9.5-SNAPSHOT</version>
       	<exclusions>
       		<exclusion>
       			<groupId>ch.qos.logback</groupId>
@@ -159,12 +159,11 @@
             <configuration>
                <finalName>pacom</finalName>
                <archive>
-               	  <index>true</index>
-                  <manifest>
+               	  <manifest>
                      <addClasspath>true</addClasspath>
                      <mainClass>org.proteored.pacom.gui.MainFrame</mainClass>
-                     <classpathPrefix>lib</classpathPrefix>
-                     <useUniqueVersions>true</useUniqueVersions>
+                     <classpathPrefix>lib/</classpathPrefix>
+                     <useUniqueVersions>false</useUniqueVersions>
                   </manifest>
                </archive>
                <outputDirectory>${project.build.directory}</outputDirectory>
@@ -192,11 +191,11 @@
                      <outputDirectory>${project.build.directory}/${lib.dir}</outputDirectory>
                      <overWriteReleases>true</overWriteReleases>
                      <overWriteSnapshots>true</overWriteSnapshots>
-                     <overWriteIfNewer>true</overWriteIfNewer>
+<!--                      <overWriteIfNewer>true</overWriteIfNewer> -->
 <!--                      useBaseVersion=false makes the jar names match those -->
 <!--                      that maven-jar-plugin puts in the manifest classpath  -->
 <!--  Either append the artifact's baseVersion or uniqueVersion to the filename. Will only be used if isStripVersion() is false. -->
-                	 <useBaseVersion>false</useBaseVersion>
+                	 <useBaseVersion>true</useBaseVersion>
                   </configuration>
                </execution>
             </executions>
@@ -253,22 +252,54 @@
                   </executions>
                   <configuration>
                      <finalName>${assembly.dir}</finalName>
-<!--                       <descriptorRefs> -->
-<!--                         <descriptorRef>jar-with-dependencies</descriptorRef> -->
-<!-- 					  </descriptorRefs> -->
-                     
                      <descriptors>
                         <descriptor>${basedir}/src/main/resources/assembly_with_examples.xml</descriptor>
                      </descriptors>
                      <archive>
-	               	  <index>true</index>
-	                  <manifest>
-	                     <addClasspath>true</addClasspath>
-	                     <mainClass>org.proteored.pacom.gui.MainFrame</mainClass>
-	                     <classpathPrefix>lib</classpathPrefix>
-	                     <useUniqueVersions>true</useUniqueVersions>
-	                  </manifest>
-	               </archive>
+		               	  <manifest>
+		                     <addClasspath>true</addClasspath>
+		                     <mainClass>org.proteored.pacom.gui.MainFrame</mainClass>
+		                     <classpathPrefix>lib/</classpathPrefix>
+		                     <useUniqueVersions>false</useUniqueVersions>
+		                  </manifest>
+		               </archive>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+      <profile>
+         <id>PACOM_with_NO_examples</id>
+<!--          <activation> -->
+<!--             <activeByDefault>true</activeByDefault> -->
+<!--          </activation> -->
+         <build>
+            <plugins>
+               <plugin>
+                  <artifactId>maven-assembly-plugin</artifactId>
+                  <version>3.1.0</version>
+                  <executions>
+                     <execution>
+                        <id>assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                           <goal>single</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+                  <configuration>
+                     <finalName>${assembly.dir}</finalName>
+                     <descriptors>
+                        <descriptor>${basedir}/src/main/resources/assembly.xml</descriptor>
+                     </descriptors>
+                     <archive>
+		               	  <manifest>
+		                     <addClasspath>true</addClasspath>
+		                     <mainClass>org.proteored.pacom.gui.MainFrame</mainClass>
+		                     <classpathPrefix>lib/</classpathPrefix>
+		                     <useUniqueVersions>false</useUniqueVersions>
+		                  </manifest>
+		               </archive>
                   </configuration>
                </plugin>
             </plugins>
