@@ -85,7 +85,7 @@
       <dependency>
       	<groupId>org.proteored.miape.api</groupId>
       	<artifactId>miape-api</artifactId>
-      	<version>1.9.2-SNAPSHOT</version>
+      	<version>1.9.3</version>
       	<exclusions>
       		<exclusion>
       			<groupId>ch.qos.logback</groupId>
@@ -164,7 +164,7 @@
                      <addClasspath>true</addClasspath>
                      <mainClass>org.proteored.pacom.gui.MainFrame</mainClass>
                      <classpathPrefix>lib</classpathPrefix>
-                     <useUniqueVersions>true</useUniqueVersions>
+                     <useUniqueVersions>false</useUniqueVersions>
                   </manifest>
                </archive>
                <outputDirectory>${project.build.directory}</outputDirectory>
@@ -266,7 +266,7 @@
 	                     <addClasspath>true</addClasspath>
 	                     <mainClass>org.proteored.pacom.gui.MainFrame</mainClass>
 	                     <classpathPrefix>lib</classpathPrefix>
-	                     <useUniqueVersions>true</useUniqueVersions>
+	                     <useUniqueVersions>false</useUniqueVersions>
 	                  </manifest>
 	               </archive>
                   </configuration>
