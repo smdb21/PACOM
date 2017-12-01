@@ -745,7 +745,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	}
 
 	private Object showExclusiveIdentificationNumberChart(IdentificationItemEnum plotItem) {
-		parent.setInformation1(parent.getCurrentChartType() + " / " + plotItem);
+		parent.setInformation1(parent.getCurrentChartType().getName() + " / " + plotItem);
 		String xAxisLabel = "";
 		String yAxisLabel = "";
 		String yAxisLabelAccumulative = "";
@@ -2123,7 +2123,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	 * @return
 	 */
 	private Object showPeptideOccurrenceHeatMapChart(boolean isPSMs) {
-		parent.setInformation1(parent.getCurrentChartType() + " / " + IdentificationItemEnum.PEPTIDE);
+		parent.setInformation1(parent.getCurrentChartType().getName() + " / " + IdentificationItemEnum.PEPTIDE);
 
 		double colorScale = optionsFactory.getColorScale();
 		int minThreshold = optionsFactory.getHeatMapThreshold();
@@ -2221,7 +2221,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	 * @return
 	 */
 	private Object showProteinOccurrenceHeatMapChart() {
-		parent.setInformation1(parent.getCurrentChartType() + " / " + IdentificationItemEnum.PROTEIN);
+		parent.setInformation1(parent.getCurrentChartType().getName() + " / " + IdentificationItemEnum.PROTEIN);
 
 		double colorScale = optionsFactory.getColorScale();
 		int minOccurrenceThreshold = optionsFactory.getHeatMapThreshold();
@@ -2407,7 +2407,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 	private Object showOverlappingChart(IdentificationItemEnum plotItem) {
 		this.vennChartMap.clear();
-		parent.setInformation1(parent.getCurrentChartType() + " / " + plotItem);
+		parent.setInformation1(parent.getCurrentChartType().getName() + " / " + plotItem);
 		IdentificationSet idSet1 = null;
 		String label1 = null;
 		IdentificationSet idSet2 = null;
@@ -2556,7 +2556,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	}
 
 	private Object showHistogramChart(IdentificationItemEnum plotItem) {
-		parent.setInformation1(parent.getCurrentChartType() + " / " + plotItem);
+		parent.setInformation1(parent.getCurrentChartType().getName() + " / " + plotItem);
 		String xAxisLabel;
 		String yAxisLabel = "";
 
@@ -3322,7 +3322,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	}
 
 	private Object showRepeatabilityHistogramStackedChart(IdentificationItemEnum plotItem) {
-		parent.setInformation1(parent.getCurrentChartType() + " / " + plotItem);
+		parent.setInformation1(parent.getCurrentChartType().getName() + " / " + plotItem);
 		String xAxisLabel;
 		String yAxisLabel = "";
 		boolean asPercentage = optionsFactory.getAsPercentage();
@@ -3406,7 +3406,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	}
 
 	private Object showScoreComparisonScatterChart(IdentificationItemEnum plotItem) {
-		parent.setInformation1(parent.getCurrentChartType() + " / " + plotItem);
+		parent.setInformation1(parent.getCurrentChartType().getName() + " / " + plotItem);
 		String scoreName = null;
 		boolean distinguish = parent.distinguishModifiedPeptides();
 		if (plotItem.equals(IdentificationItemEnum.PEPTIDE)) {
@@ -3494,7 +3494,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	}
 
 	private Object showScoreDistributionHistogramLineChart(IdentificationItemEnum plotItem) {
-		parent.setInformation1(parent.getCurrentChartType() + " / " + plotItem);
+		parent.setInformation1(parent.getCurrentChartType().getName() + " / " + plotItem);
 		String scoreName = null;
 		if (plotItem.equals(IdentificationItemEnum.PEPTIDE)) {
 			scoreName = optionsFactory.getPeptideScoreName();
