@@ -18,12 +18,12 @@ Write an email to **salvador** at **scripps.edu**. I will try to respond you as 
 This tool has been enterely designed and implemented by [Salvador Martinez-Bartolome](https://www.ncbi.nlm.nih.gov/pubmed/?term=Martinez-Bartolome+S) firstly as a member of the [ProteoRed](http://www.proteored.org) Bioinformatics Working Group, under the supervision of Juan Pablo Albar, at the [Proteomics Laboratory](http://proteo.cnb.csic.es/proteomica/) of the [National Center for Biotechnology (CNB-CSIC)](http://www.cnb.csic.es) in Madrid, Spain. Later, the project was continued under the supervision of John R. Yates III at the [John Yates laboratory](http://www.scripps.edu/yates) at [The Scripps Research Institute](http://www.scripps.edu), La Jolla, California, USA.
 
 #### Other people that contributed to this project:
-- Miguel ?ngel L?pez (hardware support)
+- Miguel Angel Lopez (hardware support)
 - J. Alberto Medina (software developement support and beta tester)
 - Gorka Prieto (@akrogp) (PAanlyzer grouping algorithm developer)
-- Rosana Navaja (beta tester and manuscript contributor)
-- Carmen Gonz?lez (beta tester and manucript contributor)
-- Carolina Fern?ndez Costa (beta tester and manuscript contributor)
+- Rosana Navajas (beta tester and manuscript contributor)
+- Carmen Gonzalez (beta tester and manucript contributor)
+- Carolina Fernandez Costa (beta tester and manuscript contributor)
 - Emilio Salazar-Donate (@emiliosalazardonate) (First developer contributing this project in its very early phase)
 - Juan Pablo Albar (main supporter of this project. All success of this project is dedicated to him).
 - John R. Yates III (supporter of this project in its second phase). 
