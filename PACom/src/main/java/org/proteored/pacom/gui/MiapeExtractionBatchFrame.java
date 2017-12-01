@@ -59,8 +59,8 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 	private final int jProgressBarIndex = 2;
 	private final int jButtonStartIndex = 3;
 	private final int jButtonStopIndex = 4;
-	private final int jButtonMSReportIndex = 5;
-	private final int jButtonMSIReportIndex = 6;
+	private final int jButtonMSIReportIndex = 5;
+	private final int jButtonMSReportIndex = 6;
 
 	private final MainFrame parentFrame;
 	private boolean ontologiesLoaded = false;
@@ -793,6 +793,7 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 			stopButton.setEnabled(false);
 			appendStatus("Job '" + jobID + "' canceled at: " + getFormatedDate());
 			updateButtonsState();
+			jButtonSelectBatchFile.setEnabled(true);
 
 		} else if (MiapeExtractionTask.MIAPE_CREATION_WAITING_FOR_OTHER_JOB_COMPLETION.equals(evt.getPropertyName())) {
 			MiapeExtractionResult result = (MiapeExtractionResult) evt.getNewValue();
