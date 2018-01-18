@@ -13,6 +13,7 @@ import org.proteored.miapeapi.experiment.model.datamanager.DataManager;
 import org.proteored.miapeapi.experiment.model.filters.Filter;
 import org.proteored.pacom.analysis.conf.ExperimentListAdapter;
 import org.proteored.pacom.analysis.conf.jaxb.CPExperimentList;
+import org.springframework.beans.factory.BeanDefinitionStoreException;
 
 public class DataLoaderTask extends SwingWorker<ExperimentList, Void> {
 	private static final Logger log = Logger.getLogger("log4j.logger.org.proteored");
@@ -74,6 +75,11 @@ public class DataLoaderTask extends SwingWorker<ExperimentList, Void> {
 		} catch (IllegalMiapeArgumentException e) {
 			e.printStackTrace();
 			firePropertyChange(DATA_LOADED_ERROR, null, e.getMessage());
+			return null;
+		} catch (BeanDefinitionStoreException e) {
+			e.printStackTrace();
+			firePropertyChange(DATA_LOADED_ERROR, null,
+					"Error loading ontologies. Please check your internet connection or institution firewall and run the software again.");
 			return null;
 		} catch (Exception e) {
 			e.printStackTrace();

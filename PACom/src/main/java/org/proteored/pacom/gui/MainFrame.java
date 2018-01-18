@@ -13,6 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -51,7 +53,7 @@ import org.proteored.pacom.utils.PropertiesReader;
  *
  * @author __USER__
  */
-public class MainFrame extends AbstractJFrameWithAttachedHelpDialog {
+public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements PropertyChangeListener {
 
 	/**
 	 * 
@@ -155,14 +157,16 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog {
 
 	private void loadOntologies() {
 		// OntologyLoaderTask.getCvManager();
-		new OntologyLoaderWaiter().execute();
+		OntologyLoaderWaiter ontologyLoaderWaiter = new OntologyLoaderWaiter();
+		ontologyLoaderWaiter.addPropertyChangeListener(this);
+		ontologyLoaderWaiter.execute();
 	}
 
 	private void writeErrorMessage(String message) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<html>Error initializating the tool: <b>" + message
 				+ "</b><br/>Try to restart and if the problem persist, contact to 'salvador@scripps.edu'</html>");
-		// this.jLabelInit.setText(sb.toString());
+				// this.jLabelInit.setText(sb.toString());
 
 		// cancel tasks
 		if (ontologyLoader != null)
@@ -172,6 +176,7 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog {
 
 		// show error message
 		JOptionPane.showMessageDialog(this, sb.toString(), "Error loading", JOptionPane.ERROR_MESSAGE);
+
 	}
 
 	@Override
@@ -712,6 +717,20 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog {
 
 				"- select and click one of the available <b>example projects</b> and directly start to visualize data." };
 		return Arrays.asList(array);
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (OntologyLoaderWaiter.ONTOLOGY_LOADING_ERROR.equals(evt.getPropertyName())) {
+			writeErrorMessage(
+					"Error loading ontologies. Please note that this could lead to a non expected behaviour of the tool.");
+
+		} else if (OntologyLoaderWaiter.ONTOLOGY_LOADING_NETWORK_ERROR.equals(evt.getPropertyName())) {
+			writeErrorMessage(
+					"Error loading ontologies. Please check your internet connection or institution firewall and run the software again.");
+
+		}
+
 	}
 
 }

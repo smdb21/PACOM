@@ -146,17 +146,18 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 		jPanel1.setLayout(jPanel1Layout);
 		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-						.addContainerGap()
-						.addComponent(jTextFieldBatchFile, javax.swing.GroupLayout.DEFAULT_SIZE, 985, Short.MAX_VALUE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jButtonSelectBatchFile).addContainerGap()));
+				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+						jPanel1Layout.createSequentialGroup().addContainerGap()
+								.addComponent(jTextFieldBatchFile, javax.swing.GroupLayout.DEFAULT_SIZE, 985,
+										Short.MAX_VALUE)
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jButtonSelectBatchFile).addContainerGap()));
 		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(jPanel1Layout.createSequentialGroup()
 						.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
 								.addComponent(jButtonSelectBatchFile).addComponent(jTextFieldBatchFile,
-										javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+										javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										javax.swing.GroupLayout.PREFERRED_SIZE))
 						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -194,22 +195,27 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 		jPanelImage.setBorder(new TitledBorder(null, "Controls", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout.createSequentialGroup()
-				.addContainerGap()
-				.addGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(jPanel3, 0, 0, Short.MAX_VALUE)
-						.addComponent(jPanel1, 0, 0, Short.MAX_VALUE)
-						.addGroup(layout.createSequentialGroup()
-								.addComponent(jPanelImage, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.UNRELATED)
-								.addComponent(jScrollPaneJobQueue, GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)))
-				.addContainerGap()));
-		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING).addGroup(layout.createSequentialGroup()
-				.addContainerGap()
-				.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-				.addPreferredGap(ComponentPlacement.RELATED)
-				.addGroup(layout.createParallelGroup(Alignment.LEADING)
-						.addComponent(jScrollPaneJobQueue, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
-						.addComponent(jPanelImage, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE))
+		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup().addContainerGap()
+						.addGroup(layout.createParallelGroup(Alignment.LEADING)
+								.addComponent(jPanel3, 0, 0, Short.MAX_VALUE)
+								.addComponent(jPanel1, 0, 0, Short.MAX_VALUE)
+								.addGroup(layout.createSequentialGroup()
+										.addComponent(jPanelImage, GroupLayout.PREFERRED_SIZE, 145,
+												GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(jScrollPaneJobQueue,
+												GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)))
+						.addContainerGap()));
+		layout.setVerticalGroup(
+				layout.createParallelGroup(Alignment.LEADING)
+						.addGroup(layout.createSequentialGroup().addContainerGap()
+								.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addGroup(layout.createParallelGroup(Alignment.LEADING)
+										.addComponent(jScrollPaneJobQueue, GroupLayout.DEFAULT_SIZE, 362,
+												Short.MAX_VALUE)
+								.addComponent(jPanelImage, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE))
 				.addPreferredGap(ComponentPlacement.UNRELATED)
 				.addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 				.addContainerGap()));
@@ -778,6 +784,14 @@ public class MiapeExtractionBatchFrame extends AbstractJFrameWithAttachedHelpDia
 			ontologiesLoaded = true;
 			if (startAllJobsRequested)
 				startAllJobs();
+		} else if (OntologyLoaderWaiter.ONTOLOGY_LOADING_ERROR.equals(evt.getPropertyName())) {
+			appendStatus(
+					"Error loading ontologies. Please note that this could lead to a non expected behaviour of the tool");
+
+		} else if (OntologyLoaderWaiter.ONTOLOGY_LOADING_NETWORK_ERROR.equals(evt.getPropertyName())) {
+			appendStatus(
+					"Error loading ontologies. Please check your internet connection or institution firewall and run again the software. If the problem persist, you can contact salvador@scripps.edu for help.");
+
 		} else if (MiapeExtractionTask.MIAPE_CREATION_CANCELED.equals(evt.getPropertyName())) {
 			int jobID = (Integer) evt.getNewValue();
 			JProgressBar bar = getProgressBar(jobID);
