@@ -544,7 +544,7 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 
 	public void startDataImport() {
 		setVisible(false);
-		MiapeExtractionFrame standard2MIAPEDialog = MiapeExtractionFrame.getInstance(this, true);
+		MiapeExtractionFrameNEW standard2MIAPEDialog = MiapeExtractionFrameNEW.getInstance(this, true);
 		standard2MIAPEDialog.setVisible(true);
 
 	}
@@ -726,8 +726,9 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 					"Error loading ontologies. Please note that this could lead to a non expected behaviour of the tool.");
 
 		} else if (OntologyLoaderWaiter.ONTOLOGY_LOADING_NETWORK_ERROR.equals(evt.getPropertyName())) {
-			writeErrorMessage(
-					"Error loading ontologies. Please check your internet connection or institution firewall and run the software again.");
+			writeErrorMessage("Error trying to connect to the Internet.<br>"
+					+ "PACom uses the internet connection to retrieve some resources, collect some protein annotations and check for new updates.<br>"
+					+ "Please check your internet connection or institution firewall and run the software again.");
 
 		}
 
