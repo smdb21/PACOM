@@ -10,13 +10,13 @@ package org.proteored.pacom.gui;
  */
 public class ParsingModeDialog extends javax.swing.JDialog {
 
-	private final MiapeExtractionFrame parentDialog;
+	private final MiapeExtractionFrameNEW parentDialog;
 
 	/** Creates new form ParsingModeDialog */
-	public ParsingModeDialog(MiapeExtractionFrame parent, boolean modal) {
-		super(parent, modal);
+	public ParsingModeDialog(MiapeExtractionFrameNEW miapeExtractionFrameNEW, boolean modal) {
+		super(miapeExtractionFrameNEW, modal);
 		initComponents();
-		this.parentDialog = parent;
+		this.parentDialog = miapeExtractionFrameNEW;
 	}
 
 	// GEN-BEGIN:initComponents
@@ -43,6 +43,7 @@ public class ParsingModeDialog extends javax.swing.JDialog {
 		buttonGroup1.add(jRadioButtonSlowParsing);
 		jRadioButtonSlowParsing.setText("deep parsing (slower, recommended for small files)");
 		jRadioButtonSlowParsing.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				jRadioButtonSlowParsingActionPerformed(evt);
 			}
@@ -56,8 +57,8 @@ public class ParsingModeDialog extends javax.swing.JDialog {
 		jTextArea1.setFont(new java.awt.Font("Segoe UI", 0, 12));
 		jTextArea1.setLineWrap(true);
 		jTextArea1.setRows(5);
-		jTextArea1
-				.setText("Choose one of these parsing modes:\n\n- fast parsing: 'run' element in mzML file is skipped (some minimal information like activation type will be missed). However, most of the information is captured. Large files (more than 5Gb) can be processed in 4 minutes.\n\n- deep parsing: using the jmzML API: for large files it takes several minutes, so it is recommended for smaller files (100 Mb.)\n\nNote: Although spectra and chromatograms are required by MIAPE MS guidelines, they are not extracted from the file, since MIAPE repository is not a proteomics raw repository. However, a link to the original mzML file will be provided in the general features section of the MIAPE MS.");
+		jTextArea1.setText(
+				"Choose one of these parsing modes:\n\n- fast parsing: 'run' element in mzML file is skipped (some minimal information like activation type will be missed). However, most of the information is captured. Large files (more than 5Gb) can be processed in 4 minutes.\n\n- deep parsing: using the jmzML API: for large files it takes several minutes, so it is recommended for smaller files (100 Mb.)\n\nNote: Although spectra and chromatograms are required by MIAPE MS guidelines, they are not extracted from the file, since MIAPE repository is not a proteomics raw repository. However, a link to the original mzML file will be provided in the general features section of the MIAPE MS.");
 		jTextArea1.setWrapStyleWord(true);
 		jTextArea1.setBorder(null);
 		jTextArea1.setFocusable(false);
@@ -66,6 +67,7 @@ public class ParsingModeDialog extends javax.swing.JDialog {
 
 		jButtonChoose.setText("Select");
 		jButtonChoose.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				jButtonChooseActionPerformed(evt);
 			}
@@ -73,94 +75,45 @@ public class ParsingModeDialog extends javax.swing.JDialog {
 
 		javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
 		jPanel8.setLayout(jPanel8Layout);
-		jPanel8Layout
-				.setHorizontalGroup(jPanel8Layout
+		jPanel8Layout.setHorizontalGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel8Layout.createSequentialGroup().addContainerGap().addGroup(jPanel8Layout
 						.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanel8Layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												jPanel8Layout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.LEADING)
-														.addGroup(
-																javax.swing.GroupLayout.Alignment.TRAILING,
-																jPanel8Layout
-																		.createSequentialGroup()
-																		.addGroup(
-																				jPanel8Layout
-																						.createParallelGroup(
-																								javax.swing.GroupLayout.Alignment.LEADING,
-																								false)
-																						.addComponent(
-																								jRadioButtonSlowParsing,
-																								javax.swing.GroupLayout.DEFAULT_SIZE,
-																								javax.swing.GroupLayout.DEFAULT_SIZE,
-																								Short.MAX_VALUE)
-																						.addComponent(
-																								jRadioButtonFastParsing,
-																								javax.swing.GroupLayout.DEFAULT_SIZE,
-																								javax.swing.GroupLayout.DEFAULT_SIZE,
-																								Short.MAX_VALUE))
-																		.addGap(62, 62, 62)
-																		.addComponent(jButtonChoose))
-														.addComponent(
-																jScrollPane2,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																428, Short.MAX_VALUE))
-										.addContainerGap()));
-		jPanel8Layout
-				.setVerticalGroup(jPanel8Layout
-						.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanel8Layout
-										.createSequentialGroup()
-										.addGroup(
-												jPanel8Layout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.LEADING)
-														.addGroup(
-																jPanel8Layout
-																		.createSequentialGroup()
-																		.addComponent(
-																				jRadioButtonFastParsing)
-																		.addPreferredGap(
-																				javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																		.addComponent(
-																				jRadioButtonSlowParsing))
-														.addGroup(
-																jPanel8Layout
-																		.createSequentialGroup()
-																		.addContainerGap()
-																		.addComponent(jButtonChoose)))
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jScrollPane2,
-												javax.swing.GroupLayout.DEFAULT_SIZE, 208,
-												Short.MAX_VALUE).addGap(24, 24, 24)));
+						.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+								jPanel8Layout.createSequentialGroup().addGroup(jPanel8Layout
+										.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+										.addComponent(jRadioButtonSlowParsing, javax.swing.GroupLayout.DEFAULT_SIZE,
+												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+										.addComponent(jRadioButtonFastParsing, javax.swing.GroupLayout.DEFAULT_SIZE,
+												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+										.addGap(62, 62, 62).addComponent(jButtonChoose))
+						.addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE))
+						.addContainerGap()));
+		jPanel8Layout.setVerticalGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel8Layout.createSequentialGroup()
+						.addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addGroup(jPanel8Layout.createSequentialGroup().addComponent(jRadioButtonFastParsing)
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(jRadioButtonSlowParsing))
+						.addGroup(jPanel8Layout.createSequentialGroup().addContainerGap().addComponent(jButtonChoose)))
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+						.addGap(24, 24, 24)));
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				layout.createSequentialGroup()
-						.addContainerGap()
-						.addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, 455,
-								Short.MAX_VALUE).addContainerGap()));
-		layout.setVerticalGroup(layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				layout.createSequentialGroup()
-						.addContainerGap()
-						.addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup().addContainerGap()
+						.addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, 455, Short.MAX_VALUE)
 						.addContainerGap()));
+		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jPanel8,
+						javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+				.addContainerGap()));
 
 		pack();
 		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 		java.awt.Dimension dialogSize = getSize();
-		setLocation((screenSize.width - dialogSize.width) / 2,
-				(screenSize.height - dialogSize.height) / 2);
+		setLocation((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2);
 	}// </editor-fold>
 		// GEN-END:initComponents
 
