@@ -34,14 +34,15 @@ public class TFrmInputTable extends javax.swing.JDialog {
 	// la Seleccion
 	private String userSelection;
 	// ParentForm
-	private final MiapeExtractionFrame parentForm;
+	private final MiapeExtractionFrameNEW parentForm;
 
 	private boolean firstClick = false;
 	private long firstClickTime;
 	private String previousUserSelection;
 
-	public TFrmInputTable(MiapeExtractionFrame parentForm, boolean modal, TIntObjectHashMap<String> miapeProjects) {
-		super(parentForm, modal);
+	public TFrmInputTable(MiapeExtractionFrameNEW miapeExtractionFrameNEW, boolean modal,
+			TIntObjectHashMap<String> miapeProjects) {
+		super(miapeExtractionFrameNEW, modal);
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (UnsupportedLookAndFeelException e) {
@@ -54,7 +55,7 @@ public class TFrmInputTable extends javax.swing.JDialog {
 			e.printStackTrace();
 		}
 		initComponents();
-		this.parentForm = parentForm;
+		this.parentForm = miapeExtractionFrameNEW;
 		project_head = new String[] { "ID", "Name", "Date" };
 		project_propor = new int[] { 5, 35, 10 };
 		userSelection = "NO SELECTION";
@@ -110,25 +111,28 @@ public class TFrmInputTable extends javax.swing.JDialog {
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup().addContainerGap()
-						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-								.addComponent(jLabel_head)
-								.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1204, Short.MAX_VALUE)
-								.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
-										layout.createSequentialGroup().addComponent(jButtonOK)
-												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+		layout.setHorizontalGroup(
+				layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(layout.createSequentialGroup().addContainerGap()
+								.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+										.addComponent(jLabel_head)
+										.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1204,
+												Short.MAX_VALUE)
+										.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+												layout.createSequentialGroup().addComponent(jButtonOK)
+														.addPreferredGap(
+																javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 												.addComponent(jButtonCancel)))
-						.addContainerGap()));
+								.addContainerGap()));
 		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jLabel_head)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 247,
 								javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-								.addComponent(jButtonCancel).addComponent(jButtonOK))
-						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+				.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+						.addComponent(jButtonCancel).addComponent(jButtonOK))
+				.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		pack();
 		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
@@ -188,10 +192,6 @@ public class TFrmInputTable extends javax.swing.JDialog {
 			parentForm.fillProjectUserSelection(userSelection);
 		// }
 		setVisible(false);
-	}
-
-	public MiapeExtractionFrame getParentForm() {
-		return parentForm;
 	}
 
 	private void myInit(TIntObjectHashMap<String> Data) {
