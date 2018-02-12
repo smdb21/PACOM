@@ -138,8 +138,7 @@ public class ReplicateAdapter implements Adapter<Replicate> {
 			file = new File(FileManager.getMiapeMSIXMLFileLocalPathFromMiapeInformation(cpMsi));
 		}
 		if (!file.exists()) {
-			throw new IllegalMiapeArgumentException("Error loading MIAPE MSI file: " + file.getName()
-					+ " not found at: " + FileManager.getMiapeDataPath());
+			throw new IllegalMiapeArgumentException("Error loading dataset file: " + file.getAbsolutePath());
 		}
 		MiapeMSIDocument ret;
 
