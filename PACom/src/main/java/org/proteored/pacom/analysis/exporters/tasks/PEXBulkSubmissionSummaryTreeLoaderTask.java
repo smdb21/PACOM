@@ -20,7 +20,7 @@ import org.proteored.miapeapi.interfaces.ms.MiapeMSDocument;
 import org.proteored.miapeapi.interfaces.ms.ResultingData;
 import org.proteored.miapeapi.interfaces.msi.MiapeMSIDocument;
 import org.proteored.miapeapi.util.URLValidator;
-import org.proteored.pacom.analysis.gui.components.ExtendedJTree;
+import org.proteored.pacom.analysis.gui.components.AbstractExtendedJTree;
 import org.proteored.pacom.analysis.gui.components.MyTreeRenderer;
 
 import gnu.trove.set.hash.THashSet;
@@ -29,7 +29,7 @@ public class PEXBulkSubmissionSummaryTreeLoaderTask extends SwingWorker<Void, Vo
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
 
 	private final ExperimentList expList;
-	private final ExtendedJTree jTreeSummary;
+	private final AbstractExtendedJTree jTreeSummary;
 	private final boolean includeMSIAttachedFiles;
 
 	private final boolean includeMIAPEReports;
@@ -46,7 +46,7 @@ public class PEXBulkSubmissionSummaryTreeLoaderTask extends SwingWorker<Void, Vo
 
 	private static Set<String> validatedURLs = new THashSet<String>();
 
-	public PEXBulkSubmissionSummaryTreeLoaderTask(ExperimentList experimentList, ExtendedJTree jTreeSummary,
+	public PEXBulkSubmissionSummaryTreeLoaderTask(ExperimentList experimentList, AbstractExtendedJTree jTreeSummary,
 			boolean includeMSIAttachedFiles, boolean includeMIAPEReports) {
 		expList = experimentList;
 		this.jTreeSummary = jTreeSummary;

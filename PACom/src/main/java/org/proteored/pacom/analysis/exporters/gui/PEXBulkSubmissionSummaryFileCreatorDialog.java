@@ -37,6 +37,7 @@ import org.proteored.pacom.analysis.exporters.tasks.PEXBulkSubmissionFileDownloa
 import org.proteored.pacom.analysis.exporters.tasks.PEXBulkSubmissionFileWriterTask;
 import org.proteored.pacom.analysis.exporters.tasks.PEXBulkSubmissionSummaryTreeLoaderTask;
 import org.proteored.pacom.analysis.exporters.tasks.PRIDEExporterTask;
+import org.proteored.pacom.analysis.gui.components.AbstractExtendedJTree;
 import org.proteored.pacom.analysis.gui.components.ExtendedJTree;
 import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.gui.MainFrame;
@@ -1083,7 +1084,7 @@ public class PEXBulkSubmissionSummaryFileCreatorDialog extends javax.swing.JDial
 	private javax.swing.JTextField jTextFieldKeywords;
 	private javax.swing.JTextField jTextFieldPRIDELogin;
 	private javax.swing.JTextField jTextFieldTitle;
-	private ExtendedJTree jTreeSummary;
+	private AbstractExtendedJTree jTreeSummary;
 
 	// End of variables declaration//GEN-END:variables
 

@@ -6,17 +6,17 @@ import javax.swing.SwingWorker;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
-import org.proteored.pacom.analysis.gui.components.ExtendedJTree;
+import org.proteored.pacom.analysis.gui.components.AbstractExtendedJTree;
 import org.proteored.pacom.analysis.util.FileManager;
 
 public class LocalDataTreeLoaderTask extends SwingWorker<Void, String> {
 	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("log4j.logger.org.proteored");
-	private final ExtendedJTree tree;
+	private final AbstractExtendedJTree tree;
 	public static final String LOCAL_TREE_LOADER_STARTS = "local tree loader starts";
 	public static final String LOCAL_TREE_LOADER_FINISHED = "local tree loader finished";
 	public static final String LOCAL_TREE_LOADER_ERROR = "local tree loader error";
 
-	public LocalDataTreeLoaderTask(ExtendedJTree jTreeManualMIAPEMSIs) {
+	public LocalDataTreeLoaderTask(AbstractExtendedJTree jTreeManualMIAPEMSIs) {
 		tree = jTreeManualMIAPEMSIs;
 	}
 

@@ -13,14 +13,20 @@ import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import org.apache.log4j.Logger;
 import org.proteored.pacom.analysis.conf.jaxb.CPNode;
 
-public class ExtendedJTree extends JTree {
-	public ExtendedJTree() {
-		this(false);
+public abstract class AbstractExtendedJTree<T extends DefaultMutableTreeNode> extends JTree {
+	private final static Logger log = Logger.getLogger(AbstractExtendedJTree.class);
+
+	public AbstractExtendedJTree() {
+		this(false, false);
+		super.setEditable(editable);
 	}
 
-	public ExtendedJTree(boolean allowDeletion) {
+	public AbstractExtendedJTree(boolean editable, boolean allowDeletion) {
+		super();
+		super.setEditable(editable);
 		addKeyListener(new KeyListener() {
 
 			@Override
@@ -30,7 +36,7 @@ public class ExtendedJTree extends JTree {
 
 			@Override
 			public void keyReleased(KeyEvent e) {
-				DefaultMutableTreeNode selectedNode = getSelectedNode();
+				T selectedNode = getSelectedNode();
 				if (selectedNode != null) {
 					if (allowDeletion
 							&& (e.getKeyCode() == KeyEvent.VK_DELETE || e.getKeyCode() == KeyEvent.VK_BACK_SPACE)) {
@@ -50,6 +56,7 @@ public class ExtendedJTree extends JTree {
 
 			}
 		});
+
 	}
 
 	/**
@@ -61,16 +68,16 @@ public class ExtendedJTree extends JTree {
 	 *            node string to search for
 	 * @return tree node
 	 */
-	public DefaultMutableTreeNode searchNode(String nodeStr) {
-		DefaultMutableTreeNode node = null;
+	public T searchNode(String nodeStr) {
+		T node = null;
 
 		// Get the enumeration
-		Enumeration enumer = ((DefaultMutableTreeNode) getModel().getRoot()).breadthFirstEnumeration();
+		Enumeration enumer = ((T) getModel().getRoot()).breadthFirstEnumeration();
 
 		// iterate through the enumeration
 		while (enumer.hasMoreElements()) {
 			// get the node
-			node = (DefaultMutableTreeNode) enumer.nextElement();
+			node = (T) enumer.nextElement();
 
 			// match the string with the user-object of the node
 			if (node.getUserObject().toString().startsWith(nodeStr)) {
@@ -95,16 +102,16 @@ public class ExtendedJTree extends JTree {
 	 *            level, starting by 0 as the root level
 	 * @return tree node
 	 */
-	public DefaultMutableTreeNode searchNode(String nodeStr, int level) {
-		DefaultMutableTreeNode node = null;
+	public T searchNode(String nodeStr, int level) {
+		T node = null;
 
 		// Get the enumeration
-		Enumeration enumer = ((DefaultMutableTreeNode) getModel().getRoot()).breadthFirstEnumeration();
+		Enumeration enumer = ((T) getModel().getRoot()).breadthFirstEnumeration();
 
 		// iterate through the enumeration
 		while (enumer.hasMoreElements()) {
 			// get the node
-			node = (DefaultMutableTreeNode) enumer.nextElement();
+			node = (T) enumer.nextElement();
 			// match the string with the user-object of the node
 			if (node.getUserObject().toString().startsWith(nodeStr)) {
 				final int levelFromNode = getLevelFromNode(node);
@@ -119,21 +126,21 @@ public class ExtendedJTree extends JTree {
 		return null;
 	}
 
-	private int getLevelFromNode(DefaultMutableTreeNode node) {
+	private int getLevelFromNode(T node) {
 		final TreeNode[] path = node.getPath();
 		return path.length - 1;
 	}
 
-	public DefaultMutableTreeNode searchNodeByPath(TreePath selectionPath) {
-		DefaultMutableTreeNode node = null;
+	public T searchNodeByPath(TreePath selectionPath) {
+		T node = null;
 
 		// Get the enumeration
-		Enumeration enumer = ((DefaultMutableTreeNode) getModel().getRoot()).breadthFirstEnumeration();
+		Enumeration enumer = ((T) getModel().getRoot()).breadthFirstEnumeration();
 
 		// iterate through the enumeration
 		while (enumer.hasMoreElements()) {
 			// get the node
-			node = (DefaultMutableTreeNode) enumer.nextElement();
+			node = (T) enumer.nextElement();
 			TreePath path = new TreePath(node.getPath());
 			if (path.equals(selectionPath))
 				return node;
@@ -154,7 +161,7 @@ public class ExtendedJTree extends JTree {
 	 * @return true or false
 	 */
 	public boolean removeNodeStartingBy(String nodeStr) {
-		DefaultMutableTreeNode node = searchNode(nodeStr);
+		T node = searchNode(nodeStr);
 		if (node != null) {
 			removeNode(node);
 			return true;
@@ -162,9 +169,9 @@ public class ExtendedJTree extends JTree {
 		return false;
 	}
 
-	public DefaultMutableTreeNode getRootNode() {
+	public T getRootNode() {
 		final Object root = getModel().getRoot();
-		return (DefaultMutableTreeNode) root;
+		return (T) root;
 	}
 
 	/**
@@ -174,12 +181,12 @@ public class ExtendedJTree extends JTree {
 	 * @param selNode
 	 *            node to be removed
 	 */
-	public void removeNode(DefaultMutableTreeNode selNode) {
+	public void removeNode(T selNode) {
 		if (selNode != null) {
 
 			// get the parent of the selected node
 			// MutableTreeNode parent = (MutableTreeNode) (selNode.getParent());
-			DefaultMutableTreeNode parent = (DefaultMutableTreeNode) (selNode.getParent());
+			T parent = (T) (selNode.getParent());
 
 			// if the parent is not null
 			if (parent != null) {
@@ -214,7 +221,7 @@ public class ExtendedJTree extends JTree {
 	}
 
 	public boolean scrollToNode(String nodeStr) {
-		final DefaultMutableTreeNode searchNode = searchNode(nodeStr);
+		final T searchNode = searchNode(nodeStr);
 		if (searchNode != null) {
 			scrollToNode(searchNode);
 			return true;
@@ -232,7 +239,7 @@ public class ExtendedJTree extends JTree {
 	 *            selected node
 	 * @return previous or next sibling, or parent if no sibling
 	 */
-	private MutableTreeNode getSibling(DefaultMutableTreeNode selNode) {
+	private MutableTreeNode getSibling(T selNode) {
 		// get previous sibling
 		MutableTreeNode sibling = selNode.getPreviousSibling();
 
@@ -380,7 +387,7 @@ public class ExtendedJTree extends JTree {
 	}
 
 	public boolean selectNode(String nodeName) {
-		final DefaultMutableTreeNode foundNode = searchNode(nodeName);
+		final T foundNode = searchNode(nodeName);
 		if (foundNode != null) {
 			setSelectionPath(new TreePath(foundNode.getPath()));
 			return true;
@@ -389,7 +396,7 @@ public class ExtendedJTree extends JTree {
 	}
 
 	public boolean selectNode(String nodeName, int level) {
-		final DefaultMutableTreeNode foundNode = searchNode(nodeName, level);
+		final T foundNode = searchNode(nodeName, level);
 		if (foundNode != null) {
 			setSelectionPath(new TreePath(foundNode.getPath()));
 			return true;
@@ -398,11 +405,11 @@ public class ExtendedJTree extends JTree {
 	}
 
 	public boolean selectRoot() {
-		DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) getModel().getRoot();
+		T rootNode = (T) getModel().getRoot();
 		return selectNode(rootNode);
 	}
 
-	public boolean selectNode(DefaultMutableTreeNode node) {
+	public boolean selectNode(T node) {
 		if (node != null) {
 			setSelectionPath(new TreePath(node.getPath()));
 			return true;
@@ -423,18 +430,7 @@ public class ExtendedJTree extends JTree {
 
 	}
 
-	public DefaultMutableTreeNode addNewNode(Object nodeObject, DefaultMutableTreeNode parentNode) {
-		final DefaultTreeModel model = (DefaultTreeModel) getModel();
-
-		DefaultMutableTreeNode newnode = new DefaultMutableTreeNode(nodeObject);
-		int index = parentNode.getChildCount();
-
-		model.insertNodeInto(newnode, parentNode, index);
-		model.reload();
-		return newnode;
-	}
-
-	public DefaultMutableTreeNode getSelectedNode() {
+	public T getSelectedNode() {
 		final TreePath selectionPath = getSelectionPath();
 		if (selectionPath != null) {
 			return searchNodeByPath(selectionPath);
@@ -445,7 +441,7 @@ public class ExtendedJTree extends JTree {
 	public void renameSelectedNode(String nodeName) {
 		final TreePath selectionPath = getSelectionPath();
 		if (selectionPath != null) {
-			DefaultMutableTreeNode node = searchNodeByPath(selectionPath);
+			T node = searchNodeByPath(selectionPath);
 			CPNode cpNode = (CPNode) node.getUserObject();
 			cpNode.setName(nodeName);
 		}
@@ -465,16 +461,31 @@ public class ExtendedJTree extends JTree {
 	}
 
 	public void clear() {
-		TreeNode rootNode = new DefaultMutableTreeNode();
+		T rootNode = createNode();
 		setModel(new DefaultTreeModel(rootNode));
 	}
+
+	public T addNewNode(Object nodeObject, T parentNode) {
+		final DefaultTreeModel model = (DefaultTreeModel) getModel();
+
+		T newnode = createNode(nodeObject);
+		int index = parentNode.getChildCount();
+
+		model.insertNodeInto(newnode, parentNode, index);
+		model.reload();
+		return newnode;
+	}
+
+	public abstract T createNode();
+
+	public abstract T createNode(Object objectNode);
 
 	/**
 	 * Remove the selected node of the tree
 	 *
 	 */
 	public void removeSelectedNode() {
-		final DefaultMutableTreeNode node = getSelectedNode();
+		final T node = getSelectedNode();
 		if (node != null)
 			removeNode(node);
 		// reload();
@@ -485,18 +496,18 @@ public class ExtendedJTree extends JTree {
 	 * 
 	 * @param node
 	 */
-	public void expandNode(DefaultMutableTreeNode node) {
+	public void expandNode(T node) {
 		if (node.isLeaf()) {
 			this.expandPath(new TreePath(node.getPath()));
 		} else {
 			for (int i = 0; i < node.getChildCount(); i++) {
-				expandNode((DefaultMutableTreeNode) node.getChildAt(i));
+				expandNode((T) node.getChildAt(i));
 			}
 		}
 
 	}
 
-	public void collapseNode(DefaultMutableTreeNode node) {
+	public void collapseNode(T node) {
 		this.collapsePath(new TreePath(node.getPath()));
 	}
 
