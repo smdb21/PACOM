@@ -28,6 +28,7 @@ import org.proteored.miapeapi.xml.ms.MIAPEMSXmlFile;
 import org.proteored.miapeapi.xml.ms.MiapeMSXmlFactory;
 import org.proteored.pacom.analysis.util.FileManager;
 import org.proteored.pacom.gui.MiapeExtractionFrame;
+import org.proteored.pacom.gui.MiapeExtractionFrameNEW;
 import org.proteored.pacom.gui.tasks.MIAPEMSChecker;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 
@@ -55,12 +56,12 @@ public class MiapeMSForms extends javax.swing.JDialog {
 	/**
 	 * Creates new form MiapeMSForms
 	 * 
-	 * @param frame
+	 * @param parent
 	 * 
 	 * @param miapemsChecker
 	 */
-	public MiapeMSForms(MiapeExtractionFrame frame, MIAPEMSChecker miapemsChecker, MiapeMSDocument miapeMS) {
-		super(frame, true);
+	public MiapeMSForms(MiapeExtractionFrameNEW parent, MIAPEMSChecker miapemsChecker, MiapeMSDocument miapeMS) {
+		super(parent, true);
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException
@@ -281,49 +282,54 @@ public class MiapeMSForms extends javax.swing.JDialog {
 
 		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 		jPanel1.setLayout(jPanel1Layout);
+		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel1Layout.createSequentialGroup().addContainerGap().addGroup(jPanel1Layout
+						.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(jPanel1Layout.createSequentialGroup().addComponent(jButtonActivationDissociation)
+								.addGap(18, 18, 18).addComponent(jButtonDataAcquisition).addGap(18, 18, 18)
+								.addComponent(jButtonDataAnalysis))
+						.addGroup(jPanel1Layout.createSequentialGroup()
+								.addComponent(jButtonSampleInformation, javax.swing.GroupLayout.PREFERRED_SIZE, 81,
+										javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addGap(18, 18, 18)
+								.addComponent(jButtonContact, javax.swing.GroupLayout.PREFERRED_SIZE, 75,
+										javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addGap(18, 18, 18)
+								.addComponent(jButtonSpectrometer, javax.swing.GroupLayout.PREFERRED_SIZE, 103,
+										javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addGap(18, 18, 18).addComponent(jButtonIonSources).addGap(18, 18, 18)
+								.addComponent(jButtonAnalyzer, javax.swing.GroupLayout.PREFERRED_SIZE, 83,
+										javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addGap(18, 18, 18).addComponent(jButtonPrevious).addGap(18, 18, 18)
+								.addComponent(jButtonNext)))
+						.addContainerGap()));
 		jPanel1Layout
-				.setHorizontalGroup(
+				.setVerticalGroup(
 						jPanel1Layout
 								.createParallelGroup(
 										javax.swing.GroupLayout.Alignment.LEADING)
-								.addGroup(jPanel1Layout.createSequentialGroup().addContainerGap()
-										.addGroup(jPanel1Layout
-												.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-												.addGroup(jPanel1Layout.createSequentialGroup()
-														.addComponent(jButtonActivationDissociation)
-														.addGap(18, 18, 18).addComponent(jButtonDataAcquisition)
-														.addGap(18, 18, 18).addComponent(jButtonDataAnalysis))
-												.addGroup(jPanel1Layout.createSequentialGroup()
-														.addComponent(jButtonSampleInformation,
-																javax.swing.GroupLayout.PREFERRED_SIZE, 81,
-																javax.swing.GroupLayout.PREFERRED_SIZE)
-														.addGap(18, 18, 18)
-														.addComponent(jButtonContact,
-																javax.swing.GroupLayout.PREFERRED_SIZE, 75,
-																javax.swing.GroupLayout.PREFERRED_SIZE)
-														.addGap(18, 18, 18)
-														.addComponent(jButtonSpectrometer,
-																javax.swing.GroupLayout.PREFERRED_SIZE, 103,
-																javax.swing.GroupLayout.PREFERRED_SIZE)
-														.addGap(18, 18, 18).addComponent(jButtonIonSources)
-														.addGap(18, 18, 18)
-														.addComponent(jButtonAnalyzer,
-																javax.swing.GroupLayout.PREFERRED_SIZE, 83,
-																javax.swing.GroupLayout.PREFERRED_SIZE)
-														.addGap(18, 18, 18).addComponent(jButtonPrevious)
-														.addGap(18, 18, 18).addComponent(jButtonNext)))
-										.addContainerGap()));
-		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanel1Layout.createSequentialGroup()
-						.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-								.addComponent(jButtonSampleInformation).addComponent(jButtonContact)
-								.addComponent(jButtonSpectrometer).addComponent(jButtonIonSources)
-								.addComponent(jButtonAnalyzer).addComponent(jButtonPrevious).addComponent(jButtonNext))
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-								.addComponent(jButtonActivationDissociation).addComponent(jButtonDataAcquisition)
-								.addComponent(jButtonDataAnalysis))
-						.addContainerGap()));
+								.addGroup(
+										jPanel1Layout.createSequentialGroup()
+												.addGroup(
+														jPanel1Layout
+																.createParallelGroup(
+																		javax.swing.GroupLayout.Alignment.BASELINE)
+																.addComponent(jButtonSampleInformation)
+																.addComponent(jButtonContact)
+																.addComponent(jButtonSpectrometer)
+																.addComponent(jButtonIonSources)
+																.addComponent(jButtonAnalyzer)
+																.addComponent(jButtonPrevious)
+																.addComponent(jButtonNext))
+												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+												.addGroup(
+														jPanel1Layout
+																.createParallelGroup(
+																		javax.swing.GroupLayout.Alignment.BASELINE)
+																.addComponent(jButtonActivationDissociation)
+																.addComponent(jButtonDataAcquisition)
+																.addComponent(jButtonDataAnalysis))
+												.addContainerGap()));
 
 		jLabel2.setText("MS metadata name:");
 
@@ -334,8 +340,8 @@ public class MiapeMSForms extends javax.swing.JDialog {
 				.addGroup(jPanelTopLayout.createSequentialGroup().addContainerGap().addGroup(jPanelTopLayout
 						.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 						.addGroup(jPanelTopLayout.createSequentialGroup().addGroup(jPanelTopLayout
-								.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanelTopLayout
-										.createSequentialGroup().addComponent(jLabel1)
+								.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addGroup(jPanelTopLayout.createSequentialGroup().addComponent(jLabel1)
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 										.addComponent(jComboBoxConfigurations, javax.swing.GroupLayout.PREFERRED_SIZE,
 												235, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -354,10 +360,9 @@ public class MiapeMSForms extends javax.swing.JDialog {
 				.addGroup(jPanelTopLayout.createSequentialGroup().addContainerGap()
 						.addGroup(jPanelTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
 								.addComponent(jLabel1)
-								.addComponent(jComboBoxConfigurations,
-										javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addComponent(jButtonLoad))
+								.addComponent(jComboBoxConfigurations, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addComponent(jButtonLoad))
 						.addGap(10, 10, 10)
 						.addGroup(jPanelTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
 								.addComponent(jLabel2)
@@ -376,16 +381,20 @@ public class MiapeMSForms extends javax.swing.JDialog {
 
 		javax.swing.GroupLayout jPanelDownLayout = new javax.swing.GroupLayout(jPanelDown);
 		jPanelDown.setLayout(jPanelDownLayout);
-		jPanelDownLayout.setHorizontalGroup(jPanelDownLayout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanelDownLayout.createSequentialGroup().addContainerGap()
-						.addComponent(jScrollPaneDown, javax.swing.GroupLayout.DEFAULT_SIZE, 677, Short.MAX_VALUE)
-						.addContainerGap()));
-		jPanelDownLayout.setVerticalGroup(jPanelDownLayout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanelDownLayout.createSequentialGroup().addContainerGap()
-						.addComponent(jScrollPaneDown, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
-						.addContainerGap()));
+		jPanelDownLayout
+				.setHorizontalGroup(
+						jPanelDownLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addGroup(jPanelDownLayout.createSequentialGroup()
+										.addContainerGap().addComponent(jScrollPaneDown,
+												javax.swing.GroupLayout.DEFAULT_SIZE, 677, Short.MAX_VALUE)
+										.addContainerGap()));
+		jPanelDownLayout
+				.setVerticalGroup(
+						jPanelDownLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addGroup(jPanelDownLayout.createSequentialGroup()
+										.addContainerGap().addComponent(jScrollPaneDown,
+												javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+										.addContainerGap()));
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
@@ -406,7 +415,7 @@ public class MiapeMSForms extends javax.swing.JDialog {
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
 						.addComponent(jPanelDown, javax.swing.GroupLayout.PREFERRED_SIZE,
 								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addContainerGap()));
+				.addContainerGap()));
 
 		pack();
 	}// </editor-fold>
