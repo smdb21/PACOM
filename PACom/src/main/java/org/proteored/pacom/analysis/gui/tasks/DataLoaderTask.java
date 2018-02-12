@@ -78,8 +78,10 @@ public class DataLoaderTask extends SwingWorker<ExperimentList, Void> {
 			return null;
 		} catch (BeanDefinitionStoreException e) {
 			e.printStackTrace();
-			firePropertyChange(DATA_LOADED_ERROR, null,
-					"Error loading ontologies. Please check your internet connection or institution firewall and run the software again.");
+			firePropertyChange(DATA_LOADED_ERROR, null, "Error trying to connect to the Internet.<br>"
+					+ "PACom uses the internet connection to retrieve some resources, collect some protein annotations and check for new updates.<br>"
+
+					+ "Please check your internet connection or institution firewall and run the software again.");
 			return null;
 		} catch (Exception e) {
 			e.printStackTrace();
