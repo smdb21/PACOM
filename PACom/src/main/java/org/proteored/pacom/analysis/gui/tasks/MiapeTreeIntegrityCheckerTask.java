@@ -21,7 +21,7 @@ import org.proteored.pacom.analysis.conf.jaxb.CPExperiment;
 import org.proteored.pacom.analysis.conf.jaxb.CPExperimentList;
 import org.proteored.pacom.analysis.conf.jaxb.CPMSI;
 import org.proteored.pacom.analysis.conf.jaxb.CPReplicate;
-import org.proteored.pacom.analysis.gui.Miape2ExperimentListDialogNEW;
+import org.proteored.pacom.analysis.gui.Miape2ExperimentListDialog;
 import org.proteored.pacom.analysis.util.FileManager;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 
@@ -35,11 +35,11 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 	public static String INTEGRITY_OK = "integrity_ok";
 	public static String INTEGRITY_START = "integrity_start";
 	private final CPExperimentList expList;
-	private final Miape2ExperimentListDialogNEW parent;
+	private final Miape2ExperimentListDialog parent;
 
 	private final boolean processInParallel;
 
-	public MiapeTreeIntegrityCheckerTask(Miape2ExperimentListDialogNEW miape2ExperimentListDialog,
+	public MiapeTreeIntegrityCheckerTask(Miape2ExperimentListDialog miape2ExperimentListDialog,
 			CPExperimentList expList, boolean processInParallel) {
 		this.expList = expList;
 		parent = miape2ExperimentListDialog;
