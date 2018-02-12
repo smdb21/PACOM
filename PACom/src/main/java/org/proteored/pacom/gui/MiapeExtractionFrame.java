@@ -1883,12 +1883,6 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 		isLoadingProjects = b;
 	}
 
-	public static void main(String[] args) {
-		MiapeExtractionFrame instance = new MiapeExtractionFrame(null, false);
-		instance.setVisible(true);
-
-	}
-
 	/**
 	 * Show a dialog with the option of opening a browser with the direct link
 	 * to the MIAPE documents
