@@ -5,7 +5,7 @@ import java.util.List;
 import javax.swing.SwingWorker;
 
 import org.proteored.pacom.analysis.util.FileManager;
-import org.proteored.pacom.gui.MiapeExtractionFrame;
+import org.proteored.pacom.gui.MiapeExtractionFrameNEW;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
 
@@ -13,14 +13,14 @@ public class LoadProjectsTask extends SwingWorker<Void, Void> {
 
 	private TIntObjectHashMap<String> loadedProjects;
 	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("log4j.logger.org.proteored");
-	private final MiapeExtractionFrame parentDialog;
+	private final MiapeExtractionFrameNEW parentDialog;
 	private final static TIntObjectHashMap<String> cachedLocalProjects = new TIntObjectHashMap<String>();
 	private final static TIntObjectHashMap<TIntObjectHashMap<String>> cachedRemoteProjects = new TIntObjectHashMap<TIntObjectHashMap<String>>();
 	public final static String PROJECT_LOADED_DONE = "project loaded done";
 
-	public LoadProjectsTask(MiapeExtractionFrame standard2miapeDialog) {
+	public LoadProjectsTask(MiapeExtractionFrameNEW miapeExtractionFrameNEW) {
 
-		parentDialog = standard2miapeDialog;
+		parentDialog = miapeExtractionFrameNEW;
 
 	}
 

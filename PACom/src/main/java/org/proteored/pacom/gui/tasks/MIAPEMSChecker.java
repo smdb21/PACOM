@@ -18,7 +18,7 @@ import org.proteored.miapeapi.xml.pride.MSMiapeFactory;
 import org.proteored.miapeapi.xml.pride.MiapeFullPrideXMLFile;
 import org.proteored.miapeapi.xml.pride.MiapeMsPrideXmlFile;
 import org.proteored.pacom.analysis.util.FileManager;
-import org.proteored.pacom.gui.MiapeExtractionFrame;
+import org.proteored.pacom.gui.MiapeExtractionFrameNEW;
 import org.proteored.pacom.gui.miapemsforms.MiapeMSForms;
 
 import uk.ac.ebi.jmzml.model.mzml.MzML;
@@ -38,7 +38,7 @@ public class MIAPEMSChecker extends SwingWorker<MiapeMSDocument, Void> {
 	public static final String CURRENT_MZML = "current mzML file";
 	public static final String CURRENT_PRIDEXML = "current PRIDE XML file";
 
-	private final MiapeExtractionFrame parent;
+	private final MiapeExtractionFrameNEW parent;
 	private final ControlVocabularyManager cvManager;
 
 	private static MiapeMSForms forms;
@@ -52,8 +52,8 @@ public class MIAPEMSChecker extends SwingWorker<MiapeMSDocument, Void> {
 
 	private static MiapeMSDocument miapeMs;
 
-	public MIAPEMSChecker(MiapeExtractionFrame standard2miapeDialog, boolean extractMetadataFromStandardFile) {
-		parent = standard2miapeDialog;
+	public MIAPEMSChecker(MiapeExtractionFrameNEW miapeExtractionFrameNEW, boolean extractMetadataFromStandardFile) {
+		parent = miapeExtractionFrameNEW;
 		cvManager = OntologyLoaderTask.getCvManager();
 		this.extractMetadataFromStandardFile = extractMetadataFromStandardFile;
 	}
@@ -197,7 +197,7 @@ public class MIAPEMSChecker extends SwingWorker<MiapeMSDocument, Void> {
 	}
 
 	/**
-	 * Pass the {@link MiapeMSDocument} to the {@link MiapeExtractionFrame}
+	 * Pass the {@link MiapeMSDocument} to the {@link MiapeExtractionFrameNEW}
 	 * 
 	 * @param miapeMS
 	 */
