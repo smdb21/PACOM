@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -54,6 +57,11 @@ public class FileManager {
 	private static final String UNIPROT_FOLDER = "uniprot";
 
 	private static UniprotProteinLocalRetriever upr;
+
+	private static List<String> cachedMetadataTemplates = new ArrayList<String>();
+
+	private static boolean metadataTemplatesLoaded = false;
+	private static final ReentrantReadWriteLock metadataLock = new ReentrantReadWriteLock();
 
 	/**
 	 * Gets the folder (creating it if doesn't exist) APP_FOLDER/user_data/
@@ -533,44 +541,72 @@ public class FileManager {
 		return ret;
 	}
 
-	public static List<String> getMetadataList(ControlVocabularyManager cvManager) {
-		List<String> ret = new ArrayList<String>();
-		final String metadataFolderName = getMetadataFolder();
-		File metadataFolder = new File(metadataFolderName);
-		if (metadataFolder.exists()) {
-			for (String metadataFileName : metadataFolder.list()) {
-				File metadataFile = new File(metadataFolderName + PATH_SEPARATOR + metadataFileName);
-				try {
-					MiapeMSXmlFactory.getFactory().toDocument(new MIAPEMSXmlFile(metadataFile), cvManager, null, null,
-							null);
-					// if not exception, the miape ms is valid
-					String name = removeFileExtension(metadataFileName, ".xml");
+	/**
+	 * Returns a list of metadata templates available in the corresponding
+	 * folder. Note that this function is not fast because we are validating
+	 * each file by converting them to MIAPPE MS objects.<br>
+	 * You may want to call this asynchronously? Or load it when loading your
+	 * app
+	 * 
+	 * @param cvManager
+	 * @return
+	 */
+	public static List<String> getMetadataTemplateList(ControlVocabularyManager cvManager) {
+		try {
+			WriteLock writeLock = metadataLock.writeLock();
+			try {
+				writeLock.lock();
+				metadataTemplatesLoaded = false;
+			} finally {
+				writeLock.unlock();
+			}
+			final String metadataFolderName = getMetadataFolder();
+			File metadataFolder = new File(metadataFolderName);
+			if (metadataFolder.exists()) {
+				for (String metadataFileName : metadataFolder.list()) {
+					File metadataFile = new File(metadataFolderName + PATH_SEPARATOR + metadataFileName);
+					try {
+						String name = removeFileExtension(metadataFileName, ".xml");
+						if (!"".equals(name) && !cachedMetadataTemplates.contains(name)) {
+							MiapeMSXmlFactory.getFactory().toDocument(new MIAPEMSXmlFile(metadataFile), cvManager, null,
+									null, null);
+							// if not exception, the miape ms is valid
+							cachedMetadataTemplates.add(name);
+						}
+					} catch (IllegalArgumentException e) {
+						log.warn(e.getMessage());
+					} catch (WrongXMLFormatException e) {
+						log.warn(e.getMessage());
+					} catch (MiapeDatabaseException e) {
+						log.warn(e.getMessage());
+						e.printStackTrace();
+					} catch (MiapeSecurityException e) {
+						log.warn(e.getMessage());
+						e.printStackTrace();
+					}
 
-					ret.add(name);
-				} catch (IllegalArgumentException e) {
-					log.warn(e.getMessage());
-				} catch (WrongXMLFormatException e) {
-					log.warn(e.getMessage());
-				} catch (MiapeDatabaseException e) {
-					log.warn(e.getMessage());
-					e.printStackTrace();
-				} catch (MiapeSecurityException e) {
-					log.warn(e.getMessage());
-					e.printStackTrace();
 				}
+			}
+			if (cachedMetadataTemplates.isEmpty()) {
+				boolean deleted = metadataFolder.delete();
+				log.info("Folder " + metadataFolder.getAbsolutePath() + " deleted " + deleted);
+				// final File userFolder = metadataFolder.getParentFile();
+				// deleted = userFolder.delete();
+				// log.info("Folder " + userFolder.getAbsolutePath() + " deleted
+				// " +
+				// deleted);
+			}
 
+			return cachedMetadataTemplates;
+		} finally {
+			WriteLock writeLock = metadataLock.writeLock();
+			try {
+				writeLock.lock();
+				metadataTemplatesLoaded = true;
+			} finally {
+				writeLock.unlock();
 			}
 		}
-		if (ret.isEmpty()) {
-			boolean deleted = metadataFolder.delete();
-			log.info("Folder " + metadataFolder.getAbsolutePath() + " deleted " + deleted);
-			// final File userFolder = metadataFolder.getParentFile();
-			// deleted = userFolder.delete();
-			// log.info("Folder " + userFolder.getAbsolutePath() + " deleted " +
-			// deleted);
-		}
-
-		return ret;
 	}
 
 	public static String getMetadataFolder() {
@@ -913,6 +949,16 @@ public class FileManager {
 			upr = new UniprotProteinLocalRetriever(uniprotReleasesFolder, true);
 		}
 		return upr;
+	}
+
+	public static boolean isMetadataTemplatesLoaded() {
+		ReadLock readLock = metadataLock.readLock();
+		try {
+			readLock.lock();
+			return metadataTemplatesLoaded;
+		} finally {
+			readLock.unlock();
+		}
 	}
 
 }
