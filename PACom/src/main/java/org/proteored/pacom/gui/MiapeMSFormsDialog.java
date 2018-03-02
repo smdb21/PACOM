@@ -16,7 +16,6 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JDialog;
 import javax.swing.JProgressBar;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingWorker.StateValue;
 
 import org.proteored.miapeapi.cv.ControlVocabularyManager;
@@ -68,13 +67,6 @@ public class MiapeMSFormsDialog extends JDialog implements PropertyChangeListene
 	}
 
 	private void initComponents() {
-		BorderLayout borderLayout = new BorderLayout();
-		getContentPane().setLayout(borderLayout);
-		javax.swing.JScrollPane jScrollPanel = new javax.swing.JScrollPane();
-		jScrollPanel.setPreferredSize(new Dimension(400, 350));
-		getContentPane().add(jScrollPanel, BorderLayout.CENTER);
-		jScrollPanel.setBorder(null);
-		jScrollPanel.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
 		jComboBoxMetadata = new javax.swing.JComboBox<String>();
 
@@ -100,32 +92,37 @@ public class MiapeMSFormsDialog extends JDialog implements PropertyChangeListene
 				jButtonEditMetadataActionPerformed(evt);
 			}
 		});
+		getContentPane().setLayout(new BorderLayout(0, 0));
+
+		javax.swing.JPanel jPanel5North = new javax.swing.JPanel();
+		jPanel5North.setPreferredSize(new Dimension(400, 45));
+		getContentPane().add(jPanel5North, BorderLayout.NORTH);
+
+		jPanel5North.setToolTipText(
+				"<html>Here you can define some required metadata to<br>\r\n complement information from MGF, mzML or PRIDE XML files.</html>");
+		GroupLayout gl_jPanel5North = new GroupLayout(jPanel5North);
+		gl_jPanel5North.setHorizontalGroup(gl_jPanel5North.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_jPanel5North.createSequentialGroup().addContainerGap()
+						.addComponent(jComboBoxMetadata, GroupLayout.PREFERRED_SIZE, 192, GroupLayout.PREFERRED_SIZE)
+						.addGap(18)
+						.addComponent(jButtonEditMetadata, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+						.addGap(105)));
+		gl_jPanel5North.setVerticalGroup(gl_jPanel5North.createParallelGroup(Alignment.LEADING).addGroup(gl_jPanel5North
+				.createSequentialGroup().addGap(11)
+				.addGroup(gl_jPanel5North.createParallelGroup(Alignment.LEADING).addComponent(jButtonEditMetadata)
+						.addComponent(jComboBoxMetadata, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE))
+				.addGap(77)));
+		jPanel5North.setLayout(gl_jPanel5North);
+		javax.swing.JScrollPane jScrollPanel = new javax.swing.JScrollPane();
+		jScrollPanel.setPreferredSize(new Dimension(400, 400));
+		getContentPane().add(jScrollPanel);
+		jScrollPanel.setBorder(null);
 
 		jLabelMiapeMSMetadata = new javax.swing.JLabel();
 		jScrollPanel.setViewportView(jLabelMiapeMSMetadata);
 		jLabelMiapeMSMetadata.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 		jLabelMiapeMSMetadata.setAutoscrolls(true);
-
-		javax.swing.JPanel jPanel5North = new javax.swing.JPanel();
-		getContentPane().add(jPanel5North, BorderLayout.NORTH);
-
-		jPanel5North.setToolTipText(
-				"<html>Here you can define some required metadata to<br>\r\n complement information from MGF, mzML or PRIDE XML files.</html>");
-		javax.swing.GroupLayout gl_jPanel5North = new javax.swing.GroupLayout(jPanel5North);
-		gl_jPanel5North.setHorizontalGroup(gl_jPanel5North.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_jPanel5North.createSequentialGroup().addContainerGap()
-						.addComponent(jComboBoxMetadata, GroupLayout.PREFERRED_SIZE, 263, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(jButtonEditMetadata, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(76, Short.MAX_VALUE)));
-		gl_jPanel5North.setVerticalGroup(gl_jPanel5North.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_jPanel5North.createSequentialGroup().addContainerGap()
-						.addGroup(gl_jPanel5North.createParallelGroup(Alignment.BASELINE)
-								.addComponent(jComboBoxMetadata, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(jButtonEditMetadata))
-						.addContainerGap(316, Short.MAX_VALUE)));
-		jPanel5North.setLayout(gl_jPanel5North);
 
 		pack();
 
@@ -292,5 +289,4 @@ public class MiapeMSFormsDialog extends JDialog implements PropertyChangeListene
 	public String getSelectedMetadata() {
 		return (String) this.jComboBoxMetadata.getSelectedItem();
 	}
-
 }
