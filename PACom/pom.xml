@@ -30,7 +30,7 @@
       <dependency>
          <groupId>log4j</groupId>
          <artifactId>log4j</artifactId>
-         <version>1.2.16</version>
+         <version>1.2.17</version>
       </dependency>
       <dependency>
          <groupId>org.jfree</groupId>
@@ -99,6 +99,18 @@
       			<groupId>ch.qos.logback</groupId>
       			<artifactId>logback-core</artifactId>
       		</exclusion>
+      		<exclusion>
+      			<groupId>org.slf4j</groupId>
+      			<artifactId>slf4j-api</artifactId>
+      		</exclusion>
+      		<exclusion>
+      			<groupId>org.apache.logging.log4j</groupId>
+      			<artifactId>log4j-api</artifactId>
+      		</exclusion>
+      		<exclusion>
+      			<groupId>org.apache.logging.log4j</groupId>
+      			<artifactId>log4j-core</artifactId>
+      		</exclusion>
       	</exclusions>
       </dependency>
       <dependency>
@@ -114,17 +126,21 @@
       			<groupId>ch.qos.logback</groupId>
       			<artifactId>logback-core</artifactId>
       		</exclusion>
+      		<exclusion>
+      			<groupId>org.slf4j</groupId>
+      			<artifactId>slf4j-api</artifactId>
+      		</exclusion>
       	</exclusions>
-      </dependency>
-      <dependency>
-      	<groupId>org.slf4j</groupId>
-      	<artifactId>slf4j-log4j12</artifactId>
-      	<version>1.7.25</version>
       </dependency>
       <dependency>
       	<groupId>jfree</groupId>
       	<artifactId>jcommon</artifactId>
       	<version>1.0.16</version>
+      </dependency>
+      <dependency>
+      	<groupId>org.slf4j</groupId>
+      	<artifactId>slf4j-log4j12</artifactId>
+      	<version>1.7.25</version>
       </dependency>
    </dependencies>
    <repositories>
