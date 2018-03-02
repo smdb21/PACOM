@@ -20,7 +20,7 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.Range;
 import org.jfree.data.function.LineFunction2D;
-import org.jfree.data.general.DatasetUtilities;
+import org.jfree.data.general.DatasetUtils;
 import org.jfree.data.statistics.Regression;
 import org.jfree.data.statistics.Statistics;
 import org.jfree.data.xy.XYDataset;
@@ -45,6 +45,9 @@ public class XYPointChart {
 				true, true, false);
 		this.chart.addSubtitle(new TextTitle(subtitle));
 		final XYPlot plot = (XYPlot) this.chart.getPlot();
+		// // Colors
+		plot.setBackgroundPaint(Color.white);
+		plot.setRangeGridlinePaint(Color.lightGray);
 		final XYItemRenderer renderer = plot.getRenderer();
 		final ValueAxis rangeAxis = plot.getRangeAxis();
 		final ValueAxis domainAxis = plot.getDomainAxis();
@@ -135,7 +138,7 @@ public class XYPointChart {
 						serieName = "R^2=" + df.format(error);
 					}
 
-					XYDataset xydataset = DatasetUtilities.sampleFunction2D(linefunction2d, start, end, numSamples,
+					XYDataset xydataset = DatasetUtils.sampleFunction2D(linefunction2d, start, end, numSamples,
 							serieName);
 					lineDataSets.add(xydataset);
 					colors.add(plot.getRenderer().getItemPaint(i, 0));
@@ -216,8 +219,7 @@ public class XYPointChart {
 			int numSamples = plot.getDataset(0).getItemCount(0);
 			int numDataSet = plot.getDatasetCount() + 1;
 			if (numSamples > 1) {
-				XYDataset xydataset = DatasetUtilities.sampleFunction2D(linefunction2d, start, end, numSamples,
-						"Diagonal");
+				XYDataset xydataset = DatasetUtils.sampleFunction2D(linefunction2d, start, end, numSamples, "Diagonal");
 
 				plot.setDataset(numDataSet, xydataset);
 			}
@@ -240,8 +242,7 @@ public class XYPointChart {
 		double start = dataRange.getLowerBound();
 		double end = dataRange.getUpperBound();
 		int numSamples = plot.getDataset(0).getItemCount(0);
-		XYDataset xydataset = DatasetUtilities.sampleFunction2D(linefunction2d, start, end, numSamples,
-				"Zero horizontal");
+		XYDataset xydataset = DatasetUtils.sampleFunction2D(linefunction2d, start, end, numSamples, "Zero horizontal");
 		int numDataSet = plot.getDatasetCount() + 1;
 		plot.setDataset(numDataSet, xydataset);
 		XYLineAndShapeRenderer xylineandshaperenderer1 = new XYLineAndShapeRenderer(true, false);

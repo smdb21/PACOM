@@ -24,14 +24,13 @@ public class HistogramChart {
 	private final JFreeChart chart;
 	private ChartPanel chartPanel;
 
-	public HistogramChart(String chartTitle, String subtitle,
-			HistogramDataset dataset, String xAxisLabel) {
+	public HistogramChart(String chartTitle, String subtitle, HistogramDataset dataset, String xAxisLabel) {
 
 		this(chartTitle, subtitle, dataset, xAxisLabel, false);
 	}
 
-	public HistogramChart(String chartTitle, String subtitle,
-			HistogramDataset dataset, String xAxisLabel, boolean showAsBarChart) {
+	public HistogramChart(String chartTitle, String subtitle, HistogramDataset dataset, String xAxisLabel,
+			boolean showAsBarChart) {
 		// HistogramDataset dataset = null;
 		//
 		// dataset = DatasetFactory.createScoreCorrelationDataSet(idSets,
@@ -47,16 +46,14 @@ public class HistogramChart {
 		else if (type.equals(HistogramType.SCALE_AREA_TO_1))
 			yAxisLabel = "normalized frequency";
 
-		this.chart = HistogramChart.createHistogram(chartTitle, subtitle,
-				xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL,
-				true, true, false, showAsBarChart);
+		this.chart = HistogramChart.createHistogram(chartTitle, subtitle, xAxisLabel, yAxisLabel, dataset,
+				PlotOrientation.VERTICAL, true, true, false, showAsBarChart);
 
 		this.chartPanel = new ChartPanel(chart);
 		this.chartPanel.setFillZoomRectangle(true);
 		this.chartPanel.setMouseWheelEnabled(true);
 
-		final Dimension dimension = new Dimension(
-				ChartProperties.DEFAULT_CHART_WIDTH,
+		final Dimension dimension = new Dimension(ChartProperties.DEFAULT_CHART_WIDTH,
 				ChartProperties.DEFAULT_CHART_HEIGHT);
 		this.chartPanel.setPreferredSize(dimension);
 		this.chartPanel.setSize(dimension);
@@ -70,10 +67,9 @@ public class HistogramChart {
 		return chartPanel;
 	}
 
-	private static JFreeChart createHistogram(String title, String subtitle,
-			String xAxisLabel, String yAxisLabel, IntervalXYDataset dataset,
-			PlotOrientation orientation, boolean legend, boolean tooltips,
-			boolean urls, boolean bars) {
+	private static JFreeChart createHistogram(String title, String subtitle, String xAxisLabel, String yAxisLabel,
+			IntervalXYDataset dataset, PlotOrientation orientation, boolean legend, boolean tooltips, boolean urls,
+			boolean bars) {
 		if (orientation == null) {
 			throw new IllegalArgumentException("Null 'orientation' argument.");
 		}
@@ -88,10 +84,10 @@ public class HistogramChart {
 		} else {
 			// Line = true, shape = false
 			renderer = new XYSplineRenderer();
-			((XYLineAndShapeRenderer) renderer).setBaseShapesVisible(false);
+			((XYLineAndShapeRenderer) renderer).setDefaultShapesVisible(false);
 		}
 		if (tooltips) {
-			renderer.setBaseToolTipGenerator(new StandardXYToolTipGenerator());
+			renderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
 		}
 		if (urls) {
 			renderer.setURLGenerator(new StandardXYURLGenerator());
@@ -101,8 +97,7 @@ public class HistogramChart {
 		plot.setOrientation(orientation);
 		plot.setDomainZeroBaselineVisible(true);
 		plot.setRangeZeroBaselineVisible(true);
-		JFreeChart chart = new JFreeChart(title, JFreeChart.DEFAULT_TITLE_FONT,
-				plot, legend);
+		JFreeChart chart = new JFreeChart(title, JFreeChart.DEFAULT_TITLE_FONT, plot, legend);
 		chart.addSubtitle(new TextTitle(subtitle));
 		// currentTheme.apply(chart);
 		return chart;

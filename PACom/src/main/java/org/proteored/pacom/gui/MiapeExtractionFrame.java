@@ -74,14 +74,14 @@ import gnu.trove.map.hash.TIntObjectHashMap;
  *
  * @author __USER__
  */
-public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
+public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialog
 		implements PropertyChangeListener, MiapeExtractionRunParameters {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2685612413712062973L;
 	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("log4j.logger.org.proteored");
-	private static MiapeExtractionFrame instance;
+	private static MiapeExtractionFrameNEW instance;
 	private static final String MZIDENTML_FILE_LABEL = "mzIdentML file:";
 	private static final String MZML_FILE_LABEL = "mzML file:";
 	private static final String MGF_FILE_LABEL = "mgf file:";
@@ -93,6 +93,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 	private static final String DTASELECT_FILE_LABEL = "DTASelect file:";
 	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 	private final ComponentEnableStateKeeper enableStateKeeper = new ComponentEnableStateKeeper();
+	private final TIntObjectHashMap<MiapeExtractionTask> miapeExtractionTasks = new TIntObjectHashMap<MiapeExtractionTask>();
 
 	@Override
 	public void dispose() {
@@ -131,9 +132,9 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 	private boolean showProjectTable;
 	// private AutoSuggestor autoSuggestor;
 
-	public static MiapeExtractionFrame getInstance(MainFrame mainFrame2, boolean b) {
+	public static MiapeExtractionFrameNEW getInstance(MainFrame mainFrame2, boolean b) {
 		if (instance == null) {
-			instance = new MiapeExtractionFrame(mainFrame2, b);
+			instance = new MiapeExtractionFrameNEW(mainFrame2, b);
 		}
 		instance.mainFrame = mainFrame2;
 		instance.initializeFrame();
@@ -143,7 +144,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 	}
 
 	/** Creates new form Standard2MIAPEDialog */
-	private MiapeExtractionFrame(MainFrame parent, boolean modal) {
+	private MiapeExtractionFrameNEW(MainFrame parent, boolean modal) {
 		super(400);
 		// super(parent, modal);
 		initComponents();
@@ -1881,6 +1882,12 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog
 
 	public synchronized void setLoadingProjects(boolean b) {
 		isLoadingProjects = b;
+	}
+
+	public static void main(String[] args) {
+		MiapeExtractionFrameNEW instance = new MiapeExtractionFrameNEW(null, false);
+		instance.setVisible(true);
+
 	}
 
 	/**

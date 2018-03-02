@@ -1,5 +1,6 @@
 package org.proteored.pacom.analysis.charts;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.text.NumberFormat;
 
@@ -44,8 +45,7 @@ public class PieChart {
 		chartPanel.setFillZoomRectangle(true);
 		chartPanel.setMouseWheelEnabled(true);
 
-		final Dimension dimension = new Dimension(
-				ChartProperties.DEFAULT_CHART_WIDTH,
+		final Dimension dimension = new Dimension(ChartProperties.DEFAULT_CHART_WIDTH,
 				ChartProperties.DEFAULT_CHART_HEIGHT);
 		this.chartPanel.setPreferredSize(dimension);
 		this.chartPanel.setSize(dimension);
@@ -65,30 +65,14 @@ public class PieChart {
 
 	private JFreeChart createChart(PieDataset dataset) {
 
-		JFreeChart chart = ChartFactory.createPieChart(title, dataset, true,
-				true, false);
+		JFreeChart chart = ChartFactory.createPieChart(title, dataset, true, true, false);
 		PiePlot plot = (PiePlot) chart.getPlot();
-
-		chart.addSubtitle(this.subtitle);
-		// Backgroung color
-		// chart.setBackgroundPaint(new Color(229, 229, 229));
-		// get plot
-
 		// // Colors
-		// plot.setBackgroundPaint(Color.white);
-		// plot.setRangeGridlinePaint(Color.lightGray);
-
-		plot.setLabelGenerator(new StandardPieSectionLabelGenerator(
-				"{0} = {1} ({2})", NumberFormat.getInstance()
-						.getIntegerInstance(), NumberFormat.getInstance()
-						.getPercentInstance()));
+		plot.setBackgroundPaint(Color.white);
+		chart.addSubtitle(this.subtitle);
+		plot.setLabelGenerator(new StandardPieSectionLabelGenerator("{0} = {1} ({2})",
+				NumberFormat.getIntegerInstance(), NumberFormat.getPercentInstance()));
 		return chart;
 	}
 
-	// public void setNonIntegerItemLabels() {
-	// CategoryPlot plot = (CategoryPlot) this.chart.getPlot();
-	// CategoryItemRenderer renderer = plot.getRenderer();
-	// renderer.setItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-	// renderer.setItemLabelsVisible(true);
-	// }
 }

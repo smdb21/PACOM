@@ -1,5 +1,6 @@
 package org.proteored.pacom.analysis.charts;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.text.NumberFormat;
@@ -15,6 +16,7 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.category.StackedBarRenderer;
+import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.chart.title.Title;
 import org.jfree.data.category.CategoryDataset;
@@ -27,9 +29,8 @@ public class StackedBarChart {
 	private final String valueAxisLabel;
 	private final Title subtitle;
 
-	public StackedBarChart(String chartTitle, String subtitle, String xAxisLabel,
-			String yAxisLabel, CategoryDataset dataset, PlotOrientation plotOrientation,
-			boolean asPercentages) {
+	public StackedBarChart(String chartTitle, String subtitle, String xAxisLabel, String yAxisLabel,
+			CategoryDataset dataset, PlotOrientation plotOrientation, boolean asPercentages) {
 
 		this.title = chartTitle;
 		this.subtitle = new TextTitle(subtitle);
@@ -57,11 +58,10 @@ public class StackedBarChart {
 		return chartPanel;
 	}
 
-	private JFreeChart createChart(CategoryDataset dataset, PlotOrientation plotOrientation,
-			boolean asPercentages) {
+	private JFreeChart createChart(CategoryDataset dataset, PlotOrientation plotOrientation, boolean asPercentages) {
 
-		JFreeChart chart = ChartFactory.createStackedBarChart(title, categoryAxisLabel,
-				valueAxisLabel, dataset, plotOrientation, true, true, false);
+		JFreeChart chart = ChartFactory.createStackedBarChart(title, categoryAxisLabel, valueAxisLabel, dataset,
+				plotOrientation, true, true, false);
 		chart.addSubtitle(this.subtitle);
 
 		// Backgroung color
@@ -69,8 +69,8 @@ public class StackedBarChart {
 		// get plot
 		CategoryPlot plot = (CategoryPlot) chart.getPlot();
 		// // Colors
-		// plot.setBackgroundPaint(Color.white);
-		// plot.setRangeGridlinePaint(Color.lightGray);
+		plot.setBackgroundPaint(Color.white);
+		plot.setRangeGridlinePaint(Color.lightGray);
 
 		// set the range axis to display integers only...
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
@@ -81,25 +81,29 @@ public class StackedBarChart {
 
 		// bar aspect
 		StackedBarRenderer renderer = (StackedBarRenderer) plot.getRenderer();
+		// to not use GradientBarPainter, which has a bright part that I dont
+		// like
+		renderer.setBarPainter(new StandardBarPainter());
 		renderer.setDrawBarOutline(true);
-		renderer.setBaseSeriesVisible(true);
-		renderer.setBaseItemLabelsVisible(true);
+		renderer.setDefaultOutlinePaint(Color.black);
+		renderer.setDefaultSeriesVisible(true);
+		renderer.setDefaultItemLabelsVisible(true);
 		renderer.setShadowVisible(false);
+		renderer.setMaximumBarWidth(0.1);
 		// No space between bar of the same category
-		renderer.setItemMargin(0.01);
+		renderer.setItemMargin(0.4);
 		// percentage values
 		renderer.setRenderAsPercentages(asPercentages);
 
 		CategoryAxis domainAxis = plot.getDomainAxis();
-		domainAxis.setCategoryLabelPositions(CategoryLabelPositions
-				.createUpRotationLabelPositions(Math.PI / 6.0));
+		domainAxis.setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 6.0));
 
 		// item labels
 		final StackedLabelGenerator generator = new StackedLabelGenerator(null);
-		renderer.setItemLabelGenerator(generator);
-		renderer.setItemLabelsVisible(true);
+		renderer.setDefaultItemLabelGenerator(generator);
+		renderer.setDefaultItemLabelsVisible(true);
 
-		renderer.setItemLabelFont(new Font("SansSerif", Font.PLAIN, 9));
+		renderer.setDefaultItemLabelFont(new Font("SansSerif", Font.PLAIN, 9));
 
 		return chart;
 	}
@@ -107,22 +111,21 @@ public class StackedBarChart {
 	public void setNonIntegerItemLabels() {
 		CategoryPlot plot = (CategoryPlot) this.chart.getPlot();
 		CategoryItemRenderer renderer = plot.getRenderer();
-		renderer.setItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-		renderer.setItemLabelsVisible(true);
+		renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+		renderer.setDefaultItemLabelsVisible(true);
 	}
 
 	public void setIntegerItemLabels() {
 		CategoryPlot plot = (CategoryPlot) this.chart.getPlot();
 		CategoryItemRenderer renderer = plot.getRenderer();
-		renderer.setItemLabelGenerator(new StandardCategoryItemLabelGenerator("{2} ({3})",
-				NumberFormat.getInstance().getIntegerInstance()));
-		renderer.setItemLabelsVisible(true);
+		renderer.setDefaultItemLabelGenerator(
+				new StandardCategoryItemLabelGenerator("{2} ({3})", NumberFormat.getInstance().getIntegerInstance()));
+		renderer.setDefaultItemLabelsVisible(true);
 	}
 
 	public void setHorizontalXLabel() {
 		CategoryPlot plot = (CategoryPlot) chart.getPlot();
 		CategoryAxis domainAxis = plot.getDomainAxis();
-		domainAxis.setCategoryLabelPositions(CategoryLabelPositions
-				.createUpRotationLabelPositions(0));
+		domainAxis.setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(0));
 	}
 }

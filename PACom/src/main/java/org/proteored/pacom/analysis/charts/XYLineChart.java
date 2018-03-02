@@ -1,5 +1,6 @@
 package org.proteored.pacom.analysis.charts;
 
+import java.awt.Color;
 import java.awt.Dimension;
 
 import org.jfree.chart.ChartPanel;
@@ -28,10 +29,9 @@ public class XYLineChart {
 	 * @param xAxisLabel
 	 * @param yAxisLabel
 	 */
-	public XYLineChart(String title, String subtitle, XYDataset dataset,
-			String xAxisLabel, String yAxisLabel) {
-		this.chart = createXYLineChart(title, subtitle, xAxisLabel, yAxisLabel,
-				dataset, PlotOrientation.VERTICAL, true, true, false);
+	public XYLineChart(String title, String subtitle, XYDataset dataset, String xAxisLabel, String yAxisLabel) {
+		this.chart = createXYLineChart(title, subtitle, xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL, true,
+				true, false);
 		this.chart.addSubtitle(new TextTitle(subtitle));
 
 		final XYPlot plot = (XYPlot) this.chart.getPlot();
@@ -40,21 +40,17 @@ public class XYLineChart {
 		this.chartPanel.setFillZoomRectangle(true);
 		this.chartPanel.setMouseWheelEnabled(true);
 
-		final Dimension dimension = new Dimension(
-				ChartProperties.DEFAULT_CHART_WIDTH,
+		final Dimension dimension = new Dimension(ChartProperties.DEFAULT_CHART_WIDTH,
 				ChartProperties.DEFAULT_CHART_HEIGHT);
 
 		this.chartPanel.setPreferredSize(dimension);
 		this.chartPanel.setSize(dimension);
-		this.chartPanel
-				.setMaximumDrawWidth(ChartProperties.DEFAULT_CHART_WIDTH);
+		this.chartPanel.setMaximumDrawWidth(ChartProperties.DEFAULT_CHART_WIDTH);
 
 	}
 
-	private JFreeChart createXYLineChart(String title, String subtitle,
-			String xAxisLabel, String yAxisLabel, XYDataset dataset,
-			PlotOrientation orientation, boolean legend, boolean tooltips,
-			boolean urls) {
+	private JFreeChart createXYLineChart(String title, String subtitle, String xAxisLabel, String yAxisLabel,
+			XYDataset dataset, PlotOrientation orientation, boolean legend, boolean tooltips, boolean urls) {
 		if (orientation == null) {
 			throw new IllegalArgumentException("Null 'orientation' argument.");
 		}
@@ -62,14 +58,16 @@ public class XYLineChart {
 		xAxis.setAutoRangeIncludesZero(false);
 		NumberAxis yAxis = new NumberAxis(yAxisLabel);
 
-		XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer(true,
-				false);
+		XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer(true, false);
 		// renderer.setShape(new Rectangle(2, 2));
 
 		XYPlot plot = new XYPlot(dataset, xAxis, yAxis, renderer);
 		plot.setOrientation(orientation);
+		// // Colors
+		plot.setBackgroundPaint(Color.white);
+		plot.setRangeGridlinePaint(Color.lightGray);
 		if (tooltips) {
-			renderer.setBaseToolTipGenerator(new StandardXYToolTipGenerator());
+			renderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
 		}
 		if (urls) {
 			renderer.setURLGenerator(new StandardXYURLGenerator());
@@ -78,8 +76,7 @@ public class XYLineChart {
 		// domainAxis.setRange(new Range(0, 100));
 		renderer.getPlot().getRangeAxis().setAutoRange(true);
 
-		JFreeChart chart = new JFreeChart(title, JFreeChart.DEFAULT_TITLE_FONT,
-				plot, legend);
+		JFreeChart chart = new JFreeChart(title, JFreeChart.DEFAULT_TITLE_FONT, plot, legend);
 
 		return chart;
 	}
@@ -100,8 +97,7 @@ public class XYLineChart {
 			plot.setDataset(1, dataset);
 			plot.mapDatasetToRangeAxis(1, 1);
 
-			XYLineAndShapeRenderer newRenderer = new XYLineAndShapeRenderer(
-					true, false);
+			XYLineAndShapeRenderer newRenderer = new XYLineAndShapeRenderer(true, false);
 			plot.setRenderer(1, newRenderer);
 
 		}

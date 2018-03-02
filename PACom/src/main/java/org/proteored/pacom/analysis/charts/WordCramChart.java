@@ -1,6 +1,7 @@
 package org.proteored.pacom.analysis.charts;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -189,7 +190,7 @@ public class WordCramChart extends PApplet {
 		log.info(wordMapping.size() + " words mapped to proteins");
 
 		// this.panel.add(papplet, c);
-
+		this.setBackground(Color.white);
 		this.setLayout(new BorderLayout());
 		this.addComponentListener(new ComponentListener() {
 
@@ -221,6 +222,7 @@ public class WordCramChart extends PApplet {
 
 			}
 		});
+		// initialize(myWidth, myHeight);
 	}
 
 	public static List<String> getDefaultSkippedWords() {
@@ -293,8 +295,10 @@ public class WordCramChart extends PApplet {
 		// size(width, heigth); // (int)random(300, 800)); //1200, 675);
 		// //1600,
 		// 900);
+		log.info(myWidth + "-" + myHeight);
 		smooth();
-		colorMode(PConstants.HSB);
+		colorMode(PConstants.RGB);
+		background(255, 255, 255);
 		initWordCram();
 		// frameRate(1);
 	}
@@ -318,7 +322,7 @@ public class WordCramChart extends PApplet {
 	private void initWordCram() {
 		// background(100);
 
-		// pg = createGraphics(800, 600, JAVA2D);
+		// PGraphics pg = createGraphics(myWidth, myHeight, JAVA2D);
 		// pg.beginDraw();
 
 		wordcram = new WordCram(this)
@@ -403,6 +407,13 @@ public class WordCramChart extends PApplet {
 			}
 		}
 
+	}
+
+	public void draw(int width, int height) {
+		if (!initialized) {
+			initialize(width, height);
+		}
+		// draw();
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package org.proteored.pacom.analysis.charts;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.text.NumberFormat;
 
@@ -83,8 +84,8 @@ public class LineCategoryChart {
 		// get plot
 		CategoryPlot plot = (CategoryPlot) chart.getPlot();
 		// // Colors
-		// plot.setBackgroundPaint(Color.white);
-		// plot.setRangeGridlinePaint(Color.lightGray);
+		plot.setBackgroundPaint(Color.white);
+		plot.setRangeGridlinePaint(Color.lightGray);
 
 		// set the range axis to display integers only...
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
@@ -94,22 +95,22 @@ public class LineCategoryChart {
 		rangeAxis.setUpperMargin(0.05);
 
 		CategoryAxis domainAxis = plot.getDomainAxis();
-		domainAxis.setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 2));
-
+		domainAxis.setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 6));
+		domainAxis.setCategoryLabelPositionOffset(10);
 		LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
 
 		// renderer.setDrawBarOutline(true);
-		renderer.setShapesVisible(true);
-		renderer.setBaseSeriesVisible(true);
-		renderer.setBaseItemLabelsVisible(true);
+		renderer.setDefaultShapesVisible(true);
+		renderer.setDefaultSeriesVisible(true);
+		renderer.setDefaultItemLabelsVisible(true);
 		// renderer.setShadowVisible(false);
 		// No space between bar of the same category
 		renderer.setItemMargin(0.01);
 		// item labels
 		final StandardCategoryItemLabelGenerator generator = new StandardCategoryItemLabelGenerator(
 				StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING, NumberFormat.getIntegerInstance());
-		renderer.setItemLabelGenerator(generator);
-		renderer.setItemLabelsVisible(true);
+		renderer.setDefaultItemLabelGenerator(generator);
+		renderer.setDefaultItemLabelsVisible(true);
 
 		return chart;
 	}
@@ -117,8 +118,8 @@ public class LineCategoryChart {
 	public void setNonIntegerItemLabels() {
 		CategoryPlot plot = (CategoryPlot) this.chart.getPlot();
 		CategoryItemRenderer renderer = plot.getRenderer();
-		renderer.setItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-		renderer.setItemLabelsVisible(true);
+		renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+		renderer.setDefaultItemLabelsVisible(true);
 	}
 
 	public void setHorizontalXLabel() {

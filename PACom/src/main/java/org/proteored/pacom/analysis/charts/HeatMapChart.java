@@ -39,6 +39,7 @@ public class HeatMapChart {
 	 */
 	public HeatMapChart(String title, double[][] dataset, List<String> rowList, List<String> columnList,
 			double colorScale) {
+		this.jPanel.setBackground(Color.white);
 		this.rowList = rowList;
 		this.columnList = columnList;
 		this.numColumns = this.columnList.size();

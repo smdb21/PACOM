@@ -14,9 +14,9 @@ import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.chart.title.Title;
+import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.statistics.StatisticalCategoryDataset;
-import org.jfree.ui.RectangleEdge;
 
 public class SpiderChart {
 	private final JFreeChart chart;
@@ -37,8 +37,7 @@ public class SpiderChart {
 	 *            {@link CategoryDataset}
 	 * @param plotOrientation
 	 */
-	public SpiderChart(String chartTitle, String subtitle,
-			CategoryDataset dataset) {
+	public SpiderChart(String chartTitle, String subtitle, CategoryDataset dataset) {
 
 		this.title = chartTitle;
 		this.subtitle = new TextTitle(subtitle);
@@ -54,8 +53,7 @@ public class SpiderChart {
 		chartPanel.setFillZoomRectangle(true);
 		chartPanel.setMouseWheelEnabled(true);
 
-		final Dimension dimension = new Dimension(
-				ChartProperties.DEFAULT_CHART_WIDTH,
+		final Dimension dimension = new Dimension(ChartProperties.DEFAULT_CHART_WIDTH,
 				ChartProperties.DEFAULT_CHART_HEIGHT);
 		this.chartPanel.setPreferredSize(dimension);
 		this.chartPanel.setSize(dimension);
@@ -77,10 +75,8 @@ public class SpiderChart {
 		SpiderWebPlot spiderwebplot = new SpiderWebPlot(dataset);
 		spiderwebplot.setStartAngle(54D);
 		spiderwebplot.setInteriorGap(0.40000000000000002D);
-		spiderwebplot
-				.setToolTipGenerator(new StandardCategoryToolTipGenerator());
-		JFreeChart jFreeChart = new JFreeChart(this.title,
-				TextTitle.DEFAULT_FONT, spiderwebplot, true);
+		spiderwebplot.setToolTipGenerator(new StandardCategoryToolTipGenerator());
+		JFreeChart jFreeChart = new JFreeChart(this.title, TextTitle.DEFAULT_FONT, spiderwebplot, true);
 		LegendTitle legendtitle = new LegendTitle(spiderwebplot);
 		legendtitle.setPosition(RectangleEdge.BOTTOM);
 		jFreeChart.addSubtitle(this.subtitle);
@@ -97,8 +93,8 @@ public class SpiderChart {
 		if (this.chart != null) {
 			CategoryPlot plot = (CategoryPlot) this.chart.getPlot();
 			CategoryItemRenderer renderer = plot.getRenderer();
-			renderer.setItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-			renderer.setItemLabelsVisible(true);
+			renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+			renderer.setDefaultItemLabelsVisible(true);
 		}
 	}
 
@@ -106,8 +102,7 @@ public class SpiderChart {
 		if (chart != null) {
 			CategoryPlot plot = (CategoryPlot) chart.getPlot();
 			CategoryAxis domainAxis = plot.getDomainAxis();
-			domainAxis.setCategoryLabelPositions(CategoryLabelPositions
-					.createUpRotationLabelPositions(0));
+			domainAxis.setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(0));
 		}
 	}
 
