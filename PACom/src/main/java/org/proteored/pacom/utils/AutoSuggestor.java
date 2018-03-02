@@ -7,6 +7,7 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
@@ -25,7 +26,7 @@ public class AutoSuggestor {
 	private JPanel suggestionsPanel;
 	private JWindow autoSuggestionPopUpWindow;
 	private String typedWord;
-	private final ArrayList<String> dictionary = new ArrayList<>();
+	private final List<String> dictionary = new ArrayList<String>();
 	private int currentIndexOfSpace, tW, tH;
 	private DocumentListener documentListener = new DocumentListener() {
 		@Override
@@ -46,7 +47,7 @@ public class AutoSuggestor {
 	private final Color suggestionsTextColor;
 	private final Color suggestionFocusedColor;
 
-	public AutoSuggestor(JTextField textField, Window mainWindow, ArrayList<String> words, Color popUpBackground,
+	public AutoSuggestor(JTextField textField, Window mainWindow, List<String> words, Color popUpBackground,
 			Color textColor, Color suggestionFocusedColor, float opacity) {
 		this.textField = textField;
 		this.suggestionsTextColor = textColor;
@@ -246,7 +247,7 @@ public class AutoSuggestor {
 
 	}
 
-	public void setDictionary(ArrayList<String> words) {
+	public void setDictionary(List<String> words) {
 		dictionary.clear();
 		if (words == null) {
 			return;// so we can call constructor with null value for dictionary
