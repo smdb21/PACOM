@@ -1,6 +1,7 @@
 package org.proteored.pacom.analysis.gui.tasks;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Panel;
 import java.util.ArrayList;
 import java.util.List;
@@ -191,8 +192,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				ret = showPeptideCountingVsScoreScatterChart();
 			}
 			if (ret != null) {
-				if (ret instanceof ChartPanel)
+				if (ret instanceof ChartPanel) {
 					log.info("Chart creator task, creating a panel with dimension: " + ((ChartPanel) ret).getSize());
+				}
 				return ret;
 			}
 		} catch (IllegalMiapeArgumentException e) {
@@ -201,16 +203,30 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			error = message;
 			log.warn(message);
 			JPanel jpanel = new JPanel();
+			jpanel.setBackground(Color.white);
 			if (message.contains("\n")) {
 				message = "<html>" + message.replace("\n", "<br>") + "</html>";
 			}
-			jpanel.add(new JLabel(message));
+			JLabel comp = new JLabel(message);
+			comp.setToolTipText(message);
+			Font font = comp.getFont();
+			Font newFont = font.deriveFont(14f);
+			comp.setFont(newFont);
+			jpanel.add(comp);
+			jpanel.setToolTipText(message);
 			return jpanel;
 		}
-		if (error == null)
+		if (error == null) {
 			error = "Error generating chart.";
+		}
 		JPanel jpanel = new JPanel();
-		jpanel.add(new JLabel(error));
+		jpanel.setBackground(Color.white);
+		JLabel comp = new JLabel(error);
+		comp.setToolTipText(error);
+		Font font = comp.getFont();
+		Font newFont = font.deriveFont(14f);
+		comp.setFont(newFont);
+		jpanel.add(comp);
 		return jpanel;
 		// firePropertyChange(ChartManagerDialog.CHART_GENERATED_ERROR, null,
 		// error);
@@ -3422,7 +3438,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		boolean applyLog = optionsFactory.isApplyLog();
 		if (applyLog) {
 			xAxisLabel = "log10(" + xAxisLabel + ")";
-			yAxisLabel = "log10(" + xAxisLabel + ")";
+			yAxisLabel = "log10(" + yAxisLabel + ")";
 		}
 		boolean showRegressionLine = optionsFactory.showRegressionLine();
 		boolean showDiagonalLine = optionsFactory.showDiagonalLine();

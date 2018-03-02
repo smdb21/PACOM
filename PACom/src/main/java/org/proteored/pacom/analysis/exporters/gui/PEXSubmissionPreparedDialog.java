@@ -14,7 +14,7 @@ import javax.swing.JDialog;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import org.jfree.ui.RefineryUtilities;
+import org.jfree.chart.ui.UIUtils;
 import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.utils.HttpUtilities;
 
@@ -40,7 +40,7 @@ public class PEXSubmissionPreparedDialog extends javax.swing.JDialog {
 			e.printStackTrace();
 		}
 		// center on screen
-		RefineryUtilities.centerFrameOnScreen(this);
+		UIUtils.centerFrameOnScreen(this);
 
 		// load icons
 		this.jButtonOpenPEXWebsite.setIcon(ImageManager.getImageIcon(ImageManager.PEX));

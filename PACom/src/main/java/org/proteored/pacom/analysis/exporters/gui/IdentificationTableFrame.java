@@ -31,7 +31,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.TitledBorder;
 
 import org.apache.log4j.Logger;
-import org.jfree.ui.RefineryUtilities;
+import org.jfree.chart.ui.UIUtils;
 import org.proteored.miapeapi.experiment.model.IdentificationSet;
 import org.proteored.miapeapi.experiment.model.sort.ProteinGroupComparisonType;
 import org.proteored.pacom.analysis.exporters.ExporterManager;
@@ -621,7 +621,7 @@ public class IdentificationTableFrame extends AbstractJFrameWithAttachedHelpDial
 
 			setStatus("Loading " + getNum() + " items in table...");
 
-			RefineryUtilities.centerFrameOnScreen(this);
+			UIUtils.centerFrameOnScreen(this);
 			applyFilters();
 		} else if (evt.getPropertyName().equals(JTableLoader.DATA_EXPORTING_DONE)) {
 			enableStateKeeper.setToPreviousState(this);

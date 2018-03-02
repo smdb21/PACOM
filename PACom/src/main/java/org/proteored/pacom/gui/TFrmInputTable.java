@@ -34,13 +34,13 @@ public class TFrmInputTable extends javax.swing.JDialog {
 	// la Seleccion
 	private String userSelection;
 	// ParentForm
-	private final MiapeExtractionFrameNEW parentForm;
+	private final MiapeExtractionFrame parentForm;
 
 	private boolean firstClick = false;
 	private long firstClickTime;
 	private String previousUserSelection;
 
-	public TFrmInputTable(MiapeExtractionFrameNEW miapeExtractionFrameNEW, boolean modal,
+	public TFrmInputTable(MiapeExtractionFrame miapeExtractionFrameNEW, boolean modal,
 			TIntObjectHashMap<String> miapeProjects) {
 		super(miapeExtractionFrameNEW, modal);
 		try {

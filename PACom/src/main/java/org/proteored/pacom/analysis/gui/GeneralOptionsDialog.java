@@ -19,7 +19,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.TitledBorder;
 
-import org.jfree.ui.RefineryUtilities;
+import org.jfree.chart.ui.UIUtils;
 import org.proteored.miapeapi.experiment.model.datamanager.DataManager;
 import org.proteored.pacom.gui.AbstractJDialogWithAttachedHelpDialog;
 import org.proteored.pacom.gui.OpenHelpButton;
@@ -152,7 +152,7 @@ public class GeneralOptionsDialog extends AbstractJDialogWithAttachedHelpDialog 
 		setTitle("General Options");
 		this.parent = parent;
 		jLabelWarning.setVisible(false);
-		RefineryUtilities.centerFrameOnScreen(this);
+		UIUtils.centerFrameOnScreen(this);
 
 	}
 

@@ -18,7 +18,9 @@ import org.proteored.miapeapi.xml.pride.MSMiapeFactory;
 import org.proteored.miapeapi.xml.pride.MiapeFullPrideXMLFile;
 import org.proteored.miapeapi.xml.pride.MiapeMsPrideXmlFile;
 import org.proteored.pacom.analysis.util.FileManager;
-import org.proteored.pacom.gui.MiapeExtractionFrameNEW;
+import org.proteored.pacom.gui.MiapeExtractionFrame;
+import org.proteored.pacom.gui.MiapeMSFormsDialog;
+import org.proteored.pacom.gui.importjobs.InputFileType;
 import org.proteored.pacom.gui.miapemsforms.MiapeMSForms;
 
 import uk.ac.ebi.jmzml.model.mzml.MzML;
@@ -38,7 +40,7 @@ public class MIAPEMSChecker extends SwingWorker<MiapeMSDocument, Void> {
 	public static final String CURRENT_MZML = "current mzML file";
 	public static final String CURRENT_PRIDEXML = "current PRIDE XML file";
 
-	private final MiapeExtractionFrameNEW parent;
+	private final MiapeExtractionFrame parent;
 	private final ControlVocabularyManager cvManager;
 
 	private static MiapeMSForms forms;
@@ -48,14 +50,23 @@ public class MIAPEMSChecker extends SwingWorker<MiapeMSDocument, Void> {
 
 	private final boolean extractMetadataFromStandardFile;
 
+	private final File attachedMSFile;
+
+	private final MiapeMSFormsDialog miapeMSFormsDialog;
+	private final InputFileType inputFileType;
 	private static MiapeMSDocument previousMIAPEMS;
 
 	private static MiapeMSDocument miapeMs;
 
-	public MIAPEMSChecker(MiapeExtractionFrameNEW miapeExtractionFrameNEW, boolean extractMetadataFromStandardFile) {
+	public MIAPEMSChecker(File attachedMSFile, InputFileType inputFileType,
+			MiapeExtractionFrame miapeExtractionFrameNEW, MiapeMSFormsDialog miapeMSFormsDialog,
+			boolean extractMetadataFromStandardFile) {
 		parent = miapeExtractionFrameNEW;
+		this.miapeMSFormsDialog = miapeMSFormsDialog;
+		this.attachedMSFile = attachedMSFile;
 		cvManager = OntologyLoaderTask.getCvManager();
 		this.extractMetadataFromStandardFile = extractMetadataFromStandardFile;
+		this.inputFileType = inputFileType;
 	}
 
 	public boolean isSave() {
@@ -73,12 +84,11 @@ public class MIAPEMSChecker extends SwingWorker<MiapeMSDocument, Void> {
 		miapeMs = null;
 
 		setProgress(0);
-		final String inputFileName = parent.getPrimaryInputFileName();
-		if (inputFileName != null && !"".equals(inputFileName) && extractMetadataFromStandardFile) {
-
-			if (parent.isMzMLSelected()) {
+		if (attachedMSFile != null && extractMetadataFromStandardFile) {
+			final String attachedMSFileName = attachedMSFile.getAbsolutePath();
+			if (this.inputFileType == InputFileType.MZIDENTMLPLUSMZML) {
 				firePropertyChange(MIAPE_MS_CHECKING_IN_PROGRESS, null, null);
-				File mzMLFile = new File(inputFileName);
+				File mzMLFile = new File(attachedMSFileName);
 				File metadataMzMLFile = getMetadataMzMLFile(mzMLFile);
 				log.info("parsing mzML XML to document MS in the faster method (SAX+DOM method)");
 				MzMLLightParser mzMLParser = new MzMLLightParser(metadataMzMLFile.getAbsolutePath());
@@ -88,15 +98,13 @@ public class MIAPEMSChecker extends SwingWorker<MiapeMSDocument, Void> {
 				miapeMs = org.proteored.miapeapi.xml.mzml.MSMiapeFactory.getFactory().toDocument(mzmlLight, null,
 						cvManager, null, null, mzMLFile.getName(), null);
 
-			} else if (parent.isPRIDESelected()) {
+			} else if (this.inputFileType == InputFileType.PRIDEXML) {
 				firePropertyChange(MIAPE_MS_CHECKING_IN_PROGRESS, null, null);
-				File prideXMLFile = new File(inputFileName);
+				File prideXMLFile = new File(attachedMSFileName);
 				MiapePrideXmlFile miapePrideFile = null;
-				if (parent.jCheckBoxMS.isSelected() && parent.jCheckBoxMSI.isSelected()) {
-					miapePrideFile = new MiapeFullPrideXMLFile(prideXMLFile);
-				} else if (parent.jCheckBoxMS.isSelected() && !parent.jCheckBoxMSI.isSelected()) {
-					miapePrideFile = new MiapeMsPrideXmlFile(prideXMLFile);
-				}
+
+				miapePrideFile = new MiapeFullPrideXMLFile(prideXMLFile);
+
 				setProgress(50);
 				if (miapePrideFile != null) {
 					miapeMs = MSMiapeFactory.getFactory().toDocument(new MiapeMsPrideXmlFile(prideXMLFile), null,
@@ -109,7 +117,7 @@ public class MIAPEMSChecker extends SwingWorker<MiapeMSDocument, Void> {
 			// metadata saved combo:
 
 		} else {
-			MiapeMSDocument miapeMSMetadata = parent.getMiapeMSMetadata();
+			MiapeMSDocument miapeMSMetadata = this.miapeMSFormsDialog.getMiapeMSFromMetadata();
 			if (miapeMSMetadata != null) {
 				miapeMs = miapeMSMetadata;
 			}
@@ -126,10 +134,11 @@ public class MIAPEMSChecker extends SwingWorker<MiapeMSDocument, Void> {
 			forms.setVisible(true);
 		} else {
 			String absolutePath = null;
-			if (parent.isMzMLSelected() || parent.isMzMLPlusMzIdentMLSelected())
+			if (this.inputFileType == InputFileType.MZIDENTMLPLUSMZML) {
 				absolutePath = FileManager.getMetadataFolder() + CURRENT_MZML + ".xml";
-			else if (parent.isPRIDESelected() && parent.isMIAPEMSChecked())
+			} else if (this.inputFileType == InputFileType.PRIDEXML) {
 				absolutePath = FileManager.getMetadataFolder() + CURRENT_PRIDEXML + ".xml";
+			}
 			if (absolutePath != null)
 				miapeMs.toXml().saveAs(absolutePath);
 		}
@@ -197,7 +206,7 @@ public class MIAPEMSChecker extends SwingWorker<MiapeMSDocument, Void> {
 	}
 
 	/**
-	 * Pass the {@link MiapeMSDocument} to the {@link MiapeExtractionFrameNEW}
+	 * Pass the {@link MiapeMSDocument} to the {@link MiapeExtractionFrame}
 	 * 
 	 * @param miapeMS
 	 */
@@ -206,8 +215,8 @@ public class MIAPEMSChecker extends SwingWorker<MiapeMSDocument, Void> {
 		firePropertyChange(MIAPE_MS_CHECKING_DONE, null, null);
 		// In this case, cancel task to not go to the "done"
 		reportExtractionDone = false;
-		parent.setVisible(true);
-		parent.initMetadataCombo(selectedConfigurationName, OntologyLoaderTask.getCvManager());
+		miapeMSFormsDialog.setVisible(true);
+		miapeMSFormsDialog.initMetadataCombo(selectedConfigurationName, OntologyLoaderTask.getCvManager());
 	}
 
 	@Override

@@ -90,6 +90,8 @@ public class ImageManager {
 	public static final String HELP_ICON_64 = "icon-help_64.png";
 	public static final String HELP_ICON_64_HOVER = "icon-help_64_hover.png";
 	public static final String HELP_ICON_64_CLICKED = "icon-help_64_clicked.png";
+	public static final String EXCLAMATION_SMALL = "exclamation_small.png";
+	public static final String VALID_SMALL = "valid_small.png";
 
 	public static ImageIcon getImageIcon(String name) {
 		final URL resource = cl.getResource(name);

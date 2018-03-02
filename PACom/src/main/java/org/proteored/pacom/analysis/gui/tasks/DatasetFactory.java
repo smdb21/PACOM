@@ -2111,8 +2111,8 @@ public class DatasetFactory {
 			FDRFilter filter = idSet.getFDRFilter();
 			if (filter == null) {
 				final String errorMessage = "<html>Error:  The FDR cannot be calculated or an FDR filter is not defined:<br>"
-						+ "<ul><li>If you have already applied an FDR filter, the global FDR cannot be calculated.<br>"
-						+ "You can see the reasons by placing the coursor above the message on left-top of the window: 'Global FDR cannot be calculated'</li>"
+						+ "<ul><li>If you have already applied an FDR filter and the global FDR cannot be calculated,<br>"
+						+ "you can see the reasons by placing the coursor above the message on left-top of the window:<br> 'Global FDR cannot be calculated'</li>"
 						+ "<li>If you have not applied an FDR filter, apply it in order to select the score name as well<br>"
 						+ "as the way to select the DECOY hits in which the FDR calculation in going to be based</li></ul></html>";
 
@@ -3020,7 +3020,8 @@ public class DatasetFactory {
 		boolean onlyOneIdSet = false;
 		if (AdditionalOptionsPanelFactory.BOTH.equals(proteinOrGene))
 			throw new IllegalMiapeArgumentException(
-					"Proteins and genes distributions cannot been seen in the same pie chart. Select PROTEIN or GENES in the combobox.");
+					"Proteins and genes distributions cannot been seen in the same pie chart.\n"
+							+ "Select PROTEIN or GENES in the combobox.");
 
 		DefaultPieDataset dataset = new DefaultPieDataset();
 		Collection<ProteinGroupOccurrence> proteinGroupOccurrences = idSet.getProteinGroupOccurrenceList().values();

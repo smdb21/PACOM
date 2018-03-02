@@ -4,14 +4,19 @@
 
 package org.proteored.pacom.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -21,42 +26,44 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingWorker.StateValue;
-import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.TableColumn;
 
+import org.apache.commons.io.FilenameUtils;
 import org.proteored.miapeapi.cv.ControlVocabularyManager;
-import org.proteored.miapeapi.exceptions.MiapeDatabaseException;
-import org.proteored.miapeapi.exceptions.MiapeSecurityException;
-import org.proteored.miapeapi.factories.MiapeDocumentFactory;
-import org.proteored.miapeapi.factories.ms.MiapeMSDocumentFactory;
-import org.proteored.miapeapi.interfaces.MiapeDate;
-import org.proteored.miapeapi.interfaces.ms.MiapeMSDocument;
+import org.proteored.miapeapi.exceptions.MiapeDataInconsistencyException;
 import org.proteored.miapeapi.text.tsv.msi.TableTextFileColumn;
-import org.proteored.miapeapi.text.tsv.msi.TableTextFileSeparator;
-import org.proteored.miapeapi.xml.ms.MIAPEMSXmlFile;
-import org.proteored.miapeapi.xml.ms.MiapeMSDocumentImpl;
-import org.proteored.miapeapi.xml.ms.MiapeMSXmlFactory;
-import org.proteored.miapeapi.xml.ms.merge.MiapeMSMerger;
 import org.proteored.pacom.analysis.util.FileManager;
-import org.proteored.pacom.gui.miapemsforms.MetadataLoader;
+import org.proteored.pacom.gui.importjobs.AssociatedMSInputFileType;
+import org.proteored.pacom.gui.importjobs.ImportTaskColumns;
+import org.proteored.pacom.gui.importjobs.ImportTaskDataModel;
+import org.proteored.pacom.gui.importjobs.ImportTasksTable;
+import org.proteored.pacom.gui.importjobs.ImportTasksUtil;
+import org.proteored.pacom.gui.importjobs.InputFileType;
+import org.proteored.pacom.gui.importjobs.ScrollableImportTaskJPanel;
+import org.proteored.pacom.gui.importjobs.UpdatableComboBoxEditor;
+import org.proteored.pacom.gui.tasks.InputDataTypeGuesser;
 import org.proteored.pacom.gui.tasks.LoadProjectsTask;
 import org.proteored.pacom.gui.tasks.MIAPEMSChecker;
 import org.proteored.pacom.gui.tasks.MiapeExtractionTask;
@@ -64,9 +71,9 @@ import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 import org.proteored.pacom.gui.tasks.OntologyLoaderWaiter;
 import org.proteored.pacom.utils.AppVersion;
 import org.proteored.pacom.utils.ComponentEnableStateKeeper;
-import org.proteored.pacom.utils.MiapeExtractionParametersUtil;
+import org.proteored.pacom.utils.MiapeExtractionBatchManager;
 import org.proteored.pacom.utils.MiapeExtractionResult;
-import org.proteored.pacom.utils.MiapeExtractionRunParameters;
+import org.proteored.pacom.utils.MiapeExtractionRunParametersImpl;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
 
@@ -74,42 +81,26 @@ import gnu.trove.map.hash.TIntObjectHashMap;
  *
  * @author __USER__
  */
-public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialog
-		implements PropertyChangeListener, MiapeExtractionRunParameters {
+public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog implements PropertyChangeListener {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2685612413712062973L;
 	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("log4j.logger.org.proteored");
-	private static MiapeExtractionFrameNEW instance;
-	private static final String MZIDENTML_FILE_LABEL = "mzIdentML file:";
-	private static final String MZML_FILE_LABEL = "mzML file:";
-	private static final String MGF_FILE_LABEL = "mgf file:";
-	private static final String NOT_APPLICABLE = "not applicable";
-	private static final String PRIDE_FILE_LABEL = "PRIDE xml file:";
-	private static final String XTANDEM_FILE_LABEL = "X!Tandem xml file:";
-	private static final String PEPXML_FILE_LABEL = "pepXML file:";
-	private static final String TSV_FILE_LABEL = "TSV text file:";
-	private static final String DTASELECT_FILE_LABEL = "DTASelect file:";
+	private static MiapeExtractionFrame instance;
+
 	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 	private final ComponentEnableStateKeeper enableStateKeeper = new ComponentEnableStateKeeper();
-	private final TIntObjectHashMap<MiapeExtractionTask> miapeExtractionTasks = new TIntObjectHashMap<MiapeExtractionTask>();
+	private MiapeExtractionBatchManager miapeExtractorBatchManager;
 
 	@Override
 	public void dispose() {
-		if (miapeExtractionTask != null && miapeExtractionTask.getState() == StateValue.STARTED) {
-			boolean canceled = miapeExtractionTask.cancel(true);
-			while (!canceled) {
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-
-				}
-				canceled = miapeExtractionTask.cancel(true);
-			}
+		if (miapeExtractorBatchManager != null && !miapeExtractorBatchManager.getRunningJobs().isEmpty()) {
+			miapeExtractorBatchManager.cancelMiapeExtractions();
 		}
-		if (miapeMSChecker != null)
-			miapeMSChecker.cancel(true);
+		if (this.inputDataTypeGuesser != null) {
+			inputDataTypeGuesser.cancel(true);
+		}
 		if (mainFrame != null) {
 			mainFrame.setEnabled(true);
 			mainFrame.setVisible(true);
@@ -117,35 +108,33 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 		super.dispose();
 	}
 
-	private static final int ALLMODE = -1;
-	private static final int PRIDEXMLMODE = 0;
-	// private static final int MGFMZIDENTMLMODE = 1;
-	private static final int MZIDENTMLMODE = 2;
-	private static final int MZMLMODE = 3;
-	private static final int MGFMODE = 4;
-	private static final int DTASELECTMODE = 5;
-	private static final int XTANDEMMODE = 6;
 	// for mzML conversion
 	public boolean isFastParsing = false;
 	public boolean isShallowParsing = false;
-	private MIAPEMSChecker miapeMSChecker;
 	private boolean showProjectTable;
+	private ScrollableImportTaskJPanel scrollableImportTaskTable;
+	private File[] selectedInputFiles;
 	// private AutoSuggestor autoSuggestor;
+	private JButton jButtonOpenMSFormDialogButton;
+	private InputDataTypeGuesser inputDataTypeGuesser;
 
-	public static MiapeExtractionFrameNEW getInstance(MainFrame mainFrame2, boolean b) {
+	public static MiapeExtractionFrame getInstance(MainFrame mainFrame2, boolean b) {
 		if (instance == null) {
-			instance = new MiapeExtractionFrameNEW(mainFrame2, b);
+			instance = new MiapeExtractionFrame(mainFrame2, b);
 		}
 		instance.mainFrame = mainFrame2;
 		instance.initializeFrame();
-		instance.changeRadioStatus();
 
 		return instance;
 	}
 
 	/** Creates new form Standard2MIAPEDialog */
-	private MiapeExtractionFrameNEW(MainFrame parent, boolean modal) {
+	private MiapeExtractionFrame(MainFrame parent, boolean modal) {
 		super(400);
+		setPreferredSize(new Dimension(1000, 650));
+		setSize(new Dimension(990, 650));
+		getContentPane().setSize(new Dimension(800, 600));
+		getContentPane().setMaximumSize(new Dimension(800, 600));
 		// super(parent, modal);
 		initComponents();
 
@@ -160,7 +149,7 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 		} else {
 
 		}
-		changeRadioStatus();
+
 		// Load projects in background
 		loadProjects(false, true);
 
@@ -173,8 +162,6 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 		jButtonSubmit.setPressedIcon(ImageManager.getImageIcon(ImageManager.ADD_CLICKED));
 		jButtonCancel.setIcon(ImageManager.getImageIcon(ImageManager.STOP));
 		jButtonCancel.setPressedIcon(ImageManager.getImageIcon(ImageManager.STOP_CLICKED));
-		jButtonEditMetadata.setIcon(ImageManager.getImageIcon(ImageManager.FINISH));
-		jButtonEditMetadata.setPressedIcon(ImageManager.getImageIcon(ImageManager.FINISH_CLICKED));
 		jButtonGoToData.setIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_32));
 		jButtonGoToData.setPressedIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_32_CLICKED));
 
@@ -190,7 +177,94 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 			String suffix = " (v" + version.toString() + ")";
 			this.setTitle(getTitle() + suffix);
 		}
-		enableStateKeeper.addReverseComponent(jButtonCancel);
+		getContentPane().setLayout(new BorderLayout(5, 5));
+		getContentPane().add(jPanelSouth, BorderLayout.SOUTH);
+		getContentPane().add(jPanelNorth, BorderLayout.NORTH);
+		getContentPane().add(jPanelCenter);
+		jPanelCenter.setLayout(new BorderLayout(0, 10));
+		jPanelCenter.add(panel_2, BorderLayout.NORTH);
+
+		panel = new JPanel();
+		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		panel.setBorder(new TitledBorder(null, "Select input files to import", TitledBorder.LEADING, TitledBorder.TOP,
+				null, null));
+
+		panel_1 = new JPanel();
+		panel_1.setAlignmentX(Component.LEFT_ALIGNMENT);
+		panel_1.setBorder(new TitledBorder(null, "Associate an MS file to the selected input file",
+				TitledBorder.LEADING, TitledBorder.TOP, null, null));
+
+		panel_3 = new JPanel();
+		panel_3.setBorder(new TitledBorder(null, "Delete selected import task", TitledBorder.LEADING, TitledBorder.TOP,
+				null, null));
+
+		panel_4 = new JPanel();
+		panel_4.setBorder(new TitledBorder(null, "Add or modify Mass Spectrometry metadata", TitledBorder.LEADING,
+				TitledBorder.TOP, null, null));
+		panel_4.setLayout(new GridLayout(0, 1, 0, 0));
+		jButtonOpenMSFormDialogButton = new JButton("Manage MS metadata");
+		jButtonOpenMSFormDialogButton.setEnabled(false);
+		panel_4.add(jButtonOpenMSFormDialogButton);
+		jButtonOpenMSFormDialogButton.setToolTipText(
+				"Click here to add or edit the metadata templates that you can use to complement associated MS files");
+		jButtonOpenMSFormDialogButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				MiapeMSFormsDialog.getInstance(MiapeExtractionFrame.this, getControlVocabularyManager())
+						.setVisible(true);
+			}
+		});
+		panel_3.setLayout(new GridLayout(0, 1, 0, 0));
+
+		btnDeleteImportTask = new JButton("Delete import task");
+		btnDeleteImportTask.setToolTipText("Delete the selected import task from the table");
+		panel_3.add(btnDeleteImportTask);
+		btnDeleteImportTask.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				deleteImportTaskAction(e);
+			}
+		});
+		btnDeleteImportTask.setEnabled(false);
+		panel.setLayout(new GridLayout(0, 1, 0, 0));
+		jButtonInputFile = new javax.swing.JButton();
+		panel.add(jButtonInputFile);
+
+		jButtonInputFile.setText("Select input files");
+		jButtonInputFile.setToolTipText("Select one or more input data files to import");
+		jButtonInputFile.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jButtonInputFileActionPerformed(evt);
+			}
+		});
+		panel_2.setLayout(new BoxLayout(panel_2, BoxLayout.X_AXIS));
+		panel_2.add(panel);
+		panel_2.add(panel_1);
+		panel_1.setLayout(new GridLayout(0, 1, 0, 0));
+		jButtonInputFileAttach = new javax.swing.JButton();
+		jButtonInputFileAttach.setEnabled(false);
+		jButtonInputFileAttach.setText("Associate MS file");
+		jButtonInputFileAttach
+				.setToolTipText("<html>Select one or more MS files to associate with the created import jobs.<br>"
+						+ "You can also select them by clicking on the corresponding cell<br>" + "of the column '"
+						+ ImportTaskColumns.ASSOCIATEDMSFILE.getName() + "'</html>");
+		panel_1.add(jButtonInputFileAttach);
+		jButtonInputFileAttach.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jButtonInputfileAttachActionPerformed(evt);
+			}
+		});
+		panel_2.add(panel_3);
+		panel_2.add(panel_4);
+		// the problem is that the metadata templates takes time, because it is
+		// parsing all files in the folder
+		scrollableImportTaskTable = new ScrollableImportTaskJPanel();
+		jPanelCenter.add(scrollableImportTaskTable, BorderLayout.CENTER);
+
+		JPanel jPanelEast = new JPanel();
+		getContentPane().add(jPanelEast, BorderLayout.EAST);
 
 		// setup the autosuggestor
 		// autoSuggestor = new AutoSuggestor(jTextFieldProjectName, this, null,
@@ -198,6 +272,417 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 		// Color.red, 0.75f);
 		// loadProjectsFromDisk();
 
+		/// listener to change the radio buttons depending on the file type of
+		/// the selected row
+		// and to enable or disable the button for row deletion
+		ListSelectionListener listener = new ListSelectionListener() {
+
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if (e.getValueIsAdjusting()) {
+					return;
+				}
+				if (e.getSource() instanceof DefaultListSelectionModel) {
+					DefaultListSelectionModel model = (DefaultListSelectionModel) e.getSource();
+
+					int firstIndex = model.getMinSelectionIndex();
+					if (firstIndex >= 0) {
+						// enable button for row deletion
+						MiapeExtractionFrame.this.btnDeleteImportTask.setEnabled(true);
+					} else {
+						// disable button for row deletion
+						MiapeExtractionFrame.this.btnDeleteImportTask.setEnabled(false);
+					}
+				}
+			}
+		};
+		scrollableImportTaskTable.addTableSelectionListener(listener);
+
+		addTableMouseListeners();
+		addKeyListener();
+		asynchronouslyLoadMetadataTemplateNames();
+		enableStateKeeper.addReverseComponent(jButtonCancel);
+
+		panelWest = new JPanel();
+		getContentPane().add(panelWest, BorderLayout.WEST);
+		// enableStateKeeper.addInvariableComponent(scrollableImportTaskTable);
+		tableChangeListener();
+	}
+
+	private void tableChangeListener() {
+		// listener to change the file type
+		TableModelListener fileTypeListener = new TableModelListener() {
+
+			@Override
+			public void tableChanged(TableModelEvent e) {
+				log.debug("Table changed");
+
+			}
+		};
+		scrollableImportTaskTable.getTable().getModel().addTableModelListener(fileTypeListener);
+	}
+
+	private void addKeyListener() {
+		scrollableImportTaskTable.getTable().addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+					ImportTasksTable table = (ImportTasksTable) e.getSource();
+					int[] rowIndexes = table.getSelectedRows();
+
+					int columnIndex = table.getSelectedColumn();
+					ImportTaskColumns columnType = ImportTaskColumns.values()[columnIndex];
+					if (columnType == ImportTaskColumns.ASSOCIATEDMSFILE) {
+						for (int rowIndex : rowIndexes) {
+							MiapeExtractionTask task = table.getImportTaskTableModel().getTaskByRowIndex(rowIndex);
+							((MiapeExtractionRunParametersImpl) task.getParameters()).setAssociatedMSFile(null);
+							table.setRowSelectionInterval(rowIndex, rowIndex);
+						}
+						table.getImportTaskTableModel().fireTableDataChanged();
+
+					} else if (columnType == ImportTaskColumns.FILE) {
+						for (int rowIndex : rowIndexes) {
+							MiapeExtractionTask task = table.getImportTaskTableModel().getTaskByRowIndex(rowIndex);
+							((MiapeExtractionRunParametersImpl) task.getParameters()).setInputFile(null);
+							table.setRowSelectionInterval(rowIndex, rowIndex);
+						}
+						table.getImportTaskTableModel().fireTableDataChanged();
+					} else {
+						if (rowIndexes.length > 0) {
+							String plural = rowIndexes.length > 1 ? "s" : "";
+							StringBuilder identifiers = new StringBuilder();
+							for (int rowIndex : rowIndexes) {
+								if (!"".equals(identifiers.toString())) {
+									identifiers.append(",");
+								}
+								identifiers.append(
+										table.getImportTaskTableModel().getTaskByRowIndex(rowIndex).getRunIdentifier());
+							}
+							// ask if the user wants to delete the row
+							int option = JOptionPane.showConfirmDialog(MiapeExtractionFrame.this,
+									"Are you sure you want to delete import task" + plural + " (ID" + plural + ":'"
+											+ identifiers.toString() + "')",
+									"Delete import task", JOptionPane.YES_NO_OPTION);
+							if (option == JOptionPane.OK_OPTION) {
+								table.getImportTaskTableModel().removeRows(rowIndexes);
+							}
+						}
+					}
+				}
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+	}
+
+	private void addTableMouseListeners() {
+		// add mouse listener to files
+		MouseListener mouseListener = new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				try {
+					ImportTasksTable table = (ImportTasksTable) e.getSource();
+					int rowIndex = table.getSelectedRow();
+					if (table.getRowSorter() != null) {
+						rowIndex = table.getRowSorter().convertRowIndexToModel(rowIndex);
+					}
+					MiapeExtractionTask task = table.getImportTaskTableModel().getTaskByRowIndex(rowIndex);
+					int columnIndex = table.getSelectedColumn();
+					log.info("Row=" + rowIndex + " Column=" + columnIndex);
+					if (e.getClickCount() == 2) {
+						log.debug("It is a double click");
+						ImportTaskColumns columnType = ImportTaskColumns.values()[columnIndex];
+						if (columnType == ImportTaskColumns.FILE) {
+							File[] newFiles = selectFiles(false);
+							File file = newFiles[0];
+							// set file to table model
+							((MiapeExtractionRunParametersImpl) task.getParameters()).setInputFile(file);
+							// guess the type
+							guessInputDataTypes(file, task);
+							// update row
+							scrollableImportTaskTable.getTable().getImportTaskTableModel().fireTableRowsUpdated(task);
+						} else if (columnType == ImportTaskColumns.ASSOCIATEDMSFILE) {
+
+							List<File> newFiles = selectAttachedMSFiles(null);
+							if (newFiles != null && !newFiles.isEmpty()) {
+								// set value of new file
+								((MiapeExtractionRunParametersImpl) task.getParameters())
+										.setAssociatedMSFile(newFiles.get(0));
+								// try to guess the new value of the associated
+								// ms FIle
+								String extension = FilenameUtils.getExtension(newFiles.get(0).getAbsolutePath());
+								if (extension != null) {
+									if ("mgf".equalsIgnoreCase(extension)) {
+										((MiapeExtractionRunParametersImpl) task.getParameters())
+												.setAssociatedMSFileType(AssociatedMSInputFileType.MGF);
+										// update row
+										scrollableImportTaskTable.getTable().getImportTaskTableModel()
+												.fireTableRowsUpdated(task);
+									} else if ("mzml".equalsIgnoreCase(extension)) {
+										((MiapeExtractionRunParametersImpl) task.getParameters())
+												.setAssociatedMSFileType(AssociatedMSInputFileType.MZML);
+										// update row
+										scrollableImportTaskTable.getTable().getImportTaskTableModel()
+												.fireTableRowsUpdated(task);
+									} else {
+										log.info("I cannot guess what type of file is "
+												+ newFiles.get(0).getAbsolutePath());
+									}
+								}
+							}
+						} else {
+							log.info("Ignoring double click");
+						}
+					} else if (e.getClickCount() == 1) {
+						log.debug("It is a single click");
+						if (columnIndex >= 0) {
+							ImportTaskColumns columnType = ImportTaskColumns.values()[columnIndex];
+							if (columnType == ImportTaskColumns.FILE
+									|| columnType == ImportTaskColumns.ASSOCIATEDMSFILE) {
+								appendStatus("Double click to select a new file");
+							}
+						}
+					}
+				} catch (IllegalArgumentException ex) {
+					ex.printStackTrace();
+				}
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		};
+		scrollableImportTaskTable.getTable().addMouseListener(mouseListener);
+	}
+
+	protected void deleteImportTaskAction(ActionEvent e) {
+		int[] selectedRowIndexes = scrollableImportTaskTable.getTable().getSelectedRows();
+		if (selectedRowIndexes.length > 0) {
+			int[] jobIDs = scrollableImportTaskTable.getTable().getImportTaskTableModel()
+					.removeRows(selectedRowIndexes);
+			for (int i = 0; i < jobIDs.length; i++) {
+				appendStatus("Import task '" + jobIDs[i] + "' in row '" + (selectedRowIndexes[i] + 1) + "' deleted.");
+			}
+		}
+	}
+
+	private void asynchronouslyLoadMetadataTemplateNames() {
+		Runnable task = () -> {
+
+			List<String> metadataList = new ArrayList<String>();
+			while (!FileManager.isMetadataTemplatesLoaded()) {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			log.info("Wait for metadata templates finished");
+
+			List<String> list = FileManager.getMetadataTemplateList(cvManager);
+			metadataList.addAll(list);
+			// sort by name
+			if (metadataList != null) {
+				Collections.sort(metadataList);
+				if (metadataList.isEmpty() || !"".equals(metadataList.get(0))) {
+					metadataList.add(0, "");
+				}
+
+				// load them into the cell editor of the corresponding column
+				TableColumn column = scrollableImportTaskTable.getTable()
+						.getColumn(ImportTaskColumns.METADATA_TEMPLATE.getName());
+				if (column != null && column.getCellEditor() instanceof UpdatableComboBoxEditor) {
+					UpdatableComboBoxEditor<String> cellEditor = (UpdatableComboBoxEditor<String>) column
+							.getCellEditor();
+					cellEditor.setComboItems(metadataList);
+					scrollableImportTaskTable.getTable().getImportTaskTableModel().fireTableDataChanged();
+				}
+			}
+			// enable manage ms metadata button
+			appendStatus("MS metadata templates loaded");
+			jButtonOpenMSFormDialogButton.setEnabled(true);
+		};
+		new Thread(task).start();
+
+	}
+
+	protected void jButtonInputfileAttachActionPerformed(ActionEvent evt) {
+		// get input file type from the table, from the selected row
+		InputFileType inputFileType = this.scrollableImportTaskTable.getSelectedInputFileTypeFromSelectedRow();
+		List<File> attachedMSFiles = selectAttachedMSFiles(inputFileType);
+
+		// if the user selected one single file, ask whether he wants to
+		// assign it to all input files or not
+		// if the user selected more than one file, check if they are the
+		// same number of rows in the table. If so, assign one by one. If
+		// not, throw error message.d
+		if (attachedMSFiles != null && !attachedMSFiles.isEmpty()) {
+			List<MiapeExtractionTask> importTasks = this.scrollableImportTaskTable.getTable().getImportTasks();
+			List<MiapeExtractionTask> selectedImportTasks = this.scrollableImportTaskTable.getTable()
+					.getSelectedImportTasks();
+			int rowCount = importTasks.size();
+			if (attachedMSFiles.size() == 1) {
+				if (rowCount == 0) {
+					// throw error
+					log.error("This shoudn't happen. Button should be disable if there is not data in the table");
+					appendStatus("Select an input file before selecting associated MS files");
+				} else if (rowCount == 1) {
+					int firstJobID = importTasks.get(0).getRunIdentifier();
+					// add to the row in the table
+					scrollableImportTaskTable.getTable().associateMSFileToJobID(attachedMSFiles.get(0), firstJobID);
+				} else {
+					// there is more than one job in the table and 1 MS File
+					int firstJobID = importTasks.get(0).getRunIdentifier();
+					// check if there is selected rows
+
+					if (selectedImportTasks.isEmpty() || selectedImportTasks.size() == importTasks.size()) {
+						String message = "You selected one MS file, but in the table there are " + rowCount
+								+ " import tasks.\nDo you want to associate it to JUST the first one (jobID="
+								+ firstJobID + ") or to ALL of them";
+						String title = "How to associate MS file to import tasks";
+						String[] options = { "associate to first import task", "associate to all tasks" };
+						Object userSelection = JOptionPane.showInputDialog(this, message, title,
+								JOptionPane.WARNING_MESSAGE, null, options, "associate to all");
+						if ("associate to all tasks".equals(userSelection)) {
+							scrollableImportTaskTable.getTable().associateMSFileToAll(attachedMSFiles.get(0));
+						} else if ("associate to first import task".equals(userSelection)) {
+							scrollableImportTaskTable.getTable().associateMSFileToJobID(attachedMSFiles.get(0),
+									firstJobID);
+						} else {
+							appendStatus("No MS file was associated");
+						}
+					} else {
+						if (selectedImportTasks.size() != importTasks.size()) {
+							String message = "You selected one MS file, and you have " + selectedImportTasks.size()
+									+ " import tasks selected in the table.\nDo you want to associate it to just JUST of the selected tasks or to ALL the jobs in the table";
+							String title = "How to associate MS file to import tasks";
+							String[] options = { "associate to selected tasks", "associate to all tasks" };
+							Object userSelection = JOptionPane.showInputDialog(this, message, title,
+									JOptionPane.WARNING_MESSAGE, null, options, "associate to selected tasks");
+							if ("associate to all tasks".equals(userSelection)) {
+								scrollableImportTaskTable.getTable().associateMSFileToAll(attachedMSFiles.get(0));
+							} else if ("associate to selected tasks".equals(userSelection)) {
+								for (MiapeExtractionTask task : selectedImportTasks) {
+									scrollableImportTaskTable.getTable().associateMSFileToJobID(attachedMSFiles.get(0),
+											task.getRunIdentifier());
+								}
+
+							} else {
+								appendStatus("No MS file was associated");
+							}
+						}
+					}
+
+				}
+
+			} else {
+				// more than one file
+				if (rowCount == 0) {
+					// throw error
+					log.error("This shoudn't happen. Button should be disable if there is not data in the table");
+					appendStatus("Select an input file before selecting associated MS files");
+				} else if (rowCount == 1) {
+					JOptionPane.showConfirmDialog(this,
+							"You selected more than one MS file but there is only one import task loaded in the table.\n"
+									+ "Select either just one MS file or more load more import taks first by selecting input files.",
+							"Error", JOptionPane.OK_OPTION);
+				} else {
+					// check if there is selected rows
+					if (attachedMSFiles.size() != selectedImportTasks.size()
+							&& attachedMSFiles.size() != importTasks.size()) {
+						JOptionPane.showConfirmDialog(this,
+								"You selected " + attachedMSFiles.size() + " MS files but there are "
+										+ importTasks.size() + " import task loaded in the table (and "
+										+ selectedImportTasks.size() + " of them selected)\n"
+										+ "Either associated them one by one or select the same number of MS files, so that they will be associated in the same order they were selected.",
+								"Error", JOptionPane.OK_OPTION);
+					} else if (importTasks.size() == selectedImportTasks.size()) {
+						// add one by one in order
+						int i = 0;
+						for (MiapeExtractionTask task : importTasks) {
+							scrollableImportTaskTable.getTable().associateMSFileToJobID(attachedMSFiles.get(i++),
+									task.getRunIdentifier());
+						}
+					} else if (attachedMSFiles.size() == selectedImportTasks.size()) {
+						// warn and add one by one
+						String message = "You selected " + attachedMSFiles.size() + " MS files and there are "
+								+ selectedImportTasks.size() + " import task selected in the table.\n"
+								+ "Do you want to associated them in order to the selected import tasks?";
+						String title = "How to associate MS file to import tasks";
+
+						int userSelection = JOptionPane.showConfirmDialog(this, message, title,
+								JOptionPane.WARNING_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION);
+						if (userSelection == JOptionPane.YES_OPTION) {
+							int i = 0;
+							for (MiapeExtractionTask task : selectedImportTasks) {
+								scrollableImportTaskTable.getTable().associateMSFileToJobID(attachedMSFiles.get(i++),
+										task.getRunIdentifier());
+							}
+
+						} else {
+							appendStatus("No MS file was associated");
+						}
+					} else if (attachedMSFiles.size() == importTasks.size()) {
+						// warn and add one by one
+						// warn and add one by one
+						String message = "You selected " + attachedMSFiles.size() + " MS files and there are "
+								+ importTasks.size() + " import task in the table.\n"
+								+ "Do you want to associated them in order to all import tasks in the table?";
+						String title = "How to associate MS file to import tasks";
+
+						int userSelection = JOptionPane.showConfirmDialog(this, message, title,
+								JOptionPane.WARNING_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION);
+						if (userSelection == JOptionPane.YES_OPTION) {
+							int i = 0;
+							for (MiapeExtractionTask task : importTasks) {
+								scrollableImportTaskTable.getTable().associateMSFileToJobID(attachedMSFiles.get(i++),
+										task.getRunIdentifier());
+							}
+
+						} else {
+							appendStatus("No MS file was associated");
+						}
+					}
+
+				}
+
+			}
+
+		} else {
+			appendStatus("No files selected or valid");
+		}
 	}
 
 	/*
@@ -243,42 +728,27 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 		loadProjectsThread.execute();
 	}
 
-	public void initMetadataCombo(String selectedConfigurationName, ControlVocabularyManager cvManager) {
-		if (!isMzIdentMLSelected() && !isXTandemSelected() && !(isPRIDESelected() && !isMIAPEMSChecked())) {
-			jButtonEditMetadata.setEnabled(true);
-			jComboBoxMetadata.setEnabled(true);
-			jLabelMiapeMSMetadata.setEnabled(true);
+	boolean isGeneratingMS() {
+		List<MiapeExtractionTask> tasks = scrollableImportTaskTable.getTable().getImportTasks();
+		for (MiapeExtractionTask miapeExtractionTask : tasks) {
+			if (miapeExtractionTask.getParameters().getAssociatedMSFileType() != null) {
+				return true;
+			}
 		}
-
-		final List<String> metadataList = FileManager.getMetadataList(cvManager);
-		// sort by name
-		Collections.sort(metadataList);
-		if (metadataList != null) {
-			metadataList.add(0, "");
-			jComboBoxMetadata.setModel(new DefaultComboBoxModel(metadataList.toArray()));
-			if (selectedConfigurationName != null)
-				jComboBoxMetadata.setSelectedItem(selectedConfigurationName);
-			else
-				jLabelMiapeMSMetadata.setText("");
-		}
-		if (!metadataList.isEmpty() && !"".equals(metadataList.get(0))) {
-			appendStatus("Metadata templates loaded.");
-		}
+		return false;
 	}
 
 	private void initializeFrame() {
-		jTextFieldInputFile.setText("");
-		jTextFieldInputFile2.setText("");
-		jComboBoxMetadata.setSelectedIndex(0);
+
 		jTextAreaStatus.setText("");
-		jTextFieldProjectName.setText("");
+		// jTextFieldProjectName.setText("");
 		jProgressBar.setIndeterminate(false);
 		this.setCursor(null); // turn off the wait cursor
 		jButtonSubmit.setEnabled(true);
-		if (miapeExtractionTask != null) {
-			boolean canceled = miapeExtractionTask.cancel(true);
-			log.info("Task canceled=" + canceled);
-			miapeExtractionTask = null;
+		if (miapeExtractorBatchManager != null && !miapeExtractorBatchManager.getRunningJobs().isEmpty()) {
+			miapeExtractorBatchManager.cancelMiapeExtractions();
+			log.info("Tasks canceled ");
+			miapeExtractorBatchManager = null;
 		}
 
 	}
@@ -289,37 +759,15 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 
 		buttonGroupInputFileFormat = new javax.swing.ButtonGroup();
 		jFileChooser = new JFileChooser(MainFrame.currentFolder);
-		buttonGroupProcessingType = new javax.swing.ButtonGroup();
-		buttonGroupStoreOrNotStore = new javax.swing.ButtonGroup();
-		jPanel1 = new javax.swing.JPanel();
-		jTextFieldInputFile = new javax.swing.JTextField();
-		jTextFieldInputFile.setEnabled(false);
-		jButtonInputFile = new javax.swing.JButton();
-		jButtonInputFile.setEnabled(false);
-		jPanel4 = new javax.swing.JPanel();
-		jPanel6 = new javax.swing.JPanel();
-		jCheckBoxMS = new javax.swing.JCheckBox();
-		jCheckBoxMS.setEnabled(false);
-		jCheckBoxMSI = new javax.swing.JCheckBox();
-		jCheckBoxMSI.setEnabled(false);
-		jCheckBoxMSI.setSelected(true);
-		jPanel8 = new javax.swing.JPanel();
-		jCheckBoxLocalProcessinInParallel = new javax.swing.JCheckBox();
-		inputFileLabel1 = new javax.swing.JLabel();
-		inputFileLabel1.setEnabled(false);
-		inputFileLabel2 = new javax.swing.JLabel();
-		jTextFieldInputFile2 = new javax.swing.JTextField();
-		jButtonInputFile2 = new javax.swing.JButton();
-		jScrollPane2 = new javax.swing.JScrollPane();
-		jPanel5 = new javax.swing.JPanel();
-		jComboBoxMetadata = new javax.swing.JComboBox<String>();
 
-		jLabelMiapeMSMetadata = new javax.swing.JLabel();
-		jButtonEditMetadata = new javax.swing.JButton();
-		jPanel2 = new javax.swing.JPanel();
-		jTextFieldProjectName = new javax.swing.JTextField();
+		jPanelCenter = new javax.swing.JPanel();
+		jPanelCenter.setAlignmentX(Component.LEFT_ALIGNMENT);
+		jPanelNorth = new javax.swing.JPanel();
+		jTextFieldProjectName = new javax.swing.JTextField("my default dataset folder");
+		jTextFieldProjectName.setColumns(100);
 		jButtonProject = new javax.swing.JButton();
-		jPanel3 = new javax.swing.JPanel();
+		jPanelSouth = new javax.swing.JPanel();
+		jPanelSouth.setPreferredSize(new Dimension(10, 170));
 		jScrollPane1 = new javax.swing.JScrollPane();
 		jTextAreaStatus = new javax.swing.JTextArea();
 		jProgressBar = new javax.swing.JProgressBar();
@@ -330,432 +778,21 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Import data");
 
-		setResizable(false);
+		panel_2 = new JPanel();
+		panel_2.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-		jPanel1.setBorder(
-				new TitledBorder(null, "Select input file(s)", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-
-		jButtonInputFile.setText("Select file");
-		jButtonInputFile.setToolTipText("Select an input file to extract the information");
-		jButtonInputFile.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButtonInputFileActionPerformed(evt);
-			}
-		});
-
-		jPanel4.setBorder(null);
-
-		JPanel panel = new JPanel();
-		panel.setToolTipText(
-				"<html>Input type + MS data file:<br>\r\nUse one of these options if you want later to export a PRIDE XML file containing the spectra. \r\n</html>");
-		panel.setBorder(new TitledBorder(null, "Input type + MS data file", TitledBorder.LEADING, TitledBorder.TOP,
-				null, null));
-
-		JPanel panel_1 = new JPanel();
-		panel_1.setBorder(new TitledBorder(null, "Input type", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-
-		javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-		jPanel4Layout
-				.setHorizontalGroup(
-						jPanel4Layout.createParallelGroup(Alignment.LEADING)
-								.addGroup(jPanel4Layout.createSequentialGroup().addContainerGap()
-										.addGroup(jPanel4Layout.createParallelGroup(Alignment.LEADING)
-												.addGroup(jPanel4Layout.createSequentialGroup()
-														.addComponent(panel, GroupLayout.PREFERRED_SIZE, 243,
-																Short.MAX_VALUE)
-														.addContainerGap())
-												.addComponent(panel_1, GroupLayout.DEFAULT_SIZE,
-														GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))));
-		jPanel4Layout.setVerticalGroup(jPanel4Layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanel4Layout.createSequentialGroup()
-						.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(panel, GroupLayout.PREFERRED_SIZE, 164, Short.MAX_VALUE).addContainerGap()));
-		jRadioButtonMzIdentML = new javax.swing.JRadioButton();
-		jRadioButtonMzIdentML.setSelected(true);
-
-		buttonGroupInputFileFormat.add(jRadioButtonMzIdentML);
-		jRadioButtonMzIdentML.setText("mzIdentML");
-		jRadioButtonMzIdentML.setToolTipText("<html>Import a dataset from a mzIdentML stadard data file.</html>");
-		jRadioButtonPRIDE = new javax.swing.JRadioButton();
-
-		buttonGroupInputFileFormat.add(jRadioButtonPRIDE);
-		jRadioButtonPRIDE.setText("PRIDE XML");
-		jRadioButtonPRIDE.setToolTipText("<html>Import a dataset from a PRIDE XML file.</html>");
-		jRadioButtonPRIDE.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jRadioButtonPRIDEActionPerformed(evt);
-			}
-		});
-		jRadioButtonXTandem = new javax.swing.JRadioButton();
-
-		buttonGroupInputFileFormat.add(jRadioButtonXTandem);
-		jRadioButtonXTandem.setText("XTandem XML");
-		jRadioButtonXTandem.setToolTipText("<html>Import a dataset from a X!Tandem output files.</html>");
-		jRadioButtonXTandem.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jRadioButtonXTandemActionPerformed();
-			}
-		});
-		jRadioButtonDTASelect = new javax.swing.JRadioButton();
-
-		buttonGroupInputFileFormat.add(jRadioButtonDTASelect);
-		jRadioButtonDTASelect.setText("DTASelect");
-		jRadioButtonDTASelect.setToolTipText("<html>Import a dataset from a DTASelect output text file.</html>");
-		jRadioButtonDTASelect.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jRadioButtonDTASelectActionPerformed();
-			}
-		});
-
-		jRatioButtonTabseparatedTextFile = new JRadioButton();
-		jRatioButtonTabseparatedTextFile.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				jRatioButtonTabseparatedTextFileActionPerformed();
-
-			}
-		});
-		buttonGroupInputFileFormat.add(jRatioButtonTabseparatedTextFile);
-		jRatioButtonTabseparatedTextFile
-				.setToolTipText("<html>Import a dataset from a Tab-separated text file.</html>");
-		jRatioButtonTabseparatedTextFile.setText("Table text file");
-
-		jComboBoxTableSeparators = new JComboBox();
-		jComboBoxTableSeparators.setToolTipText("Separator used in the table of the text file");
-		jComboBoxTableSeparators.setEnabled(false);
-		jComboBoxTableSeparators.setModel(new DefaultComboBoxModel(TableTextFileSeparator.values()));
-
-		jButtonHelpSeparators = new JButton();
-		jButtonHelpSeparators.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				showTableTextFileHelp();
-			}
-		});
-		jButtonHelpSeparators.setBorder(BorderFactory.createEmptyBorder());
-		jButtonHelpSeparators.setContentAreaFilled(false);
-		jButtonHelpSeparators.setIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON));
-		jButtonHelpSeparators.setPressedIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON_CLICKED));
-		jButtonHelpSeparators.setRolloverIcon(ImageManager.getImageIcon(ImageManager.HELP_ICON_HOVER));
-		jButtonHelpSeparators.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-		jRadioButtonPepXML = new JRadioButton("pepXML");
-		buttonGroupInputFileFormat.add(jRadioButtonPepXML);
-		jRadioButtonPepXML.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				jRadioButtonPepXMLSelected();
-			}
-		});
-		jRadioButtonPepXML.setToolTipText("<html>Import a dataset from a pepXML output files.</html>");
-		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
-		gl_panel_1.setHorizontalGroup(gl_panel_1.createParallelGroup(Alignment.LEADING).addGroup(gl_panel_1
-				.createSequentialGroup().addContainerGap()
-				.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING).addComponent(jRadioButtonMzIdentML)
-						.addComponent(jRadioButtonPRIDE).addComponent(jRadioButtonDTASelect)
-						.addComponent(jRadioButtonXTandem)
-						.addGroup(gl_panel_1.createSequentialGroup()
-								.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-										.addComponent(jRatioButtonTabseparatedTextFile)
-										.addComponent(jRadioButtonPepXML))
-								.addPreferredGap(ComponentPlacement.UNRELATED)
-								.addComponent(jComboBoxTableSeparators, GroupLayout.PREFERRED_SIZE, 85,
-										GroupLayout.PREFERRED_SIZE)
-								.addGap(7).addComponent(jButtonHelpSeparators, GroupLayout.PREFERRED_SIZE, 16,
-										GroupLayout.PREFERRED_SIZE)))
-				.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-		gl_panel_1
-				.setVerticalGroup(
-						gl_panel_1.createParallelGroup(Alignment.LEADING)
-								.addGroup(
-										gl_panel_1.createSequentialGroup().addContainerGap()
-												.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING)
-														.addComponent(jButtonHelpSeparators, GroupLayout.PREFERRED_SIZE,
-																24, GroupLayout.PREFERRED_SIZE)
-														.addGroup(gl_panel_1.createSequentialGroup()
-																.addComponent(jRadioButtonMzIdentML)
-																.addPreferredGap(ComponentPlacement.RELATED)
-																.addComponent(jRadioButtonPRIDE)
-																.addPreferredGap(ComponentPlacement.RELATED)
-																.addComponent(jRadioButtonDTASelect)
-																.addPreferredGap(ComponentPlacement.RELATED)
-																.addComponent(jRadioButtonXTandem)
-																.addPreferredGap(ComponentPlacement.RELATED)
-																.addComponent(jRadioButtonPepXML)
-																.addPreferredGap(
-																		ComponentPlacement.RELATED)
-								.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
-										.addComponent(jRatioButtonTabseparatedTextFile)
-										.addComponent(jComboBoxTableSeparators, GroupLayout.PREFERRED_SIZE,
-												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
-				.addContainerGap()));
-		panel_1.setLayout(gl_panel_1);
-		jRadioButtonMzIdentML.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jRadioButtonMzIdentMLActionPerformed();
-			}
-		});
-		jRadioButtonMzIdentMLMGF = new javax.swing.JRadioButton();
-
-		buttonGroupInputFileFormat.add(jRadioButtonMzIdentMLMGF);
-		jRadioButtonMzIdentMLMGF.setText("mzIdentML + mgf");
-		jRadioButtonMzIdentMLMGF.setToolTipText(
-				"<html>Imports dataset from a mzIdentML file and keeps the PSMs linked to the spectra using a MGF file.<br>\r\nA PRIDE XML file could be created just in case of using a mgf file that has been used directly in the search.<br>\r\nA metadata template will be mandatory in order to complete the Mass Spectrometry metadata information.</html>");
-		jRadioButtonMzIdentMLMGF.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jRadioButtonMzIdentMLMGFActionPerformed(evt);
-			}
-		});
-		jRadioButtonMzMLMzIdentML = new javax.swing.JRadioButton();
-
-		buttonGroupInputFileFormat.add(jRadioButtonMzMLMzIdentML);
-		jRadioButtonMzMLMzIdentML.setText("mzIdentML + mzML");
-		jRadioButtonMzMLMzIdentML.setToolTipText(
-				"<html>Imports dataset from a mzIdentML file and keeps the PSMs linked to the spectra using a mzML file.<br>\r\nA PRIDE XML file could be created just in case of using a mzML file that has been used directly in the search.<br>\r\nThe use of a metadata template will be optional in this case.</html>");
-		jRadioButtonXTandemMGF = new javax.swing.JRadioButton();
-
-		buttonGroupInputFileFormat.add(jRadioButtonXTandemMGF);
-		jRadioButtonXTandemMGF.setText("XTandem XML + mgf");
-		jRadioButtonXTandemMGF.setToolTipText(
-				"<html>Imports dataset from a XTandem XML output file and keeps the PSMs linked to the spectra using a mgf file.<br>\r\nA PRIDE XML file could be created just in case of using a mgf file that has been used directly in the search.<br>\r\nA metadata template will be mandatory in order to complete the Mass Spectrometry metadata information.</html>");
-		jRadioButtonXTandemMGF.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jRadioButtonXTandemMGFActionPerformed(evt);
-			}
-		});
-		jRadioButtonDTASelectMGF = new javax.swing.JRadioButton();
-
-		buttonGroupInputFileFormat.add(jRadioButtonDTASelectMGF);
-		jRadioButtonDTASelectMGF.setText("DTASelect-filter + mgf");
-		jRadioButtonDTASelectMGF.setToolTipText(
-				"<html>Imports dataset from a DTASelect-filter.txt file and keeps the PSMs linked to the spectra using a mgf file.<br>\r\nA PRIDE XML file could be created just in case of using a mgf file that has been used directly in the search.<br>\r\nA metadata template will be mandatory in order to complete the Mass Spectrometry metadata information.</html>");
-		jRadioButtonDTASelectMGF.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jRadioButtonDTASelectMGFActionPerformed(evt);
-			}
-		});
-
-		JLabel lblforPrideExport = new JLabel("(for PRIDE export)");
-		lblforPrideExport.setToolTipText(
-				"<html>Input type + MS data file:<br>\r\nUse one of these options if you want later to export a PRIDE XML file containing the spectra. \r\n</html>");
-
-		jRadioButtonPepXMLMGF = new JRadioButton("pepXML + mgf");
-		buttonGroupInputFileFormat.add(jRadioButtonPepXMLMGF);
-		jRadioButtonPepXMLMGF.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				jRatioButtonPepXMLPlusMGFSelected();
-			}
-		});
-		jRadioButtonPepXMLMGF.setToolTipText(
-				"<html>Imports dataset from a pepXML file and keeps the PSMs linked to the spectra using a mgf file.<br>\r\nA PRIDE XML file could be created just in case of using a mgf file that has been used directly in the search.<br>\r\nA metadata template will be mandatory in order to complete the Mass Spectrometry metadata information.</html>");
-		GroupLayout gl_panel = new GroupLayout(panel);
-		gl_panel.setHorizontalGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel.createSequentialGroup().addContainerGap()
-						.addGroup(gl_panel.createParallelGroup(Alignment.LEADING).addComponent(jRadioButtonPepXMLMGF)
-								.addComponent(jRadioButtonDTASelectMGF, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(jRadioButtonXTandemMGF, GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
-						.addGroup(gl_panel.createParallelGroup(Alignment.LEADING, false).addComponent(lblforPrideExport)
-								.addComponent(jRadioButtonMzIdentMLMGF, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(jRadioButtonMzMLMzIdentML, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-						.addContainerGap()));
-		gl_panel.setVerticalGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel.createSequentialGroup().addComponent(lblforPrideExport)
-						.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(jRadioButtonMzIdentMLMGF)
-						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonMzMLMzIdentML)
-						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonXTandemMGF)
-						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonDTASelectMGF)
-						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jRadioButtonPepXMLMGF)
-						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-		panel.setLayout(gl_panel);
-		jRadioButtonMzMLMzIdentML.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jRadioButtonMzMLMzIdentMLActionPerformed(evt);
-			}
-		});
-		jPanel4.setLayout(jPanel4Layout);
-
-		jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Output data type(s)"));
-		jPanel6.setToolTipText("<html>Types of data that is going to be extracted and imported/html>");
-		jCheckBoxMS.setText("Mass Spectrometry data");
-		jCheckBoxMS.addItemListener(new java.awt.event.ItemListener() {
-			@Override
-			public void itemStateChanged(java.awt.event.ItemEvent evt) {
-				jCheckBoxMSItemStateChanged(evt);
-			}
-		});
-
-		jCheckBoxMSI.setText("Protein/Peptide identification data");
-
-		javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-		jPanel6.setLayout(jPanel6Layout);
-		jPanel6Layout.setHorizontalGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addComponent(jCheckBoxMS).addComponent(jCheckBoxMSI));
-		jPanel6Layout.setVerticalGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanel6Layout.createSequentialGroup().addComponent(jCheckBoxMS)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jCheckBoxMSI)
-						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-
-		jPanel8.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Processing type",
+		jPanelNorth.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"),
+				"Type a name to create a new dataset folder, or select one from the list (click on 'Select dataset folder')",
 				TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		jPanel8.setToolTipText("Processing type");
-
-		jCheckBoxLocalProcessinInParallel.setSelected(true);
-		jCheckBoxLocalProcessinInParallel.setText("multi-core processing");
-
-		javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-		jPanel8Layout.setHorizontalGroup(jPanel8Layout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(Alignment.LEADING, jPanel8Layout.createSequentialGroup().addContainerGap()
-						.addComponent(jCheckBoxLocalProcessinInParallel).addContainerGap(82, Short.MAX_VALUE)));
-		jPanel8Layout
-				.setVerticalGroup(jPanel8Layout.createParallelGroup(Alignment.LEADING)
-						.addGroup(jPanel8Layout.createSequentialGroup().addContainerGap()
-								.addComponent(jCheckBoxLocalProcessinInParallel)
-								.addContainerGap(173, Short.MAX_VALUE)));
-		jPanel8.setLayout(jPanel8Layout);
-
-		inputFileLabel1.setText("not applicable:");
-
-		inputFileLabel2.setText("mzIdentML file:");
-
-		jButtonInputFile2.setText("Select file");
-		jButtonInputFile2.setToolTipText("Select a standard xml file to extract the input information");
-		jButtonInputFile2.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButtonInputFile2ActionPerformed(evt);
-			}
-		});
-
-		jScrollPane2.setBorder(null);
-		jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-		jPanel5.setBorder(new TitledBorder(null, "Mass Spectrometry metadata (for PRIDE export)", TitledBorder.LEADING,
-				TitledBorder.TOP, null, null));
-		jPanel5.setToolTipText(
-				"<html>In case of using input files with MIAPE Mass Spectrometry information,<br>you can predefine some required<br> metadata to complement data from mzML or PRIDE XML.</html>");
-
-		jComboBoxMetadata
-				.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Loading metadata templates..." }));
-		jComboBoxMetadata.addItemListener(new java.awt.event.ItemListener() {
-			@Override
-			public void itemStateChanged(java.awt.event.ItemEvent evt) {
-				jComboBoxMetadataItemStateChanged(evt);
-			}
-		});
-
-		jLabelMiapeMSMetadata.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-		jLabelMiapeMSMetadata.setAutoscrolls(true);
-
-		jButtonEditMetadata.setIcon(new javax.swing.ImageIcon(
-				"C:\\Users\\Salva\\workspace\\miape-extractor\\src\\main\\resources\\finish.png")); // NOI18N
-		jButtonEditMetadata.setText("Edit");
-		jButtonEditMetadata.setToolTipText("Inspect Mass Spectrometry metadata");
-		jButtonEditMetadata.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButtonEditMetadataActionPerformed(evt);
-			}
-		});
-
-		javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-		jPanel5Layout.setHorizontalGroup(jPanel5Layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanel5Layout.createSequentialGroup().addContainerGap()
-						.addGroup(jPanel5Layout.createParallelGroup(Alignment.TRAILING, false)
-								.addComponent(jLabelMiapeMSMetadata, Alignment.LEADING, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addGroup(Alignment.LEADING,
-								jPanel5Layout.createSequentialGroup()
-										.addComponent(jComboBoxMetadata, GroupLayout.PREFERRED_SIZE, 263,
-												GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(ComponentPlacement.RELATED).addComponent(jButtonEditMetadata)))
-						.addContainerGap(340, Short.MAX_VALUE)));
-		jPanel5Layout.setVerticalGroup(jPanel5Layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanel5Layout.createSequentialGroup().addContainerGap()
-						.addGroup(jPanel5Layout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(jComboBoxMetadata, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(jButtonEditMetadata))
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(jLabelMiapeMSMetadata, GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
-						.addContainerGap()));
-		jPanel5.setLayout(jPanel5Layout);
-
-		jScrollPane2.setViewportView(jPanel5);
-
-		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel1Layout
-				.createSequentialGroup().addContainerGap()
-				.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-						.addGroup(jPanel1Layout.createSequentialGroup()
-								.addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, 252, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING, false)
-										.addComponent(jPanel8, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
-										.addComponent(jPanel6, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE))
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE))
-						.addGroup(jPanel1Layout.createSequentialGroup()
-								.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-										.addComponent(inputFileLabel2).addComponent(inputFileLabel1))
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING, false)
-										.addComponent(jTextFieldInputFile2).addComponent(jTextFieldInputFile,
-												GroupLayout.DEFAULT_SIZE, 618, Short.MAX_VALUE))
-								.addGap(18)
-								.addGroup(jPanel1Layout.createParallelGroup(Alignment.TRAILING)
-										.addComponent(jButtonInputFile2).addComponent(jButtonInputFile))))
-				.addContainerGap()));
-		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanel1Layout.createSequentialGroup()
-						.addGroup(jPanel1Layout.createParallelGroup(Alignment.BASELINE).addComponent(inputFileLabel1)
-								.addComponent(jTextFieldInputFile, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(jButtonInputFile))
-				.addPreferredGap(ComponentPlacement.RELATED)
-				.addGroup(jPanel1Layout.createParallelGroup(Alignment.BASELINE).addComponent(inputFileLabel2)
-						.addComponent(jTextFieldInputFile2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addComponent(jButtonInputFile2))
-				.addPreferredGap(ComponentPlacement.RELATED)
-				.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-						.addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 359, Short.MAX_VALUE)
-						.addGroup(jPanel1Layout.createSequentialGroup()
-								.addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(jPanel8, GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE))
-						.addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, 396, Short.MAX_VALUE)).addContainerGap()));
-		jPanel1.setLayout(jPanel1Layout);
-
-		jPanel2.setBorder(new TitledBorder(null,
-				"Type a name to create a new project, or select one from the list (çlick on 'Select project')",
-				TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		jPanel2.setToolTipText(
-				"<html>Write directly a new project name to create a new<br>\n project in which the data will be stored.</html>");
+		jPanelNorth.setToolTipText(
+				"<html>Write directly a new dataset folder name to create a new<br>\n folder in which the datasets will be stored.</html>");
 
 		jTextFieldProjectName.setToolTipText(
-				"<html>Write directly a new project name to create a new<br>\n project in which the data will be stored.</html>");
+				"<html>Write directly a new dataset folder name to create a new<br>\n folder in which the datasets will be stored.</html>");
 
-		jButtonProject.setText("Select project");
-		jButtonProject
-				.setToolTipText("<html>Select one of your projects<br>or write a new name to create a new one</html>");
+		jButtonProject.setText("Select dataset folder");
+		jButtonProject.setToolTipText(
+				"<html>Select one of the dataset folders<br>or write a new name to create a new one</html>");
 		jButtonProject.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -763,23 +800,24 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 			}
 		});
 
-		javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-		jPanel2.setLayout(jPanel2Layout);
-		jPanel2Layout.setHorizontalGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
-						jPanel2Layout.createSequentialGroup().addContainerGap()
-								.addComponent(jTextFieldProjectName, javax.swing.GroupLayout.DEFAULT_SIZE, 667,
-										Short.MAX_VALUE)
-								.addGap(18, 18, 18).addComponent(jButtonProject).addContainerGap()));
-		jPanel2Layout.setVerticalGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanel2Layout.createSequentialGroup()
-						.addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-								.addComponent(jButtonProject).addComponent(jTextFieldProjectName,
-										javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.PREFERRED_SIZE))
-						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+		javax.swing.GroupLayout gl_jPanelNorth = new javax.swing.GroupLayout(jPanelNorth);
+		gl_jPanelNorth
+				.setHorizontalGroup(gl_jPanelNorth.createParallelGroup(Alignment.TRAILING).addGroup(Alignment.LEADING,
+						gl_jPanelNorth.createSequentialGroup().addContainerGap()
+								.addComponent(jTextFieldProjectName, GroupLayout.PREFERRED_SIZE, 223,
+										GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(jButtonProject)
+								.addContainerGap(667, Short.MAX_VALUE)));
+		gl_jPanelNorth.setVerticalGroup(gl_jPanelNorth.createParallelGroup(Alignment.LEADING).addGroup(gl_jPanelNorth
+				.createSequentialGroup().addGap(11)
+				.addGroup(gl_jPanelNorth.createParallelGroup(Alignment.BASELINE)
+						.addComponent(jTextFieldProjectName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
+						.addComponent(jButtonProject))
+				.addContainerGap(26, Short.MAX_VALUE)));
+		jPanelNorth.setLayout(gl_jPanelNorth);
 
-		jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Status"));
+		jPanelSouth.setBorder(javax.swing.BorderFactory.createTitledBorder("Status"));
 
 		jScrollPane1.setAutoscrolls(true);
 
@@ -819,62 +857,32 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 
 		jButtonHelp = new OpenHelpButton(this);
 
-		javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-		jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanel3Layout.createSequentialGroup().addContainerGap()
-						.addGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING)
+		javax.swing.GroupLayout gl_jPanelSouth = new javax.swing.GroupLayout(jPanelSouth);
+		gl_jPanelSouth.setHorizontalGroup(gl_jPanelSouth.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_jPanelSouth.createSequentialGroup().addContainerGap()
+						.addGroup(gl_jPanelSouth.createParallelGroup(Alignment.TRAILING)
 								.addComponent(jProgressBar, GroupLayout.DEFAULT_SIZE, 961, Short.MAX_VALUE)
-								.addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 961,
-										Short.MAX_VALUE)
-								.addGroup(jPanel3Layout.createSequentialGroup().addComponent(jButtonGoToData)
+								.addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 961, Short.MAX_VALUE)
+								.addGroup(gl_jPanelSouth.createSequentialGroup().addComponent(jButtonGoToData)
 										.addPreferredGap(ComponentPlacement.RELATED, 443, Short.MAX_VALUE)
 										.addComponent(jButtonCancel).addGap(18).addComponent(jButtonSubmit).addGap(18)
 										.addComponent(jButtonHelp)))
 						.addContainerGap()));
-		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanel3Layout.createSequentialGroup()
+		gl_jPanelSouth.setVerticalGroup(gl_jPanelSouth.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_jPanelSouth.createSequentialGroup()
 						.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 								GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addComponent(jProgressBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 								GroupLayout.PREFERRED_SIZE)
-				.addPreferredGap(ComponentPlacement.RELATED)
-				.addGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING)
-						.addGroup(jPanel3Layout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(jButtonSubmit, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)
-								.addComponent(jButtonCancel))
-						.addComponent(jButtonGoToData).addComponent(jButtonHelp))));
-		jPanel3.setLayout(jPanel3Layout);
-
-		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-		layout.setHorizontalGroup(
-				layout.createParallelGroup(Alignment.LEADING)
-						.addGroup(
-								layout.createSequentialGroup().addContainerGap()
-										.addGroup(
-												layout.createParallelGroup(Alignment.LEADING)
-														.addGroup(layout.createSequentialGroup()
-																.addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, 874,
-																		Short.MAX_VALUE)
-																.addContainerGap())
-										.addGroup(
-												layout.createSequentialGroup()
-														.addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, 874,
-																Short.MAX_VALUE)
-														.addContainerGap()).addComponent(jPanel1, Alignment.TRAILING,
-																GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-																Short.MAX_VALUE))));
-		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup().addContainerGap()
-						.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(jPanel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE).addContainerGap()));
-		getContentPane().setLayout(layout);
+						.addGroup(gl_jPanelSouth.createParallelGroup(Alignment.TRAILING)
+								.addGroup(gl_jPanelSouth.createParallelGroup(Alignment.BASELINE)
+										.addComponent(jButtonSubmit, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+												Short.MAX_VALUE)
+										.addComponent(jButtonCancel))
+								.addComponent(jButtonGoToData).addComponent(jButtonHelp))));
+		jPanelSouth.setLayout(gl_jPanelSouth);
 
 		pack();
 		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
@@ -885,49 +893,6 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 	protected void goToDataInspection() {
 		this.setVisible(false);
 		this.mainFrame.startProjectComparison();
-	}
-
-	private void jRatioButtonPepXMLPlusMGFSelected() {
-		// disable and select MIAPE MS
-		jCheckBoxMS.setEnabled(false);
-		jCheckBoxMS.setSelected(true);
-		// disable and select MIAPE MSI
-
-		jCheckBoxMSI.setSelected(true);
-
-		jComboBoxMetadata.setEnabled(true);
-		jButtonEditMetadata.setEnabled(true);
-
-		enablePrimaryInputTextFile(MGF_FILE_LABEL);
-		enableSecondaryInputTextFile(PEPXML_FILE_LABEL);
-
-		String mgfPlusDTASelectMessage = "<html>With this option, you will be able to create <ul><li>a MS dataset from the mgf file. "
-				+ "(Some minimal information about the spectrometer<br>will be asked to you before to start the process).</li>"
-				+ "<li>an identification dataset from the pepXML file.</li></ul>"
-				+ "If the pepXML file comes from a search using the mgf file, "
-				+ "later you will be able to create<br>a complete PRIDE XML file from both MS and identification datasets.</html>";
-		// show mzML + mzIdentML warning
-		JOptionPane.showMessageDialog(this, mgfPlusDTASelectMessage, "mgf + pepXML", JOptionPane.INFORMATION_MESSAGE);
-
-		// show local processing warning
-		// if (jRadioButtonLocalProcessin
-	}
-
-	private void jRadioButtonPepXMLSelected() {
-
-		// the same as for mzIdentML
-		jRadioButtonMzIdentMLActionPerformed();
-
-		disablePrimaryInputTextFile();
-		enableSecondaryInputTextFile(PEPXML_FILE_LABEL);
-
-		// reset combo box, deleting current mzml if exists
-		FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_MZML);
-	}
-
-	private void showTableTextFileHelp() {
-		HelpDialog helpDialog = new HelpDialog(this, "Text table format", getTextTableFormatText1());
-		helpDialog.setVisible(true);
 	}
 
 	public static String getTextTableFormatText1() {
@@ -954,179 +919,96 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 		return "<li><b>" + column.getHeaderName() + "</b>" + mandatory + ": " + column.getHeaderExplanation() + "</li>";
 	}
 
-	protected void jRatioButtonTabseparatedTextFileActionPerformed() {
-
-		jComboBoxTableSeparators.setEnabled(jRatioButtonTabseparatedTextFile.isSelected());
-
-		// the same as for mzIdentML
-		jRadioButtonMzIdentMLActionPerformed();
-
-		disablePrimaryInputTextFile();
-		enableSecondaryInputTextFile(TSV_FILE_LABEL);
-
-		// reset combo box, deleting current mzml if exists
-		FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_MZML);
-
-	}
-
-	private void jCheckBoxMSItemStateChanged(java.awt.event.ItemEvent evt) {
-		if (!jCheckBoxMS.isSelected()) {
-			jComboBoxMetadata.setSelectedIndex(0);
+	private void jButtonInputFileActionPerformed(java.awt.event.ActionEvent evt) {
+		try {
+			selectFilesAndGuessTypes();
+		} catch (Exception e) {
+			appendStatus(e.getMessage());
 		}
-		// jComboBoxMetadata.setEnabled(jCheckBoxMS.isSelected());
-		// jButtonEditMetadata.setEnabled(jCheckBoxMS.isSelected());
 	}
 
-	private void jButtonEditMetadataActionPerformed(java.awt.event.ActionEvent evt) {
-		if (miapeMSChecker == null || !miapeMSChecker.getState().equals(StateValue.STARTED)) {
-			boolean extractFromStandardFile;
-			if ("".equals(jComboBoxMetadata.getSelectedItem())) {
-				extractFromStandardFile = true;
-			} else {
-				extractFromStandardFile = false;
+	private void selectFilesAndGuessTypes() {
+
+		selectedInputFiles = selectFiles(true);
+		guessInputDataTypes(selectedInputFiles);
+	}
+
+	private void guessInputDataTypes(File file, MiapeExtractionTask associatedTask) {
+		inputDataTypeGuesser = new InputDataTypeGuesser(file, associatedTask);
+		inputDataTypeGuesser.addPropertyChangeListener(this);
+		inputDataTypeGuesser.execute();
+	}
+
+	private void guessInputDataTypes(File[] files) {
+		inputDataTypeGuesser = new InputDataTypeGuesser(files);
+		inputDataTypeGuesser.addPropertyChangeListener(this);
+		inputDataTypeGuesser.execute();
+	}
+
+	/**
+	 * Creates a job list and creates the GUI controls for each
+	 * 
+	 * @param inputFiles
+	 * @param inputDataType
+	 * @param mode
+	 */
+	private void createAndLoadImportTasks(File[] inputFiles, Map<File, InputFileType> filesAndTypes) {
+		// create manager from the table
+		this.miapeExtractorBatchManager = createMiapeExtractorBatchManagerFromTable();
+		if (inputFiles != null) {
+
+			// add one task per selected file
+			for (File selectedFile : inputFiles) {
+				InputFileType inputFileType = null; // by default
+				InputFileType guessedInputDataType = filesAndTypes.get(selectedFile);
+				if (guessedInputDataType != null) {
+					inputFileType = guessedInputDataType;
+				} else {
+					guessedInputDataType = ImportTasksUtil.getSuggestedFileTypeByFileName(selectedFile);
+					if (guessedInputDataType != null && guessedInputDataType != inputFileType) {
+						// create message to show the message to the user
+						appendStatus("Guessing by its name, the input file '"
+								+ FilenameUtils.getName(selectedFile.getAbsolutePath()) + "' seems to be a '"
+								+ guessedInputDataType.getPrimaryFileDescription()
+								+ "'. Check this change before proceed.");
+						inputFileType = guessedInputDataType;
+					}
+				}
+				MiapeExtractionTask task = this.miapeExtractorBatchManager.addImportTask(selectedFile, inputFileType,
+						null, getProjectName(), null);
+				// add that task to the table
+				scrollableImportTaskTable.getTable().addRow(task);
+				// enable button for selecting attached MS files
+				enableSelectionOfAttachedMSInputFiles(true);
 			}
-			miapeMSChecker = new MIAPEMSChecker(this, extractFromStandardFile);
-			miapeMSChecker.addPropertyChangeListener(this);
-			miapeMSChecker.execute();
-
 		} else
-			appendStatus("MIAPE MS metadata is currently being checked. Try again later");
-	}
 
-	private void jComboBoxMetadataItemStateChanged(java.awt.event.ItemEvent evt) {
-		if (evt.getStateChange() == ItemEvent.SELECTED) {
-			String metadataFileName = (String) jComboBoxMetadata.getSelectedItem();
-			MetadataLoader metadataLoader = new MetadataLoader(metadataFileName);
-			metadataLoader.addPropertyChangeListener(this);
-			metadataLoader.execute();
-
-			// if (metadataFileName != null && !"".equals(metadataFileName)) {
-			// jCheckBoxMS.setSelected(true);
-			// } else {
-			// jCheckBoxMS.setSelected(false);
-			// }
+		{
+			appendStatus("No input file selected");
 		}
 	}
 
-	// private void
-	// jButtonAddAdditionalDataActionPerformed(java.awt.event.ActionEvent evt) {
-	// // select the additional information
-	// // open select instrument window
-	// if (this.jRadioButtonMzIdentMLMGF.isSelected())
-	// this.selectInstrument();
-	// }
-
-	private void changeRadioStatus() {
-		if (mainFrame != null) {
-
-			// enable multicore processing option
-			jCheckBoxLocalProcessinInParallel.setEnabled(true);
-
+	private MiapeExtractionBatchManager createMiapeExtractorBatchManagerFromTable() {
+		MiapeExtractionBatchManager ret = new MiapeExtractionBatchManager(this, cvManager);
+		List<MiapeExtractionTask> importTasks = scrollableImportTaskTable.getTable().getImportTasks();
+		for (MiapeExtractionTask task : importTasks) {
+			if (task.isDone() && (task.getResult() == null || task.getResult().getErrorMessage() != null)) {
+				MiapeExtractionTask newTask = new MiapeExtractionTask(task.getParameters());
+				scrollableImportTaskTable.getTable().getImportTaskTableModel().replaceImportTask(task, newTask);
+				ret.addTaskToQueue(newTask);
+			} else if (!task.isDone()) {
+				ret.addTaskToQueue(task);
+			}
 		}
-
-	}
-
-	// private void showLocalProcessingWarn() {
-	// if (!MainFrame.localWorkflow) {
-	// String localProcessingMessage = "<html>If you select local processing,
-	// you have two options:<br>"
-	// + "<ul><li><b>Store in repository</b>: all the MIAPE information will be
-	// extracted locally from the input files<br>"
-	// + "and the extracted information will be sent to the ProteoRed MIAPE
-	// repository.</li>"
-	// + "<li><b>Fully local worflow</b>: all the MIAPE information will be
-	// extracted locally from the input files<br>"
-	// + "and the extracted information will stored in local files.<br>"
-	// + "No interaction with ProteoRed MIAPE repository will be
-	// performed.</li></ul></html>";
-	// String title = "Local processing vs Remote processing";
-	//
-	// JOptionPane.showMessageDialog(this, localProcessingMessage, title,
-	// JOptionPane.INFORMATION_MESSAGE);
-	// }
-	// }
-
-	private void jRadioButtonMzMLMzIdentMLActionPerformed(java.awt.event.ActionEvent evt) {
-		// disable and select MIAPE MS
-		jCheckBoxMS.setEnabled(false);
-		jCheckBoxMS.setSelected(true);
-		// disable and select MIAPE MSI
-
-		jCheckBoxMSI.setSelected(true);
-
-		jComboBoxMetadata.setEnabled(true);
-		jButtonEditMetadata.setEnabled(true);
-
-		enablePrimaryInputTextFile(MZML_FILE_LABEL);
-		enableSecondaryInputTextFile(MZIDENTML_FILE_LABEL);
-
-		// set mzIdentML file to the secondary input file label
-		String mzMLPlusmzIdentMLMessage = "<html>With this option, you will be able to import:<br><ul><li>a MS dataset from the mzML file, and</li> <li>a identification dataset from the mzIdentML file</li></ul>"
-				+ "If the mzIdentML file comes from a MASCOT search, later you will be able to<br>create a complete PRIDE XML file from both MS and identification datasets<br>(option 'export to PRIDE XML')</html>";
-		// show mzML + mzIdentML warnning
-		JOptionPane.showMessageDialog(this, mzMLPlusmzIdentMLMessage, "mzML + mzIdentML",
-				JOptionPane.INFORMATION_MESSAGE);
-		// show local processing warning
-		// if (jRadioButtonLocalProcessing.isSelected())
-		// showLocalProcessingWarn();
-	}
-
-	private void jButtonInputFile2ActionPerformed(java.awt.event.ActionEvent evt) {
-
-		int mode = ALLMODE;
-		if (jRadioButtonMzIdentML.isSelected() || jRadioButtonMzIdentMLMGF.isSelected()
-				|| jRadioButtonMzMLMzIdentML.isSelected()) {
-			mode = MZIDENTMLMODE;
-		} else if (jRadioButtonXTandem.isSelected() || jRadioButtonXTandemMGF.isSelected()) {
-			mode = XTANDEMMODE;
-		} else if (jRadioButtonDTASelect.isSelected() || jRadioButtonDTASelectMGF.isSelected()) {
-			mode = DTASELECTMODE;
-		}
-		// select the file
-		String selectedFile = selectFile(mode);
-		if (selectedFile.compareTo("null") == 0)
-			log.info("ERROR: I/O");
-		else {
-			jTextFieldInputFile2.setText(selectedFile);
-		}
-
-	}
-
-	private void jRadioButtonXTandemActionPerformed() {
-
-		// the same as for mzIdentML
-		jRadioButtonMzIdentMLActionPerformed();
-
-		disablePrimaryInputTextFile();
-		enableSecondaryInputTextFile(XTANDEM_FILE_LABEL);
-
-		// reset combo box, deleting current mzml if exists
-		FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_MZML);
-
-	}
-
-	private void jRadioButtonDTASelectActionPerformed() {
-
-		// disable and not select MIAPE MS
-		jCheckBoxMS.setEnabled(false);
-		jCheckBoxMS.setSelected(false);
-		// disable and select MIAPE MSI
-
-		jCheckBoxMSI.setSelected(true);
-		// the same as for mzIdentML
-		jRadioButtonMzIdentMLActionPerformed();
-
-		disablePrimaryInputTextFile();
-		enableSecondaryInputTextFile(DTASELECT_FILE_LABEL);
-
-		// reset combo box, deleting current mzml if exists
-		FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_MZML);
-
+		return ret;
 	}
 
 	private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {
-		if (this.miapeExtractionTask.getState() == StateValue.STARTED) {
-			this.miapeExtractionTask.cancel(true);
+		if (this.miapeExtractorBatchManager != null) {
+			this.miapeExtractorBatchManager.cancelMiapeExtractions();
+		}
+		if (inputDataTypeGuesser != null && inputDataTypeGuesser.getState() == StateValue.STARTED) {
+			inputDataTypeGuesser.cancel(true);
 		}
 	}
 
@@ -1134,236 +1016,104 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 		return mainFrame;
 	}
 
-	private void jRadioButtonMzIdentMLActionPerformed() {
+	private void enableSelectionOfAttachedMSInputFiles(boolean b) {
 
-		// disable and not select MIAPE MS
-		jCheckBoxMS.setEnabled(false);
-		jCheckBoxMS.setSelected(false);
-		// disable and select MIAPE MSI
-
-		jCheckBoxMSI.setSelected(true);
-
-		// disable secondary input file
-		disablePrimaryInputTextFile();
-		enableSecondaryInputTextFile(MZIDENTML_FILE_LABEL);
-
-		// this.jLabelMiapeMSMetadata.setText("");
-		// reset combo box, deleting current mzml if exists
-		FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_MZML);
+		jButtonInputFileAttach.setEnabled(b);
 
 	}
 
-	private void jRadioButtonPRIDEActionPerformed(java.awt.event.ActionEvent evt) {
+	private File[] selectFiles(boolean multipleFiles) {
+		FileNameExtensionFilter filter = null;
 
-		// disable additional data labels
-		// enable and check MIAPE MS checkbox
-		jCheckBoxMS.setEnabled(true);
-		// enable and check MIAPE MSI checkbox
-		jCheckBoxMSI.setSelected(true);
-
-		jComboBoxMetadata.setEnabled(jCheckBoxMS.isSelected());
-		jButtonEditMetadata.setEnabled(jCheckBoxMS.isSelected());
-
-		enablePrimaryInputTextFile(PRIDE_FILE_LABEL);
-		disableSecondaryInputTextFile();
-
-		// show check boxes tooltip
-		showCheckBoxesTooltip();
-
-		// reset combo box, deleting current mzml if exists
-		FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_MZML);
-
-		String PRIDEMessage = "<html>With this option, you can also optionally import the MS dataset together with the MS metadata<br>"
-				+ "from the PRIDE XML file in order to keep it linked with the PSMs and be able to create<br>"
-				+ "a new PRIDE XML potentially aggregating more datasets in a single file.</html>";
-		// show mzML + mzIdentML warning
-		JOptionPane.showMessageDialog(this, PRIDEMessage, "PRIDE", JOptionPane.INFORMATION_MESSAGE);
-	}
-
-	private void jRadioButtonMzIdentMLMGFActionPerformed(java.awt.event.ActionEvent evt) {
-		// disable and select MIAPE MS
-		jCheckBoxMS.setEnabled(false);
-		jCheckBoxMS.setSelected(true);
-		// disable and select MIAPE MSI
-
-		jCheckBoxMSI.setSelected(true);
-
-		jComboBoxMetadata.setEnabled(true);
-		jButtonEditMetadata.setEnabled(true);
-
-		enablePrimaryInputTextFile(MGF_FILE_LABEL);
-		enableSecondaryInputTextFile(MZIDENTML_FILE_LABEL);
-
-		String mgfPlusmzIdentMLMessage = "<html>With this option, you will be able to create <ul><li>a MS dataset from the mgf file. "
-				+ "(Some minimal information about the spectrometer<br>will be asked to you before to start the process).</li>"
-				+ "<li>an identification dataset from the mzIdentML file.</li></ul>"
-				+ "If the mzIdentML file comes from a MASCOT search that comes from the mgf file, "
-				+ "later you will be able to create<br>a complete PRIDE XML file from both MS and identification documents.</html>";
-		// show mzML + mzIdentML warning
-		JOptionPane.showMessageDialog(this, mgfPlusmzIdentMLMessage, "mgf + mzIdentML",
-				JOptionPane.INFORMATION_MESSAGE);
-
-		// show local processing warning
-		// if (jRadioButtonLocalProcessing.isSelected())
-		// showLocalProcessingWarn();
-
-	}
-
-	private void jRadioButtonXTandemMGFActionPerformed(java.awt.event.ActionEvent evt) {
-		// disable and select MIAPE MS
-		jCheckBoxMS.setEnabled(false);
-		jCheckBoxMS.setSelected(true);
-		// disable and select MIAPE MSI
-
-		jCheckBoxMSI.setSelected(true);
-
-		jComboBoxMetadata.setEnabled(true);
-		jButtonEditMetadata.setEnabled(true);
-
-		enablePrimaryInputTextFile(MGF_FILE_LABEL);
-		enableSecondaryInputTextFile(XTANDEM_FILE_LABEL);
-
-		String mgfPlusXTandemMessage = "<html>With this option, you will be able to create <ul><li>a MS dataset from the mgf file. "
-				+ "(Some minimal information about the spectrometer<br>will be asked to you before to start the process).</li>"
-				+ "<li>an identification dataset from the XTandem XML file.</li></ul>"
-				+ "If the XTandem XML file comes from a search using the mgf file, "
-				+ "later you will be able to create<br>a complete PRIDE XML file from both MS and identification datasets</html>";
-		// show mzML + mzIdentML warning
-		JOptionPane.showMessageDialog(this, mgfPlusXTandemMessage, "mgf + XTandem XML",
-				JOptionPane.INFORMATION_MESSAGE);
-
-		// show local processing warning
-		// if (jRadioButtonLocalProcessing.isSelected())
-		// showLocalProcessingWarn();
-
-	}
-
-	private void jRadioButtonDTASelectMGFActionPerformed(java.awt.event.ActionEvent evt) {
-		// disable and select MIAPE MS
-		jCheckBoxMS.setEnabled(false);
-		jCheckBoxMS.setSelected(true);
-		// disable and select MIAPE MSI
-
-		jCheckBoxMSI.setSelected(true);
-
-		jComboBoxMetadata.setEnabled(true);
-		jButtonEditMetadata.setEnabled(true);
-
-		enablePrimaryInputTextFile(MGF_FILE_LABEL);
-		enableSecondaryInputTextFile(DTASELECT_FILE_LABEL);
-
-		String mgfPlusDTASelectMessage = "<html>With this option, you will be able to create <ul><li>a MS dataset from the mgf file. "
-				+ "(Some minimal information about the spectrometer<br>will be asked to you before to start the process).</li>"
-				+ "<li>an identification dataset from the DTASelect file.</li></ul>"
-				+ "If the DTASelect file comes from a search using the mgf file, "
-				+ "later you will be able to create<br>a complete PRIDE XML file from both MS and identification datasets.</html>";
-		// show mzML + mzIdentML warning
-		JOptionPane.showMessageDialog(this, mgfPlusDTASelectMessage, "mgf + DTASelect",
-				JOptionPane.INFORMATION_MESSAGE);
-
-		// show local processing warning
-		// if (jRadioButtonLocalProcessing.isSelected())
-		// showLocalProcessingWarn();
-
-	}
-
-	private void showCheckBoxesTooltip() {
-		ToolTipManager.sharedInstance().mouseMoved(new MouseEvent(jPanel6, 0, 0, 0, 5, 45, 0, false));
-	}
-
-	private void enableSecondaryInputTextFile(String textSecondaryLabel) {
-		jTextFieldInputFile2.setEnabled(true);
-		inputFileLabel2.setText(textSecondaryLabel);
-		inputFileLabel2.setEnabled(true);
-		jButtonInputFile2.setEnabled(true);
-	}
-
-	private void enablePrimaryInputTextFile(String textPrimaryLabel) {
-		jTextFieldInputFile.setEnabled(true);
-		inputFileLabel1.setText(textPrimaryLabel);
-		inputFileLabel1.setEnabled(true);
-		jButtonInputFile.setEnabled(true);
-	}
-
-	private void disableSecondaryInputTextFile() {
-		jTextFieldInputFile2.setEnabled(false);
-		inputFileLabel2.setEnabled(false);
-		jButtonInputFile2.setEnabled(false);
-		inputFileLabel2.setText(NOT_APPLICABLE);
-	}
-
-	private void disablePrimaryInputTextFile() {
-		jTextFieldInputFile.setEnabled(false);
-		inputFileLabel1.setEnabled(false);
-		jButtonInputFile.setEnabled(false);
-		inputFileLabel1.setText(NOT_APPLICABLE);
-	}
-
-	// public void selectInstrument() {
-	// InstrumentSummary[] data;
-	// data = readInstrumentsData();
-	// additionalDataForm = new TFrmInputTable(this, true,
-	// TFrmInputTable.INTRUMENT_MODE, data);
-	// additionalDataForm.setVisible(true);
-	// }
-
-	private String selectFile(int _mode) {
-		String filename = "";
 		jFileChooser = new JFileChooser(MainFrame.currentFolder);
-		switch (_mode) {
-		case ALLMODE:
-			jFileChooser.setDialogTitle("Select a file");
-			break;
-		case PRIDEXMLMODE:
-			jFileChooser.setDialogTitle("Select a PRIDE XML file");
+		jFileChooser.setMultiSelectionEnabled(multipleFiles);
 
-			jFileChooser.setFileFilter(new TFileExtension("PRIDE XML files", new String[] { "XML", "xml" }));
+		jFileChooser.setDialogTitle("Select one or more input files or a folder");
+		filter = new FileNameExtensionFilter("PRIDE XML files (*.xml)", "xml");
+		jFileChooser.addChoosableFileFilter(filter);
+		filter = new FileNameExtensionFilter("mzIdentML files (*.mzid, *.mzidentml, *.xml)", "mzid", "mzidentml",
+				"xml");
+		jFileChooser.addChoosableFileFilter(filter);
+		filter = new FileNameExtensionFilter("DTASelect-filter files (*.txt)", "txt");
+		jFileChooser.addChoosableFileFilter(filter);
+		filter = new FileNameExtensionFilter("XTandem output files (*.xml)", "xml");
+		jFileChooser.addChoosableFileFilter(filter);
+		filter = new FileNameExtensionFilter("pepXML files (*.pepxml, *.xml)", "pepxml", "xml");
+		jFileChooser.addChoosableFileFilter(filter);
+		filter = new FileNameExtensionFilter("Table text files (*.txt, *.csv, *.tsv)", "txt", "csv", "tsv");
+		jFileChooser.addChoosableFileFilter(filter);
 
-			break;
-		// case MGFMZIDENTMLMODE:
-		// this.jFileChooser.setDialogTitle("Select a mgf file");
-		// this.jFileChooser.setFileFilter(new TFileExtension(
-		// "Mascot Generic files", new String[] { "MGF", "mgf" }));
-		// break;
-		case MGFMODE:
-			jFileChooser.setDialogTitle("Select a mgf file");
-			jFileChooser.setFileFilter(new TFileExtension("Mascot Generic files", new String[] { "MGF", "mgf" }));
-			break;
-		case MZIDENTMLMODE:
-			jFileChooser.setDialogTitle("Select a mzIdentML file");
-			jFileChooser
-					.setFileFilter(new TFileExtension("mzIdentML files", new String[] { "mzid", "xml", "mzidentml" }));
-			break;
-		case MZMLMODE:
-			jFileChooser.setDialogTitle("Select a mzML file");
-			jFileChooser.setFileFilter(new TFileExtension("mzML files", new String[] { "mzml", "xml" }));
-			break;
-		case DTASELECTMODE:
-			jFileChooser.setDialogTitle("Select a DTASelect file");
-			jFileChooser.setFileFilter(new TFileExtension("DTASelect-filter files", new String[] { "txt" }));
-			break;
-		case XTANDEMMODE:
-			jFileChooser.setDialogTitle("Select a XTandem output");
-			jFileChooser.setFileFilter(new TFileExtension("XTandem output files", new String[] { "xml" }));
-			break;
-		}
-		// fileChooser.setDialogTitle("Select a PRIDE file");
-		// fileChooser.setFileFilter(new TFileExtension("XML files", new
-		// String[] { "XML", "xml" }));
-		// fileChooser.setCurrentDirectory(openfileDirectrory);
 		jFileChooser.showOpenDialog(this);
-		File selectedFile = jFileChooser.getSelectedFile();
-		if (selectedFile != null) {
-			filename = selectedFile.toString();
-			if (selectedFile.isDirectory()) {
-				MainFrame.currentFolder = selectedFile;
-			} else {
-				MainFrame.currentFolder = selectedFile.getParentFile();
+		File[] selectedFiles = null;
+		if (jFileChooser.getSelectedFiles().length == 1 && jFileChooser.getSelectedFile().isDirectory()) {
+			log.info("Folder selected " + jFileChooser.getSelectedFile().getAbsolutePath());
+			selectedFiles = jFileChooser.getSelectedFile().listFiles();
+		} else {
+			if (multipleFiles) {
+				selectedFiles = jFileChooser.getSelectedFiles();
+			} else if (jFileChooser.getSelectedFile() != null) {
+				selectedFiles = new File[1];
+				selectedFiles[0] = jFileChooser.getSelectedFile();
 			}
-			log.info("Selected File: " + filename);
-		} else
-			filename = "null";
-		return (filename);
+		}
+		MainFrame.currentFolder = jFileChooser.getCurrentDirectory();
+		if (selectedFiles != null) {
+			return selectedFiles;
+		}
+		return null;
+
+	}
+
+	private List<File> selectAttachedMSFiles(InputFileType selecteInputFileType) {
+		TFileExtension filter = null;
+
+		jFileChooser = new JFileChooser(MainFrame.currentFolder);
+		jFileChooser.setMultiSelectionEnabled(true);
+		jFileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+
+		// selectedInputFileType can be null
+		if (selecteInputFileType == null) {
+			jFileChooser.setDialogTitle("Select one or more input mgf or mzML files");
+			filter = new TFileExtension("Mascot Generic files", new String[] { "MGF", "mgf", "mzML", "xml" });
+			jFileChooser.setFileFilter(filter);
+		} else {
+			switch (selecteInputFileType) {
+
+			case DTASELECTPLUSMGF:
+			case MZIDENTMLPLUSMGF:
+			case PEPXMLPLUSMGF:
+			case XTANDEMPLUSMGF:
+				jFileChooser.setDialogTitle("Select one or more input mgf files");
+				filter = new TFileExtension("Mascot Generic files", new String[] { "MGF", "mgf" });
+				jFileChooser.setFileFilter(filter);
+				break;
+
+			case MZIDENTMLPLUSMZML:
+				jFileChooser.setDialogTitle("Select one or more input mzML files");
+				filter = new TFileExtension("mzML files", new String[] { "mzml", "xml" });
+				jFileChooser.setFileFilter(filter);
+				break;
+			default:
+				break;
+
+			}
+		}
+		jFileChooser.showOpenDialog(this);
+		File[] selectedFiles = null;
+		if (jFileChooser.getSelectedFiles().length == 1 && jFileChooser.getSelectedFile().isDirectory()) {
+			log.info("Folder selected " + jFileChooser.getSelectedFile().getAbsolutePath());
+			selectedFiles = jFileChooser.getSelectedFile().listFiles();
+		} else {
+			selectedFiles = jFileChooser.getSelectedFiles();
+		}
+		if (selectedFiles != null && selectedFiles.length > 0) {
+			log.info(selectedFiles.length + " selected Files");
+			List<File> validFiles = Arrays.asList(selectedFiles);
+
+			return validFiles;
+		}
+		return null;
+
 	}
 
 	private void jButtonSubmitActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1371,98 +1121,47 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 			if (!((JButton) evt.getSource()).isEnabled())
 				return;
 		}
-		// clear status
-		jTextAreaStatus.setText("");
+		// check the tasks in the table
+		boolean valid = checkTaskConsistency();
+		if (valid) {
+			// clear status
+			jTextAreaStatus.setText("");
+			startExtraction();
+		}
+	}
 
-		// in case of MIAPE MS generation conversion, check if MIAPE MS is
-		// complete or not and then, show MIAPE MS Metadata forms
-		if (jCheckBoxMS.isSelected()) {
-			String selectedItem = (String) jComboBoxMetadata.getSelectedItem();
-			if ("".equals(selectedItem)) {
-				// do not let continue if mgf + mzIdentml or mgf + XTandem
-				// options are selected. Other options, show a warning:
-				if (isMzIdentMLPlusMGFSelected() || isXTandemPlusMGFSelected() || isDTASelectPlusMGFSelected()
-						|| isPepXMLPlusMGFSelected()) {
-					final int option = JOptionPane.showConfirmDialog(this,
-							"<html>MGF input file doesn't contain any metadata. <br>"
-									+ "You must select one preconfigured metadata information in the dropdown list or introduce the information yourself.<br><br>"
-									+ "Do you want to go to complete metadata, click on YES.</html>",
-							"No additional metadata has been selected", JOptionPane.YES_NO_CANCEL_OPTION);
-					if (option == JOptionPane.YES_OPTION) {
-						// open MIAPEMSForms
-						miapeMSChecker = new MIAPEMSChecker(this, true);
-						miapeMSChecker.addPropertyChangeListener(this);
-						miapeMSChecker.execute();
-					} else {
-						return;
-					}
-				} else {
-					final int option = JOptionPane.showConfirmDialog(this,
-							"<html>Some metadata is not usually present in the<br>"
-									+ "input files (spectrometer details, data processing, etc...).<br><br>"
-									+ "You can select one preconfigured metadata information in the dropdown list.<br><br>"
-									+ "Do you want to continue without complete metadata? (YES)<br>"
-									+ "If you want to go to complete metadata, click on NO.</html>",
-							"No additional metadata has been selected", JOptionPane.YES_NO_CANCEL_OPTION);
-					if (option == JOptionPane.NO_OPTION) {
-						// open MIAPEMSForms
-						miapeMSChecker = new MIAPEMSChecker(this, true);
-						miapeMSChecker.addPropertyChangeListener(this);
-						miapeMSChecker.execute();
-					} else if (option == JOptionPane.CANCEL_OPTION) {
-						return;
-					} else {
-						startExtraction();
-						return;
-					}
-				}
-			} else {
-				String metadataString = MetadataLoader.getMetadataString(selectedItem);
-				final int option = JOptionPane
-						.showConfirmDialog(this,
-								"<html>You have selected the following metadata to add to the dataset.<br>Are you sure you want to continue?:<br><br>"
-										+ metadataString + "</html>",
-								"Metadata confirmation", JOptionPane.YES_NO_OPTION);
-				if (option == JOptionPane.YES_OPTION) {
-					startExtraction();
-					return;
-				}
+	/**
+	 * Checks tasks consistency just before starting import
+	 * 
+	 * @return true if everything is fine
+	 */
+	private boolean checkTaskConsistency() {
+		appendStatus("Checking import tasks...");
+		boolean valid = true;
+		for (MiapeExtractionTask task : scrollableImportTaskTable.getTable().getImportTasks()) {
+			try {
+				task.checkConsistency();
+			} catch (MiapeDataInconsistencyException e) {
+				valid = false;
+				appendStatus("Error in import task '" + task.getRunIdentifier() + "': " + e.getMessage());
 			}
 
-		} else {
-			startExtraction();
-			return;
+			log.info("No miape extraction process started");
 		}
-		log.info("No miape extraction process started");
+		if (valid) {
+			appendStatus("Import tasks checked. Everything is ready!");
+		}
+		return valid;
 	}
 
 	private synchronized void startExtraction() {
 
-		// in case of mzML conversion, show the parsing mode dialog:
-		if (jRadioButtonMzMLMzIdentML.isSelected()) {
-			ParsingModeDialog parsingModeDialog = new ParsingModeDialog(this, true);
-			parsingModeDialog.setVisible(true);
-			if (!isFastParsing && !isShallowParsing)
-				return;
-		}
-		if (miapeExtractionTask != null && miapeExtractionTask.getState().equals(StateValue.STARTED)) {
-
-			appendStatus("A request has been already sent to the server. Please wait...");
-			return;
-		}
-
-		if (miapeExtractionTask == null || miapeExtractionTask.getState() != StateValue.STARTED) {
-			miapeExtractionTask = new MiapeExtractionTask(this, isLocalProcessingInParallel());
-			miapeExtractionTask.addPropertyChangeListener(this);
-			miapeExtractionTask.execute();
-		} else {
-			log.info("There is already a task for miape extraction");
-		}
-
-	}
-
-	private boolean isLocalProcessingInParallel() {
-		return jCheckBoxLocalProcessinInParallel.isSelected();
+		enableStateKeeper.keepEnableStates(this);
+		enableStateKeeper.disable(this);
+		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		jProgressBar.setIndeterminate(true);
+		miapeExtractorBatchManager = createMiapeExtractorBatchManagerFromTable();
+		miapeExtractorBatchManager.startMiapeExtractionNextInQueue();
 	}
 
 	private void jButtonProjectActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1472,97 +1171,46 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 
 	}
 
-	private void jButtonInputFileActionPerformed(java.awt.event.ActionEvent evt) {
-
-		int mode = ALLMODE;
-		if (jRadioButtonMzIdentML.isSelected()) {
-			mode = MZIDENTMLMODE;
-		} else if (jRadioButtonMzIdentMLMGF.isSelected() || jRadioButtonDTASelectMGF.isSelected()
-				|| jRadioButtonXTandemMGF.isSelected()) {
-			mode = MGFMODE;
-		} else if (jRadioButtonPRIDE.isSelected()) {
-			mode = PRIDEXMLMODE;
-		} else if (jRadioButtonMzMLMzIdentML.isSelected()) {
-			mode = MZMLMODE;
-		}
-		// select the file
-		String selectedFile = selectFile(mode);
-		if ("".equals(selectedFile) || selectedFile.compareTo("null") == 0) {
-			log.info("ERROR: MGF I/O");
-			return;
-		}
-		jTextFieldInputFile.setText(selectedFile);
-
-		if (mode == MZMLMODE || (mode == PRIDEXMLMODE && isMIAPEMSChecked())) {
-			// Starting metadata extraction
-			jLabelMiapeMSMetadata.setText("");
-			MIAPEMSChecker checker = new MIAPEMSChecker(this, true);
-			checker.addPropertyChangeListener(this);
-			checker.setSave(true);
-			checker.execute();
-
-		}
-	}
-
 	// GEN-BEGIN:variables
 	// Variables declaration - do not modify
 	private javax.swing.ButtonGroup buttonGroupInputFileFormat;
-	private javax.swing.ButtonGroup buttonGroupProcessingType;
-	private javax.swing.ButtonGroup buttonGroupStoreOrNotStore;
-	private javax.swing.JLabel inputFileLabel1;
-	private javax.swing.JLabel inputFileLabel2;
 	private javax.swing.JButton jButtonCancel;
-	private javax.swing.JButton jButtonEditMetadata;
+	public javax.swing.JButton jButtonInputFileAttach;
 	public javax.swing.JButton jButtonInputFile;
-	public javax.swing.JButton jButtonInputFile2;
 	public javax.swing.JButton jButtonProject;
 	public javax.swing.JButton jButtonSubmit;
-	private javax.swing.JCheckBox jCheckBoxLocalProcessinInParallel;
-	public javax.swing.JCheckBox jCheckBoxMS;
-	public javax.swing.JCheckBox jCheckBoxMSI;
-	private javax.swing.JComboBox<String> jComboBoxMetadata;
+
 	private javax.swing.JFileChooser jFileChooser;
-	private javax.swing.JLabel jLabelMiapeMSMetadata;
-	private javax.swing.JPanel jPanel1;
-	private javax.swing.JPanel jPanel2;
-	private javax.swing.JPanel jPanel3;
-	private javax.swing.JPanel jPanel4;
-	private javax.swing.JPanel jPanel5;
-	private javax.swing.JPanel jPanel6;
-	private javax.swing.JPanel jPanel8;
+
+	private javax.swing.JPanel jPanelCenter;
+	private javax.swing.JPanel jPanelNorth;
+	private javax.swing.JPanel jPanelSouth;
+
 	private javax.swing.JProgressBar jProgressBar;
-	private javax.swing.JRadioButton jRadioButtonMzIdentML;
-	private javax.swing.JRadioButton jRadioButtonMzIdentMLMGF;
-	private javax.swing.JRadioButton jRadioButtonXTandemMGF;
-	private javax.swing.JRadioButton jRadioButtonDTASelectMGF;
-	private javax.swing.JRadioButton jRadioButtonMzMLMzIdentML;
-	private javax.swing.JRadioButton jRadioButtonPRIDE;
-	private javax.swing.JRadioButton jRadioButtonXTandem;
-	private javax.swing.JRadioButton jRadioButtonDTASelect;
 	private javax.swing.JScrollPane jScrollPane1;
-	private javax.swing.JScrollPane jScrollPane2;
+
 	private javax.swing.JTextArea jTextAreaStatus;
-	private javax.swing.JTextField jTextFieldInputFile;
-	private javax.swing.JTextField jTextFieldInputFile2;
 	private JTextField jTextFieldProjectName;
 	// End of variables declaration//GEN-END:variables
 
 	private TFrmInputTable additionalDataForm;
 
-	private MiapeExtractionTask miapeExtractionTask;
 	private MainFrame mainFrame = null;
 
 	private boolean isLoadingProjects; // indicate if the thread
 										// LoadProjectsThread is already loading
 										// or not
 	private final TIntObjectHashMap<String> loadedProjects = new TIntObjectHashMap<String>();
-	private JRadioButton jRatioButtonTabseparatedTextFile;
-	private JComboBox jComboBoxTableSeparators;
-	private JButton jButtonHelpSeparators;
-	private JRadioButton jRadioButtonPepXML;
-	private JRadioButton jRadioButtonPepXMLMGF;
 	private JButton jButtonGoToData;
 	private JButton jButtonHelp;
+	private ControlVocabularyManager cvManager;
+	private JPanel panel_2;
+	private JButton btnDeleteImportTask;
+	private JPanel panel;
+	private JPanel panel_1;
+	private JPanel panel_3;
+	private JPanel panel_4;
+	private JPanel panelWest;
 
 	// public int selectedInstrumentNumber;
 
@@ -1575,46 +1223,24 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 			String notificacion = evt.getNewValue().toString();
 			appendStatus(notificacion);
 		} else if (MiapeExtractionTask.MIAPE_CREATION_ERROR.equals(evt.getPropertyName())) {
-			enableStateKeeper.setToPreviousState(this);
 			if (evt.getNewValue() != null) {
-				MiapeExtractionResult errorMessage = (MiapeExtractionResult) evt.getNewValue();
-				appendStatus(errorMessage.getErrorMessage());
+				MiapeExtractionResult extractionResult = (MiapeExtractionResult) evt.getNewValue();
+				appendStatus(extractionResult.getErrorMessage());
+				ImportTaskDataModel model = scrollableImportTaskTable.getTable().getImportTaskTableModel();
+				int row = model.indexOf(model.getTaskByID(extractionResult.getMiapeExtractionTaskIdentifier()));
+				model.fireTableRowsUpdated(row, row);
 			}
-			jProgressBar.setIndeterminate(false);
-			this.setCursor(null); // turn off the wait cursor
-			appendStatus("Process finished.");
 		} else if (MiapeExtractionTask.MIAPE_CREATION_CANCELED.equals(evt.getPropertyName())) {
 			enableStateKeeper.setToPreviousState(this);
 			appendStatus("Data import cancelled");
 			this.setCursor(null); // turn off the wait cursor
 			jProgressBar.setIndeterminate(false);
-		} else if (MIAPEMSChecker.MIAPE_MS_CHECKING_STARTED.equals(evt.getPropertyName())) {
-			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			enableStateKeeper.keepEnableStates(this);
-			enableStateKeeper.disable(this);
-		} else if (MIAPEMSChecker.MIAPE_MS_FORMS_OPENING.equals(evt.getPropertyName())) {
-			appendStatus("Opening MS metadata editor...");
-		} else if (MIAPEMSChecker.MIAPE_MS_CHECKING_IN_PROGRESS.equals(evt.getPropertyName())) {
-			appendStatus("Extracting MS metadata from file...");
-			jProgressBar.setIndeterminate(true);
-		} else if (MIAPEMSChecker.MIAPE_MS_CHECKING_ERROR.equals(evt.getPropertyName())) {
-			enableStateKeeper.setToPreviousState(this);
-			String error = evt.getNewValue().toString();
-			appendStatus(error);
-			jProgressBar.setIndeterminate(false);
-		} else if (MIAPEMSChecker.MIAPE_MS_CHECKING_DONE.equals(evt.getPropertyName())) {
-			enableStateKeeper.setToPreviousState(this);
-			appendStatus("MS metadata edition completed. Click again on Import data.");
-			jProgressBar.setIndeterminate(false);
-			setCursor(null);
-		} else if (MetadataLoader.METADATA_READED.equals(evt.getPropertyName())) {
-			String string = (String) evt.getNewValue();
-			jLabelMiapeMSMetadata.setText(string);
 		} else if (MiapeExtractionTask.MIAPE_MSI_CREATED_DONE.equals(evt.getPropertyName())) {
 			File miapeIDString = (File) evt.getNewValue();
 			log.info("Miape MSI created done finished: " + miapeIDString.getAbsolutePath());
 			FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_MZML);
-			initMetadataCombo(null, getControlVocabularyManager());
+			MiapeMSFormsDialog.getInstance(this, getControlVocabularyManager()).initMetadataCombo(null,
+					getControlVocabularyManager());
 			// load new projects
 			loadProjects(false, true);
 		} else if (MiapeExtractionTask.MIAPE_MS_CREATED_DONE.equals(evt.getPropertyName())) {
@@ -1623,9 +1249,9 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 			// load new projects
 			loadProjects(false, true);
 		} else if (OntologyLoaderWaiter.ONTOLOGY_LOADED.equals(evt.getPropertyName())) {
-			ControlVocabularyManager cvManager = (ControlVocabularyManager) evt.getNewValue();
+			cvManager = (ControlVocabularyManager) evt.getNewValue();
 			appendStatus("Ontologies loaded.");
-			initMetadataCombo(null, cvManager);
+			MiapeMSFormsDialog.getInstance(this, getControlVocabularyManager()).initMetadataCombo(null, cvManager);
 
 		} else if (OntologyLoaderWaiter.ONTOLOGY_LOADING_ERROR.equals(evt.getPropertyName())) {
 			appendStatus(
@@ -1635,33 +1261,25 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 			appendStatus(
 					"Error loading ontologies. Please check your internet connection or institution firewall and run again the software. If the problem persist, you can contact salvador@scripps.edu for help.");
 
-		} else if (MIAPEMSChecker.MIAPE_MS_METADATA_EXTRACTION_DONE.equals(evt.getPropertyName())) {
-			appendStatus("Metadata loaded.");
-			if (isMzMLPlusMzIdentMLSelected() || isMzMLSelected())
-				initMetadataCombo(MIAPEMSChecker.CURRENT_MZML, getControlVocabularyManager());
-			else if (isPRIDESelected() && isMIAPEMSChecked())
-				initMetadataCombo(MIAPEMSChecker.CURRENT_PRIDEXML, getControlVocabularyManager());
-			jProgressBar.setIndeterminate(false);
 		} else if (MiapeExtractionTask.MIAPE_CREATION_TOTAL_DONE.equals(evt.getPropertyName())) {
+			MiapeExtractionResult extractionResult = (MiapeExtractionResult) evt.getNewValue();
+			appendStatus("Import task '" + extractionResult.getMiapeExtractionTaskIdentifier()
+					+ "' finished. Dataset imported at: "
+					+ extractionResult.getDirectLinkToMIAPEMSI().getAbsolutePath());
+			ImportTaskDataModel model = scrollableImportTaskTable.getTable().getImportTaskTableModel();
+			int row = model.indexOf(model.getTaskByID(extractionResult.getMiapeExtractionTaskIdentifier()));
+			model.fireTableRowsUpdated(row, row);
+		} else if (MiapeExtractionBatchManager.MIAPE_BATCH_DONE.equals(evt.getPropertyName())) {
+			String statisticsString = (String) evt.getNewValue();
 			enableStateKeeper.setToPreviousState(this);
 			jProgressBar.setIndeterminate(false);
-			MiapeExtractionResult extractionResult = (MiapeExtractionResult) evt.getNewValue();
-			showOpenBrowserDialog(extractionResult.getDirectLinkToMIAPEMS(), extractionResult.getDirectLinkToMIAPEMSI(),
-					extractionResult.getDirectLinkText());
-
-			jProgressBar.setIndeterminate(false);
-
 			this.setCursor(null); // turn off the wait cursor
-			appendStatus("Process finished.");
+			appendStatus(statisticsString);
 
 		} else if (MiapeExtractionTask.MIAPE_CREATION_STARTS.equals(evt.getPropertyName())) {
-			enableStateKeeper.keepEnableStates(this);
-			enableStateKeeper.disable(this);
 
-			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			jProgressBar.setIndeterminate(true);
 			appendStatus("Starting process...");
-
+			scrollableImportTaskTable.getTable().startThreadToUpdateProgressOnTask((Integer) evt.getNewValue());
 		} else if (LoadProjectsTask.PROJECT_LOADED_DONE.equals(evt.getPropertyName())) {
 			showLoadedProjectTable();
 			// ArrayList<String> list = new ArrayList<String>();
@@ -1673,6 +1291,86 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 		} else if (MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE.equals(evt.getPropertyName())) {
 			appendStatus(evt.getNewValue().toString());
 			appendStatus("Now reading and processing it...");
+
+		} else if (InputDataTypeGuesser.INPUT_DATA_TYPE_GUESSING_STARTED.equals(evt.getPropertyName())) {
+			enableStateKeeper.keepEnableStates(this);
+			enableStateKeeper.disable(this);
+			InputDataTypeGuesser inputDataTypeGuesser = (InputDataTypeGuesser) evt.getNewValue();
+			int totalFiles = inputDataTypeGuesser.getFiles().length;
+			String plural = totalFiles > 1 ? "s" : "";
+			jProgressBar.setMaximum(totalFiles);
+			jProgressBar.setIndeterminate(true);
+			jProgressBar.setStringPainted(true);
+			String message = "Checking input file" + plural + " format...";
+			jProgressBar.setString(message);
+			appendStatus(message);
+		} else if (InputDataTypeGuesser.INPUT_DATA_TYPE_GUESSED.equals(evt.getPropertyName())) {
+			InputDataTypeGuesser guesser = (InputDataTypeGuesser) evt.getNewValue();
+			File file = (File) evt.getOldValue();
+			InputFileType inputFileType = guesser.getGuessedTypes().get(file);
+
+			if (inputFileType != null) {
+				appendStatus("File '" + FilenameUtils.getName(file.getAbsolutePath()) + "' has been recognized as a '"
+						+ inputFileType.getPrimaryFileDescription() + "'");
+
+				// check if this was a result of changing the file directly in
+				// the table, and that happens when associated task is not null
+				if (guesser.getAssociatedTask() != null) {
+					// in that case, add it to the table
+					((MiapeExtractionRunParametersImpl) guesser.getAssociatedTask().getParameters())
+							.setInputFileType(inputFileType);
+					int row = scrollableImportTaskTable.getTable().getImportTaskTableModel()
+							.indexOf(guesser.getAssociatedTask());
+					scrollableImportTaskTable.getTable().getImportTaskTableModel().fireTableRowsUpdated(row, row);
+				}
+
+			} else {
+				InputFileType guessedInputDataType = ImportTasksUtil.getSuggestedFileTypeByFileName(file);
+				if (guessedInputDataType != null) {
+					appendStatus(
+							"Guessing by its name, the input file '" + FilenameUtils.getName(file.getAbsolutePath())
+									+ "' seems to be a '" + guessedInputDataType.getPrimaryFileDescription()
+									+ "'. Check this change before proceed.");
+					// check if this was a result of changing the file directly
+					// in the table, and that happens when associated task is
+					// not null
+					if (guesser.getAssociatedTask() != null) {
+						((MiapeExtractionRunParametersImpl) guesser.getAssociatedTask().getParameters())
+								.setInputFileType(guessedInputDataType);
+						int row = scrollableImportTaskTable.getTable().getImportTaskTableModel()
+								.indexOf(guesser.getAssociatedTask());
+						scrollableImportTaskTable.getTable().getImportTaskTableModel().fireTableRowsUpdated(row, row);
+					}
+				}
+			}
+		} else if (InputDataTypeGuesser.INPUT_DATA_TYPE_GUESSING_FINISHED.equals(evt.getPropertyName())) {
+			InputDataTypeGuesser inputDataTypeGuesser = (InputDataTypeGuesser) evt.getNewValue();
+			enableStateKeeper.setToPreviousState(this);
+			jProgressBar.setStringPainted(false);
+			jProgressBar.setIndeterminate(false);
+			jProgressBar.setValue(0);
+			HashMap<File, InputFileType> map = inputDataTypeGuesser.getGuessedTypes();
+			String plural = map.size() > 1 ? "s" : "";
+			appendStatus("Input file" + plural + " format checked.");
+			// if it is coming from a check from a single file, dont load
+			// everything
+			if (inputDataTypeGuesser.getAssociatedTask() == null) {
+				createAndLoadImportTasks(selectedInputFiles, map);
+			}
+		} else if (InputDataTypeGuesser.INPUT_DATA_TYPE_GUESSING_ERROR.equals(evt.getPropertyName())) {
+			Exception error = (Exception) evt.getNewValue();
+			enableStateKeeper.setToPreviousState(this);
+			jProgressBar.setStringPainted(false);
+			jProgressBar.setMaximum(0);
+			appendStatus("Error chcking Input file format: " + error.getMessage());
+			appendStatus(
+					"Chack if there is something wrong with your input files and try again. If the problem persist, contact salvador at scripps.edu");
+		} else if (InputDataTypeGuesser.INPUT_DATA_TYPE_GUESSING_CANCELLED.equals(evt.getPropertyName())) {
+			enableStateKeeper.setToPreviousState(this);
+			jProgressBar.setStringPainted(false);
+			jProgressBar.setMaximum(0);
+			jProgressBar.setIndeterminate(false);
+			appendStatus("Checking input file format cancelled by user");
 		}
 	}
 
@@ -1691,45 +1389,6 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 		}
 	}
 
-	@Override
-	public MiapeMSDocument getMiapeMSMetadata() {
-
-		final String miapeFileName = (String) jComboBoxMetadata.getSelectedItem();
-		if ("".equals(miapeFileName))
-			return null;
-		final File metadataFile = FileManager.getMetadataFile(miapeFileName);
-		if (metadataFile == null)
-			return null;
-		MIAPEMSXmlFile xmlFile = new MIAPEMSXmlFile(metadataFile);
-
-		try {
-			MiapeMSDocument metadataMiapeMS = MiapeMSXmlFactory.getFactory().toDocument(xmlFile,
-					getControlVocabularyManager(), null, null, null);
-			MiapeExtractionParametersUtil.setNameToMetadataMiapeMS((MiapeMSDocumentImpl) metadataMiapeMS, this);
-
-			String miapeMSName = metadataMiapeMS.getName();
-			// merge with a MIAPE with just a project
-
-			MiapeDate today = new MiapeDate(new Date());
-			MiapeMSDocument miapeMSJustWithProject = (MiapeMSDocument) MiapeMSDocumentFactory
-					.createMiapeMSDocumentBuilder(
-							MiapeDocumentFactory.createProjectBuilder(jTextFieldProjectName.getText())
-									.date(new MiapeDate(new Date())).build(),
-							miapeMSName, null)
-					.date(today).modificationDate(new Date()).build();
-			MiapeMSDocument ret = MiapeMSMerger.getInstance(getControlVocabularyManager()).merge(metadataMiapeMS,
-					miapeMSJustWithProject);
-
-			return ret;
-		} catch (MiapeDatabaseException e) {
-			e.printStackTrace();
-		} catch (MiapeSecurityException e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
 	protected ControlVocabularyManager getControlVocabularyManager() {
 		return OntologyLoaderTask.getCvManager();
 	}
@@ -1743,7 +1402,6 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 		jTextFieldProjectName.setText(userSelection);
 	}
 
-	@Override
 	public String getProjectName() {
 		return jTextFieldProjectName.getText();
 	}
@@ -1752,109 +1410,16 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 		jTextFieldProjectName.setText(name);
 	}
 
-	public String getPrimaryInputFileName() {
-		return jTextFieldInputFile.getText();
-	}
-
-	public String getSecondaryInputFileName() {
-		return jTextFieldInputFile2.getText();
-	}
-
-	@Override
-	public String getMzMLFileName() {
-		if (isMzMLSelected() || isMzMLPlusMzIdentMLSelected())
-			return jTextFieldInputFile.getText();
-		return null;
-	}
-
-	@Override
-	public String getMzIdentMLFileName() {
-		if (isMzIdentMLSelected() || isMzIdentMLPlusMGFSelected() || isMzMLPlusMzIdentMLSelected())
-			return jTextFieldInputFile2.getText();
-		return null;
-	}
-
-	@Override
-	public String getPRIDEXMLFileName() {
-		if (isPRIDESelected())
-			return jTextFieldInputFile.getText();
-		return null;
-	}
-
-	@Override
-	public String getMgfFileName() {
-		if (isMzIdentMLPlusMGFSelected() || isMGFSelected() || isXTandemPlusMGFSelected()
-				|| isDTASelectPlusMGFSelected() || isPepXMLPlusMGFSelected())
-			return jTextFieldInputFile.getText();
-		return null;
-	}
-
-	@Override
-	public String getXTandemFileName() {
-		if (isXTandemSelected())
-			return jTextFieldInputFile2.getText();
-		return null;
-	}
-
-	// public String getInstrument() {
-	// return this.jLabelInstrument.getText();
-	// }
-
-	@Override
-	public boolean isMzMLSelected() {
-		return jRadioButtonMzMLMzIdentML.isSelected();
-	}
-
-	@Override
-	public boolean isMzIdentMLSelected() {
-		return jRadioButtonMzIdentML.isSelected();
-	}
-
-	@Override
-	public boolean isXTandemSelected() {
-		return jRadioButtonXTandem.isSelected() || jRadioButtonXTandemMGF.isSelected();
-	}
-
-	@Override
-	public boolean isMzIdentMLPlusMGFSelected() {
-		return jRadioButtonMzIdentMLMGF.isSelected();
-	}
-
-	@Override
-	public boolean isXTandemPlusMGFSelected() {
-		return jRadioButtonXTandemMGF.isSelected();
-	}
-
-	@Override
-	public boolean isPRIDESelected() {
-		return jRadioButtonPRIDE.isSelected();
-	}
-
-	@Override
-	public boolean isMzMLPlusMzIdentMLSelected() {
-		return jRadioButtonMzMLMzIdentML.isSelected();
-	}
-
 	public String getStatus() {
 		return jTextAreaStatus.getText();
 	}
 
-	private void appendStatus(String text) {
+	void appendStatus(String text) {
 		ZonedDateTime zonedDateTime = ZonedDateTime.now();
 
 		String dateText = zonedDateTime.format(formatter);
 		jTextAreaStatus.append(dateText + ": " + text + "\n");
 		jTextAreaStatus.setCaretPosition(jTextAreaStatus.getText().length() - 1);
-	}
-
-	@Override
-	public boolean isMIAPEMSChecked() {
-		return jCheckBoxMS.isSelected();
-	}
-
-	@Override
-	public boolean isMIAPEMSIChecked() {
-		return jCheckBoxMSI.isSelected();
 	}
 
 	public void setLoadedProjects(TIntObjectHashMap<String> projects) {
@@ -1885,7 +1450,7 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 	}
 
 	public static void main(String[] args) {
-		MiapeExtractionFrameNEW instance = new MiapeExtractionFrameNEW(null, false);
+		MiapeExtractionFrame instance = new MiapeExtractionFrame(null, false);
 		instance.setVisible(true);
 
 	}
@@ -1932,105 +1497,8 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 		}
 	}
 
-	@Override
 	public boolean isFastParsing() {
 		return isFastParsing;
-	}
-
-	@Override
-	public String getDescription() {
-		return MiapeExtractionParametersUtil.getDescription(this);
-	}
-
-	@Override
-	public List<File> getInputFiles() {
-		List<File> ret = new ArrayList<File>();
-		if (jTextFieldInputFile.isEnabled()) {
-			File file = new File(jTextFieldInputFile.getText());
-			if (file.exists())
-				ret.add(file);
-		}
-		if (jTextFieldInputFile2.isEnabled()) {
-			File file = new File(jTextFieldInputFile2.getText());
-			if (file.exists())
-				ret.add(file);
-		}
-
-		return ret;
-	}
-
-	@Override
-	public Integer getAssociatedMiapeMS() {
-		return null;
-	}
-
-	@Override
-	public Integer getAssociatedMiapeMSGeneratorJob() {
-		return null;
-	}
-
-	@Override
-	public String getTemplateName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean isMGFSelected() {
-		return jRadioButtonDTASelectMGF.isSelected() || jRadioButtonMzIdentMLMGF.isSelected()
-				|| jRadioButtonXTandemMGF.isSelected() || jRadioButtonPepXMLMGF.isSelected();
-	}
-
-	@Override
-	public String getDtaSelectFileName() {
-		if (isDTASelectSelected())
-			return jTextFieldInputFile2.getText();
-		return null;
-	}
-
-	@Override
-	public boolean isDTASelectSelected() {
-		return jRadioButtonDTASelect.isSelected() || jRadioButtonDTASelectMGF.isSelected();
-	}
-
-	@Override
-	public boolean isDTASelectPlusMGFSelected() {
-		return jRadioButtonDTASelectMGF.isSelected();
-	}
-
-	@Override
-	public boolean isTSVSelected() {
-		return jRatioButtonTabseparatedTextFile.isSelected();
-	}
-
-	@Override
-	public String getTSVSelectFileName() {
-		if (isTSVSelected()) {
-			return jTextFieldInputFile2.getText();
-		}
-		return null;
-	}
-
-	@Override
-	public TableTextFileSeparator getSeparator() {
-		return (TableTextFileSeparator) this.jComboBoxTableSeparators.getSelectedItem();
-	}
-
-	@Override
-	public String getPepXMLFileName() {
-		if (isPepXMLSelected())
-			return jTextFieldInputFile2.getText();
-		return null;
-	}
-
-	@Override
-	public boolean isPepXMLPlusMGFSelected() {
-		return jRadioButtonPepXMLMGF.isSelected();
-	}
-
-	@Override
-	public boolean isPepXMLSelected() {
-		return jRadioButtonPepXML.isSelected();
 	}
 
 	@Override
@@ -2049,11 +1517,11 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 
 				"2. Select the <b>Input file(s)</b> from your file system using the file selectors in the top.", //
 
-				"3. Type the <b>name of the project</b> or select one by clicking on <i>'Select project'</i> button. "
+				"3. Type the <b>name of the project</b> or select one by clicking on <i>'Select dataset folder'</i> button. "
 						+ "These projects in which the input datasets will be stored, "
 						+ "are just a way for organizing your imported datasets.", //
 
-				"If you type a new project name, it will appear the next time you click on <i>'Select project'</i>.", //
+				"If you type a new project name, it will appear the next time you click on <i>'Select dataset folder'</i>.", //
 
 				"4. Click on <b>'Import data'</b> to start the import data process.", //
 				"<b>Other buttons:</b>", //
@@ -2067,4 +1535,7 @@ public class MiapeExtractionFrameNEW extends AbstractJFrameWithAttachedHelpDialo
 		return Arrays.asList(array);
 	}
 
+	public ScrollableImportTaskJPanel getScrollableImportTaskTable() {
+		return scrollableImportTaskTable;
+	}
 }

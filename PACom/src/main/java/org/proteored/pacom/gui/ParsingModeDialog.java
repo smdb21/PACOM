@@ -10,10 +10,10 @@ package org.proteored.pacom.gui;
  */
 public class ParsingModeDialog extends javax.swing.JDialog {
 
-	private final MiapeExtractionFrameNEW parentDialog;
+	private final MiapeExtractionFrame parentDialog;
 
 	/** Creates new form ParsingModeDialog */
-	public ParsingModeDialog(MiapeExtractionFrameNEW miapeExtractionFrameNEW, boolean modal) {
+	public ParsingModeDialog(MiapeExtractionFrame miapeExtractionFrameNEW, boolean modal) {
 		super(miapeExtractionFrameNEW, modal);
 		initComponents();
 		this.parentDialog = miapeExtractionFrameNEW;

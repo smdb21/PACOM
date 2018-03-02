@@ -26,7 +26,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
-import org.jfree.ui.RefineryUtilities;
+import org.jfree.chart.ui.UIUtils;
 import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
 import org.proteored.miapeapi.experiment.model.Experiment;
 import org.proteored.miapeapi.experiment.model.ExperimentList;
@@ -105,7 +105,7 @@ public class PEXBulkSubmissionSummaryFileCreatorDialog extends javax.swing.JDial
 		setTitle("Prepare data for a ProteomeXchange Bulk Submission");
 
 		// center on screen
-		RefineryUtilities.centerFrameOnScreen(this);
+		UIUtils.centerFrameOnScreen(this);
 
 		// load icons
 		jButtonStartPEX.setIcon(ImageManager.getImageIcon(ImageManager.PEX));

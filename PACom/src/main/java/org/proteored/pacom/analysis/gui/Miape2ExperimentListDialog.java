@@ -48,7 +48,7 @@ import javax.xml.bind.JAXBException;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
-import org.jfree.ui.RefineryUtilities;
+import org.jfree.chart.ui.UIUtils;
 import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
 import org.proteored.miapeapi.exceptions.MiapeDataInconsistencyException;
 import org.proteored.miapeapi.interfaces.MiapeHeader;
@@ -81,8 +81,7 @@ import org.proteored.pacom.utils.ComponentEnableStateKeeper;
  *
  * @author __USER__
  */
-public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDialog
-		implements PropertyChangeListener {
+public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDialog implements PropertyChangeListener {
 	private static final int PROJECT_LEVEL = 1;
 	private static final int EXPERIMENT_LEVEL = 2;
 	private static final int REPLICATE_LEVEL = 3;
@@ -179,7 +178,6 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		loadIcons();
 
 		jTextAreaStatus.setFont(new JTextField().getFont());
-		RefineryUtilities.centerFrameOnScreen(this);
 
 		// clean tree
 		cleanTrees();
@@ -271,6 +269,9 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 			String suffix = " (v" + version.toString() + ")";
 			this.setTitle(getTitle() + suffix);
 		}
+
+		pack();
+		UIUtils.centerFrameOnScreen(this);
 	}
 
 	public static Miape2ExperimentListDialog getInstance(MainFrame parent) {
@@ -904,9 +905,6 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		jPanel5.setLayout(jPanel5Layout);
 
 		pack();
-		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-		java.awt.Dimension dialogSize = getSize();
-		setLocation((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2);
 	}// </editor-fold>
 		// GEN-END:initComponents
 

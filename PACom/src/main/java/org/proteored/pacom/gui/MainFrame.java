@@ -4,7 +4,10 @@
 
 package org.proteored.pacom.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Cursor;
+import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -25,21 +28,22 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker.StateValue;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 
+import org.proteored.miapeapi.cv.ControlVocabularyManager;
 import org.proteored.pacom.analysis.gui.Miape2ExperimentListDialog;
 import org.proteored.pacom.analysis.util.FileManager;
 import org.proteored.pacom.gui.tasks.CheckUpdateTask;
@@ -48,6 +52,9 @@ import org.proteored.pacom.gui.tasks.OntologyLoaderWaiter;
 import org.proteored.pacom.utils.AppVersion;
 import org.proteored.pacom.utils.ExampleProject;
 import org.proteored.pacom.utils.PropertiesReader;
+
+import edu.scripps.yates.utilities.dates.DatesUtil;
+import umich.ms.fileio.filetypes.pepxml.jaxb.standard.MsmsRunSummary;
 
 /**
  *
@@ -70,10 +77,8 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 	private OntologyLoaderTask ontologyLoader;
 	private CheckUpdateTask updateTask;
 	private Miape2ExperimentListDialog miape2experimentListDialog;
-	private MiapeExtractionBatchFrame miapeExtractionBatchFrame;
 	private final static String dataInspectionTooltip = "<html><br><ul><li>Inspect your data creating your own inspection projects.</li><li>Compare complex experiments in an intuitive way.</li><li>Get a lot of charts representing qualitative data from your experiments.</li><li>Filter data applying several filters (FDR, score thresholds, etc...)</li><li>Export your data into PRIDE XML format</li></ul><br></html>";
 	private final static String dataImportToolTip = "<html><br>Extract and import datasets from input data files such as:<br><ul><li>mzIdentML</li><li>mzML</li><li>pepXML</li><li>PRIDE XML</li><li>X!Tandem output XML</li> <li>DTASelect output</li><li>Separated values tables</li></ul><br></html>";
-	private final static String batchDataImportToolTip = "<html><br>Batch data import from datasets files such as: <ul> <li>mzIdentML</li> <li>mzML</li> <li>pepXML</li> <li>PRIDE XML</li> <li>X!Tandem output XML</li> <li>DTASelect output</li> <li>Separated values tables</li> </ul>Using a batch data import file you can import multiple datasets.<br><br></html>";
 
 	public static final boolean parallelProcessingOnExtraction = true;
 
@@ -90,6 +95,7 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 	 */
 	public MainFrame() {
 		super(300);
+		setResizable(false);
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException
@@ -128,6 +134,9 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 			// load ontologies
 			loadOntologies();
 
+			// load other resources
+			loadOtherResources();
+
 			// load exampleprojects
 			loadExampleProjectsInCombo();
 
@@ -146,6 +155,28 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 			writeErrorMessage(message);
 		}
 
+	}
+
+	private void loadOtherResources() {
+		Runnable background = new Runnable() {
+
+			@Override
+			public void run() {
+				long t1 = System.currentTimeMillis();
+				try {
+					try {
+						JAXBContext.newInstance(MsmsRunSummary.class);
+					} catch (JAXBException e) {
+						e.printStackTrace();
+					}
+				} finally {
+					long t2 = System.currentTimeMillis();
+					log.info("Other resources loaded in  " + DatesUtil.getDescriptiveTimeFromMillisecs(t2 - t1));
+				}
+			}
+		};
+		Thread backgroundThread = new Thread(background);
+		backgroundThread.start();
 	}
 
 	private void loadExampleProjectsInCombo() {
@@ -205,11 +236,12 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 
 		jPanel1 = new javax.swing.JPanel();
 		jMenuBar1 = new javax.swing.JMenuBar();
+		jMenuBar1.setMargin(new Insets(5, 5, 5, 0));
 		jMenu1 = new javax.swing.JMenu();
 		jMenuItemExit = new javax.swing.JMenuItem();
 		jMenu2 = new javax.swing.JMenu();
 		jMenuItemStandard2MIAPE = new javax.swing.JMenuItem();
-		jMenuItemBatchMiapeExtraction = new javax.swing.JMenuItem();
+		// jMenuItemBatchMiapeExtraction = new javax.swing.JMenuItem();
 		jMenu3 = new javax.swing.JMenu();
 		jMenuItemStartProjectComparison = new javax.swing.JMenuItem();
 		jMenuHelp = new javax.swing.JMenu();
@@ -218,7 +250,6 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("PACOM - Proteomics Assay COMparator");
-		setResizable(false);
 
 		jMenu1.setText("Exit");
 
@@ -250,17 +281,19 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 		});
 		jMenu2.add(jMenuItemStandard2MIAPE);
 
-		jMenuItemBatchMiapeExtraction.setAccelerator(
-				javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.ALT_MASK));
-		jMenuItemBatchMiapeExtraction.setText("Go to Batch Import data");
-		jMenuItemBatchMiapeExtraction.setToolTipText(batchDataImportToolTip);
-		jMenuItemBatchMiapeExtraction.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jMenuItemBatchMiapeExtractionActionPerformed(evt);
-			}
-		});
-		jMenu2.add(jMenuItemBatchMiapeExtraction);
+		// jMenuItemBatchMiapeExtraction.setAccelerator(
+		// javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B,
+		// java.awt.event.InputEvent.ALT_MASK));
+		// jMenuItemBatchMiapeExtraction.setText("Go to Batch Import data");
+		// jMenuItemBatchMiapeExtraction.setToolTipText(batchDataImportToolTip);
+		// jMenuItemBatchMiapeExtraction.addActionListener(new
+		// java.awt.event.ActionListener() {
+		// @Override
+		// public void actionPerformed(java.awt.event.ActionEvent evt) {
+		// jMenuItemBatchMiapeExtractionActionPerformed(evt);
+		// }
+		// });
+		// jMenu2.add(jMenuItemBatchMiapeExtraction);
 
 		jMenuBar1.add(jMenu2);
 
@@ -321,24 +354,11 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 		jMenuBar1.add(jMenuHelp);
 
 		setJMenuBar(jMenuBar1);
-
-		jButtonShowHelp = new OpenHelpButton(this);
-
-		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup().addContainerGap()
-						.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, 800, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-				.addGroup(Alignment.TRAILING, layout.createSequentialGroup().addContainerGap(735, Short.MAX_VALUE)
-						.addComponent(jButtonShowHelp).addContainerGap()));
-		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup().addContainerGap()
-						.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, 300, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(jButtonShowHelp)));
 		GridBagLayout gbl_jPanel1 = new GridBagLayout();
-		gbl_jPanel1.columnWidths = new int[] { 0, 0, 0, 0, 161 };
-		gbl_jPanel1.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0 };
+		gbl_jPanel1.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0 };
+		gbl_jPanel1.rowHeights = new int[] { 30, 0, 10, 0, 0 };
+		gbl_jPanel1.columnWidths = new int[] { 0, 10, 30, 0, 30, 161, 0 };
+		gbl_jPanel1.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
 		jPanel1.setLayout(gbl_jPanel1);
 
 		JLabel lblExamples = new JLabel("Inspect examples");
@@ -347,7 +367,7 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 		lblExamples.setFont(new Font("Dialog", Font.PLAIN, 18));
 		GridBagConstraints gbc_lblExamples = new GridBagConstraints();
 		gbc_lblExamples.insets = new Insets(10, 10, 10, 10);
-		gbc_lblExamples.gridx = 4;
+		gbc_lblExamples.gridx = 5;
 		gbc_lblExamples.gridy = 1;
 		jPanel1.add(lblExamples, gbc_lblExamples);
 		JLabel jLabelInit = new javax.swing.JLabel("Import data");
@@ -357,28 +377,17 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.FIRST_LINE_START;
 		c.insets = new Insets(10, 10, 10, 10);
-		c.gridx = 0;
+		c.gridx = 1;
 		c.gridy = 1;
 		c.gridwidth = 1;
 		jPanel1.add(jLabelInit, c);
-		JLabel jLabelInit2 = new javax.swing.JLabel("Batch import data");
-		jLabelInit2.setHorizontalAlignment(SwingConstants.LEFT);
-		jLabelInit2.setFont(new Font("Dialog", Font.PLAIN, 18));
-		jLabelInit2.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-		GridBagConstraints c2 = new GridBagConstraints();
-		c2.fill = GridBagConstraints.FIRST_LINE_START;
-		c2.insets = new Insets(10, 10, 10, 10);
-		c2.gridx = 1;
-		c2.gridy = 1;
-		c2.gridwidth = 1;
-		jPanel1.add(jLabelInit2, c2);
 		JLabel jLabelInit3 = new javax.swing.JLabel("Inspect data");
 		jLabelInit3.setHorizontalAlignment(SwingConstants.CENTER);
 		jLabelInit3.setFont(new Font("Dialog", Font.PLAIN, 18));
 		jLabelInit3.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 		GridBagConstraints c3 = new GridBagConstraints();
 		c3.insets = new Insets(10, 10, 10, 10);
-		c3.gridx = 2;
+		c3.gridx = 3;
 		c3.gridy = 1;
 		c3.gridwidth = 1;
 		jPanel1.add(jLabelInit3, c3);
@@ -386,7 +395,7 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 		c4.gridheight = 2;
 		c4.fill = GridBagConstraints.HORIZONTAL;
 		c4.insets = new Insets(10, 10, 10, 10);
-		c4.gridx = 0;
+		c4.gridx = 1;
 		c4.gridy = 3;
 		c4.gridwidth = 1;
 		JButton loadButton = new JButton();
@@ -408,37 +417,11 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 		loadButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		jPanel1.add(loadButton, c4);
 		//
-		GridBagConstraints c5 = new GridBagConstraints();
-		c5.gridheight = 2;
-		c5.fill = GridBagConstraints.HORIZONTAL;
-		c5.insets = new Insets(10, 10, 10, 10);
-		c5.gridx = 1;
-		c5.gridy = 3;
-		c5.gridwidth = 1;
-		JButton batchLoadButton = new JButton();
-		batchLoadButton.setIcon(ImageManager.getImageIcon(ImageManager.BATCH_LOAD_LOGO_128));
-		batchLoadButton.setPressedIcon(ImageManager.getImageIcon(ImageManager.BATCH_LOAD_LOGO_128_CLICKED));
-		batchLoadButton.setRolloverIcon(ImageManager.getImageIcon(ImageManager.BATCH_LOAD_LOGO_128_HOVER));
-
-		batchLoadButton.setFocusable(false);
-		batchLoadButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				showBatchMiapeExtractionFrame();
-
-			}
-		});
-		batchLoadButton.setToolTipText(batchDataImportToolTip);
-		batchLoadButton.setBorder(BorderFactory.createEmptyBorder());
-		batchLoadButton.setContentAreaFilled(false);
-		batchLoadButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		jPanel1.add(batchLoadButton, c5);
-		//
 		GridBagConstraints c6 = new GridBagConstraints();
 		c6.gridheight = 2;
 		c6.fill = GridBagConstraints.HORIZONTAL;
 		c6.insets = new Insets(10, 10, 10, 10);
-		c6.gridx = 2;
+		c6.gridx = 3;
 		c6.gridy = 3;
 		c6.gridwidth = 1;
 		JButton inspectButton = new JButton();
@@ -473,10 +456,11 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 				exampleProjectSelected();
 			}
 		});
+		getContentPane().setLayout(new BorderLayout(0, 5));
 		jComboBoxExampleProjects.setToolTipText("Select one of the available example datasets");
 		GridBagConstraints gbc_jComboBoxExampleProjects = new GridBagConstraints();
-		gbc_jComboBoxExampleProjects.insets = new Insets(0, 0, 5, 0);
-		gbc_jComboBoxExampleProjects.gridx = 4;
+		gbc_jComboBoxExampleProjects.insets = new Insets(0, 0, 5, 5);
+		gbc_jComboBoxExampleProjects.gridx = 5;
 		gbc_jComboBoxExampleProjects.gridy = 3;
 		jPanel1.add(jComboBoxExampleProjects, gbc_jComboBoxExampleProjects);
 		jButtonExample1.setToolTipText("<html>Click here to directly load one of the available examples</html>");
@@ -489,10 +473,19 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 		jButtonExample1.setContentAreaFilled(false);
 		jButtonExample1.setBorder(BorderFactory.createEmptyBorder());
 		GridBagConstraints gbc_jButtonExample1 = new GridBagConstraints();
+		gbc_jButtonExample1.insets = new Insets(0, 0, 5, 5);
 		gbc_jButtonExample1.gridy = 4;
-		gbc_jButtonExample1.gridx = 4;
+		gbc_jButtonExample1.gridx = 5;
 		jPanel1.add(jButtonExample1, gbc_jButtonExample1);
-		getContentPane().setLayout(layout);
+		getContentPane().add(jPanel1, BorderLayout.CENTER);
+
+		panel = new JPanel();
+		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
+		flowLayout.setAlignment(FlowLayout.RIGHT);
+		getContentPane().add(panel, BorderLayout.SOUTH);
+
+		jButtonShowHelp = new OpenHelpButton(this);
+		panel.add(jButtonShowHelp);
 
 		pack();
 		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
@@ -544,7 +537,7 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 
 	public void startDataImport() {
 		setVisible(false);
-		MiapeExtractionFrameNEW standard2MIAPEDialog = MiapeExtractionFrameNEW.getInstance(this, true);
+		MiapeExtractionFrame standard2MIAPEDialog = MiapeExtractionFrame.getInstance(this, true);
 		standard2MIAPEDialog.setVisible(true);
 
 	}
@@ -568,17 +561,6 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 
 			}
 		}
-
-	}
-
-	private void jMenuItemBatchMiapeExtractionActionPerformed(java.awt.event.ActionEvent evt) {
-		showBatchMiapeExtractionFrame();
-	}
-
-	private void showBatchMiapeExtractionFrame() {
-		setVisible(false);
-		miapeExtractionBatchFrame = MiapeExtractionBatchFrame.getInstace(this);
-		miapeExtractionBatchFrame.setVisible(true);
 
 	}
 
@@ -673,7 +655,6 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 	private javax.swing.JMenu jMenu3;
 	private javax.swing.JMenuBar jMenuBar1;
 	private javax.swing.JMenu jMenuHelp;
-	private javax.swing.JMenuItem jMenuItemBatchMiapeExtraction;
 	private javax.swing.JMenuItem jMenuItemExit;
 	private javax.swing.JMenuItem jMenuItemMIAPEExtractionBatchTutorial;
 	private javax.swing.JMenuItem jMenuItemMIAPEExtractionTutorial;
@@ -684,6 +665,7 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 	private JMenuItem mntmShowHelpDialog;
 	private JComboBox<String> jComboBoxExampleProjects;
 	private JButton jButtonExample1;
+	private JPanel panel;
 
 	// End of variables declaration//GEN-END:variables
 
@@ -730,6 +712,23 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 					+ "PACom uses the internet connection to retrieve some resources, collect some protein annotations and check for new updates.<br>"
 					+ "Please check your internet connection or institution firewall and run the software again.");
 
+		} else if (OntologyLoaderWaiter.ONTOLOGY_LOADED.equals(evt.getPropertyName())) {
+			Object newValue = evt.getNewValue();
+			if (newValue instanceof ControlVocabularyManager) {
+				log.info("Ontologies loaded. Now loading metadata templates");
+				EventQueue.invokeLater(new Runnable() {
+
+					@Override
+					public void run() {
+						long t0 = System.currentTimeMillis();
+						log.info("Loading metadata templates");
+						FileManager.getMetadataTemplateList((ControlVocabularyManager) newValue);
+						log.info("Metadata templates loaded in "
+								+ DatesUtil.getDescriptiveTimeFromMillisecs(System.currentTimeMillis() - t0));
+					}
+				});
+				log.info("Metadata templates will be loaded after all events are processed");
+			}
 		}
 
 	}

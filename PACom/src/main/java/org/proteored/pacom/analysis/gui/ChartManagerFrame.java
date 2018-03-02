@@ -7,6 +7,7 @@ package org.proteored.pacom.analysis.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -69,8 +70,7 @@ import javax.swing.event.ChangeListener;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartPanel;
-import org.jfree.ui.ExtensionFileFilter;
-import org.jfree.ui.RefineryUtilities;
+import org.jfree.chart.ui.UIUtils;
 import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
 import org.proteored.miapeapi.experiment.VennData;
 import org.proteored.miapeapi.experiment.model.Experiment;
@@ -115,6 +115,7 @@ import org.proteored.pacom.gui.OpenHelpButton;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 import org.proteored.pacom.utils.AppVersion;
 import org.proteored.pacom.utils.ComponentEnableStateKeeper;
+import org.proteored.pacom.utils.ExtensionFileFilter;
 import org.proteored.pacom.utils.PACOMSoftware;
 import org.proteored.pacom.utils.ToolTipUtil;
 
@@ -241,7 +242,6 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		updateControlStates();
 
 		loadButtonIcons();
-		RefineryUtilities.positionFrameOnScreen(this, 0.3, 0.5);
 
 		jTextAreaStatus.setFont(new JTextField().getFont());
 
@@ -253,6 +253,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		enableStateKeeper.addReverseComponent(jButtonCancel);
 		enableStateKeeper.addInvariableComponent(jTextAreaStatus);
 		enableStateKeeper.addInvariableComponent(jButtonHelp);
+
+		UIUtils.centerFrameOnScreen(this);
 	}
 
 	public static ChartManagerFrame getInstance(Miape2ExperimentListDialog parentDialog, File cfgFile) {
@@ -1249,6 +1251,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		getContentPane().add(jPanelRigth, BorderLayout.CENTER);
 		jPanelRigth.setLayout(new BorderLayout(0, 0));
 		jPanelRigth.add(jScrollPaneChart);
+		// jPanelRigth.setBackground(Color.white);
 
 		jMenuChartType.setText("Chart Type");
 		jMenuChartType.setEnabled(false);
@@ -3965,7 +3968,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		if (showScoreNames) {
 			if (currentChartType.getName().contains("rotein")) {
 				// //////////////// ROW3
-				final DefaultComboBoxModel proteinScoreNames = getProteinScoreNames();
+				final DefaultComboBoxModel<String> proteinScoreNames = getProteinScoreNames();
 				if (proteinScoreNames != null) {
 					JPanel jPanelAdditional3 = optionsFactory.getProteinScorePanel(proteinScoreNames);
 					c.gridy++;
@@ -3974,7 +3977,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			}
 			if (currentChartType.getName().contains("eptide")) {
 				// //////////////// ROW4
-				final DefaultComboBoxModel peptideScoreNames = getPeptideScoreNames();
+				final DefaultComboBoxModel<String> peptideScoreNames = getPeptideScoreNames();
 				if (peptideScoreNames != null) {
 					JPanel jPanelAdditional4 = optionsFactory.getPeptideScorePanel(peptideScoreNames);
 					c.gridy++;
@@ -4415,7 +4418,9 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			c.gridx = 0;
 			c.gridy = 0;
 			JLabel label = new JLabel(erromessage);
+			label.setBackground(Color.white);
 			JPanel panel = new JPanel();
+			panel.setBackground(Color.white);
 			panel.add(label, c);
 			jPanelChart.add(panel);
 			JOptionPane.showMessageDialog(this, erromessage);
@@ -4425,7 +4430,6 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 				|| ChartCreatorTask.CHART_ERROR_GENERATED.equals(evt.getPropertyName())) {
 
 			try { // to release the lock
-
 				jPanelChart.removeAll();
 				BorderLayout borderLayout = new BorderLayout();
 				jPanelChart.setLayout(borderLayout);
@@ -4470,8 +4474,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 							if (jPanel instanceof WordCramChart) {
 								WordCramChart wordCramChart = (WordCramChart) jPanel;
 								wordCramChart.addPropertyChangeListener(this);
-								wordCramChart.initialize(Double.valueOf(jPanelChart.getSize().getWidth()).intValue(),
-										550);
+								wordCramChart.draw(Double.valueOf(jPanelChart.getSize().getWidth()).intValue(), 550);
 							}
 						}
 
@@ -4492,7 +4495,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 					if (object instanceof WordCramChart) {
 						WordCramChart wordCramChart = (WordCramChart) object;
 						wordCramChart.addPropertyChangeListener(this);
-						wordCramChart.initialize(Double.valueOf(jPanelChart.getSize().getWidth()).intValue(),
+						wordCramChart.draw(Double.valueOf(jPanelChart.getSize().getWidth()).intValue(),
 								Double.valueOf(jPanelChart.getSize().getHeight()).intValue());
 					}
 				}
@@ -4522,7 +4525,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 				setProgressBarIndeterminate(false);
 
 			} finally {
-				log.info("Unlocking lock from thread " + Thread.currentThread().getId());
+				log.debug("Unlocking lock from thread " + Thread.currentThread().getId());
 				enableStateKeeper.setToPreviousState(this);
 
 				updateControlStates();
@@ -4600,31 +4603,41 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	}
 
+	private void destroyWordCrams(Container container) {
+		if (container.getComponentCount() > 0) {
+			for (Component component2 : container.getComponents()) {
+				if (component2 instanceof WordCramChart) {
+					WordCramChart chart = (WordCramChart) component2;
+					chart.destroy();
+				} else {
+					if (component2 instanceof Container) {
+						destroyWordCrams((Container) component2);
+					}
+				}
+			}
+		}
+	}
+
 	private void enableMenus(boolean b) {
 		jMenuFilters.setEnabled(b);
 		jMenuChartType.setEnabled(b);
 		jMenuOptions.setEnabled(b);
 	}
 
-	private DefaultComboBoxModel getProteinScoreNames() {
+	private DefaultComboBoxModel<String> getProteinScoreNames() {
 		List<String> scoreNames = experimentList.getProteinScoreNames();
 		if (scoreNames != null && !scoreNames.isEmpty()) {
-			return new DefaultComboBoxModel(scoreNames.toArray());
+			Collections.sort(scoreNames);
+			return new DefaultComboBoxModel<String>(scoreNames.toArray(new String[0]));
 		}
 		return null;
 	}
 
-	private DefaultComboBoxModel getPeptideScoreNames() {
+	private DefaultComboBoxModel<String> getPeptideScoreNames() {
 		List<String> scoreNames = experimentList.getPeptideScoreNames();
 		if (scoreNames != null && !scoreNames.isEmpty()) {
 			Collections.sort(scoreNames);
-			String[] scoreNameArray = new String[scoreNames.size()];
-			int i = 0;
-			for (String scoreName : scoreNames) {
-				scoreNameArray[i] = scoreName;
-				i++;
-			}
-			return new DefaultComboBoxModel(scoreNameArray);
+			return new DefaultComboBoxModel<String>(scoreNames.toArray(new String[0]));
 		}
 		return null;
 	}
@@ -4775,6 +4788,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	}
 
 	public void setEmptyChart() {
+		destroyWordCrams(jPanelChart);
 		jPanelChart.removeAll();
 		jPanelChart.repaint();
 	}
