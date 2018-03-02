@@ -1,10 +1,11 @@
 package org.proteored.pacom.utils;
 
 import java.io.File;
-import java.util.List;
 
 import org.proteored.miapeapi.interfaces.ms.MiapeMSDocument;
 import org.proteored.miapeapi.text.tsv.msi.TableTextFileSeparator;
+import org.proteored.pacom.gui.importjobs.AssociatedMSInputFileType;
+import org.proteored.pacom.gui.importjobs.InputFileType;
 
 public interface MiapeExtractionRunParameters {
 
@@ -34,33 +35,23 @@ public interface MiapeExtractionRunParameters {
 
 	public boolean isTSVSelected();
 
-	public String getTSVSelectFileName();
-
-	public String getMzIdentMLFileName();
-
-	public String getMgfFileName();
-
-	public String getMzMLFileName();
-
-	public String getPRIDEXMLFileName();
-
-	public String getXTandemFileName();
-
 	public String getDescription();
 
-	public List<File> getInputFiles();
+	public File getInputFile();
+
+	public String getInputFileName();
+
+	public File getAssociatedMSFile();
+
+	public String getAssociatedMSFileName();
 
 	public Integer getAssociatedMiapeMS();
 
 	public Integer getAssociatedMiapeMSGeneratorJob();
 
-	public String getTemplateName();
+	public String getMSMetadataTemplateName();
 
 	public boolean isXTandemPlusMGFSelected();
-
-	public String getDtaSelectFileName();
-
-	public String getPepXMLFileName();
 
 	public boolean isDTASelectSelected();
 
@@ -71,4 +62,9 @@ public interface MiapeExtractionRunParameters {
 	public boolean isPepXMLPlusMGFSelected();
 
 	public boolean isPepXMLSelected();
+
+	public InputFileType getInputFileType();
+
+	public AssociatedMSInputFileType getAssociatedMSFileType();
+
 }

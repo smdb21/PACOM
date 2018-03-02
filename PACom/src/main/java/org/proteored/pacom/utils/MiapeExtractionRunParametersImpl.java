@@ -1,10 +1,7 @@
 package org.proteored.pacom.utils;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
 import org.proteored.miapeapi.factories.MiapeDocumentFactory;
@@ -14,51 +11,35 @@ import org.proteored.miapeapi.interfaces.ms.MiapeMSDocument;
 import org.proteored.miapeapi.text.tsv.msi.TableTextFileSeparator;
 import org.proteored.miapeapi.xml.ms.MiapeMSDocumentImpl;
 import org.proteored.miapeapi.xml.ms.merge.MiapeMSMerger;
+import org.proteored.pacom.gui.importjobs.AssociatedMSInputFileType;
+import org.proteored.pacom.gui.importjobs.InputFileType;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 
 public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParameters {
 
-	private boolean isFastParsing;
-	private boolean isMzIdentMLPlusMGFSelected;
 	private MiapeMSDocument miapeMSMetadata;
-	private boolean isMzMLPlusMzIdentMLSelected;
-	private boolean isMIAPEMSChecked;
+
 	private String projectName;
-	private boolean isMIAPEMSIChecked;
-	private boolean isXTandemSelected;
-	private boolean isPRIDESelected;
-	private boolean isMzMLSelected;
-	private boolean isMzIdentMLSelected;
-	private String mzIdentMLFileName;
-	private String mzMLFileName;
-	private String mgfFileName;
-	private String PRIDEXMLFileName;
-	private String xTandemFileName;
-	private List<File> inputFiles = new ArrayList<File>();
+
+	private File inputFile;
+	private File associatedMSFile;
+	private InputFileType inputFileType;
 	private Integer id;
 	private Integer associatedMiapeMS;
 	private Integer associatedMiapeMSGeneratorJob;
-	private String templateName;
-	private boolean isMgfSelected;
-	private boolean xtandemPlusMGFSelected;
-	private String dtaSelectFileName;
-	private String pepXMLFileName;
-	private boolean DTASelectPlusMGFSelected;
-	private boolean DTASelectSelected;
-	private boolean PepXMLPlusMGFSelected;
-	private boolean PepXMLSelected;
-	private boolean tSVSelected;
-	private String tSVFileName;
+	private String templateMSMetadataName;
 	private TableTextFileSeparator separator;
+
+	private AssociatedMSInputFileType associatedMSFileType;
 
 	@Override
 	public boolean isFastParsing() {
-		return isFastParsing;
+		return true;
 	}
 
 	@Override
 	public boolean isMzIdentMLPlusMGFSelected() {
-		return isMzIdentMLPlusMGFSelected;
+		return InputFileType.MZIDENTMLPLUSMGF == inputFileType;
 	}
 
 	@Override
@@ -68,12 +49,23 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 
 	@Override
 	public boolean isMzMLPlusMzIdentMLSelected() {
-		return isMzMLPlusMzIdentMLSelected;
+		return InputFileType.MZIDENTMLPLUSMZML == inputFileType;
 	}
 
 	@Override
 	public boolean isMIAPEMSChecked() {
-		return isMIAPEMSChecked;
+		switch (inputFileType) {
+		case DTASELECTPLUSMGF:
+		case MZIDENTMLPLUSMGF:
+		case MZIDENTMLPLUSMZML:
+		case PEPXMLPLUSMGF:
+		case XTANDEMPLUSMGF:
+		case PRIDEXML:
+			return true;
+
+		default:
+			return false;
+		}
 	}
 
 	@Override
@@ -83,60 +75,44 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 
 	@Override
 	public boolean isMIAPEMSIChecked() {
-		return isMIAPEMSIChecked;
+		return true;
 	}
 
 	@Override
 	public boolean isXTandemSelected() {
-		return isXTandemSelected;
+		switch (inputFileType) {
+		case XTANDEM:
+		case XTANDEMPLUSMGF:
+			return true;
+
+		default:
+			return false;
+		}
 	}
 
 	@Override
 	public boolean isPRIDESelected() {
-		return isPRIDESelected;
+		return InputFileType.PRIDEXML == inputFileType;
+
 	}
 
 	@Override
 	public boolean isMzMLSelected() {
-		return isMzMLSelected;
+		return InputFileType.MZIDENTMLPLUSMZML == inputFileType;
+
 	}
 
 	@Override
 	public boolean isMzIdentMLSelected() {
-		return isMzIdentMLSelected;
-	}
+		switch (inputFileType) {
+		case MZIDENTML:
+		case MZIDENTMLPLUSMGF:
+		case MZIDENTMLPLUSMZML:
+			return true;
+		default:
+			return false;
+		}
 
-	@Override
-	public String getMzIdentMLFileName() {
-		return mzIdentMLFileName;
-	}
-
-	@Override
-	public String getMgfFileName() {
-		return mgfFileName;
-	}
-
-	@Override
-	public String getMzMLFileName() {
-		return mzMLFileName;
-	}
-
-	@Override
-	public String getPRIDEXMLFileName() {
-		return PRIDEXMLFileName;
-	}
-
-	@Override
-	public String getXTandemFileName() {
-		return xTandemFileName;
-	}
-
-	public void setFastParsing(boolean isFastParsing) {
-		this.isFastParsing = isFastParsing;
-	}
-
-	public void setMzIdentMLPlusMGFSelected(boolean isMzIdentMLPlusMGFSelected) {
-		this.isMzIdentMLPlusMGFSelected = isMzIdentMLPlusMGFSelected;
 	}
 
 	public void setMiapeMSMetadata(MiapeMSDocument miapeMSMetadata) {
@@ -144,88 +120,20 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 	}
 
 	public void setTemplateName(String name) {
-		templateName = name;
+		templateMSMetadataName = name;
 	}
 
 	@Override
-	public String getTemplateName() {
-		return templateName;
-	}
-
-	public void setMzMLPlusMzIdentMLSelected(boolean isMzMLPlusMzIdentMLSelected) {
-		this.isMzMLPlusMzIdentMLSelected = isMzMLPlusMzIdentMLSelected;
-	}
-
-	public void setMIAPEMSChecked(boolean isMIAPEMSChecked) {
-		this.isMIAPEMSChecked = isMIAPEMSChecked;
+	public String getMSMetadataTemplateName() {
+		return templateMSMetadataName;
 	}
 
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
 	}
 
-	public void setMIAPEMSIChecked(boolean isMIAPEMSIChecked) {
-		this.isMIAPEMSIChecked = isMIAPEMSIChecked;
-	}
-
-	public void setXTandemSelected(boolean isXTandemSelected) {
-		this.isXTandemSelected = isXTandemSelected;
-	}
-
-	public void setPRIDESelected(boolean isPRIDESelected) {
-		this.isPRIDESelected = isPRIDESelected;
-	}
-
-	public void setMzMLSelected(boolean isMzMLSelected) {
-		this.isMzMLSelected = isMzMLSelected;
-	}
-
-	public void setMzIdentMLSelected(boolean isMzIdentMLSelected) {
-		this.isMzIdentMLSelected = isMzIdentMLSelected;
-	}
-
-	public void setMzIdentMLFileName(String mzIdentMLFileName) {
-		this.mzIdentMLFileName = mzIdentMLFileName;
-	}
-
-	public void setMzMLFileName(String mzMLFileName) {
-		this.mzMLFileName = mzMLFileName;
-	}
-
-	public void setMgfFileName(String mgfFileName) {
-		this.mgfFileName = mgfFileName;
-	}
-
-	public void setPRIDEXMLFileName(String pRIDEXMLFileName) {
-		PRIDEXMLFileName = pRIDEXMLFileName;
-	}
-
-	public void setxTandemFileName(String xTandemFileName) {
-		this.xTandemFileName = xTandemFileName;
-	}
-
-	/**
-	 * @return the dtaSelectFileName
-	 */
-	@Override
-	public String getDtaSelectFileName() {
-		return dtaSelectFileName;
-	}
-
-	/**
-	 * @param dtaSelectFileName
-	 *            the dtaSelectFileName to set
-	 */
-	public void setDtaSelectFileName(String dtaSelectFileName) {
-		this.dtaSelectFileName = dtaSelectFileName;
-	}
-
-	public void addInputFile(File inputFile) {
-		inputFiles.add(inputFile);
-	}
-
-	public void setInputFile(Collection<File> inputFiles) {
-		this.inputFiles.addAll(inputFiles);
+	public void setInputFile(File inputFile) {
+		this.inputFile = inputFile;
 	}
 
 	@Override
@@ -235,77 +143,28 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 
 	@Override
 	public String toString() {
-		return "MiapeExtractionRunParametersImpl [isFastParsing=" + isFastParsing + ", isMzIdentMLPlusMGFSelected="
-				+ isMzIdentMLPlusMGFSelected + ", miapeMSMetadata=" + miapeMSMetadata + ", isMzMLPlusMzIdentMLSelected="
-				+ isMzMLPlusMzIdentMLSelected + ", isMIAPEMSChecked=" + isMIAPEMSChecked + ", projectName="
-				+ projectName + ", isMIAPEMSIChecked=" + isMIAPEMSIChecked + ", isXTandemSelected=" + isXTandemSelected
-				+ ", isPRIDESelected=" + isPRIDESelected + ", isMzMLSelected=" + isMzMLSelected
-				+ ", isMzIdentMLSelected=" + isMzIdentMLSelected + ", mzIdentMLFileName=" + mzIdentMLFileName
-				+ ", mzMLFileName=" + mzMLFileName + ", mgfFileName=" + mgfFileName + ", PRIDEXMLFileName="
-				+ PRIDEXMLFileName + ", xTandemFileName=" + xTandemFileName + "]";
+		return "MiapeExtractionRunParametersImpl [miapeMSMetadata=" + miapeMSMetadata + ", projectName=" + projectName
+				+ ", inputFile=" + inputFile + ", associatedMSFile=" + associatedMSFile + ", inputFileType="
+				+ inputFileType + ", id=" + id + ", associatedMiapeMS=" + associatedMiapeMS
+				+ ", associatedMiapeMSGeneratorJob=" + associatedMiapeMSGeneratorJob + ", templateMSMetadataName="
+				+ templateMSMetadataName + ", separator=" + separator + "]";
 	}
 
 	public void consolidate() {
-		boolean someOptionIsCorrect = false;
-		if (getMgfFileName() != null && getMzIdentMLFileName() != null) {
-			setMzIdentMLPlusMGFSelected(true);
-			someOptionIsCorrect = true;
-		} else if (getMgfFileName() != null && getXTandemFileName() != null) {
-			setXtandemPlusMGFSelected(true);
-			someOptionIsCorrect = true;
-		} else if (getMgfFileName() != null && getDtaSelectFileName() != null) {
-			setDTASelectPlusMGFSelected(true);
-			someOptionIsCorrect = true;
-		} else if (getMgfFileName() != null && getPepXMLFileName() != null) {
-			setPepXMLPlusMGFSelected(true);
-			someOptionIsCorrect = true;
-		} else if (getMgfFileName() != null && getMzIdentMLFileName() == null && getxTandemFileName() == null
-				&& getDtaSelectFileName() == null && getPepXMLFileName() == null) {
-			setMGFSelected(true);
-			someOptionIsCorrect = true;
-		} else if (getMzMLFileName() != null && getMzIdentMLFileName() != null) {
-			setMzMLPlusMzIdentMLSelected(true);
-			someOptionIsCorrect = true;
-		} else if (getMzIdentMLFileName() != null && getMzMLFileName() == null) {
-			setMzIdentMLSelected(true);
-			someOptionIsCorrect = true;
-		} else if (getXTandemFileName() != null) {
-			setXTandemSelected(true);
-			someOptionIsCorrect = true;
-		} else if (getDtaSelectFileName() != null) {
-			setDTASelectSelected(true);
-			someOptionIsCorrect = true;
-		} else if (getPepXMLFileName() != null) {
-			setPepXMLSelected(true);
-			someOptionIsCorrect = true;
-		} else if (getPRIDEXMLFileName() != null) {
-			setPRIDESelected(true);
-			someOptionIsCorrect = true;
-		} else if (getMzMLFileName() != null && getMiapeMSMetadata() != null) {
-			setMzMLSelected(true);
-			someOptionIsCorrect = true;
+		if (getInputFile() == null) {
+			throw new IllegalMiapeArgumentException("Input file is missing");
 		}
-		if (!someOptionIsCorrect)
-			throw new IllegalMiapeArgumentException("Some error has been detected on input batch file");
-
+		if (isMIAPEMSChecked() && getAssociatedMSFile() == null) {
+			throw new IllegalMiapeArgumentException("Associated MS File is missing");
+		}
 		if ((isMzIdentMLPlusMGFSelected() || isXtandemPlusMGFSelected() || isDTASelectPlusMGFSelected()
 				|| isPepXMLPlusMGFSelected()) && getMiapeMSMetadata() == null)
 			throw new IllegalMiapeArgumentException(
 					"Some Mass Spectrometry metadata template is required for importing datasets from MGF + mzIdentML, MGF + XTandem, MGF + DTASelect or MGF + pepXML. Include a METADATA line type in the batch file.");
 
-		if (getMzMLFileName() == null && isFastParsing())
-			throw new IllegalMiapeArgumentException("Fast parsing is only applicable for processing MZML files");
-
-		if (getPRIDEXMLFileName() != null && (!isMIAPEMSIChecked() && !isMIAPEMSChecked()))
-			throw new IllegalMiapeArgumentException(
-					"MS OUTPUT, MSI OUTPUT or MS MSI OUTPUT is required for processing PRIDE XML files");
-
 		if (getProjectName() == null || "".equals(getProjectName())) {
 			throw new IllegalMiapeArgumentException("Project name is required");
 		}
-
-		if (getInputFiles().isEmpty())
-			throw new IllegalMiapeArgumentException("No input files defined!");
 
 		if (getMiapeMSMetadata() != null && getAssociatedMiapeMSGeneratorJob() != null)
 			throw new IllegalMiapeArgumentException("METADATA and MS_REF cannot be present at the same job");
@@ -325,11 +184,6 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 			setMiapeMSMetadata(ret);
 
 		}
-	}
-
-	@Override
-	public List<File> getInputFiles() {
-		return inputFiles;
 	}
 
 	public Integer getId() {
@@ -360,61 +214,27 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 
 	@Override
 	public boolean isMGFSelected() {
-		return isMgfSelected;
-	}
-
-	public void setMGFSelected(boolean mgfSelected) {
-		isMgfSelected = mgfSelected;
+		switch (inputFileType) {
+		case DTASELECTPLUSMGF:
+		case MZIDENTMLPLUSMGF:
+		case PEPXMLPLUSMGF:
+		case XTANDEMPLUSMGF:
+			return true;
+		default:
+			return false;
+		}
 	}
 
 	@Override
 	public boolean isXTandemPlusMGFSelected() {
-		return xtandemPlusMGFSelected;
-	}
-
-	/**
-	 * @return the isMgfSelected
-	 */
-	public boolean isMgfSelected() {
-		return isMgfSelected;
-	}
-
-	/**
-	 * @param isMgfSelected
-	 *            the isMgfSelected to set
-	 */
-	public void setMgfSelected(boolean isMgfSelected) {
-		this.isMgfSelected = isMgfSelected;
+		return InputFileType.XTANDEMPLUSMGF == inputFileType;
 	}
 
 	/**
 	 * @return the xtandemPlusMGFSelected
 	 */
 	public boolean isXtandemPlusMGFSelected() {
-		return xtandemPlusMGFSelected;
-	}
-
-	/**
-	 * @param xtandemPlusMGFSelected
-	 *            the xtandemPlusMGFSelected to set
-	 */
-	public void setXtandemPlusMGFSelected(boolean xtandemPlusMGFSelected) {
-		this.xtandemPlusMGFSelected = xtandemPlusMGFSelected;
-	}
-
-	/**
-	 * @return the xTandemFileName
-	 */
-	public String getxTandemFileName() {
-		return xTandemFileName;
-	}
-
-	/**
-	 * @param inputFiles
-	 *            the inputFiles to set
-	 */
-	public void setInputFiles(List<File> inputFiles) {
-		this.inputFiles = inputFiles;
+		return InputFileType.PEPXMLPLUSMGF == inputFileType;
 	}
 
 	/**
@@ -427,64 +247,41 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 
 	@Override
 	public boolean isDTASelectSelected() {
-		return DTASelectSelected;
+		switch (inputFileType) {
+		case DTASELECT:
+		case DTASELECTPLUSMGF:
+			return true;
+
+		default:
+			return false;
+		}
 	}
 
 	@Override
 	public boolean isDTASelectPlusMGFSelected() {
-		return DTASelectPlusMGFSelected;
-	}
-
-	/**
-	 * @param dTASelectPlusMGFSelected
-	 *            the dTASelectPlusMGFSelected to set
-	 */
-	public void setDTASelectPlusMGFSelected(boolean dTASelectPlusMGFSelected) {
-		DTASelectPlusMGFSelected = dTASelectPlusMGFSelected;
-	}
-
-	public void setPepXMLPlusMGFSelected(boolean pepXMLPlusMGFSelected) {
-		this.PepXMLPlusMGFSelected = pepXMLPlusMGFSelected;
+		return InputFileType.DTASELECTPLUSMGF == inputFileType;
 	}
 
 	@Override
 	public boolean isPepXMLSelected() {
-		return PepXMLSelected;
-	}
+		switch (inputFileType) {
+		case PEPXML:
+		case PEPXMLPLUSMGF:
+			return true;
 
-	public void setPepXMLSelected(boolean pepXMLSelected) {
-		PepXMLSelected = pepXMLSelected;
+		default:
+			return false;
+		}
 	}
 
 	@Override
 	public boolean isPepXMLPlusMGFSelected() {
-		return PepXMLPlusMGFSelected;
-	}
-
-	/**
-	 * @param dTASelectSelected
-	 *            the dTASelectSelected to set
-	 */
-	public void setDTASelectSelected(boolean dTASelectSelected) {
-		DTASelectSelected = dTASelectSelected;
+		return InputFileType.PEPXMLPLUSMGF == inputFileType;
 	}
 
 	@Override
 	public boolean isTSVSelected() {
-		return tSVSelected;
-	}
-
-	@Override
-	public String getTSVSelectFileName() {
-		return tSVFileName;
-	}
-
-	public void setTSVSelected(boolean tSVSelected) {
-		this.tSVSelected = tSVSelected;
-	}
-
-	public void setTSVFileName(String tSVFileName) {
-		this.tSVFileName = tSVFileName;
+		return InputFileType.TABLETEXT == inputFileType;
 	}
 
 	@Override
@@ -497,12 +294,50 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 	}
 
 	@Override
-	public String getPepXMLFileName() {
-		return this.pepXMLFileName;
+	public InputFileType getInputFileType() {
+		return inputFileType;
 	}
 
-	public void setPepXMLFileName(String pepXMLFileName) {
-		this.pepXMLFileName = pepXMLFileName;
+	public void setInputFileType(InputFileType inputFileType) {
+		this.inputFileType = inputFileType;
+	}
+
+	@Override
+	public File getInputFile() {
+		return inputFile;
+	}
+
+	@Override
+	public String getInputFileName() {
+		if (inputFile != null) {
+			return inputFile.getAbsolutePath();
+		}
+		return "";
+	}
+
+	@Override
+	public File getAssociatedMSFile() {
+		return associatedMSFile;
+	}
+
+	@Override
+	public String getAssociatedMSFileName() {
+		if (associatedMSFile != null) {
+			return associatedMSFile.getAbsolutePath();
+		}
+		return "";
+	}
+
+	public AssociatedMSInputFileType getAssociatedMSFileType() {
+		return associatedMSFileType;
+	}
+
+	public void setAssociatedMSFileType(AssociatedMSInputFileType associatedMSFileType) {
+		this.associatedMSFileType = associatedMSFileType;
+	}
+
+	public void setAssociatedMSFile(File file) {
+		this.associatedMSFile = file;
 	}
 
 }
