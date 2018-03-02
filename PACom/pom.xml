@@ -3,7 +3,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.proteored</groupId>
    <artifactId>pacom</artifactId>
-   <version>1.68</version>
+   <version>1.70</version>
    <distributionManagement>
       <repository>
          <id>internal</id>
@@ -35,7 +35,7 @@
       <dependency>
          <groupId>org.jfree</groupId>
          <artifactId>jfreechart</artifactId>
-         <version>1.0.19</version>
+         <version>1.5.0</version>
       </dependency>
       <!-- library that jfreechart uses to save charts in pdf -->
 		<dependency>
@@ -48,7 +48,7 @@
 		<dependency>
 		    <groupId>org.jfree</groupId>
 		    <artifactId>jfreesvg</artifactId>
-		    <version>3.2</version>
+		    <version>3.3</version>
 		</dependency>
        
       <!--  WORDCRAM -->
@@ -85,11 +85,19 @@
       <dependency>
       	<groupId>org.proteored.miape.api</groupId>
       	<artifactId>miape-api</artifactId>
-      	<version>1.9.5-SNAPSHOT</version>
+      	<version>1.9.7-SNAPSHOT</version>
       	<exclusions>
       		<exclusion>
       			<groupId>ch.qos.logback</groupId>
       			<artifactId>logback-classic</artifactId>
+      		</exclusion>
+      		<exclusion>
+      			<groupId>jfree</groupId>
+      			<artifactId>jfreechart</artifactId>
+      		</exclusion>
+      		<exclusion>
+      			<groupId>ch.qos.logback</groupId>
+      			<artifactId>logback-core</artifactId>
       		</exclusion>
       	</exclusions>
       </dependency>
@@ -102,12 +110,21 @@
       			<groupId>ch.qos.logback</groupId>
       			<artifactId>logback-classic</artifactId>
       		</exclusion>
+      		<exclusion>
+      			<groupId>ch.qos.logback</groupId>
+      			<artifactId>logback-core</artifactId>
+      		</exclusion>
       	</exclusions>
       </dependency>
       <dependency>
       	<groupId>org.slf4j</groupId>
       	<artifactId>slf4j-log4j12</artifactId>
       	<version>1.7.25</version>
+      </dependency>
+      <dependency>
+      	<groupId>jfree</groupId>
+      	<artifactId>jcommon</artifactId>
+      	<version>1.0.16</version>
       </dependency>
    </dependencies>
    <repositories>
