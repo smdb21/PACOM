@@ -12,9 +12,8 @@ import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
+import org.apache.log4j.Logger;
 import org.proteored.pacom.gui.MainFrame;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Check whether there is a new update
@@ -23,7 +22,7 @@ import org.slf4j.LoggerFactory;
  */
 public class UpdateChecker {
 
-	public static final Logger log = LoggerFactory.getLogger(UpdateChecker.class);
+	public static final Logger log = Logger.getLogger(UpdateChecker.class);
 	private static UpdateChecker instance;
 
 	public static UpdateChecker getInstance() {

@@ -140,7 +140,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 
 		MiapeExtractionTask task = new MiapeExtractionTask(jobID, params);
 		addTaskToQueue(task);
-		log.info(task.getRunIdentifier() + " task added to queue");
+		log.info("Task id:" + task.getRunIdentifier() + " added to queue");
 
 		return task;
 	}
@@ -390,10 +390,10 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 	 */
 	public synchronized boolean startMiapeExtractionNextInQueue() {
 
-		log.info("Start MIAPE Extractions");
-		log.info(miapeExtractionQueueOrder.size() + " tasks in the queue");
-		log.info(getRunningJobs().size() + " tasks running");
-		log.info(completedJobs.size() + " tasks completed");
+		log.debug("Start MIAPE Extractions");
+		log.debug(miapeExtractionQueueOrder.size() + " tasks in the queue");
+		log.debug(getRunningJobs().size() + " tasks running");
+		log.debug(completedJobs.size() + " tasks completed");
 		boolean allDone = true;
 		if (getRunningJobs().size() < CONCURRENT_MIAPE_EXTRACTIONS) {
 			for (Integer jobID : miapeExtractionQueueOrder) {
@@ -430,7 +430,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 
 				// if (miapeExtractionTask.getRunIdentifier() == jobID) {
 				if (miapeExtractionTask.getState() == StateValue.PENDING) {
-					log.info("Executing job " + miapeExtractionTask.getRunIdentifier());
+					log.info("Executing import task " + miapeExtractionTask.getRunIdentifier());
 					miapeExtractionTask.addPropertyChangeListener(this);
 					miapeExtractionTask.addPropertyChangeListener(listener);
 					miapeExtractionTask.execute();
@@ -444,11 +444,11 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 						// if the task has been retried before twice, do not
 						// start again
 						if (numStarts > NUM_RETRIES) {
-							log.info("Job " + jobID + " cannot be started more than " + NUM_RETRIES + " times");
+							log.info("Job task " + jobID + " cannot be started more than " + NUM_RETRIES + " times");
 							return false;
 						}
 					}
-					log.info("The task " + jobID + " is going to be reanalyzer");
+					log.info("The task " + jobID + " is going to be reanalyzed");
 					miapeTask = new MiapeExtractionTask(miapeExtractionTask.getRunIdentifier(),
 							miapeExtractionTask.getParameters(), miapeExtractionTask.isLocalProcessingInParallel());
 					miapeTask.addPropertyChangeListener(this);
@@ -525,8 +525,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 		if (MiapeExtractionTask.MIAPE_CREATION_TOTAL_DONE.equals(evt.getPropertyName())) {
 
 			MiapeExtractionResult result = (MiapeExtractionResult) evt.getNewValue();
-			log.info("Job " + result.getMiapeExtractionTaskIdentifier() + " MIAPE CREATION DONE MS:"
-					+ result.getMiapeMS_Identifier() + " and MSI:" + result.getMiapeMSI_Identifier() + " in "
+			log.info("Import task " + result.getMiapeExtractionTaskIdentifier() + " is done in "
 					+ result.getMilliseconds());
 			log.info(getNumberOfPendingTasks() + " still in the queue");
 			// remove from running job set
@@ -572,7 +571,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 			runningJobs.remove(jobID);
 			// add to failed jobs
 			failedJobs.add(jobID);
-
+			log.info("Import tasks cancelled");
 			log.info(getNumberOfPendingTasks() + " still in the queue");
 
 			if (!cancelAll)
@@ -606,7 +605,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 		if (getNumberOfPendingTasks() == 0 && getRunningJobs().size() == 0) {
 			listener.propertyChange(new PropertyChangeEvent(this, MIAPE_BATCH_DONE, null, getStatisticsOnTasks()));
 		} else {
-			log.info("Still not finished!");
+			log.debug("Still not finished!");
 		}
 	}
 
@@ -624,10 +623,10 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 	}
 
 	private void printqueueStatus() {
-		log.info("Status of the job queue: " + miapeExtractionQueueOrder.size());
+		log.debug("Status of the job queue: " + miapeExtractionQueueOrder.size());
 		for (Integer jobID : miapeExtractionQueueOrder) {
 			MiapeExtractionTask task = miapeExtractionTasks.get(jobID);
-			log.info(task.getRunIdentifier() + " -> " + task.getState() + " cancelled: " + task.isCancelled());
+			log.debug(task.getRunIdentifier() + " -> " + task.getState() + " cancelled: " + task.isCancelled());
 		}
 	}
 
@@ -641,7 +640,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 						if (taskParameters instanceof MiapeExtractionRunParametersImpl) {
 							((MiapeExtractionRunParametersImpl) taskParameters)
 									.setAssociatedMiapeMS(result.getMiapeMS_Identifier());
-							log.info("Associating result from Job :" + result.getMiapeExtractionTaskIdentifier()
+							log.debug("Associating result from Job :" + result.getMiapeExtractionTaskIdentifier()
 									+ " to job " + task.getRunIdentifier() + " MIAPE MS="
 									+ result.getMiapeMS_Identifier());
 						}

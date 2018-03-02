@@ -60,7 +60,7 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 		case MZIDENTMLPLUSMZML:
 		case PEPXMLPLUSMGF:
 		case XTANDEMPLUSMGF:
-		case PRIDEXML:
+
 			return true;
 
 		default:
@@ -328,6 +328,7 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 		return "";
 	}
 
+	@Override
 	public AssociatedMSInputFileType getAssociatedMSFileType() {
 		return associatedMSFileType;
 	}

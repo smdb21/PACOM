@@ -509,7 +509,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 					e.printStackTrace();
 				}
 			}
-			log.info("Wait for metadata templates finished");
+			log.debug("Wait for metadata templates finished");
 
 			List<String> list = FileManager.getMetadataTemplateList(cvManager);
 			metadataList.addAll(list);

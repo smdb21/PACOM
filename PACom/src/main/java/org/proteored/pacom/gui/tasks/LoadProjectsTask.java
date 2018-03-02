@@ -40,10 +40,10 @@ public class LoadProjectsTask extends SwingWorker<Void, Void> {
 	protected void done() {
 		firePropertyChange(PROJECT_LOADED_DONE, null, null);
 		if (isCancelled())
-			log.info("Project loading cancelled");
+			log.debug("Project loading cancelled");
 		if (isDone())
-			log.info("Project loading is done");
-		log.info("Project list loaded");
+			log.debug("Project loading is done");
+		log.debug("Project list loaded");
 		super.done();
 	}
 
@@ -53,7 +53,7 @@ public class LoadProjectsTask extends SwingWorker<Void, Void> {
 		if (!getLocalCachedProjects().isEmpty())
 			return getLocalCachedProjects();
 		try {
-			log.info("Loading projects from local folder");
+			log.debug("Loading projects from local folder");
 			firePropertyChange(MiapeExtractionTask.NOTIFICATION, null, "Loading projects from local file system...");
 			final List<String> localMIAPEProjects = FileManager.getlocalMIAPEProjects();
 			TIntObjectHashMap<String> projectsHashMap = new TIntObjectHashMap<String>();
@@ -61,7 +61,7 @@ public class LoadProjectsTask extends SwingWorker<Void, Void> {
 			for (String projectName : localMIAPEProjects) {
 				projectsHashMap.put(counter++, projectName);
 			}
-			log.info(localMIAPEProjects.size() + " projects loaded");
+			log.debug(localMIAPEProjects.size() + " projects loaded");
 			if (!localMIAPEProjects.isEmpty()) {
 				firePropertyChange(MiapeExtractionTask.NOTIFICATION, null,
 						localMIAPEProjects.size() + " projects loaded");

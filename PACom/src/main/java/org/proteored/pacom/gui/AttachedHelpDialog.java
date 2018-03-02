@@ -198,7 +198,7 @@ public class AttachedHelpDialog extends JDialog {
 				e.printStackTrace();
 			}
 		}
-		log.info("Messages added to help window");
+		log.debug("Messages added to help window");
 	}
 
 	private void scrollToBeginning() {
@@ -209,7 +209,7 @@ public class AttachedHelpDialog extends JDialog {
 			textPane.repaint();
 			r = textPane.modelToView(textPane.getDocument().getStartPosition().getOffset());
 			if (r != null) {
-				log.info("scrolling to the top " + r);
+				log.debug("scrolling to the top " + r);
 				textPane.scrollRectToVisible(r);
 			}
 		} catch (BadLocationException e) {
@@ -302,7 +302,7 @@ public class AttachedHelpDialog extends JDialog {
 
 			@Override
 			public void componentShown(ComponentEvent e) {
-				log.info(e.getID());
+				log.debug(e.getID());
 				AttachedHelpDialog.this.setVisible(true);
 			}
 
@@ -320,7 +320,7 @@ public class AttachedHelpDialog extends JDialog {
 
 			@Override
 			public void componentHidden(ComponentEvent e) {
-				log.info(e.getID());
+				log.debug(e.getID());
 				AttachedHelpDialog.this.setVisible(false);
 			}
 		});
@@ -341,7 +341,7 @@ public class AttachedHelpDialog extends JDialog {
 
 			@Override
 			public void windowClosed(WindowEvent e) {
-				log.info("Window is closed. Now disposing help dialog");
+				log.debug("Window is closed. Now disposing help dialog");
 				log.debug(e.getID() + " from " + e.getOldState() + " to " + e.getNewState());
 				AttachedHelpDialog.this.dispose();
 
@@ -452,7 +452,7 @@ public class AttachedHelpDialog extends JDialog {
 
 	@Override
 	public void dispose() {
-		log.info("Dialog dispose");
+		log.debug("Dialog dispose");
 		super.dispose();
 		this.minimized = true;
 

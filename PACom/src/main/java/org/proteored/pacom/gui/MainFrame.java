@@ -317,8 +317,8 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 
 		jMenuItemMIAPEExtractionTutorial.setAccelerator(
 				javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.ALT_MASK));
-		jMenuItemMIAPEExtractionTutorial.setText("PACOM Tutorial");
-		jMenuItemMIAPEExtractionTutorial.setToolTipText("Download the PACOM Tutorial (PDF)");
+		jMenuItemMIAPEExtractionTutorial.setText("PACOM tutorial (main wiki page)");
+		jMenuItemMIAPEExtractionTutorial.setToolTipText("Go to the main PACOM wiki page");
 		jMenuItemMIAPEExtractionTutorial.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -342,7 +342,10 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 
 		jMenuItemMIAPEExtractionBatchTutorial.setAccelerator(
 				javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.ALT_MASK));
-		jMenuItemMIAPEExtractionBatchTutorial.setText("Batch Import data Tutorial");
+		jMenuItemMIAPEExtractionBatchTutorial.setText("Import data Tutorial (wiki page)");
+		jMenuItemMIAPEExtractionBatchTutorial
+				.setToolTipText("Go to the PACOM wiki page where how to import datasets is explained.");
+
 		jMenuItemMIAPEExtractionBatchTutorial.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -691,13 +694,16 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 		String[] array = { "This is the main window in PACOM", //
 				"From here you can: ", //
 
-				"- click on <b>Import data</b> to import datasets into PACOM,", //
+				"- click on <b>Import data</b> to import one or more datasets into PACOM <i>(Alt+E)</i>,", //
 
-				"- click on <b>Batch import data</b> to import several datasets in batch,", //
+				"- click on <b>Inspect data</b> to open the comparison project builder <i>(Alt+I)</i>,", //
 
-				"- click on <b>Inspect data</b> to open the comparison project builder,", //
+				"- select and click one of the available <b>example projects</b> and directly start to visualize data.", //
 
-				"- select and click one of the available <b>example projects</b> and directly start to visualize data." };
+				"You can also go to the main PACOM wiki page by selecting the menu <i>Help->PACOM tutorial (main wiki page)</i>, or go to the PACOM wiki pages that"
+						+ " explains how to import datasets by selecting the menu <i>Help->Import data Tutorial (wiki page)</i>"
+
+		};
 		return Arrays.asList(array);
 	}
 
@@ -727,7 +733,7 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 								+ DatesUtil.getDescriptiveTimeFromMillisecs(System.currentTimeMillis() - t0));
 					}
 				});
-				log.info("Metadata templates will be loaded after all events are processed");
+				log.debug("Metadata templates will be loaded after all events are processed");
 			}
 		}
 

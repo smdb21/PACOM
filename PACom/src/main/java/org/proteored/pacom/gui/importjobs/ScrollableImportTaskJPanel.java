@@ -96,7 +96,7 @@ public class ScrollableImportTaskJPanel extends JPanel {
 			// cellWidth = comp.getPreferredSize().width;
 
 			int columnDefaultWidth = ImportTaskColumns.getColumns().get(i).getDefaultWidth();
-			log.info("Setting column width of " + ImportTaskColumns.getColumns().get(i).getName() + " [" + headerWidth
+			log.debug("Setting column width of " + ImportTaskColumns.getColumns().get(i).getName() + " [" + headerWidth
 					+ "," + cellWidth + "," + columnDefaultWidth + "]");
 			column.setPreferredWidth(Math.max(Math.max(headerWidth, cellWidth), columnDefaultWidth));
 		}

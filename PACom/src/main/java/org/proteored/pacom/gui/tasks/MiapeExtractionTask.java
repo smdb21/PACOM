@@ -92,8 +92,8 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 		if (runIdentifier != null)
 			identifier = runIdentifier;
 
-		log.info("Creating new MIAPE Extraction job= " + identifier);
-		log.info(miapeExtractorInputParameters);
+		log.debug("Creating new MIAPE Extraction job= " + identifier);
+		log.debug(miapeExtractorInputParameters);
 
 	}
 
@@ -103,8 +103,8 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 		if (runIdentifier != null)
 			identifier = runIdentifier;
 
-		log.info("Creating new MIAPE Extraction job= " + identifier);
-		log.info(miapeExtractorInputParameters);
+		log.debug("Creating new MIAPE Extraction job= " + identifier);
+		log.debug(miapeExtractorInputParameters);
 
 	}
 
