@@ -105,7 +105,7 @@ public class FileManager {
 
 	/**
 	 * Gets the folder (creating it if doesn't exist)
-	 * APP_FOLDER/user_data/miape_local_data/
+	 * APP_FOLDER/user_data/local_datasets/
 	 *
 	 * @param projectName
 	 *
@@ -164,7 +164,7 @@ public class FileManager {
 		}
 		if (ret.isEmpty()) {
 			boolean deleted = localProjectFolder.delete();
-			log.info("Folder " + localProjectFolder.getAbsolutePath() + " deleted " + deleted);
+			log.debug("Folder " + localProjectFolder.getAbsolutePath() + " deleted " + deleted);
 		}
 
 		return ret;
@@ -398,6 +398,20 @@ public class FileManager {
 		return null;
 	}
 
+	public static String getMiapeMSINameFromName(String name) {
+		if (name.startsWith(MIAPE_MSI_LOCAL_PREFIX)) {
+			try {
+				String substring = name
+						.substring(name.indexOf(MIAPE_MSI_LOCAL_PREFIX) + MIAPE_MSI_LOCAL_PREFIX.length());
+
+				return substring;
+			} catch (NumberFormatException e) {
+
+			}
+		}
+		return null;
+	}
+
 	public static String getMiapeMSLocalFileName(int miapeID) {
 
 		String string = MIAPE_MS_LOCAL_PREFIX + miapeID + ".xml";
@@ -465,7 +479,7 @@ public class FileManager {
 	public static List<String> getProjectList() {
 		List<String> ret = new ArrayList<String>();
 		final String projectsFolderName = getProjectsDataPath();
-		log.info(projectsFolderName);
+		log.debug(projectsFolderName);
 		File projectsFolder = new File(projectsFolderName);
 		if (projectsFolder.exists()) {
 			for (File projectFile : projectsFolder.listFiles()) {
@@ -826,8 +840,8 @@ public class FileManager {
 	 */
 	public static File saveLocalMiapeMSI(int miapeID, MIAPEMSIXmlFile miapeXML, String projectName, String dataName)
 			throws IOException {
-		log.info("saving local  MIAPE MSI:");
 		String finalFileName = getMiapeMSIXMLFileLocalPathFromMiapeInformation(projectName, miapeID, dataName);
+		log.info("saving dataset to local file system:" + finalFileName);
 		// String name = getMiapeMSILocalFileName(miapeID, dataName);
 		// String path = FileManager.getMiapeLocalDataPath(projectName);
 		// final String finalFileName = path + name;

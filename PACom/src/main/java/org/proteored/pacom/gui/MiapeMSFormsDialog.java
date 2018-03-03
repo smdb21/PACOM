@@ -3,6 +3,7 @@ package org.proteored.pacom.gui;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ItemEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -12,12 +13,12 @@ import java.util.Date;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.JDialog;
+import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker.StateValue;
 
+import org.jfree.chart.ui.UIUtils;
 import org.proteored.miapeapi.cv.ControlVocabularyManager;
 import org.proteored.miapeapi.exceptions.MiapeDatabaseException;
 import org.proteored.miapeapi.exceptions.MiapeSecurityException;
@@ -50,6 +51,7 @@ public class MiapeMSFormsDialog extends JDialog implements PropertyChangeListene
 	private final ComponentEnableStateKeeper enableStateKeeper = new ComponentEnableStateKeeper();
 	private JProgressBar jProgressBar = new JProgressBar();
 	private final ControlVocabularyManager cvManager;
+	private JPanel panel;
 
 	private MiapeMSFormsDialog(MiapeExtractionFrame parentFrame, ControlVocabularyManager cvManager) {
 		super(parentFrame, true);
@@ -57,6 +59,13 @@ public class MiapeMSFormsDialog extends JDialog implements PropertyChangeListene
 		this.parentFrame = parentFrame;
 		this.cvManager = cvManager;
 		initComponents();
+		loadIcons();
+
+	}
+
+	private void loadIcons() {
+		jButtonEditMetadata.setIcon(ImageManager.getImageIcon(ImageManager.FINISH));
+		jButtonEditMetadata.setPressedIcon(ImageManager.getImageIcon(ImageManager.FINISH_CLICKED));
 	}
 
 	public static MiapeMSFormsDialog getInstance(MiapeExtractionFrame parentFrame, ControlVocabularyManager cvManager) {
@@ -95,37 +104,30 @@ public class MiapeMSFormsDialog extends JDialog implements PropertyChangeListene
 		getContentPane().setLayout(new BorderLayout(0, 0));
 
 		javax.swing.JPanel jPanel5North = new javax.swing.JPanel();
-		jPanel5North.setPreferredSize(new Dimension(400, 45));
 		getContentPane().add(jPanel5North, BorderLayout.NORTH);
 
 		jPanel5North.setToolTipText(
 				"<html>Here you can define some required metadata to<br>\r\n complement information from MGF, mzML or PRIDE XML files.</html>");
-		GroupLayout gl_jPanel5North = new GroupLayout(jPanel5North);
-		gl_jPanel5North.setHorizontalGroup(gl_jPanel5North.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_jPanel5North.createSequentialGroup().addContainerGap()
-						.addComponent(jComboBoxMetadata, GroupLayout.PREFERRED_SIZE, 192, GroupLayout.PREFERRED_SIZE)
-						.addGap(18)
-						.addComponent(jButtonEditMetadata, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-						.addGap(105)));
-		gl_jPanel5North.setVerticalGroup(gl_jPanel5North.createParallelGroup(Alignment.LEADING).addGroup(gl_jPanel5North
-				.createSequentialGroup().addGap(11)
-				.addGroup(gl_jPanel5North.createParallelGroup(Alignment.LEADING).addComponent(jButtonEditMetadata)
-						.addComponent(jComboBoxMetadata, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE))
-				.addGap(77)));
-		jPanel5North.setLayout(gl_jPanel5North);
+		jPanel5North.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 5));
+		jPanel5North.add(jComboBoxMetadata);
+		jPanel5North.add(jButtonEditMetadata);
 		javax.swing.JScrollPane jScrollPanel = new javax.swing.JScrollPane();
-		jScrollPanel.setPreferredSize(new Dimension(400, 400));
+		jScrollPanel.setPreferredSize(new Dimension(400, 250));
 		getContentPane().add(jScrollPanel);
 		jScrollPanel.setBorder(null);
 
+		panel = new JPanel();
+		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
+		flowLayout.setAlignment(FlowLayout.LEFT);
+		jScrollPanel.setViewportView(panel);
+
 		jLabelMiapeMSMetadata = new javax.swing.JLabel();
-		jScrollPanel.setViewportView(jLabelMiapeMSMetadata);
+		panel.add(jLabelMiapeMSMetadata);
 		jLabelMiapeMSMetadata.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 		jLabelMiapeMSMetadata.setAutoscrolls(true);
 
 		pack();
-
+		UIUtils.centerFrameOnScreen(this);
 	}
 
 	@Override

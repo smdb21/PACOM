@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.JTree;
+import javax.swing.ToolTipManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
@@ -27,6 +28,7 @@ public abstract class AbstractExtendedJTree<T extends DefaultMutableTreeNode> ex
 	public AbstractExtendedJTree(boolean editable, boolean allowDeletion) {
 		super();
 		super.setEditable(editable);
+		ToolTipManager.sharedInstance().registerComponent(this);
 		addKeyListener(new KeyListener() {
 
 			@Override

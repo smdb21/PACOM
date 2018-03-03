@@ -474,7 +474,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		HistogramType histogramType = optionsFactory.getHistogramType();
 		String xAxisLabel;
 		xAxisLabel = "RT (sg)";
-
+		String frequencyType = "PSMs";
 		boolean showParent = optionsFactory.isTotalSerieShown();
 		boolean inMinutes = optionsFactory.showInMinutes();
 		final Map<String, JCheckBox> idSetsJCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
@@ -484,8 +484,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 			HistogramDataset dataset = DatasetFactory.createPeptideRTHistogramDataSet(idSets, bins, histogramType,
 					inMinutes);
+
 			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
-					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel);
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
@@ -493,7 +494,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			HistogramDataset dataset = DatasetFactory.createPeptideRTHistogramDataSet(idSets, bins, histogramType,
 					inMinutes);
 			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
-					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel);
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
@@ -501,7 +502,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			HistogramDataset dataset = DatasetFactory.createPeptideRTHistogramDataSet(idSets, bins, histogramType,
 					inMinutes);
 			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
-					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel);
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
@@ -512,7 +513,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				HistogramDataset dataset = DatasetFactory.createPeptideRTHistogramDataSet(idSets, bins, histogramType,
 						inMinutes);
 				HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType), experiment.getName(),
-						dataset, xAxisLabel);
+						dataset, xAxisLabel, frequencyType);
 				// chart.setXRangeValues(0, 100);
 				chartList.add(chart.getChartPanel());
 			}
@@ -556,7 +557,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		HistogramType histogramType = optionsFactory.getHistogramType();
 		boolean totalSerieShown = optionsFactory.isTotalSerieShown();
 		String xAxisLabel;
-
+		String frequencyType = "peptides";
 		xAxisLabel = "log2 (nº pept per protein / protein MW (Da))";
 		boolean retrieveProteinSeqs = true;
 		final int selectedOption = JOptionPane.showConfirmDialog(parent,
@@ -574,7 +575,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
 					histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
 			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
-					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel);
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
@@ -583,7 +584,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 					histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
 
 			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
-					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel);
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
@@ -591,7 +592,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
 					histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
 			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
-					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel);
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
@@ -602,7 +603,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
 						histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
 				HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType), experiment.getName(),
-						dataset, xAxisLabel);
+						dataset, xAxisLabel, frequencyType);
 				// chart.setXRangeValues(0, 100);
 				chartList.add(chart.getChartPanel());
 			}
@@ -623,6 +624,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
 		String xAxisLabel = "log2 (nº pept per protein / protein MW (Da))";
 		String yAxisLabel = "Avg number of peptides";
+		String frequencyType = "peptides";
+
 		boolean retrieveProteinSeqs = true;
 		final int selectedOption = JOptionPane.showConfirmDialog(parent,
 				"<html>In order to build this chart, the program will retrieve the protein sequence from the Internet,<br>which can take several minutes, depending on the number of proteins.<br>Are you sure you want to continue?</html>",
@@ -648,7 +651,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 					histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
 
 			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
-					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel);
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
@@ -656,7 +659,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
 					histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
 			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
-					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel);
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
@@ -667,7 +670,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
 						histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
 				HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType), experiment.getName(),
-						dataset, xAxisLabel);
+						dataset, xAxisLabel, frequencyType);
 				// chart.setXRangeValues(0, 100);
 				chartList.add(chart.getChartPanel());
 			}
@@ -1477,6 +1480,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			xAxisLabel = "m/z";
 		else
 			xAxisLabel = "Da";
+		String frequencyType = "PSMs";
 
 		boolean showParent = optionsFactory.isTotalSerieShown();
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, showParent);
@@ -1484,7 +1488,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			HistogramDataset dataset = DatasetFactory.createPeptideMassHistogramDataSet(idSets, bins, histogramType,
 					mOverZ);
 			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
-					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel);
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
@@ -1492,7 +1496,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			HistogramDataset dataset = DatasetFactory.createPeptideMassHistogramDataSet(idSets, bins, histogramType,
 					mOverZ);
 			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
-					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel);
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
@@ -1500,7 +1504,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			HistogramDataset dataset = DatasetFactory.createPeptideMassHistogramDataSet(idSets, bins, histogramType,
 					mOverZ);
 			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
-					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel);
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
@@ -1511,7 +1515,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				HistogramDataset dataset = DatasetFactory.createPeptideMassHistogramDataSet(idSets, bins, histogramType,
 						mOverZ);
 				HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType), experiment.getName(),
-						dataset, xAxisLabel);
+						dataset, xAxisLabel, frequencyType);
 				// chart.setXRangeValues(0, 100);
 				chartList.add(chart.getChartPanel());
 			}
@@ -3283,6 +3287,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		HistogramType histogramType = optionsFactory.getHistogramType();
 
 		String xAxisLabel = "Protein coverage (%)";
+		String frequencyType = "proteins";
+
 		boolean retrieveProteinSeqs = true;
 		final int selectedOption = JOptionPane.showConfirmDialog(parent,
 				"<html>In order to calculate protein coverage, the program will retrieve the protein sequence from the Internet,<br>which can take several minutes, depending on the number of proteins.<br>Are you sure you want to continue?</html>",
@@ -3298,7 +3304,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			HistogramDataset dataset = DatasetFactory.createProteinCoverageHistogramDataSet(idSets, bins, histogramType,
 					retrieveProteinSeqs, countNonConclusiveProteins);
 			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
-					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel);
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
@@ -3307,7 +3313,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			HistogramDataset dataset = DatasetFactory.createProteinCoverageHistogramDataSet(idSets, bins, histogramType,
 					retrieveProteinSeqs, countNonConclusiveProteins);
 			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
-					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel);
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
@@ -3316,7 +3322,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			HistogramDataset dataset = DatasetFactory.createProteinCoverageHistogramDataSet(idSets, bins, histogramType,
 					retrieveProteinSeqs, countNonConclusiveProteins);
 			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
-					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel);
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
@@ -3327,7 +3333,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				HistogramDataset dataset = DatasetFactory.createProteinCoverageHistogramDataSet(idSets, bins,
 						histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
 				HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType), experiment.getName(),
-						dataset, xAxisLabel);
+						dataset, xAxisLabel, frequencyType);
 				// chart.setXRangeValues(0, 100);
 				chartList.add(chart.getChartPanel());
 			}
@@ -3532,6 +3538,20 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		if (applyLog) {
 			xAxisLabel = "log10(" + xAxisLabel + ")";
 		}
+		String frequencyType = "";
+		switch (plotItem) {
+		case PEPTIDE:
+			frequencyType = "peptides";
+			break;
+		case PROTEIN:
+			frequencyType = "protein";
+			break;
+		case PSM:
+			frequencyType = "PSMs";
+			break;
+		default:
+			break;
+		}
 
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, addTotal);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
@@ -3539,7 +3559,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			HistogramDataset dataset = DatasetFactory.createScoreHistogramDataSet(idSets, scoreName, plotItem, bins,
 					addZeroZeroValue, histogramType, applyLog, separateDecoyHits, countNonConclusiveProteins);
 			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
-					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel);
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
@@ -3547,7 +3567,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			HistogramDataset dataset = DatasetFactory.createScoreHistogramDataSet(idSets, scoreName, plotItem, bins,
 					addZeroZeroValue, histogramType, applyLog, separateDecoyHits, countNonConclusiveProteins);
 			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
-					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel);
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
@@ -3555,7 +3575,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			HistogramDataset dataset = DatasetFactory.createScoreHistogramDataSet(idSets, scoreName, plotItem, bins,
 					addZeroZeroValue, histogramType, applyLog, separateDecoyHits, countNonConclusiveProteins);
 			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
-					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel);
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
@@ -3566,7 +3586,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				HistogramDataset dataset = DatasetFactory.createScoreHistogramDataSet(idSets, scoreName, plotItem, bins,
 						addZeroZeroValue, histogramType, applyLog, separateDecoyHits, countNonConclusiveProteins);
 				HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType), experiment.getName(),
-						dataset, xAxisLabel);
+						dataset, xAxisLabel, frequencyType);
 				chartList.add(chart.getChartPanel());
 			}
 			return chartList;
@@ -3793,7 +3813,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		parent.setInformation1(parent.getCurrentChartType());
 		int bins = optionsFactory.getHistogramBins();
 		HistogramType histogramType = optionsFactory.getHistogramType();
-		String xAxisLabel = "log (A/B)";
+		String xAxisLabel = "protein SPC ratio (log10)";
+		String frequencyType = "ratios";
 		Map<String, JCheckBox> idSetsCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
 		ProteinGroupComparisonType proteinGroupComparisonType = optionsFactory.getProteinGroupComparisonType();
 		boolean distinguish = parent.distinguishModifiedPeptides();
@@ -3806,7 +3827,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 					idSets.get(1), proteinGroupComparisonType, histogramType, distinguish, countNonConclusiveProteins,
 					bins);
 			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
-					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, true);
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, true, frequencyType);
 			chart.centerRangeAxisOnZero();
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
@@ -3817,7 +3838,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 					bins);
 
 			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
-					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, true);
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, true, frequencyType);
 			chart.centerRangeAxisOnZero();
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
@@ -3827,7 +3848,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 					idSets.get(1), proteinGroupComparisonType, histogramType, distinguish, countNonConclusiveProteins,
 					bins);
 			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
-					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, true);
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, true, frequencyType);
 			chart.centerRangeAxisOnZero();
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
@@ -3840,7 +3861,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 						idSets.get(1), proteinGroupComparisonType, histogramType, distinguish,
 						countNonConclusiveProteins, bins);
 				HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
-						parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, true);
+						parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, true, frequencyType);
 				chart.centerRangeAxisOnZero();
 				// chart.setXRangeValues(0, 100);
 				chartList.add(chart.getChartPanel());
@@ -3855,7 +3876,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		parent.setInformation1(parent.getCurrentChartType());
 		int bins = optionsFactory.getHistogramBins();
 		String selectedScoreName = optionsFactory.getPeptideScoreName();
-		String xAxisLabel = "log (A/B)";
+		String xAxisLabel = "protein SPC ratio (log10)";
 		String yAxisLabel = selectedScoreName;
 		Map<String, JCheckBox> idSetsCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
 		ProteinGroupComparisonType proteinGroupComparisonType = optionsFactory.getProteinGroupComparisonType();

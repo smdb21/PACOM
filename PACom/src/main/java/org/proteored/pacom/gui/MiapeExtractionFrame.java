@@ -10,6 +10,7 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -51,6 +52,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.TableColumn;
 
 import org.apache.commons.io.FilenameUtils;
+import org.jfree.chart.ui.UIUtils;
 import org.proteored.miapeapi.cv.ControlVocabularyManager;
 import org.proteored.miapeapi.exceptions.MiapeDataInconsistencyException;
 import org.proteored.miapeapi.text.tsv.msi.TableTextFileColumn;
@@ -156,15 +158,6 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 		FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_MZML);
 		FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_PRIDEXML);
 
-		// set icon image
-		setIconImage(ImageManager.getImageIcon(ImageManager.LOAD_LOGO_128).getImage());
-		jButtonSubmit.setIcon(ImageManager.getImageIcon(ImageManager.ADD));
-		jButtonSubmit.setPressedIcon(ImageManager.getImageIcon(ImageManager.ADD_CLICKED));
-		jButtonCancel.setIcon(ImageManager.getImageIcon(ImageManager.STOP));
-		jButtonCancel.setPressedIcon(ImageManager.getImageIcon(ImageManager.STOP_CLICKED));
-		jButtonGoToData.setIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_32));
-		jButtonGoToData.setPressedIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_32_CLICKED));
-
 		// wait for the ontology loading. When done, it will notify to this
 		// class and metadata combo will be able to be filled
 		appendStatus("Loading ontologies...");
@@ -180,6 +173,9 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 		getContentPane().setLayout(new BorderLayout(5, 5));
 		getContentPane().add(jPanelSouth, BorderLayout.SOUTH);
 		getContentPane().add(jPanelNorth, BorderLayout.NORTH);
+		jPanelNorth.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 5));
+		jPanelNorth.add(jTextFieldProjectName);
+		jPanelNorth.add(jButtonProject);
 		getContentPane().add(jPanelCenter);
 		jPanelCenter.setLayout(new BorderLayout(0, 10));
 		jPanelCenter.add(panel_2, BorderLayout.NORTH);
@@ -263,9 +259,6 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 		scrollableImportTaskTable = new ScrollableImportTaskJPanel();
 		jPanelCenter.add(scrollableImportTaskTable, BorderLayout.CENTER);
 
-		JPanel jPanelEast = new JPanel();
-		getContentPane().add(jPanelEast, BorderLayout.EAST);
-
 		// setup the autosuggestor
 		// autoSuggestor = new AutoSuggestor(jTextFieldProjectName, this, null,
 		// Color.WHITE.brighter(), Color.blue,
@@ -302,11 +295,33 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 		addKeyListener();
 		asynchronouslyLoadMetadataTemplateNames();
 		enableStateKeeper.addReverseComponent(jButtonCancel);
-
-		panelWest = new JPanel();
-		getContentPane().add(panelWest, BorderLayout.WEST);
 		// enableStateKeeper.addInvariableComponent(scrollableImportTaskTable);
 		tableChangeListener();
+		loadIcons();
+
+		UIUtils.centerFrameOnScreen(this);
+
+	}
+
+	private void loadIcons() {
+		// set icon image
+		setIconImage(ImageManager.getImageIcon(ImageManager.LOAD_LOGO_128).getImage());
+		jButtonSubmit.setIcon(ImageManager.getImageIcon(ImageManager.ADD));
+		jButtonSubmit.setPressedIcon(ImageManager.getImageIcon(ImageManager.ADD_CLICKED));
+		jButtonCancel.setIcon(ImageManager.getImageIcon(ImageManager.STOP));
+		jButtonCancel.setPressedIcon(ImageManager.getImageIcon(ImageManager.STOP_CLICKED));
+		jButtonGoToData.setIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_32));
+		jButtonGoToData.setPressedIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_32_CLICKED));
+		btnDeleteImportTask.setIcon(ImageManager.getImageIcon(ImageManager.DELETE_SMALL));
+		btnDeleteImportTask.setPressedIcon(ImageManager.getImageIcon(ImageManager.DELETE_CLICKED_SMALL));
+		jButtonInputFile.setIcon(ImageManager.getImageIcon(ImageManager.LOAD_SMALL));
+		jButtonInputFile.setPressedIcon(ImageManager.getImageIcon(ImageManager.LOAD_SMALL_CLICKED));
+		jButtonInputFileAttach.setIcon(ImageManager.getImageIcon(ImageManager.LOAD_SMALL));
+		jButtonInputFileAttach.setPressedIcon(ImageManager.getImageIcon(ImageManager.LOAD_SMALL_CLICKED));
+		jButtonOpenMSFormDialogButton.setIcon(ImageManager.getImageIcon(ImageManager.SPECTRUM));
+		jButtonOpenMSFormDialogButton.setPressedIcon(ImageManager.getImageIcon(ImageManager.SPECTRUM));
+		jButtonProject.setIcon(ImageManager.getImageIcon(ImageManager.FOLDER));
+		jButtonProject.setPressedIcon(ImageManager.getImageIcon(ImageManager.FOLDER));
 	}
 
 	private void tableChangeListener() {
@@ -764,7 +779,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 		jPanelCenter.setAlignmentX(Component.LEFT_ALIGNMENT);
 		jPanelNorth = new javax.swing.JPanel();
 		jTextFieldProjectName = new javax.swing.JTextField("my default dataset folder");
-		jTextFieldProjectName.setColumns(100);
+		jTextFieldProjectName.setColumns(25);
 		jButtonProject = new javax.swing.JButton();
 		jPanelSouth = new javax.swing.JPanel();
 		jPanelSouth.setPreferredSize(new Dimension(10, 170));
@@ -799,23 +814,6 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 				jButtonProjectActionPerformed(evt);
 			}
 		});
-
-		javax.swing.GroupLayout gl_jPanelNorth = new javax.swing.GroupLayout(jPanelNorth);
-		gl_jPanelNorth
-				.setHorizontalGroup(gl_jPanelNorth.createParallelGroup(Alignment.TRAILING).addGroup(Alignment.LEADING,
-						gl_jPanelNorth.createSequentialGroup().addContainerGap()
-								.addComponent(jTextFieldProjectName, GroupLayout.PREFERRED_SIZE, 223,
-										GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(jButtonProject)
-								.addContainerGap(667, Short.MAX_VALUE)));
-		gl_jPanelNorth.setVerticalGroup(gl_jPanelNorth.createParallelGroup(Alignment.LEADING).addGroup(gl_jPanelNorth
-				.createSequentialGroup().addGap(11)
-				.addGroup(gl_jPanelNorth.createParallelGroup(Alignment.BASELINE)
-						.addComponent(jTextFieldProjectName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addComponent(jButtonProject))
-				.addContainerGap(26, Short.MAX_VALUE)));
-		jPanelNorth.setLayout(gl_jPanelNorth);
 
 		jPanelSouth.setBorder(javax.swing.BorderFactory.createTitledBorder("Status"));
 
@@ -885,9 +883,6 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 		jPanelSouth.setLayout(gl_jPanelSouth);
 
 		pack();
-		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-		java.awt.Dimension dialogSize = getSize();
-		setLocation((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2);
 	}// </editor-fold>
 
 	protected void goToDataInspection() {
@@ -1210,7 +1205,6 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 	private JPanel panel_1;
 	private JPanel panel_3;
 	private JPanel panel_4;
-	private JPanel panelWest;
 
 	// public int selectedInstrumentNumber;
 
@@ -1237,7 +1231,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 			jProgressBar.setIndeterminate(false);
 		} else if (MiapeExtractionTask.MIAPE_MSI_CREATED_DONE.equals(evt.getPropertyName())) {
 			File miapeIDString = (File) evt.getNewValue();
-			log.info("Miape MSI created done finished: " + miapeIDString.getAbsolutePath());
+			log.info("Dataset imported: " + miapeIDString.getAbsolutePath());
 			FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_MZML);
 			MiapeMSFormsDialog.getInstance(this, getControlVocabularyManager()).initMetadataCombo(null,
 					getControlVocabularyManager());
@@ -1245,7 +1239,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 			loadProjects(false, true);
 		} else if (MiapeExtractionTask.MIAPE_MS_CREATED_DONE.equals(evt.getPropertyName())) {
 			File miapeIDString = (File) evt.getNewValue();
-			log.info("Miape MS created done finished: " + miapeIDString.getAbsolutePath());
+			log.info("MS dataset imported: " + miapeIDString.getAbsolutePath());
 			// load new projects
 			loadProjects(false, true);
 		} else if (OntologyLoaderWaiter.ONTOLOGY_LOADED.equals(evt.getPropertyName())) {
@@ -1263,9 +1257,8 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 
 		} else if (MiapeExtractionTask.MIAPE_CREATION_TOTAL_DONE.equals(evt.getPropertyName())) {
 			MiapeExtractionResult extractionResult = (MiapeExtractionResult) evt.getNewValue();
-			appendStatus("Import task '" + extractionResult.getMiapeExtractionTaskIdentifier()
-					+ "' finished. Dataset imported at: "
-					+ extractionResult.getDirectLinkToMIAPEMSI().getAbsolutePath());
+			appendStatus(
+					"Import task '" + extractionResult.getMiapeExtractionTaskIdentifier() + "' finished correctly.");
 			ImportTaskDataModel model = scrollableImportTaskTable.getTable().getImportTaskTableModel();
 			int row = model.indexOf(model.getTaskByID(extractionResult.getMiapeExtractionTaskIdentifier()));
 			model.fireTableRowsUpdated(row, row);
@@ -1278,7 +1271,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 
 		} else if (MiapeExtractionTask.MIAPE_CREATION_STARTS.equals(evt.getPropertyName())) {
 
-			appendStatus("Starting process...");
+			appendStatus("Starting import process...");
 			scrollableImportTaskTable.getTable().startThreadToUpdateProgressOnTask((Integer) evt.getNewValue());
 		} else if (LoadProjectsTask.PROJECT_LOADED_DONE.equals(evt.getPropertyName())) {
 			showLoadedProjectTable();
@@ -1289,8 +1282,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 		} else if (MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE.equals(evt.getPropertyName())) {
 			appendStatus("Copying file '" + evt.getNewValue() + "' to the local file structure");
 		} else if (MiapeExtractionTask.MIAPE_CREATION_COPYING_FILE_DONE.equals(evt.getPropertyName())) {
-			appendStatus(evt.getNewValue().toString());
-			appendStatus("Now reading and processing it...");
+			appendStatus(evt.getNewValue().toString() + ". Now reading and processing it...");
 
 		} else if (InputDataTypeGuesser.INPUT_DATA_TYPE_GUESSING_STARTED.equals(evt.getPropertyName())) {
 			enableStateKeeper.keepEnableStates(this);

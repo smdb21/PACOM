@@ -24,7 +24,7 @@ public class ComparisonProjectExtendedJTree extends AbstractExtendedJTree<MyProj
 				TreePath path = e.getNewLeadSelectionPath();
 				if (path != null) {
 					selectedDepth = path.getPathCount();
-					log.info("Selected depth=" + selectedDepth);
+					log.debug("Selected depth=" + selectedDepth);
 				}
 			}
 		});

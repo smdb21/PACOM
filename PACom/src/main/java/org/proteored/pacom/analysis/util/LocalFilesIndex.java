@@ -109,7 +109,7 @@ public class LocalFilesIndex {
 	}
 
 	private void writeIndex() throws IOException {
-		log.info("Writting index");
+		log.debug("Writting index");
 		BufferedWriter bw = new BufferedWriter(new FileWriter(LocalFilesIndex.indexFile));
 		try {
 			bw.write("# this file serves as index for the files associated to the locally created miape files\n");
@@ -152,7 +152,7 @@ public class LocalFilesIndex {
 				}
 				bw.write("\n");
 			}
-			log.info("Writting index OK");
+			log.debug("Writting index OK");
 		} finally {
 			if (bw != null)
 				bw.close();

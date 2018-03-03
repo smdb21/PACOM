@@ -1,8 +1,9 @@
 package org.proteored.pacom.analysis.gui.components;
 
+import java.awt.Component;
+
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -14,7 +15,6 @@ import org.proteored.pacom.analysis.conf.jaxb.CPMS;
 import org.proteored.pacom.analysis.conf.jaxb.CPMSI;
 import org.proteored.pacom.analysis.conf.jaxb.CPNode;
 import org.proteored.pacom.analysis.conf.jaxb.CPReplicate;
-import org.proteored.pacom.analysis.exporters.tasks.PEXBulkSubmissionSummaryTreeLoaderTask;
 import org.proteored.pacom.analysis.util.FileManager;
 import org.proteored.pacom.gui.ImageManager;
 
@@ -49,54 +49,85 @@ public class MyTreeRenderer extends DefaultTreeCellRenderer {
 	}
 
 	@Override
-	public JComponent getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
-			boolean leaf, int row, boolean hasFocus) {
-
+	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf,
+			int row, boolean hasFocus) {
 		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
 		log.debug(node + " class of userObject: " + node.getUserObject().getClass().getName());
-
+		DefaultMutableTreeNode parent = (DefaultMutableTreeNode) node.getParent();
 		if (isMIAPEMSIStringNode(value)) {
 			setIcon(documentIcon);
-			setToolTipText("MIAPE MSI document");
+			setToolTipText("<html>Imported dataset:<br><b>" + node.getUserObject() + "</b><br>Located at:<br>"
+					+ FileManager.getMiapeLocalDataPath(parent.getUserObject().toString()) + node.getUserObject()
+					+ ".xml</html>");
+			setText(FileManager.getMiapeMSINameFromName(node.getUserObject().toString()));
 		} else if (isCuratedExperiment(value)) {
 			setIcon(starIcon);
-			setToolTipText("Curated node");
+			setToolTipText("Dataset in level 2 node:<br><b>" + node.getUserObject() + "</b><br>Located at:<br>"
+					+ FileManager.getMiapeLocalDataPath(parent.getUserObject().toString()) + node.getUserObject()
+					+ ".xml</html>");
 		} else if (isMIAPENode(value)) {
 			setIcon(documentIcon);
-			setToolTipText("MIAPE MSI document node");
+			String name = FileManager.getMiapeMSINameFromName(node.getUserObject().toString());
+			setText(name);
+			CPMSI cpMSI = (CPMSI) node.getUserObject();
+			setToolTipText("<html>Imported dataset:<br><b>" + name + "</b><br>Internal file located at:<br>"
+					+ FileManager.getMiapeLocalDataPath(cpMSI.getLocalProjectName()) + node.getUserObject()
+					+ ".xml</html>");
 		} else if (isReplicateNode(value)) {
 			setIcon(hasChildren(node) ? replicateIcon : replicateIncompleteIcon);
-			setToolTipText("Fraction/Band/Replicate node");
+			setToolTipText(hasChildren(node)
+					? "<html>Level 2 node: <b>" + node.getUserObject() + "</b><br>It contains " + node.getChildCount()
+							+ " datasets.</html>"
+					: "<html>Incomplete level 2 node:<br>Add datasets to this node</html>");
 			if (value instanceof DefaultMutableTreeNode
-					&& ((DefaultMutableTreeNode) value).getUserObject() instanceof Replicate)
-				setText(((Replicate) ((DefaultMutableTreeNode) value).getUserObject()).getFullName());
+					&& ((DefaultMutableTreeNode) value).getUserObject() instanceof Replicate) {
+				Replicate replicate = (Replicate) ((DefaultMutableTreeNode) value).getUserObject();
+				value = replicate.getFullName();
+			}
 		} else if (isExperimentNode(value)) {
 			setIcon(hasChildren(node) ? experimentIcon : experimentIncompleteIcon);
-			setToolTipText(hasChildren(node) ? "Level 1 node"
-					: "<html>Incomplete level 1 node:<br>Add datasets from to this node");
-		} else if (isStringNode(value)
-				&& getUserObjectString(value).startsWith(PEXBulkSubmissionSummaryTreeLoaderTask.SEARCH)) {
-			setIcon(searchIcon);
-			setToolTipText("search node");
-		} else if (isStringNode(value)
-				&& getUserObjectString(value).startsWith(PEXBulkSubmissionSummaryTreeLoaderTask.RESULT)) {
-			setIcon(prideIcon);
-			setToolTipText("search node");
-		} else if (isStringNode(value)
-				&& getUserObjectString(value).startsWith(PEXBulkSubmissionSummaryTreeLoaderTask.OTHER)) {
-			setIcon(documentIcon);
-			setToolTipText("MIAPE report node");
-		} else if (isStringNode(value)
-				&& getUserObjectString(value).startsWith(PEXBulkSubmissionSummaryTreeLoaderTask.PEAK)) {
-			setIcon(spectrumIcon);
-			setToolTipText("peak list node");
-		} else if (isStringNode(value)
-				&& getUserObjectString(value).startsWith(PEXBulkSubmissionSummaryTreeLoaderTask.RAW)) {
-			setIcon(rawIcon);
-			setToolTipText("raw node");
-		} else {
-			setToolTipText("No curated node"); // no tool tip
+			setToolTipText(hasChildren(node)
+					? "<html>Level 1 node: <b>" + node.getUserObject() + "</b><br>It contains " + node.getChildCount()
+							+ " level 2 nodes.</html>"
+					: "<html>Incomplete level 1 node:<br>Add datasets to this node</html>");
+			// } else if (isStringNode(value)
+			// &&
+			// getUserObjectString(value).startsWith(PEXBulkSubmissionSummaryTreeLoaderTask.SEARCH))
+			// {
+			// setLeafIcon(searchIcon);
+			// setToolTipText("search node");
+			// } else if (isStringNode(value)
+			// &&
+			// getUserObjectString(value).startsWith(PEXBulkSubmissionSummaryTreeLoaderTask.RESULT))
+			// {
+			// setLeafIcon(prideIcon);
+			// setToolTipText("search node");
+			// } else if (isStringNode(value)
+			// &&
+			// getUserObjectString(value).startsWith(PEXBulkSubmissionSummaryTreeLoaderTask.OTHER))
+			// {
+			// setLeafIcon(documentIcon);
+			// setToolTipText("MIAPE report node");
+			// } else if (isStringNode(value)
+			// &&
+			// getUserObjectString(value).startsWith(PEXBulkSubmissionSummaryTreeLoaderTask.PEAK))
+			// {
+			// setLeafIcon(spectrumIcon);
+			// setToolTipText("peak list node");
+			// } else if (isStringNode(value)
+			// &&
+			// getUserObjectString(value).startsWith(PEXBulkSubmissionSummaryTreeLoaderTask.RAW))
+			// {
+			// setLeafIcon(rawIcon);
+			// setToolTipText("raw node");
+		} else if (parent != null) {
+			setToolTipText("<html>Dataset folder:<br><b>"
+					+ FileManager.getMiapeLocalDataPath(node.getUserObject().toString()) + "</b></html>");
+		} else if (parent == null) {
+			setToolTipText("<html>Comparison project:<br><b>" + node.getUserObject() + "</b><br>"
+					+ "Internal file located at: " + FileManager.getProjectXMLFilePath(node.getUserObject().toString())
+					+ "</html>");
 		}
 
 		return this;

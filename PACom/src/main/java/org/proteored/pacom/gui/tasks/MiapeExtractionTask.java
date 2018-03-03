@@ -655,15 +655,15 @@ public class MiapeExtractionTask extends SwingWorker<Void, Void> {
 
 	@Override
 	public Void doInBackground() {
-		log.info("Number of calls to convert is: " + MiapeExtractionTask.numTasks + " by "
+		log.debug("Number of calls to convert is: " + MiapeExtractionTask.numTasks + " by "
 				+ Thread.currentThread().getId() + " thread");
 
 		setProgress(0);
 
-		firePropertyChange(NOTIFICATION, null, "Checking input data.");
+		// firePropertyChange(NOTIFICATION, null, "Checking input data.");
 		if (checkInputs()) {
 			firePropertyChange(MIAPE_CREATION_STARTS, null, identifier);
-			firePropertyChange(NOTIFICATION, null, "Input data is correct.");
+			// firePropertyChange(NOTIFICATION, null, "Input data is correct.");
 
 			try {
 

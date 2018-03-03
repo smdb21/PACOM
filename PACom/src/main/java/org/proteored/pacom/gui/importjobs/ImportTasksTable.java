@@ -211,7 +211,7 @@ public class ImportTasksTable extends JTable {
 
 				@Override
 				public void run() {
-					log.info("Starting progress updater of task " + jobID);
+					log.debug("Starting progress updater of task " + jobID);
 					int progressColumnIndex = ImportTaskColumns.getColumns().indexOf(ImportTaskColumns.PROGRESS);
 					int rowIndex = getImportTaskTableModel().indexOf(task);
 					try {
@@ -229,9 +229,9 @@ public class ImportTasksTable extends JTable {
 									progressColumnIndex);
 						}
 					} catch (InterruptedException e) {
-						log.info(e.getMessage());
+						log.warn(e.getMessage());
 					}
-					log.info("Progress updater of task " + jobID + " FINISHED");
+					log.debug("Progress updater of task " + jobID + " FINISHED");
 				}
 			};
 			Thread thread = new Thread(runnable);

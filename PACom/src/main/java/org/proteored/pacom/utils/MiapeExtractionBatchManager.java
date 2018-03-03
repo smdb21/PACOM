@@ -27,6 +27,7 @@ import org.proteored.pacom.gui.MiapeExtractionFrame;
 import org.proteored.pacom.gui.importjobs.InputFileType;
 import org.proteored.pacom.gui.tasks.MiapeExtractionTask;
 
+import edu.scripps.yates.utilities.dates.DatesUtil;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.set.hash.TIntHashSet;
 
@@ -526,7 +527,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 
 			MiapeExtractionResult result = (MiapeExtractionResult) evt.getNewValue();
 			log.info("Import task " + result.getMiapeExtractionTaskIdentifier() + " is done in "
-					+ result.getMilliseconds());
+					+ DatesUtil.getDescriptiveTimeFromMillisecs(result.getMilliseconds()));
 			log.info(getNumberOfPendingTasks() + " still in the queue");
 			// remove from running job set
 			runningJobs.remove(result.getMiapeExtractionTaskIdentifier());

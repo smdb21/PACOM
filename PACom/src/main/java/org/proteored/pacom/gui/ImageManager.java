@@ -59,6 +59,8 @@ public class ImageManager {
 	public static final String FINISH_CLICKED = "finish_clicked.png";
 	public static final String LOAD = "load.png";
 	public static final String LOAD_CLICKED = "load_clicked.png";
+	public static final String LOAD_SMALL = "load_small.png";
+	public static final String LOAD_SMALL_CLICKED = "load_clicked_small.png";
 	public static final String CLEAR = "clear.png";
 	public static final String CLEAR_CLICKED = "clear_clicked.png";
 	public static final String CLEAR_SMALL = "clear_small.png";

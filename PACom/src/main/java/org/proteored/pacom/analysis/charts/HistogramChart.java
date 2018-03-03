@@ -24,13 +24,14 @@ public class HistogramChart {
 	private final JFreeChart chart;
 	private ChartPanel chartPanel;
 
-	public HistogramChart(String chartTitle, String subtitle, HistogramDataset dataset, String xAxisLabel) {
+	public HistogramChart(String chartTitle, String subtitle, HistogramDataset dataset, String xAxisLabel,
+			String frequencyType) {
 
-		this(chartTitle, subtitle, dataset, xAxisLabel, false);
+		this(chartTitle, subtitle, dataset, xAxisLabel, false, frequencyType);
 	}
 
 	public HistogramChart(String chartTitle, String subtitle, HistogramDataset dataset, String xAxisLabel,
-			boolean showAsBarChart) {
+			boolean showAsBarChart, String frequencyType) {
 		// HistogramDataset dataset = null;
 		//
 		// dataset = DatasetFactory.createScoreCorrelationDataSet(idSets,
@@ -40,11 +41,11 @@ public class HistogramChart {
 		String yAxisLabel = "";
 		final HistogramType type = dataset.getType();
 		if (type.equals(HistogramType.FREQUENCY))
-			yAxisLabel = "frequency";
+			yAxisLabel = "frequency of " + frequencyType;
 		else if (type.equals(HistogramType.RELATIVE_FREQUENCY))
-			yAxisLabel = "relative frequency";
+			yAxisLabel = "relative frequency of " + frequencyType;
 		else if (type.equals(HistogramType.SCALE_AREA_TO_1))
-			yAxisLabel = "normalized frequency";
+			yAxisLabel = "normalized frequency of " + frequencyType;
 
 		this.chart = HistogramChart.createHistogram(chartTitle, subtitle, xAxisLabel, yAxisLabel, dataset,
 				PlotOrientation.VERTICAL, true, true, false, showAsBarChart);

@@ -1696,13 +1696,13 @@ public class MiapeLocalExtractor {
 
 			log.info("file saved to " + pepXMLFile.getAbsolutePath());
 			LocalFilesIndex.getInstance().indexFileByProjectName(projectName, pepXMLFile);
-			log.info("indexed ok");
+			log.debug("indexed ok");
 			// Dont Validate file because we don't have the schema
 			// if (schemaValidation)
 			// SchemaValidator.validateXMLFile(mzIdentMLFile,
 			// SchemaValidator.mzIdentML);
 
-			log.info("create MIAPE MSI from pepXML file");
+			log.debug("create MIAPE MSI from pepXML file");
 			MiapePepXMLFile xmlFile = new MiapePepXMLFile(pepXMLFile);
 			msiDocument = org.proteored.miapeapi.xml.pepxml.MSIMiapeFactory.getFactory().toDocument(xmlFile, null,
 					getControlVocabularyManager(), null, null, projectName);

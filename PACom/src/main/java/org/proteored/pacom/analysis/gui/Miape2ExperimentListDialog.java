@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -175,23 +176,17 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		if (this.parent != null)
 			this.parent.setVisible(false);
 
-		loadIcons();
-
 		jTextAreaStatus.setFont(new JTextField().getFont());
 
-		// clean tree
-		cleanTrees();
-
 		// set renderer to Project JTree
-		final MyTreeRenderer jTreeProjectRenderer = new MyTreeRenderer();
-		jTreeProject.setCellRenderer(jTreeProjectRenderer);
-		jTreeLocalMIAPEMSIs.setCellRenderer(jTreeProjectRenderer);
+		jTreeProject.setCellRenderer(new MyTreeRenderer());
+		jTreeLocalMIAPEMSIs.setCellRenderer(new MyTreeRenderer());
 		jTreeProject.addTreeSelectionListener(new TreeSelectionListener() {
 
 			@Override
 			public void valueChanged(TreeSelectionEvent evt) {
-				log.info("lead selection: " + evt.getNewLeadSelectionPath());
-				log.info("path: " + evt.getPath());
+				log.debug("lead selection: " + evt.getNewLeadSelectionPath());
+				log.debug("path: " + evt.getPath());
 			}
 		});
 		// set custom tree editor
@@ -214,35 +209,147 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		// });
 		jTreeProject.setCellEditor(editor);
 		try {
-
-			jButtonCancelLoading.setEnabled(false);
 			getContentPane().setLayout(new BorderLayout(0, 0));
 			JPanel northPanel = new JPanel();
-			northPanel.setPreferredSize(new Dimension(400, 70));
-			northPanel.setLayout(new GridLayout(0, 2, 0, 0));
+			northPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 2));
 			northPanel.add(jPanel7);
+			GroupLayout gl_jPanel7 = new GroupLayout(jPanel7);
+			gl_jPanel7.setHorizontalGroup(gl_jPanel7.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_jPanel7.createSequentialGroup().addGap(5)
+							.addComponent(jComboBox1, GroupLayout.PREFERRED_SIZE, 248, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED).addComponent(jButtonLoadSavedProject).addGap(5)
+							.addComponent(jButtonRemoveSavedProject)));
+			gl_jPanel7.setVerticalGroup(gl_jPanel7.createParallelGroup(Alignment.LEADING).addGroup(gl_jPanel7
+					.createSequentialGroup()
+					.addGroup(gl_jPanel7.createParallelGroup(Alignment.LEADING)
+							.addGroup(
+									gl_jPanel7.createSequentialGroup().addGap(5).addComponent(jButtonLoadSavedProject))
+							.addGroup(gl_jPanel7.createSequentialGroup().addGap(5)
+									.addComponent(jButtonRemoveSavedProject))
+							.addGroup(gl_jPanel7.createSequentialGroup().addGap(7).addComponent(jComboBox1,
+									GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+			jPanel7.setLayout(gl_jPanel7);
 			northPanel.add(jPanel6);
+			jPanel6.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+			jPanel6.add(jLabel5);
+			jPanel6.add(jLabelMIAPEMSINumber);
+			jPanel6.add(jButtonStartLoading);
 			getContentPane().add(northPanel, BorderLayout.NORTH);
 			getContentPane().add(jPanel4, BorderLayout.SOUTH);
 			getContentPane().add(jPanel1, BorderLayout.WEST);
+			jPanel1.setLayout(new GridLayout(0, 1, 0, 0));
+			jPanel1.add(jScrollPane5);
 			getContentPane().add(jPanel2, BorderLayout.CENTER);
+			jPanel2.setLayout(new BorderLayout(0, 0));
+			jPanel2.add(panel, BorderLayout.SOUTH);
+			jPanel2.add(jScrollPane2);
 			// getContentPane().add(jPanel7);
 			JPanel eastPanel = new JPanel();
 			eastPanel.setPreferredSize(new Dimension(440, 390));
 			eastPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 			eastPanel.setAlignmentY(Component.TOP_ALIGNMENT);
-			eastPanel.setLayout(new BorderLayout(0, 0));
-			eastPanel.add(jPanel3, BorderLayout.NORTH);
+			eastPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+			eastPanel.add(jPanel3);
+			jPanel3.setLayout(new BorderLayout(0, 0));
+			jPanel3.add(panel_1, BorderLayout.NORTH);
+			jPanel3.add(panel_2, BorderLayout.SOUTH);
 
 			JPanel panelOptions = new JPanel();
-			panelOptions.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-			GridLayout gl_panelOptions = new GridLayout(3, 1);
-			gl_panelOptions.setVgap(15);
-			panelOptions.setLayout(gl_panelOptions);
-			panelOptions.add(jPanel8);
-			panelOptions.add(jPanel9);
-			panelOptions.add(jPanel5);
-			eastPanel.add(panelOptions, BorderLayout.CENTER);
+			panelOptions.setAlignmentX(Component.LEFT_ALIGNMENT);
+			panelOptions.setLayout(new BorderLayout(0, 0));
+			panelOptions.add(jPanel8, BorderLayout.NORTH);
+			FlowLayout fl_jPanel8 = new FlowLayout(FlowLayout.LEFT, 5, 5);
+			jPanel8.setLayout(fl_jPanel8);
+
+			panel_5 = new JPanel();
+			jPanel8.add(panel_5);
+			jLabel4 = new javax.swing.JLabel();
+			panel_5.add(jLabel4);
+
+			jLabel4.setText("Node name:");
+			jLabel4.setToolTipText(
+					"<html>The name of the level 2 node.<br>\r\nWhen you add a new level 2 node by double clicking on an imported dataset while selecting a level 1 node, it will be named with this name.<br>\r\nIf an 'Incrementing suffix' number is stated, it will be added to the name.<br>\r\nThe name of the level 2 nodes will be editable by selecting them and <br>\r\nchanging the name in the textbox above..</html>");
+			jTextFieldLabelNameTemplate = new javax.swing.JTextField();
+			panel_5.add(jTextFieldLabelNameTemplate);
+			jTextFieldLabelNameTemplate.setColumns(10);
+
+			jTextFieldLabelNameTemplate.setText("rep:");
+			jTextFieldLabelNameTemplate.setToolTipText(
+					"<html>The name of the level 2 node.<br>\r\nWhen you add a new level 2 node by double clicking on an imported dataset while selecting a level 1 node, it will be named with this name.<br>\r\nIf an 'Incrementing suffix' number is stated, it will be added to the name.<br>\r\nThe name of the level 2 nodes will be editable by selecting them and <br>\r\nchanging the name in the textbox above..</html>");
+			jLabel6 = new javax.swing.JLabel();
+			panel_5.add(jLabel6);
+
+			jLabel6.setText("Incrementing suffix:");
+			jLabel6.setToolTipText(
+					"<html>The sufix of the name of the level 2 node.<br>\r\nWhen you add a new level 2 node by double clicking on an imported dataset while selecting a level 1 node, it will be named with the name in 'Node name' plus this suffix that will be automatically incremented any time<br>\r\nyou add a new level 2 node.</html>");
+			jTextFieldLabelNumberTemplate = new javax.swing.JTextField();
+			panel_5.add(jTextFieldLabelNumberTemplate);
+			jTextFieldLabelNumberTemplate.setColumns(3);
+
+			jTextFieldLabelNumberTemplate.setText("1");
+			jTextFieldLabelNumberTemplate.setToolTipText(
+					"<html>The sufix of the name of the level 2 node.<br>\r\nWhen you add a new level 2 node by double clicking on an imported dataset while selecting a level 1 node, it will be named with the name in 'Node name' plus this suffix that will be automatically incremented any time<br>\r\nyou add a new level 2 node.</html>");
+			panelOptions.add(jPanel9, BorderLayout.CENTER);
+			jPanel9.setLayout(new BorderLayout(0, 0));
+
+			panel_4 = new JPanel();
+			FlowLayout flowLayout_1 = (FlowLayout) panel_4.getLayout();
+			flowLayout_1.setAlignment(FlowLayout.LEFT);
+			jPanel9.add(panel_4, BorderLayout.NORTH);
+			jComboBoxCuratedExperiments = new javax.swing.JComboBox<String>();
+			panel_4.add(jComboBoxCuratedExperiments);
+			jComboBoxCuratedExperiments.setEditable(false);
+			jComboBoxCuratedExperiments.setMaximumRowCount(50);
+
+			jComboBoxCuratedExperiments
+					.setModel(new DefaultComboBoxModel<String>(new String[] { "No curated datasets available" }));
+			jComboBoxCuratedExperiments.setToolTipText(
+					"<html>\n<b>Curated experiments<b/> are created in the Charts<br> viewer, usually after applying some filters.<br> This curated projects are lighter than normal projects<br> since filtered-out data is discarted and is not loaded. </html>");
+			jComboBoxCuratedExperiments.addActionListener(new java.awt.event.ActionListener() {
+				@Override
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					jComboBoxCuratedExperimentsActionPerformed(evt);
+				}
+			});
+
+			panel_3 = new JPanel();
+			FlowLayout flowLayout = (FlowLayout) panel_3.getLayout();
+			flowLayout.setAlignment(FlowLayout.LEFT);
+			jPanel9.add(panel_3, BorderLayout.SOUTH);
+			jButtonAddCuratedExperiment = new javax.swing.JButton();
+			panel_3.add(jButtonAddCuratedExperiment);
+
+			jButtonAddCuratedExperiment.setText("Add");
+			jButtonAddCuratedExperiment.setToolTipText(
+					"<html>\r<b>Add curated dataset</b><br>\r\nClick here to add a <b>curated dataset</b> to the comparison project.<br>\r\r\nCurated datasets are created in the Charts Viewer. They are datasets that<br>\r\r\nare saved after applying some filters.<br>\r\r\nThis curated datasets are lighter than normal projects since filtered-out<br>\r\r\ndata is discarted and is not loaded.\r\r\n</html>");
+			jButtonAddCuratedExperiment.setEnabled(false);
+			jButtonRemoveCuratedExperiment = new javax.swing.JButton();
+			panel_3.add(jButtonRemoveCuratedExperiment);
+
+			jButtonRemoveCuratedExperiment.setText("Remove");
+			jButtonRemoveCuratedExperiment.setToolTipText(
+					"<html>\r\n<b>Remove curated dataset</b><br>\r\nClick to remove the selected curated dataset.<br>\r\nCurated datasets are created in the Charts Viewer. They are datasets that<br>\r\nare saved after applying some filters.<br>\r\nThis curated datasets are lighter than normal projects since filtered-out<br>\r\ndata is discarted and is not loaded.\r\n</html>");
+			jButtonRemoveCuratedExperiment.setEnabled(false);
+			jButtonRemoveCuratedExperiment.addActionListener(new java.awt.event.ActionListener() {
+				@Override
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					jButtonRemoveCuratedExperimentActionPerformed(evt);
+				}
+			});
+			jButtonAddCuratedExperiment.addActionListener(new java.awt.event.ActionListener() {
+				@Override
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					jButtonAddCuratedExperimentActionPerformed(evt);
+				}
+			});
+			panelOptions.add(jPanel5, BorderLayout.SOUTH);
+			jPanel5.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+			jPanel5.add(jButtonGoToImport);
+			jPanel5.add(jButtonSave);
+			jPanel5.add(jButtonFinish);
+			jPanel5.add(jButtonHelp);
+			eastPanel.add(panelOptions);
 			getContentPane().add(eastPanel, BorderLayout.EAST);
 			// getContentPane().add(jPanel5);
 			// getContentPane().add(jPanel8);
@@ -254,6 +361,10 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 			// user has not logged-in.");
 			// appendStatus("Load a previously saved comparison project or
 			// login again.");
+
+			loadIcons();
+			// clean tree
+			cleanTrees();
 
 			// Initialize project tree
 			initializeProjectTree(DEFAULT_PROJECT_NAME, DEFAULT_EXPERIMENT_NAME);
@@ -311,17 +422,15 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		setIconImage(ImageManager.getImageIcon(ImageManager.PACOM_LOGO).getImage());
 		jButtonStartLoading.setIcon(ImageManager.getImageIcon(ImageManager.RELOAD_SMALL));
 		jButtonStartLoading.setPressedIcon(ImageManager.getImageIcon(ImageManager.RELOAD_CLICKED_SMALL));
-		jButtonCancelLoading.setIcon(ImageManager.getImageIcon(ImageManager.STOP_SMALL));
-		jButtonCancelLoading.setPressedIcon(ImageManager.getImageIcon(ImageManager.STOP_CLICKED_SMALL));
 		jButtonSave.setIcon(ImageManager.getImageIcon(ImageManager.SAVE));
 		jButtonSave.setPressedIcon(ImageManager.getImageIcon(ImageManager.SAVE_CLICKED));
 		jButtonFinish.setIcon(ImageManager.getImageIcon(ImageManager.FINISH));
 		jButtonFinish.setPressedIcon(ImageManager.getImageIcon(ImageManager.FINISH_CLICKED));
-		jButtonLoadSavedProject.setIcon(ImageManager.getImageIcon(ImageManager.LOAD));
-		jButtonLoadSavedProject.setPressedIcon(ImageManager.getImageIcon(ImageManager.LOAD_CLICKED));
+		jButtonLoadSavedProject.setIcon(ImageManager.getImageIcon(ImageManager.LOAD_SMALL));
+		jButtonLoadSavedProject.setPressedIcon(ImageManager.getImageIcon(ImageManager.LOAD_SMALL_CLICKED));
 
-		jButtonRemoveSavedProject.setIcon(ImageManager.getImageIcon(ImageManager.DELETE));
-		jButtonRemoveSavedProject.setPressedIcon(ImageManager.getImageIcon(ImageManager.DELETE_CLICKED));
+		jButtonRemoveSavedProject.setIcon(ImageManager.getImageIcon(ImageManager.DELETE_SMALL));
+		jButtonRemoveSavedProject.setPressedIcon(ImageManager.getImageIcon(ImageManager.DELETE_CLICKED_SMALL));
 
 		jButtonAddCuratedExperiment.setIcon(ImageManager.getImageIcon(ImageManager.ADD_SMALL));
 		jButtonAddCuratedExperiment.setPressedIcon(ImageManager.getImageIcon(ImageManager.ADD_CLICKED_SMALL));
@@ -341,10 +450,6 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 
 	}
 
-	private void enableCancelTreeLoadinButton(boolean b) {
-		jButtonCancelLoading.setEnabled(b);
-	}
-
 	// GEN-BEGIN:initComponents
 	// <editor-fold defaultstate="collapsed" desc="Generated Code">
 	private void initComponents() {
@@ -355,8 +460,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		jScrollPane1 = new javax.swing.JScrollPane();
 		jScrollPane5 = new javax.swing.JScrollPane();
 		jScrollPane5.setWheelScrollingEnabled(true);
-		jScrollPane5.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-		jScrollPane5.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		jScrollPane5.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		jTreeLocalMIAPEMSIs = new ExtendedJTree();
 		jPanel11 = new javax.swing.JPanel();
 		jScrollPane4 = new javax.swing.JScrollPane();
@@ -379,11 +483,11 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		jPanel6 = new javax.swing.JPanel();
 		jLabel5 = new javax.swing.JLabel();
 		jLabelMIAPEMSINumber = new javax.swing.JLabel();
-		jButtonCancelLoading = new javax.swing.JButton();
-		jButtonCancelLoading.setToolTipText("Click here to stop the loading of the datasets and projects\r\n");
 		jButtonStartLoading = new javax.swing.JButton();
 		jPanel7 = new javax.swing.JPanel();
 		jComboBox1 = new javax.swing.JComboBox<String>();
+		jComboBox1.setSize(new Dimension(200, 20));
+		jComboBox1.setMinimumSize(new Dimension(200, 20));
 		jComboBox1.setEditable(false);
 		jComboBox1.setMaximumRowCount(100);
 		jComboBox1.setToolTipText("Select here a saved comparison project");
@@ -393,39 +497,13 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		jButtonRemoveSavedProject.setToolTipText(
 				"<html>\r\nClick here to delete the selected saved project.<br>\r\n<b>This action cannot be undone</b>\r\n</html>\r\n");
 		jPanel3 = new javax.swing.JPanel();
-		jPanel3.setMaximumSize(new Dimension(250, 150));
 		jPanel3.setAlignmentY(Component.TOP_ALIGNMENT);
-		jPanel3.setAlignmentX(Component.LEFT_ALIGNMENT);
-		jPanel3.setPreferredSize(new Dimension(100, 100));
-		jLabel2 = new javax.swing.JLabel();
-		jTextExperimentName = new javax.swing.JTextField();
-		jTextExperimentName.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		jTextExperimentName.setColumns(30);
-		jButtonAddExperiment = new javax.swing.JButton();
-		jLabel3 = new javax.swing.JLabel();
-		jTextReplicateName = new javax.swing.JTextField();
-		jTextReplicateName.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		jTextReplicateName.setColumns(30);
-		jButtonAddReplicate = new javax.swing.JButton();
 		jPanel8 = new javax.swing.JPanel();
 		jPanel8.setAlignmentX(Component.LEFT_ALIGNMENT);
-		jPanel8.setAlignmentY(Component.TOP_ALIGNMENT);
-		jTextFieldLabelNameTemplate = new javax.swing.JTextField();
-		jLabel4 = new javax.swing.JLabel();
-		jLabel6 = new javax.swing.JLabel();
-		jTextFieldLabelNumberTemplate = new javax.swing.JTextField();
 		jPanel9 = new javax.swing.JPanel();
 		jPanel9.setAlignmentY(Component.TOP_ALIGNMENT);
 		jPanel9.setAlignmentX(Component.LEFT_ALIGNMENT);
-		jPanel9.setPreferredSize(new Dimension(100, 45));
-		jComboBoxCuratedExperiments = new javax.swing.JComboBox<String>();
-		jComboBoxCuratedExperiments.setEditable(false);
-		jComboBoxCuratedExperiments.setMaximumRowCount(100);
-		jButtonAddCuratedExperiment = new javax.swing.JButton();
-		jButtonRemoveCuratedExperiment = new javax.swing.JButton();
 		jPanel5 = new javax.swing.JPanel();
-		jPanel5.setAlignmentX(Component.LEFT_ALIGNMENT);
-		jPanel5.setAlignmentY(Component.TOP_ALIGNMENT);
 		jButtonFinish = new javax.swing.JButton();
 		jButtonSave = new javax.swing.JButton();
 
@@ -488,16 +566,6 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 						.addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
 						.addContainerGap()));
 
-		// jTabbedPane.addTab("External protein lists", jPanel11);
-
-		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-		jPanel1Layout
-				.setHorizontalGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING).addComponent(jScrollPane5));
-		jPanel1Layout.setVerticalGroup(
-				jPanel1Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel1Layout.createSequentialGroup()
-						.addComponent(jScrollPane5, GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE).addGap(0)));
-		jPanel1.setLayout(jPanel1Layout);
-
 		jPanel2.setBorder(
 				new TitledBorder(null, "Comparison Project Tree", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 
@@ -510,17 +578,15 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 
 		jScrollPane2.setViewportView(jTreeProject);
 
+		panel = new JPanel();
+		FlowLayout flowLayout_1 = (FlowLayout) panel.getLayout();
+		flowLayout_1.setAlignment(FlowLayout.LEFT);
+
 		jButtonClearProject2 = new JButton("Clear project tree");
+		panel.add(jButtonClearProject2);
 		jButtonClearProject2.setToolTipText("Click here to clear the Comparison Project.\r\n");
-		jButtonClearProject2.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-				jButtonClearProjectTreeActionPerformed(e);
-
-			}
-		});
 		jButtonDeleteNode = new javax.swing.JButton();
+		panel.add(jButtonDeleteNode);
 		jButtonDeleteNode.setToolTipText("Click here to delete the selected node in the Comparison Project tree");
 
 		jButtonDeleteNode.setText("Delete selected node");
@@ -531,21 +597,14 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 				jButtonDeleteNodeActionPerformed(evt);
 			}
 		});
+		jButtonClearProject2.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
 
-		javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-		jPanel2Layout.setHorizontalGroup(jPanel2Layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanel2Layout.createSequentialGroup().addContainerGap()
-						.addGroup(jPanel2Layout.createParallelGroup(Alignment.LEADING).addComponent(jScrollPane2)
-								.addGroup(jPanel2Layout.createSequentialGroup().addComponent(jButtonClearProject2)
-										.addPreferredGap(ComponentPlacement.RELATED).addComponent(jButtonDeleteNode)))
-						.addContainerGap()));
-		jPanel2Layout.setVerticalGroup(jPanel2Layout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(jPanel2Layout.createSequentialGroup()
-						.addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(jPanel2Layout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(jButtonClearProject2).addComponent(jButtonDeleteNode))));
-		jPanel2.setLayout(jPanel2Layout);
+				jButtonClearProjectTreeActionPerformed(e);
+
+			}
+		});
 
 		jPanel4.setBorder(
 				javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Status"));
@@ -578,22 +637,17 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(),
-				"Loaded input datasets"));
+				"Datasets in PACOM"));
 
-		jLabel5.setText("Input datasets:");
+		jLabel5.setText("Datasets imported in PACOM:");
 
 		jLabelMIAPEMSINumber.setText("0");
 
-		jButtonCancelLoading.setText("Stop loading");
-		jButtonCancelLoading.setEnabled(false);
-		jButtonCancelLoading.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-			}
-		});
-
 		jButtonStartLoading.setText("Reload");
-		jButtonStartLoading.setToolTipText("Reloads datasets and projects");
+		jButtonStartLoading.setToolTipText("<html>Reloads datasets from the local system.<br>"
+				+ "You can import other datasets from other PACOM instances<br>"
+				+ "by copying them at the corresponding folder:<br><i>" + FileManager.getMiapeLocalDataPath()
+				+ "</i></html>");
 		jButtonStartLoading.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -601,30 +655,8 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 			}
 		});
 
-		javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-		jPanel6.setLayout(jPanel6Layout);
-		jPanel6Layout.setHorizontalGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanel6Layout.createSequentialGroup().addContainerGap()
-						.addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-								.addGroup(jPanel6Layout.createSequentialGroup().addComponent(jLabel5)
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jLabelMIAPEMSINumber, javax.swing.GroupLayout.PREFERRED_SIZE, 69,
-												javax.swing.GroupLayout.PREFERRED_SIZE))
-								.addGroup(jPanel6Layout.createSequentialGroup().addComponent(jButtonCancelLoading)
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jButtonStartLoading)))
-						.addContainerGap(108, Short.MAX_VALUE)));
-		jPanel6Layout.setVerticalGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanel6Layout.createSequentialGroup()
-						.addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-								.addComponent(jLabel5).addComponent(jLabelMIAPEMSINumber))
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-								.addComponent(jButtonCancelLoading).addComponent(jButtonStartLoading))
-						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-
 		jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(),
-				"Load previously saved projects"));
+				"Load previously saved Comparison Projects"));
 
 		jComboBox1.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -633,7 +665,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 			}
 		});
 
-		jButtonLoadSavedProject.setText("Load");
+		jButtonLoadSavedProject.setText("Load project");
 		jButtonLoadSavedProject.setEnabled(false);
 		jButtonLoadSavedProject.addMouseListener(new java.awt.event.MouseAdapter() {
 			@Override
@@ -642,7 +674,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 			}
 		});
 
-		jButtonRemoveSavedProject.setText("delete");
+		jButtonRemoveSavedProject.setText("Delete project");
 		jButtonRemoveSavedProject.setEnabled(false);
 		jButtonRemoveSavedProject.addMouseListener(new java.awt.event.MouseAdapter() {
 			@Override
@@ -651,53 +683,37 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 			}
 		});
 
-		javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-		jPanel7Layout.setHorizontalGroup(jPanel7Layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanel7Layout.createSequentialGroup().addContainerGap()
-						.addComponent(jComboBox1, GroupLayout.PREFERRED_SIZE, 295, GroupLayout.PREFERRED_SIZE)
-						.addGap(18).addComponent(jButtonLoadSavedProject).addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(jButtonRemoveSavedProject).addContainerGap(150, Short.MAX_VALUE)));
-		jPanel7Layout.setVerticalGroup(jPanel7Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel7Layout
-				.createSequentialGroup()
-				.addGroup(jPanel7Layout.createParallelGroup(Alignment.LEADING)
-						.addGroup(jPanel7Layout.createSequentialGroup().addContainerGap().addComponent(jComboBox1,
-								GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-						.addGroup(jPanel7Layout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(jButtonLoadSavedProject).addComponent(jButtonRemoveSavedProject)))
-				.addContainerGap(34, Short.MAX_VALUE)));
-		jPanel7.setLayout(jPanel7Layout);
-
 		jPanel3.setBorder(
 				new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Add nodes to Comparison Project Tree",
 						TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 
-		jLabel2.setText("Add Level 1 node:");
-		jLabel2.setToolTipText("<html>\nAdd a level 1 node</html>");
+		panel_1 = new JPanel();
+		FlowLayout flowLayout = (FlowLayout) panel_1.getLayout();
+		flowLayout.setAlignment(FlowLayout.LEFT);
 
-		jTextExperimentName.setToolTipText(
-				"<html>\r\nAdd a new Level 1 node.<br>\r\nHere you can add a new level 1 node.<br>\r\nTo add a new level 1 node, type a new name, and click on the 'Add' button in the right.<br>\r\n</html>");
-		jTextExperimentName.addKeyListener(new java.awt.event.KeyAdapter() {
-			@Override
-			public void keyPressed(java.awt.event.KeyEvent evt) {
-				jTextExperimentNameKeyPressed(evt);
-			}
-
-		});
-
-		jButtonAddExperiment.setText("Add");
-		jButtonAddExperiment.setToolTipText("Click here to add a new level 1 node to the Comparison Project Tree.");
-		jButtonAddExperiment.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButtonAddExperimentActionPerformed(evt);
-			}
-		});
+		panel_2 = new JPanel();
+		jLabel3 = new javax.swing.JLabel();
+		panel_2.add(jLabel3);
 
 		jLabel3.setText("Add Level 2 node:");
 		jLabel3.setToolTipText("<html>Add a level 2 node</html>");
+		jTextReplicateName = new javax.swing.JTextField();
+		panel_2.add(jTextReplicateName);
+		jTextReplicateName.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		jTextReplicateName.setColumns(30);
 
 		jTextReplicateName.setToolTipText(
 				"<html>\r\nAdd a new level 2 node.<br>\r\nTo add a new level 2 node, select a level 1 node, type a new name<br>\r\nand click on the 'Add' button in the right.</html>");
+		jButtonAddReplicate = new javax.swing.JButton();
+		panel_2.add(jButtonAddReplicate);
+		jButtonAddReplicate.setText("Add");
+		jButtonAddReplicate.setToolTipText("Click here to add a new level 2 node to the Comparison Project Tree.");
+		jButtonAddReplicate.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jButtonAddReplicateActionPerformed(evt);
+			}
+		});
 		jTextReplicateName.addKeyListener(new java.awt.event.KeyAdapter() {
 			@Override
 			public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -720,142 +736,48 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 				}
 			}
 		});
-		jButtonAddReplicate.setText("Add");
-		jButtonAddReplicate.setToolTipText("Click here to add a new level 2 node to the Comparison Project Tree.");
-		jButtonAddReplicate.addActionListener(new java.awt.event.ActionListener() {
+		jLabel2 = new javax.swing.JLabel();
+		panel_1.add(jLabel2);
+
+		jLabel2.setText("Add Level 1 node:");
+		jLabel2.setToolTipText("<html>\nAdd a level 1 node</html>");
+		jTextExperimentName = new javax.swing.JTextField();
+		panel_1.add(jTextExperimentName);
+		jTextExperimentName.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		jTextExperimentName.setColumns(30);
+
+		jTextExperimentName.setToolTipText(
+				"<html>\r\nAdd a new Level 1 node.<br>\r\nHere you can add a new level 1 node.<br>\r\nTo add a new level 1 node, type a new name, and click on the 'Add' button in the right.<br>\r\n</html>");
+		jButtonAddExperiment = new javax.swing.JButton();
+		panel_1.add(jButtonAddExperiment);
+
+		jButtonAddExperiment.setText("Add");
+		jButtonAddExperiment.setToolTipText("Click here to add a new level 1 node to the Comparison Project Tree.");
+		jButtonAddExperiment.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButtonAddReplicateActionPerformed(evt);
+				jButtonAddExperimentActionPerformed(evt);
 			}
 		});
+		jTextExperimentName.addKeyListener(new java.awt.event.KeyAdapter() {
+			@Override
+			public void keyPressed(java.awt.event.KeyEvent evt) {
+				jTextExperimentNameKeyPressed(evt);
+			}
 
-		javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-		jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanel3Layout.createSequentialGroup().addContainerGap()
-						.addGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING)
-								.addGroup(jPanel3Layout.createSequentialGroup().addComponent(jLabel3).addGap(10)
-										.addComponent(jTextReplicateName, 0, 0, Short.MAX_VALUE)
-										.addPreferredGap(ComponentPlacement.RELATED))
-								.addGroup(jPanel3Layout.createSequentialGroup().addComponent(jLabel2)
-										.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(jTextExperimentName,
-												GroupLayout.PREFERRED_SIZE, 175, GroupLayout.PREFERRED_SIZE)
-										.addGap(6)))
-						.addGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING).addComponent(jButtonAddReplicate)
-								.addComponent(jButtonAddExperiment))
-						.addContainerGap(47, Short.MAX_VALUE)));
-		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanel3Layout.createSequentialGroup().addContainerGap()
-						.addGroup(jPanel3Layout.createParallelGroup(Alignment.BASELINE).addComponent(jLabel2)
-								.addComponent(jTextExperimentName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(jButtonAddExperiment))
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(jPanel3Layout.createParallelGroup(Alignment.BASELINE).addComponent(jLabel3)
-								.addComponent(jButtonAddReplicate).addComponent(jTextReplicateName,
-										GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE))
-						.addGap(41)));
-		jPanel3.setLayout(jPanel3Layout);
+		});
 
 		jPanel8.setBorder(new TitledBorder(null, "Level 2 node name template", TitledBorder.LEADING, TitledBorder.TOP,
 				null, null));
 		jPanel8.setToolTipText(
 				"<html>\nThe name generator template defines which names will be<br>\nautomatically assigned to the Level 2 nodes<br> (replicates/fractions/bands)</html>");
 
-		jTextFieldLabelNameTemplate.setText("rep:");
-		jTextFieldLabelNameTemplate.setToolTipText(
-				"<html>The name of the level 2 node.<br>\r\nWhen you add a new level 2 node by double clicking on an imported dataset while selecting a level 1 node, it will be named with this name.<br>\r\nIf an 'Incrementing suffix' number is stated, it will be added to the name.<br>\r\nThe name of the level 2 nodes will be editable by selecting them and <br>\r\nchanging the name in the textbox above..</html>");
-
-		jLabel4.setText("Node name:");
-		jLabel4.setToolTipText(
-				"<html>The name of the level 2 node.<br>\r\nWhen you add a new level 2 node by double clicking on an imported dataset while selecting a level 1 node, it will be named with this name.<br>\r\nIf an 'Incrementing suffix' number is stated, it will be added to the name.<br>\r\nThe name of the level 2 nodes will be editable by selecting them and <br>\r\nchanging the name in the textbox above..</html>");
-
-		jLabel6.setText("Incrementing suffix:");
-		jLabel6.setToolTipText(
-				"<html>The sufix of the name of the level 2 node.<br>\r\nWhen you add a new level 2 node by double clicking on an imported dataset while selecting a level 1 node, it will be named with the name in 'Node name' plus this suffix that will be automatically incremented any time<br>\r\nyou add a new level 2 node.</html>");
-
-		jTextFieldLabelNumberTemplate.setText("1");
-		jTextFieldLabelNumberTemplate.setToolTipText(
-				"<html>The sufix of the name of the level 2 node.<br>\r\nWhen you add a new level 2 node by double clicking on an imported dataset while selecting a level 1 node, it will be named with the name in 'Node name' plus this suffix that will be automatically incremented any time<br>\r\nyou add a new level 2 node.</html>");
-
-		javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-		jPanel8Layout.setHorizontalGroup(jPanel8Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel8Layout
-				.createSequentialGroup().addContainerGap().addComponent(jLabel4)
-				.addPreferredGap(ComponentPlacement.RELATED)
-				.addComponent(jTextFieldLabelNameTemplate, GroupLayout.PREFERRED_SIZE, 107, GroupLayout.PREFERRED_SIZE)
-				.addGap(18).addComponent(jLabel6).addPreferredGap(ComponentPlacement.RELATED)
-				.addComponent(jTextFieldLabelNumberTemplate, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
-				.addContainerGap(167, Short.MAX_VALUE)));
-		jPanel8Layout.setVerticalGroup(jPanel8Layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanel8Layout.createSequentialGroup().addContainerGap()
-						.addGroup(jPanel8Layout.createParallelGroup(Alignment.BASELINE).addComponent(jLabel4)
-								.addComponent(jTextFieldLabelNameTemplate, GroupLayout.PREFERRED_SIZE,
-										GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(jLabel6).addComponent(jTextFieldLabelNumberTemplate,
-										GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE))
-						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-		jPanel8.setLayout(jPanel8Layout);
-
 		jPanel9.setBorder(new TitledBorder(null, "Add curated datasets to Project Tree", TitledBorder.LEADING,
 				TitledBorder.TOP, null, null));
 		jPanel9.setToolTipText(
 				"<html>\r\n<b>Curated datasets</b> are created in the Chart Viewer,<br> usually after appling some filters.<br> This curated projects are lighter than normal projects<br> since filtered-out data is discarted and is not loaded.</html>");
 
-		jComboBoxCuratedExperiments
-				.setModel(new DefaultComboBoxModel(new String[] { "No curated datasets available" }));
-		jComboBoxCuratedExperiments.setToolTipText(
-				"<html>\n<b>Curated experiments<b/> are created in the Charts<br> viewer, usually after applying some filters.<br> This curated projects are lighter than normal projects<br> since filtered-out data is discarted and is not loaded. </html>");
-		jComboBoxCuratedExperiments.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jComboBoxCuratedExperimentsActionPerformed(evt);
-			}
-		});
-
-		jButtonAddCuratedExperiment.setText("Add");
-		jButtonAddCuratedExperiment.setToolTipText(
-				"<html>\r<b>Add curated dataset</b><br>\r\nClick here to add a <b>curated dataset</b> to the comparison project.<br>\r\r\nCurated datasets are created in the Charts Viewer. They are datasets that<br>\r\r\nare saved after applying some filters.<br>\r\r\nThis curated datasets are lighter than normal projects since filtered-out<br>\r\r\ndata is discarted and is not loaded.\r\r\n</html>");
-		jButtonAddCuratedExperiment.setEnabled(false);
-		jButtonAddCuratedExperiment.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButtonAddCuratedExperimentActionPerformed(evt);
-			}
-		});
-
-		jButtonRemoveCuratedExperiment.setText("Remove");
-		jButtonRemoveCuratedExperiment.setToolTipText(
-				"<html>\r\n<b>Remove curated dataset</b><br>\r\nClick to remove the selected curated dataset.<br>\r\nCurated datasets are created in the Charts Viewer. They are datasets that<br>\r\nare saved after applying some filters.<br>\r\nThis curated datasets are lighter than normal projects since filtered-out<br>\r\ndata is discarted and is not loaded.\r\n</html>");
-		jButtonRemoveCuratedExperiment.setEnabled(false);
-		jButtonRemoveCuratedExperiment.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButtonRemoveCuratedExperimentActionPerformed(evt);
-			}
-		});
-
-		javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
-		jPanel9Layout.setHorizontalGroup(jPanel9Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel9Layout
-				.createSequentialGroup().addContainerGap()
-				.addGroup(jPanel9Layout.createParallelGroup(Alignment.LEADING)
-						.addGroup(jPanel9Layout.createSequentialGroup().addComponent(jButtonAddCuratedExperiment)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(jButtonRemoveCuratedExperiment))
-						.addComponent(jComboBoxCuratedExperiments, GroupLayout.PREFERRED_SIZE, 358,
-								GroupLayout.PREFERRED_SIZE))
-				.addContainerGap(60, Short.MAX_VALUE)));
-		jPanel9Layout.setVerticalGroup(jPanel9Layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanel9Layout.createSequentialGroup()
-						.addComponent(jComboBoxCuratedExperiments, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(jPanel9Layout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(jButtonAddCuratedExperiment).addComponent(jButtonRemoveCuratedExperiment))
-						.addContainerGap()));
-		jPanel9.setLayout(jPanel9Layout);
-
-		jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+		jPanel5.setBorder(null);
 
 		jButtonFinish.setText("Next");
 		jButtonFinish.setToolTipText("Click to go to the Charts Viewer");
@@ -885,24 +807,6 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		jButtonGoToImport.setToolTipText("<html>Click to go to the <b>Import Dataset</b> window</html>");
 
 		jButtonHelp = new OpenHelpButton(this);
-		javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-		jPanel5Layout.setHorizontalGroup(jPanel5Layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanel5Layout.createSequentialGroup().addContainerGap().addComponent(jButtonGoToImport)
-						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jButtonSave)
-						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jButtonFinish)
-						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addComponent(jButtonHelp, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-		jPanel5Layout.setVerticalGroup(jPanel5Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel5Layout
-				.createSequentialGroup().addContainerGap()
-				.addGroup(jPanel5Layout.createParallelGroup(Alignment.TRAILING, false)
-						.addComponent(jButtonHelp, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addGroup(jPanel5Layout.createParallelGroup(Alignment.BASELINE, false)
-								.addComponent(jButtonGoToImport).addComponent(jButtonSave).addComponent(jButtonFinish)))
-				.addGap(40)));
-		jPanel5.setLayout(jPanel5Layout);
 
 		pack();
 	}// </editor-fold>
@@ -1047,7 +951,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 
 			} else if (jTreeLocalMIAPEMSIs.isOnlyOneNodeSelected(MIAPE_PROJECT_LEVEL)) {
 				// if the user clicks on a MIAPE PROJECT
-				log.info("Local dataset project selected");
+				log.debug("Local dataset project selected");
 				final int numMIAPEsInMIAPEProject = jTreeLocalMIAPEMSIs.getSelectedNode().getChildCount();
 				if (numMIAPEsInMIAPEProject > 0) {
 
@@ -1055,9 +959,9 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 					String localProjectName = jTreeLocalMIAPEMSIs
 							.getStringFromSelection(MIAPE_LOCAL_PROJECT_NAME_REGEXP);
 					final int selectedOption = JOptionPane.showConfirmDialog(this,
-							"<html>Do you want to add all datasets in the project to a new level 1 node called '"
-									+ localProjectName + "' in the comparison project?</html>",
-							"Add datasets to comparison project", JOptionPane.YES_NO_CANCEL_OPTION);
+							"<html>Do you want to add all datasets in the dataset folder to a new level 1 node called '"
+									+ localProjectName + "' in the Comparison Project Tree?</html>",
+							"Add datasets to Comparison Project Tree", JOptionPane.YES_NO_CANCEL_OPTION);
 					if (selectedOption == JOptionPane.YES_OPTION) {
 						MyProjectTreeNode projectNode = jTreeProject.getRootNode();
 						CPExperimentList cpExpList = (CPExperimentList) projectNode.getUserObject();
@@ -1069,9 +973,10 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 
 						jTextExperimentName.setText(localProjectName);
 
-						final Enumeration children = jTreeLocalMIAPEMSIs.getSelectedNode().children();
+						final Enumeration<DefaultMutableTreeNode> children = jTreeLocalMIAPEMSIs.getSelectedNode()
+								.children();
 						while (children.hasMoreElements()) {
-							MyProjectTreeNode miapeMSIChild = (MyProjectTreeNode) children.nextElement();
+							DefaultMutableTreeNode miapeMSIChild = children.nextElement();
 							String msi_id = AbstractExtendedJTree.getString(LOCAL_MIAPE_ID_REGEXP,
 									(String) miapeMSIChild.getUserObject());
 							String miapeName = AbstractExtendedJTree.getString(LOCAL_MIAPE_UNIQUE_NAME_REGEXP,
@@ -1324,7 +1229,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		initializeProjectTree(DEFAULT_PROJECT_NAME, DEFAULT_EXPERIMENT_NAME);
 	}
 
-	public JComboBox getProjectComboBox() {
+	public JComboBox<String> getProjectComboBox() {
 		return jComboBox1;
 	}
 
@@ -1430,9 +1335,9 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		if (FileManager.existsProjectXMLFile(cpExpList.getName())) {
 			// Show dialog
 			final int option = JOptionPane.showConfirmDialog(this,
-					"<html>The protein/peptide identification comparison project '" + cpExpList.getName()
+					"<html>The Comparison Project '" + cpExpList.getName()
 							+ "' already exists.<br>Are you sure you want to overwrite it?</html>",
-					"Warning, project file already exists", JOptionPane.YES_NO_OPTION);
+					"Warning, Comparison Project already exists", JOptionPane.YES_NO_OPTION);
 			if (option == JOptionPane.NO_OPTION)
 				throw new IllegalMiapeArgumentException("Save canceled");
 		}
@@ -1653,7 +1558,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		try {
 			cpExperimentList = ComparisonProjectFileUtil.getExperimentListFromComparisonProjectFile(projectFile);
 
-			String projectName = cpExperimentList.getName();
+			// String projectName = cpExperimentList.getName();
 			MyProjectTreeNode nodoRaizMSI = new MyProjectTreeNode(cpExperimentList);
 			DefaultTreeModel modeloArbolMSI = new DefaultTreeModel(nodoRaizMSI);
 			jTreeProject.setModel(modeloArbolMSI);
@@ -1727,12 +1632,6 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		}
 	}
 
-	private boolean getAnnotateProteinsInUniprot() {
-		// TODO
-		// SALVA: get this from interface
-		return true;
-	}
-
 	private void addExperimentToProjectTree(File projectFile) {
 		try {
 			final MyProjectTreeNode experimentListNode = jTreeProject.getRootNode();
@@ -1796,7 +1695,6 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 	private javax.swing.JButton jButtonAddExperiment;
 	private javax.swing.JButton jButtonAddManualList;
 	private javax.swing.JButton jButtonAddReplicate;
-	private javax.swing.JButton jButtonCancelLoading;
 	private javax.swing.JButton jButtonDeleteNode;
 	private javax.swing.JButton jButtonFinish;
 	private javax.swing.JButton jButtonLoadSavedProject;
@@ -1835,12 +1733,18 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 	private javax.swing.JTextField jTextFieldLabelNameTemplate;
 	private javax.swing.JTextField jTextFieldLabelNumberTemplate;
 	private javax.swing.JTextField jTextReplicateName;
-	private AbstractExtendedJTree jTreeLocalMIAPEMSIs;
+	private ExtendedJTree jTreeLocalMIAPEMSIs;
 
 	private ComparisonProjectExtendedJTree jTreeProject;
 	private JButton jButtonGoToImport;
 	private JButton jButtonHelp;
 	private JButton jButtonClearProject2;
+	private JPanel panel;
+	private JPanel panel_1;
+	private JPanel panel_2;
+	private JPanel panel_3;
+	private JPanel panel_4;
+	private JPanel panel_5;
 
 	// End of variables declaration//GEN-END:variables
 
@@ -1896,6 +1800,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		} else if (LocalDataTreeLoaderTask.LOCAL_TREE_LOADER_FINISHED.equals(evt.getPropertyName())) {
 			this.enableStateKeeper.setToPreviousState(this);
 			Integer numLoaded = (Integer) evt.getNewValue();
+			this.jLabelMIAPEMSINumber.setText(numLoaded.toString());
 			appendStatus(numLoaded + " datasets loaded.");
 		} else if (LocalDataTreeLoaderTask.LOCAL_TREE_LOADER_ERROR.equals(evt.getPropertyName())) {
 			this.enableStateKeeper.setToPreviousState(this);
@@ -1938,7 +1843,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		return correctlyInitialized;
 	}
 
-	public JComboBox getCuratedComboBox() {
+	public JComboBox<String> getCuratedComboBox() {
 		return jComboBoxCuratedExperiments;
 	}
 
