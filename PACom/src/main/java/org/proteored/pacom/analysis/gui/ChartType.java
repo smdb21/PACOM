@@ -24,9 +24,9 @@ public enum ChartType {
 	PEPTIDE_NUMBER_HISTOGRAM("Peptide number",
 			"Bar graph with the number of peptides per dataset. Try <i>Show as pie chart</i>."), //
 	PROTEIN_OVERLAPING("Protein overlapping",
-			"Select 2 or 3 datasets to visualize the protein overlapping in a Venn diagram. Select the way you want to compare protein groups (when two protein groups are consider equal). Click on color next to dataset to customize it. Scroll down the 'Additional Options'panel to see the overlapping numbers and percentages and to export proteins in each overlapping group."), //
+			"Select 2 or 3 datasets to visualize the protein overlapping in a Venn diagram. Select the way you want to compare protein groups (when two protein groups are consider equal). Click on color next to dataset to customize it. Scroll down the 'Additional Options' panel to see the overlapping numbers and percentages and to export proteins in each overlapping group."), //
 	PEPTIDE_OVERLAPING("Peptide overlapping",
-			"Select 2 or 3 datasets to visualize the peptide overlapping in a Venn diagram. Click on color next to dataset to customize it. Scroll down the 'Additional Options'panel to see the overlapping numbers and percentages and to export proteins in each overlapping group."), //
+			"Select 2 or 3 datasets to visualize the peptide overlapping in a Venn diagram. Click on color next to dataset to customize it. Scroll down the 'Additional Options' panel to see the overlapping numbers and percentages and to export proteins in each overlapping group."), //
 	PROTEIN_OCURRENCE_HEATMAP("Protein Heat Map",
 			"Heat-map in which each row represent a protein group and each column the number of times that protein has been detected in a particular dataset. Try to change color scale. <i>Do not paint rows with less than (occurrence)</i> means that any row in which the sum of the occurrences of the protein is less than that number will not be shown."), //
 	PEPTIDE_OCCURRENCE_HEATMAP("Peptide Heat Map",
