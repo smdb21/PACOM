@@ -7,7 +7,23 @@
 We are continuosly trying to improve the software, adding new features and fixing bugs. New versions are automatically uploaded to out server.  
 Download the latest versions from **[here](http://sealion.scripps.edu/PACom/)**.
 
-## Instructions and Manual:
+## System requirements
+ - **Java Runtime Environment (JRE) version: 1.8** (Download it from [ http://www.oracle.com/technetwork/java/javase/downloads/index.html](http://www.oracle.com/technetwork/java/javase/downloads/index.html))  
+ - **Physical Memory (RAM):** As a Java standalone software, you can specify the maximum amount of memory on which it is going to run. It depends on the file (*.bat for Windows and *.sh for Linux and MAC OS) that you use for running it. However, depending on whether the Java Runtime Environment (JRE) you have works on 32 bits or 64 bits (only available for 64 bits OS), you will be able to use more or less amount of memory. For JRE 32 bits version (x86) the maximum amount of memory is only close to 1.4Gb (which is not much).
+To import datasets into the tool, 1 Gb or 1.4 Gb of RAM memory would be enough, which can be available for 32 bit machines. However, to inspect and compare data, it is strongly recommended to have more memory, such as 16Gb. 
+As an example, 9 experiments containing a total number of 126 fractions (that is, 126 MASCOT search results), will require 8Gb of RAM.
+ - **Recommended Screen Resolution:** 1280x700
+ - **Recommended CPU:** 2 or more CPU cores (systems with a single core processor will experience a slow performance).
+
+## Instalation guide
+There is no need to install anything. Just download it from the link above, decompress the package (.zip or .tar.gz) and run one of the *START_** files (depending on the amount of memory you want to use).
+
+## Demo
+If you want to quickly try PACOM, open it, select one of the example comparison projects (**Inspect examples**) and click on the orange button at the right. 
+  
+![Figure 10](https://raw.githubusercontent.com/wiki/smdb21/PACOM/img/inspection/Picture10.png) 
+
+## Instructions for use:
 For a **complete manual** and more detailed information about how to use the tool, go to our [**wiki page**](https://github.com/smdb21/PACOM/wiki).
 
 ## Asking for help? Do you have any suggestion?
