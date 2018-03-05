@@ -499,9 +499,9 @@ public abstract class AbstractExtendedJTree<T extends DefaultMutableTreeNode> ex
 	 * @param node
 	 */
 	public void expandNode(T node) {
-		if (node.isLeaf()) {
+		if (!node.isLeaf()) {
 			this.expandPath(new TreePath(node.getPath()));
-		} else {
+			// } else {
 			for (int i = 0; i < node.getChildCount(); i++) {
 				expandNode((T) node.getChildAt(i));
 			}

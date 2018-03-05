@@ -92,7 +92,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 	private static final String DEFAULT_PROJECT_NAME = "Comparison project name";
 	private static final String DEFAULT_EXPERIMENT_NAME = "experiment 1";
 	final static String MIAPE_ID_REGEXP = "Dataset_(?:MS|MSI)_(\\d+).*";
-	final static String LOCAL_MIAPE_ID_REGEXP = "Dataset_(?:MS|MSI)_(\\d+)_.+$";
+	final static String LOCAL_MIAPE_ID_REGEXP = "Dataset_(?:MS|MSI)_(\\d+)";
 	final static String LOCAL_MIAPE_UNIQUE_NAME_REGEXP = "Dataset_(?:MS|MSI)_\\d+_(.*)";
 
 	final static String MIAPE_PROJECT_NAME_REGEXP = "\\d+:\\s(.*)";
@@ -834,7 +834,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 				// get MIAPE Name
 				String miapeName = jTreeLocalMIAPEMSIs.getStringFromSelection(LOCAL_MIAPE_UNIQUE_NAME_REGEXP);
 				if ("".equals(miapeName)) {
-					miapeName = "Dataset_" + miapeID;
+					miapeName = null;// "Dataset_" + miapeID;
 				}
 				// get local project name
 				String projectName = jTreeLocalMIAPEMSIs
@@ -853,8 +853,8 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 					}
 					// check if the experiment node is curated. If so, throw
 					// exception
-					CPExperiment experiment = (CPExperiment) ((MyProjectTreeNode) replicateNode.getParent())
-							.getUserObject();
+					MyProjectTreeNode experimentNode = (MyProjectTreeNode) replicateNode.getParent();
+					CPExperiment experiment = (CPExperiment) experimentNode.getUserObject();
 					if (experiment.isCurated()) {
 						throw new IllegalMiapeArgumentException(
 								"A non curated dataset cannot be added to a curated experiment");
@@ -894,7 +894,8 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 					cpReplicate.setCPMSIList(cpMsiList);
 					final MyProjectTreeNode newNode = jTreeProject.addNewNode(cpMsi, replicateNode);
 					// scroll to experiment node to let add more replicates
-					jTreeProject.selectNode(newNode);
+					jTreeProject.selectNode(experimentNode);
+					jTreeProject.expandNode(experimentNode);
 					saved = false;
 					// }
 				} else if (jTreeProject.isOnlyOneNodeSelected(EXPERIMENT_LEVEL)) {
@@ -939,7 +940,8 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 					cpRep.setCPMSIList(cpMsiList);
 					final MyProjectTreeNode newNode = jTreeProject.addNewNode(cpMsi, replicateNode);
 					// scroll to experiment node to let add more replicates
-					jTreeProject.selectNode(newNode);
+					jTreeProject.selectNode(experimentNode);
+					jTreeProject.expandNode(experimentNode);
 					saved = false;
 				} else {
 					throw new IllegalMiapeArgumentException("Select an level 1 node in the Comparison Project Tree.");
