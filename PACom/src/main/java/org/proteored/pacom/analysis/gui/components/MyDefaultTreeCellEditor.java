@@ -32,7 +32,7 @@ public class MyDefaultTreeCellEditor<T extends DefaultMutableTreeNode> extends D
 		if (e instanceof MouseEvent) {
 			MouseEvent mouseEvent = (MouseEvent) e;
 			if (mouseEvent.getClickCount() == 2) {
-				log.info("Is cell editable");
+				log.debug("Is cell editable");
 				final ComparisonProjectExtendedJTree tree = (ComparisonProjectExtendedJTree) e.getSource();
 				final int selectedDepth = tree.getSelectedDepth();
 				if (selectedDepth <= 3) {
