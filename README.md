@@ -19,9 +19,13 @@ As an example, 9 experiments containing a total number of 126 fractions (that is
 There is no need to install anything. Just download it from the link above, decompress the package (.zip or .tar.gz) and run one of the *START_** files (depending on the amount of memory you want to use).
 
 ## Demo
-If you want to quickly try PACOM, open it, select one of the example comparison projects (**Inspect examples**) and click on the orange button at the right. 
+If you want to quickly try PACOM, open it, select one of the example comparison projects (**Inspect examples**) such as *PME6_Reanalysis" and click on the orange button at the right.
   
 ![Figure 10](https://raw.githubusercontent.com/wiki/smdb21/PACOM/img/inspection/Picture10.png) 
+
+ Then, in about 15 seconds you will see the main interface of PACOM for dataset inspection and comparison:
+ 
+ ![Figure 12](https://raw.githubusercontent.com/wiki/smdb21/PACOM/img/comparison/Picture12.png) 
 
 ## Instructions for use:
 For a **complete manual** and more detailed information about how to use the tool, go to our [**wiki page**](https://github.com/smdb21/PACOM/wiki).
