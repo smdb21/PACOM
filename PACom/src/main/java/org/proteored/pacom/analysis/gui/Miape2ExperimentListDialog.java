@@ -356,7 +356,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 			// getContentPane().add(jPanel9);
 			// getContentPane().add(jPanel3);
 			// getContentPane().add(jPanel6);
-			appendStatus("Offline mode");
+			// appendStatus("Offline mode");
 			// appendStatus("MIAPE MSI documents cannot be loaded since the
 			// user has not logged-in.");
 			// appendStatus("Load a previously saved comparison project or
