@@ -40,9 +40,13 @@ public class ImageManager {
 	public static final String CURATED_EXPERIMENT = "curated_experiment.png";
 	public static final String EXPERIMENT = "experiment.png";
 	public static final String REPLICATE = "replicate.png";
+	public static final String REPLICATE_CURATED = "replicate_curated.png";;
+
 	public static final String EXPERIMENT_INCOMPLETE = "experiment_incomplete.png";
 	public static final String REPLICATE_INCOMPLETE = "replicate_incomplete.png";
 	public static final String DOC = "doc.png";
+	public static final String DOC_CURATED = "doc_curated.png";
+
 	public static final String PRIDE_LOGO = "pride_logo_peq.jpg";
 	public static final String PRIDE_LOGO_CLICKED = "pride_logo_peq_clicked.jpg";
 	public static final String RELOAD = "reload.png";

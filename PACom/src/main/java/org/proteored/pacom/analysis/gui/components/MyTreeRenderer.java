@@ -7,6 +7,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeNode;
 
 import org.apache.log4j.Logger;
 import org.proteored.miapeapi.experiment.model.Replicate;
@@ -34,11 +35,15 @@ public class MyTreeRenderer extends DefaultTreeCellRenderer {
 	private final Icon rawIcon;
 	private final Icon replicateIncompleteIcon;
 	private final Icon experimentIncompleteIcon;
+	private final Icon documentCuratedIcon;
+	private final Icon replicateCuratedIcon;
 
 	public MyTreeRenderer() {
 		this.starIcon = getCuratedImageIcon();
 		this.documentIcon = getDocumentImageIcon();
+		this.documentCuratedIcon = getDocumentCuratedImageIcon();
 		this.replicateIcon = getReplicateImageIcon();
+		this.replicateCuratedIcon = getReplicateCuratedImageIcon();
 		this.experimentIcon = getExperimentImageIcon();
 		this.replicateIncompleteIcon = getReplicateIncompleteImageIcon();
 		this.experimentIncompleteIcon = getExperimentIncompleteImageIcon();
@@ -54,80 +59,92 @@ public class MyTreeRenderer extends DefaultTreeCellRenderer {
 		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
 		log.debug(node + " class of userObject: " + node.getUserObject().getClass().getName());
-		DefaultMutableTreeNode parent = (DefaultMutableTreeNode) node.getParent();
+		TreeNode parent2 = node.getParent();
+		DefaultMutableTreeNode parent = (DefaultMutableTreeNode) parent2;
 		if (isMIAPEMSIStringNode(value)) {
 			setIcon(documentIcon);
 			setToolTipText("<html>Imported dataset:<br><b>" + node.getUserObject() + "</b><br>Located at:<br>"
 					+ FileManager.getMiapeLocalDataPath(parent.getUserObject().toString()) + node.getUserObject()
 					+ ".xml</html>");
 			setText(FileManager.getMiapeMSINameFromName(node.getUserObject().toString()));
-		} else if (isCuratedExperiment(value)) {
+		} else if (isCuratedCPExperimentNode(value)) {
 			setIcon(starIcon);
 			setToolTipText("Dataset in level 2 node:<br><b>" + node.getUserObject() + "</b><br>Located at:<br>"
 					+ FileManager.getMiapeLocalDataPath(parent.getUserObject().toString()) + node.getUserObject()
 					+ ".xml</html>");
-		} else if (isMIAPENode(value)) {
+		} else if (isCPMSINode(value) || isCPMSNode(value)) {
 			setIcon(documentIcon);
 			String name = FileManager.getMiapeMSINameFromName(node.getUserObject().toString());
-			setText(name);
-			CPMSI cpMSI = (CPMSI) node.getUserObject();
-			setToolTipText("<html>Imported dataset:<br><b>" + name + "</b><br>Internal file located at:<br>"
-					+ FileManager.getMiapeLocalDataPath(cpMSI.getLocalProjectName()) + node.getUserObject()
-					+ ".xml</html>");
-		} else if (isReplicateNode(value)) {
-			setIcon(hasChildren(node) ? replicateIcon : replicateIncompleteIcon);
-			setToolTipText(hasChildren(node)
-					? "<html>Level 2 node: <b>" + node.getUserObject() + "</b><br>It contains " + node.getChildCount()
-							+ " datasets.</html>"
-					: "<html>Incomplete level 2 node:<br>Add datasets to this node</html>");
-			if (value instanceof DefaultMutableTreeNode
-					&& ((DefaultMutableTreeNode) value).getUserObject() instanceof Replicate) {
-				Replicate replicate = (Replicate) ((DefaultMutableTreeNode) value).getUserObject();
-				value = replicate.getFullName();
+			if (name == null) {
+				// this happens in curated datasets
+				name = node.getUserObject().toString();
 			}
-		} else if (isExperimentNode(value)) {
+			setText(name);
+			String localProjectName = null;
+			CPMSI cpMSI = null;
+			if (node.getUserObject() instanceof CPMSI) {
+				cpMSI = (CPMSI) node.getUserObject();
+				localProjectName = ((CPMSI) node.getUserObject()).getLocalProjectName();
+			} else if (node.getUserObject() instanceof CPMS) {
+				localProjectName = ((CPMS) node.getUserObject()).getLocalProjectName();
+			}
+			boolean isCurated = false;
+			if (parent.getUserObject() instanceof CPReplicate) {
+				if (parent.getParent() != null) {
+					DefaultMutableTreeNode granParentNode = (DefaultMutableTreeNode) parent.getParent();
+					if (granParentNode.getUserObject() instanceof CPExperiment) {
+						isCurated = ((CPExperiment) granParentNode.getUserObject()).isCurated();
+					}
+				}
+			}
+			if (!isCurated) {
+				setToolTipText("<html>Imported dataset:<br><b>" + name + "</b><br>Internal file located at:<br>"
+						+ FileManager.getMiapeLocalDataPath(localProjectName) + node.getUserObject() + ".xml</html>");
+			} else {
+				setIcon(documentCuratedIcon);
+				if (cpMSI != null) {
+					setToolTipText("<html>Curated dataset:<br><b>" + name + "</b><br>Internal file located at:<br>"
+							+ FileManager.getMiapeMSICuratedXMLFilePathFromMiapeInformation(cpMSI) + "</html>");
+				}
+			}
+		} else if (isCPReplicateNode(value)) {
+			boolean isCurated = false;
+			if (parent.getUserObject() instanceof CPExperiment) {
+				isCurated = ((CPExperiment) parent.getUserObject()).isCurated();
+			}
+			if (isCurated) {
+				setIcon(hasChildren(node) ? replicateCuratedIcon : replicateIncompleteIcon);
+				setToolTipText(hasChildren(node)
+						? "<html>Curated level 2 node: <b>" + node.getUserObject() + "</b><br>It contains "
+								+ node.getChildCount() + " datasets.</html>"
+						: "<html>Incomplete level 2 node:<br>Add datasets to this node</html>");
+			} else {
+				setIcon(hasChildren(node) ? replicateIcon : replicateIncompleteIcon);
+				setToolTipText(hasChildren(node)
+						? "<html>Level 2 node: <b>" + node.getUserObject() + "</b><br>It contains "
+								+ node.getChildCount() + " datasets.</html>"
+						: "<html>Incomplete level 2 node:<br>Add datasets to this node</html>");
+			}
+
+			if (value instanceof DefaultMutableTreeNode
+					&& ((DefaultMutableTreeNode) value).getUserObject() instanceof CPReplicate) {
+				CPReplicate replicate = (CPReplicate) ((DefaultMutableTreeNode) value).getUserObject();
+				value = replicate.getName();
+			}
+		} else if (isCPExperimentNode(value)) {
 			setIcon(hasChildren(node) ? experimentIcon : experimentIncompleteIcon);
 			setToolTipText(hasChildren(node)
 					? "<html>Level 1 node: <b>" + node.getUserObject() + "</b><br>It contains " + node.getChildCount()
 							+ " level 2 nodes.</html>"
 					: "<html>Incomplete level 1 node:<br>Add datasets to this node</html>");
-			// } else if (isStringNode(value)
-			// &&
-			// getUserObjectString(value).startsWith(PEXBulkSubmissionSummaryTreeLoaderTask.SEARCH))
-			// {
-			// setLeafIcon(searchIcon);
-			// setToolTipText("search node");
-			// } else if (isStringNode(value)
-			// &&
-			// getUserObjectString(value).startsWith(PEXBulkSubmissionSummaryTreeLoaderTask.RESULT))
-			// {
-			// setLeafIcon(prideIcon);
-			// setToolTipText("search node");
-			// } else if (isStringNode(value)
-			// &&
-			// getUserObjectString(value).startsWith(PEXBulkSubmissionSummaryTreeLoaderTask.OTHER))
-			// {
-			// setLeafIcon(documentIcon);
-			// setToolTipText("MIAPE report node");
-			// } else if (isStringNode(value)
-			// &&
-			// getUserObjectString(value).startsWith(PEXBulkSubmissionSummaryTreeLoaderTask.PEAK))
-			// {
-			// setLeafIcon(spectrumIcon);
-			// setToolTipText("peak list node");
-			// } else if (isStringNode(value)
-			// &&
-			// getUserObjectString(value).startsWith(PEXBulkSubmissionSummaryTreeLoaderTask.RAW))
-			// {
-			// setLeafIcon(rawIcon);
-			// setToolTipText("raw node");
 		} else if (parent != null) {
 			setToolTipText("<html>Dataset folder:<br><b>"
 					+ FileManager.getMiapeLocalDataPath(node.getUserObject().toString()) + "</b></html>");
 		} else if (parent == null) {
-			setToolTipText("<html>Comparison project:<br><b>" + node.getUserObject() + "</b><br>"
-					+ "Internal file located at: " + FileManager.getProjectXMLFilePath(node.getUserObject().toString())
-					+ "</html>");
+			// it is the root
+			setToolTipText("<html>Comparison project name: <b>" + node.getUserObject() + "</b><br>"
+					+ "Double click to edit.<br>" + "Internal file located at: "
+					+ FileManager.getProjectXMLFilePath(node.getUserObject().toString()) + "</html>");
 		}
 
 		return this;
@@ -167,7 +184,7 @@ public class MyTreeRenderer extends DefaultTreeCellRenderer {
 		return false;
 	}
 
-	private boolean isReplicateNode(Object value) {
+	private boolean isCPReplicateNode(Object value) {
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
 		Object nodeInfo = node.getUserObject();
 		if (nodeInfo instanceof CPReplicate || nodeInfo instanceof Replicate) {
@@ -176,7 +193,7 @@ public class MyTreeRenderer extends DefaultTreeCellRenderer {
 		return false;
 	}
 
-	private boolean isExperimentNode(Object value) {
+	private boolean isCPExperimentNode(Object value) {
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
 		Object nodeInfo = node.getUserObject();
 		if (nodeInfo instanceof CPExperiment) {
@@ -186,16 +203,25 @@ public class MyTreeRenderer extends DefaultTreeCellRenderer {
 		return false;
 	}
 
-	private boolean isMIAPENode(Object value) {
+	private boolean isCPMSINode(Object value) {
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
 		Object nodeInfo = node.getUserObject();
-		if (nodeInfo instanceof CPMSI || nodeInfo instanceof CPMS) {
+		if (nodeInfo instanceof CPMSI) {
 			return true;
 		}
 		return false;
 	}
 
-	protected boolean isCuratedExperiment(Object value) {
+	private boolean isCPMSNode(Object value) {
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+		Object nodeInfo = node.getUserObject();
+		if (nodeInfo instanceof CPMS) {
+			return true;
+		}
+		return false;
+	}
+
+	protected boolean isCuratedCPExperimentNode(Object value) {
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
 		if (node.getUserObject() instanceof CPNode) {
 			CPNode nodeInfo = (CPNode) node.getUserObject();
@@ -217,6 +243,10 @@ public class MyTreeRenderer extends DefaultTreeCellRenderer {
 		return new ImageIcon(ImageManager.getImageIcon(ImageManager.DOC).getImage());
 	}
 
+	private Icon getDocumentCuratedImageIcon() {
+		return new ImageIcon(ImageManager.getImageIcon(ImageManager.DOC_CURATED).getImage());
+	}
+
 	private Icon getExperimentImageIcon() {
 		return new ImageIcon(ImageManager.getImageIcon(ImageManager.EXPERIMENT).getImage());
 	}
@@ -227,6 +257,10 @@ public class MyTreeRenderer extends DefaultTreeCellRenderer {
 
 	private Icon getReplicateImageIcon() {
 		return new ImageIcon(ImageManager.getImageIcon(ImageManager.REPLICATE).getImage());
+	}
+
+	private Icon getReplicateCuratedImageIcon() {
+		return new ImageIcon(ImageManager.getImageIcon(ImageManager.REPLICATE_CURATED).getImage());
 	}
 
 	private Icon getReplicateIncompleteImageIcon() {

@@ -1498,32 +1498,34 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 		String[] array = { "Import datasets into PACOM:", //
 				"<b>How to import datasets:</b>", //
 
-				"1. Select the <b>type of input file</b> you are going to import. "
-						+ "You can either select it from the '<i>Input type</i>' panel or from the '<i>Input type + MS data file</i>' panel.", //
-
-				"If you select one of option in <i>'Input type + MS data file'</i> panel, "
-						+ "you will be able to import a spectra file (MGF or MZML file) and "
-						+ "a <i>Mass Spectrometry metadata template</i>. "
-						+ "This option is useful in case you want to generate a <i>PRIDE XML</i> "
-						+ "file containing the mass spectra.", //
-
-				"2. Select the <b>Input file(s)</b> from your file system using the file selectors in the top.", //
-
-				"3. Type the <b>name of the project</b> or select one by clicking on <i>'Select dataset folder'</i> button. "
-						+ "These projects in which the input datasets will be stored, "
-						+ "are just a way for organizing your imported datasets.", //
-
-				"If you type a new project name, it will appear the next time you click on <i>'Select dataset folder'</i>.", //
-
-				"4. Click on <b>'Import data'</b> to start the import data process.", //
+				"1. Type the <b>name of the dataset folder</b> or select one by clicking on <i>'Select dataset folder'</i> button. "
+						+ "That will be the folder in which the input datasets will be internally stored, and "
+						+ "it is just a way for organizing your imported datasets.", //
+				"2. Select the <b>Input file(s)</b> from your system by pressing <i>'Select input files'</i> button. You can select one or more files at a time.", //
+				"For each of the input files you add, a new row will be added to the table of import tasks.", //
+				"3. Click on <b>'Import data'</b> button. The import process will start and the input data files will be processed sequencially.", //
+				"", //
+				"<b>Supported input data types</b>", //
+				"<b>mzIdentML</b>, <b>pepXML</b>, <b>XTandem output xml</b> file, <b>DTASelect output txt</b> file, <b>PRIDE xml</b> and <b>table text</b> files.", //
+				"The type of the input files will be automatically inferred from their content and it will be stated on the column <i>'File type'</i>. Make sure that it corresponds with the format you know it is.", //
+				"", //
+				"<b>To associate MS files</b>", //
+				"For every file you import, you can associate a Mass Spectrometry file (either <i>MGF</i> or <i>mzML</i>). Why? Because PACOM will allow you <b>to export your datasets in a PRIDE XML file</b>, maybe after "
+						+ "applying a filter and maybe aggregating several datasets in a single file, depending on how do you arrange them in the Comparison project tree.", //
+				"- Click on '<b>Associate MS file</b>' button for associating either a <i>MGF</i> file or a <i>mzML</i> file to the input file. This will require to also create or select a <b>MS Metadata</b> template.", //
+				"- Click on '<b>Manage MS metadata</b>' to add or edit the MS metadata templates available.", //
+				"", //
 				"<b>Other buttons:</b>", //
-				"- Click on <b>'Go to Data Inspection</b> to go directly to the <i>Comparison Project Manager</i> "
-						+ "without the need of going through the main dialog.", //
-				"- Click on the small <b>'?'</b> button for help about the format of the <i>table text input file</i>", //
-				"Mass spectrometry metadata template <b>'Edit'</b> button: clicking here will open the <i>mass spectrometry metadata editor</i>."
-						+ " After saving some metadata under a name in that editor,"
-						+ " it will be available for being selected at the drop-down menu of <i>mass spectrometry metadatas</i>.", //
-				"- Click on <i>'Go to Comparison Project Manager'</i> to close this window and go directly to the Comparison Project Manager." };
+				"- You can remove the import tasks by selecting them and then clicking on '<b>Delete import task</b>' button.", //
+				"- Click on <b>'Go to Comparison Project Manager'</b> to close this window and go directly to the Comparison Project Manager.", //
+				"", //
+				"<b>Other columns:</b>", //
+				"- The first column ('<b>Valid</b>') indicates wether the import task is valid or not. If not, you can hover over the simbol to see what is going on and fix it.", //
+				"- The 3rd column ('<b>Dataset folder</b>') can be edited by double click on it", //
+				"- The 4th and 7th columns ('<b>Input file</b>' and '<b>Assoc. MS file</b>') are the selected input file and associated MS file respectively. You can select a different file by double clicking on them", //
+				"- The 6th column ('<b>Separator</b>') indicates the text separator used for a text separated input file type. If other input file is selected, this column should be empty.", //
+				"- The 8th column ('<b>Assoc. MS file type</b>') indicates the type of the associated MS file selected in the 7th column. You have to select either <i>MGF</i> or <i>mzML</i> when using an associated MS file.", //
+				"- The last column ('<b>Progress</b>') will show the progress of the import task." };
 		return Arrays.asList(array);
 	}
 

@@ -3385,6 +3385,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	private void exportSubset(Collection<Object> collection, Collection<IdentificationSet> idSets,
 			String... datasetNames) {
 		if (collection.isEmpty()) {
+			appendStatus("Collection is empty!");
 			return;
 		}
 

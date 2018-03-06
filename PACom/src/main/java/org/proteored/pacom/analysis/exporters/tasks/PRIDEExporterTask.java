@@ -107,11 +107,11 @@ public class PRIDEExporterTask extends SwingWorker<Void, Void> implements Export
 							xmlFile.delete();
 							firePropertyChange(SINGLE_PRIDE_COMPRESSING_FINISHED, null, compressedXmlFile);
 							experiment.setPrideXMLFile(compressedXmlFile);
-							generatedFiles.add(compressedXmlFile);
+							// generatedFiles.add(compressedXmlFile);
 						} else {
 
 							experiment.setPrideXMLFile(xmlFile);
-							generatedFiles.add(xmlFile);
+							// generatedFiles.add(xmlFile);
 						}
 						continue;
 					}

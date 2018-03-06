@@ -508,7 +508,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		jButtonSave = new javax.swing.JButton();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		setTitle("Comparison Projects Manager");
+		setTitle("Comparison Project Manager");
 
 		jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(),
 				"Imported datasets"));
@@ -772,8 +772,8 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		jPanel8.setToolTipText(
 				"<html>\nThe name generator template defines which names will be<br>\nautomatically assigned to the Level 2 nodes<br> (replicates/fractions/bands)</html>");
 
-		jPanel9.setBorder(new TitledBorder(null, "Add curated datasets to Project Tree", TitledBorder.LEADING,
-				TitledBorder.TOP, null, null));
+		jPanel9.setBorder(new TitledBorder(null, "Add curated datasets to Comparison Project Tree",
+				TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		jPanel9.setToolTipText(
 				"<html>\r\n<b>Curated datasets</b> are created in the Chart Viewer,<br> usually after appling some filters.<br> This curated projects are lighter than normal projects<br> since filtered-out data is discarted and is not loaded.</html>");
 
@@ -1029,8 +1029,8 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 							incrementSuffixIfNumber();
 						}
 						cpExpList.getCPExperiment().add(cpExp);
-						// jTreeProject.scrollToNode(projectNode);
-						// jTreeProject.expandNode(projectNode);
+						jTreeProject.scrollToNode(experimentNode);
+						jTreeProject.expandNode(experimentNode);
 						// expand tree
 						// jTreeProject.expandAll();
 					}
@@ -1303,11 +1303,10 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 
 	private boolean save(boolean checkTree) throws IllegalMiapeArgumentException {
 		// create object tree from project tree
-
+		CPExperimentList cpExpList = getCPExperimentListFromTree();
 		if (saved) {
 			log.info("The tree is already saved. Showing chart manager");
 
-			CPExperimentList cpExpList = getCPExperimentListFromTree();
 			try {
 				// Save again the file because when getCPExpListFromTree is
 				// called, some miapeMS node are added
@@ -1321,7 +1320,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 
 			return false;
 		}
-		CPExperimentList cpExpList = getCPExperimentListFromTree();
+
 		if (checkTree) {
 			integrityChecker = new MiapeTreeIntegrityCheckerTask(this, cpExpList, false);
 			integrityChecker.addPropertyChangeListener(this);
@@ -1858,64 +1857,57 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 	public List<String> getHelpMessages() {
 		String[] ret = {
 
-				"Comparison Projects Manager", //
+				"Comparison Project Manager", //
 				"From here you can:", //
-				"- load previously created saved comparison projects", //
+				"- load previously saved comparison projects", //
 				"- create new comparison projects,", //
+				"At the left panel (<i>Imported datasets</i>) you will see the datasets that have been imported in the system. And in the center you will be able to edit the Comparison Project Tree.", //
 				"", //
-				"At the left panel you will see the datasets that have been imported in the system. And in the center you will be able to edit the Comparison Project Tree.", //
+				"<b>How to build or edit a comparison project:</b>", //
+				"In order to create or edit a comparison project you will have to add new nodes and then add the datasets on these nodes.", //
+				"1. Click on <i>'Clear comparison project'</i> button if you want to start a new project. Otherwise you can work over the default outline "
+						+ "of the new project or over any other project you have loaded. As long as you save it with a different name (name of the root node), you will not override the information of the original project.", //
+				"2. Edit the name of the project by double clicking the root node.", //
+				"3. Use <i>Add Level 1 node</i> and <i>Add Level 2 node</i> controls at the right to add nodes to the tree. The nodes will be added to the selected node on the Comparison Project Tree.", //
+				"4. Add the individual datasets to the tree by double clicking on them (from the left panel). "
+						+ "They will be added to the node in the Comparison Project Tree that is selected. New parent nodes will be created if necessary.", //
+				"5. You can edit the names of the created nodes by double clicking on them.", //
+				"6. Repeat steps 3 to 5 to include and organize all the datasets you want to explore and compare.", //
+				"", //
 				"<b>Load previously created comparison projects:</b>", //
 				"1. Select a saved project from the dropdown menu at the top left of this window.", //
-				"2. Click on <i>'Load'</i> button", //
+				"2. Click on <i>'Load project'</i> button", //
 				"3. The project will be loaded in the Comparison Project Tree, where can be edited if you want.", //
-				"4. Click on <i>'Save project'</i> to save the project if it has been modified.", //
-				"5. Click on <i>'Next'</i> in order to go to the Chart Viewer.", //
-				"<b>Create new comparison projects</b>", //
-				"In order to create a new comparison project, you have to build a Comparison Project Tree by adding the already imported datasets (at the left panel) and grouping them in nodes in a 3-level hierarquical tree. Individual datasets will be assigned to level 2 nodes. Level 1 nodes will collapse the information from individual datasets. Level 0 node or root of the Comparison Project Tree will collapse the information from all the datasets in the project.", //
-				"The Chart Viewer will provide you the option to <b>switch between different levels of aggregation</b> of the data:", //
+				"4. Click on <i>'Save project'</i> button to save the project if it has been modified.", //
+				"5. Click on <i>'Next'</i> button in order to go to the Chart Viewer.", //
+
+				"", //
+				"<b>The level 2 node name template:</b>", //
+				"It is used to automatically assign consecutive numbers to level 2 node names with a predefined prefix.", //
+				"This is specially helpfull when you add multiple datasets and you want to name them with the same name but sequentially numbered.", //
+				"By typing a name like <i>'replicate'</i> and having the <i>'incrementing suffix'</i> as <i>'1'</i> will create level 2 nodes named as: <i>'replicate1'</i>, <i>'replicate2'</i>, <i>'replicate3'</i>, etc...", //
+				"", //
+				"<b>Importance of the arragement of the datasets in the Comparison project tree</b>", //
+				"The information contained in each dataset will be aggregated with other datasets if they are depending on the same node in the comparison project,", //
+				"Later, the '<i>Chart Viewer</i>' will provide you the option to <i>switch between different levels of aggregation</i> of the data:", //
 				"- <i>one single data series (level 0)</i>: a chart with just one data series which aggregates all the individual datasets,", //
 				"- <i>one data series per level 1</i>: a chart with one data series per each of the level 1 nodes which aggregates all the individual datasets pending from that node, ", //
 				"- <i>one data series per level 2</i>: a chart with one data series per each of the level 2 nodes which aggregates all the individual datasets pending from that node,", //
 				"- <i>one separate chart per level 1</i>: this will generate a different chart per each one of the level 1 nodes. Each of these charts will contain a data series per level 2 nodes pending on that level 1 node.", //
-				"<b>How to build or edit a comparison project:</b>", //
-				"In order to create or edit a comparison project you will have to add new nodes and then add the datasets on these nodes.", //
-				"1. Click on <i>'Clear comparison project'</i> button if you want to start a new project. Otherwise you can work over the default outline "
-						+ "of the new project or over any other project. As long as you save it with a different name, you will not override the information of the original project.", //
-				"2. Select the root node of the Comparison Project Tree.", //
-				"3. Edit its name on the corresponding text box at the <i>'Edit'</i> panel at the right.", //
-				"4. Select the root node of the Comparison Project Tree again.", //
-				"5. Type a name for a new level 1 node in the corresponding text box and click on the corresponding <i>'Add'</i> button.", //
-				"6. Select the level 1 node that you just created.", //
-				"7. Type a name for a new level 2 node in the corresponding text box and click on the corresponding <i>'Add'</i> button.", //
-				"8. Select the new level 2 node that you just created.", //
-				"9. Explore your imported datasets with the panel at the left, and double click on the individual dataset that you want to assign to the "
-						+ "selected level 2 node. You can add more than one dataset in a single level 2 node. ", //
-				"10. Repeat steps 4-5 and 6-9 to include and organize all the datasets you want to explore and compare.", //
-				"<b>Adding datasets using the Level 2 node name template:</b>", //
-				"11. Alternatively to step 8, you can select a level 1 node and double click on one individual dataset. This will automatically "
-						+ "create a new level 2 node with this dataset associated to it. The name of the level 2 node will be automatically generated by "
-						+ "the <i>'Level 2 node name template'</i> (see description below).", //
-				"12. Alternatively to step 9, you can also select the level 0 node and double click on one of the folders containing imported datasets."
-						+ "A new level 1 node will be created containing all the individual datasets of the folder and the names of the level 2 nodes will be automatically generated by the "
-						+ "<i>'Level 2 node name template'</i> (see description below).", // .",
-																							// //
+				// //
 				"<b>Adding curated datasets into your comparison project:</b>", //
 				"Alternatively to add any dataset from the imported datasets, you can also add <b>curated datasets</b> as individual datasets."
 						+ " To create curated datasets, you have to do it on the next step, that is, the '<i>Chart Viewer</i>'"
-						+ " where after applying some filters you can save the datasets as <i>'curated'</i>. "
-						+ "To do that, select the curated dataset from the drop-down menu just below the <i>edit panel</i>, and click on the "
-						+ "<i>'Add curated dataset'</i> button. this will add a new level 1 node to the Comparison Project Tree with a distinguisable star symbol.", //
+						+ " where after applying some filters you can save the datasets as <i>'curated'</i>. ", //
+				"To do that, select the curated dataset from the drop-down menu, and click on the "
+						+ "<i>'Add'</i> button. This will add a new level 1 node to the Comparison Project Tree with a distinguisable star symbol.", //
 				"<b>Saving your comparison project:</b>", //
 				"Click on <i>'Save project'</i> button to save the project or click on <i>'Next'</i> "
 						+ "button to save and go to the <i>Chart Viewer</i>.", //
 
 				"<b>How to delete a node:</b>", //
-				"To delete any node, just select it and click on <i>'Delete selected node'</i> button.", //
+				"To delete any node, just select it and click on <i>'Delete selected node'</i> button or <b>press delete key</b>.", //
 
-				"<b>The level 2 node name template:</b>", //
-				"Located at the bottom rigth of this window, it is used to automatically assign consecutive numbers to level 2 node names with a predefined name.", //
-				"This is specially helpfull when you add imported datasets following steps 11 or 12 where the level 2 nodes are automatically created and their names are created using the name template.", //
-				"By typing a name like <i>'replicate'</i> and having the <i>'incrementing suffix'</i> as <i>'1'</i> will create level 2 nodes named as: <i>'replicate1'</i>, <i>'replicate2'</i>, <i>'replicate3'</i>, etc..."//
 		};
 		return Arrays.asList(ret);
 	}

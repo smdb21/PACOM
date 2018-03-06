@@ -409,6 +409,17 @@ public class FileManager {
 
 			}
 		}
+		if (name.startsWith("MIAPE_MSI_")) {
+			try {
+				String substring = name.substring(name.indexOf("MIAPE_MSI_") + "MIAPE_MSI_".length());
+				if (substring.endsWith(".xml")) {
+					substring = substring.substring(0, substring.indexOf(".xml"));
+				}
+				return substring;
+			} catch (NumberFormatException e) {
+
+			}
+		}
 		return null;
 	}
 
