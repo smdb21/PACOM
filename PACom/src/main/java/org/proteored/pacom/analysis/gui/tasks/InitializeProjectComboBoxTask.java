@@ -65,6 +65,7 @@ public class InitializeProjectComboBoxTask extends SwingWorker<Void, Void> {
 				this.curatedExperimentsCombo.addItem(projectName);
 			}
 			this.curatedExperimentsCombo.setSelectedIndex(0);
+			firePropertyChange("notificacion", null, curatedExpsList.size() + " curated datasets loaded");
 		} else {
 			this.curatedExperimentsCombo.addItem("No curated experiments available");
 		}
