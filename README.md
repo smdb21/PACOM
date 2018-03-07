@@ -1,8 +1,6 @@
 ## PACOM (Proteomics Assay COMparator)
 **PACOM** is a Java stand alone tool that is able to import, integrate, manage and compare numerous proteomics datasets at the same time, offering a rich set of graphical representation of the most common proteomics data features
 
-![Figure 12](https://raw.githubusercontent.com/wiki/smdb21/PACOM/img/comparison/Picture12.png)  
-
 ## How to get PACOM:
 We are continuosly trying to improve the software, adding new features and fixing bugs. New versions are automatically uploaded to out server.  
 Download the latest versions from **[here](http://sealion.scripps.edu/PACom/)**.
@@ -16,7 +14,9 @@ As an example, 9 experiments containing a total number of 126 fractions (that is
  - **Recommended CPU:** 2 or more CPU cores (systems with a single core processor will experience a slow performance).
 
 ## Instalation guide
-There is no need to install anything. Just download it from the link above, decompress the package (.zip or .tar.gz) and run one of the *START_** files (depending on the amount of memory you want to use).
+There is no need to install anything. Just download it from the link above, decompress the package (.zip or .tar.gz) and run one of the *START_\** files (depending on the amount of memory you want to use).
+  
+For a more detailed description of these instructions, go to the corresponding wiki page **[here](https://github.com/smdb21/PACOM/wiki/How-to-start#installation)**
 
 ## Demo
 If you want to quickly try PACOM, open it, select one of the example comparison projects (**Inspect examples**) such as *PME6_Reanalysis" and click on the orange button at the right.
