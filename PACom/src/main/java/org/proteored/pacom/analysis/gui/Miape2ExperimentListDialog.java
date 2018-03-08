@@ -189,6 +189,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 				log.debug("path: " + evt.getPath());
 			}
 		});
+
 		// set custom tree editor
 
 		MyDefaultTreeCellEditor<MyProjectTreeNode> editor = new MyDefaultTreeCellEditor<MyProjectTreeNode>(jTreeProject,

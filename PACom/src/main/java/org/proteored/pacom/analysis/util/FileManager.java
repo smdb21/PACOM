@@ -530,7 +530,7 @@ public class FileManager {
 	public static List<String> getCuratedExperimentList() {
 		List<String> ret = new ArrayList<String>();
 		final String curatedExperimentFolderName = getCuratedExperimentsDataPath();
-		log.info(curatedExperimentFolderName);
+		log.debug(curatedExperimentFolderName);
 		File curatedExperimentsFolder = new File(curatedExperimentFolderName);
 		if (curatedExperimentsFolder.exists()) {
 			for (File curatedExperimentFolder : curatedExperimentsFolder.listFiles()) {
