@@ -21,7 +21,7 @@ import com.lowagie.text.Font;
 public class ImportTaskTableCellRenderer extends DefaultTableCellRenderer {
 	private static final Color selectedRowColor = new Color(48, 143, 255);
 	private static final Color errorRowColor = new Color(255, 161, 161);
-	private static final Color errorRowSelectedColor = new Color(255, 48, 68);
+	private static final Color errorRowSelectedColor = new Color(255, 90, 90);
 
 	/**
 	 * 
@@ -42,7 +42,7 @@ public class ImportTaskTableCellRenderer extends DefaultTableCellRenderer {
 		}
 		ImportTaskColumns importTaskColumn = ImportTaskColumns.getColumns().get(column);
 		log.debug("Rendering column " + importTaskColumn.getName() + " in row " + row);
-		String defaultToolTip = getToolTipByValue(value, importTaskColumn, task);
+		String defaultToolTip = toHtml(getToolTipByValue(value, importTaskColumn, task));
 		setToolTipText(defaultToolTip);
 		setIcon(null);
 		setHorizontalAlignment(SwingConstants.CENTER);
@@ -59,12 +59,12 @@ public class ImportTaskTableCellRenderer extends DefaultTableCellRenderer {
 				((JLabel) c).setText(null);
 				// check first if it has an error
 				if (task.getResult() != null && task.getResult().getErrorMessage() != null) {
-					((JLabel) c).setToolTipText(task.getResult().getErrorMessage());
+					((JLabel) c).setToolTipText(toHtml(task.getResult().getErrorMessage()));
 					((JLabel) c).setIcon(ImageManager.getImageIcon(ImageManager.EXCLAMATION_SMALL));
 				} else
 				// check then if it has an inconsistency
 				if (inconsistencyError != null) {
-					((JLabel) c).setToolTipText(inconsistencyError);
+					((JLabel) c).setToolTipText(toHtml(inconsistencyError));
 					((JLabel) c).setIcon(ImageManager.getImageIcon(ImageManager.EXCLAMATION_SMALL));
 
 				} else {
@@ -86,6 +86,18 @@ public class ImportTaskTableCellRenderer extends DefaultTableCellRenderer {
 
 		}
 		return c;
+	}
+
+	private String toHtml(String errorMessage) {
+		StringBuilder sb = new StringBuilder();
+		if (!errorMessage.startsWith("<html>")) {
+			sb.append("<html>");
+		}
+		sb.append(errorMessage.replace("\n", "<br>"));
+		if (!errorMessage.endsWith("</html>")) {
+			sb.append("</html>");
+		}
+		return sb.toString();
 	}
 
 	private String getToolTipByValue(Object value, ImportTaskColumns importTaskColumn, MiapeExtractionTask task) {
