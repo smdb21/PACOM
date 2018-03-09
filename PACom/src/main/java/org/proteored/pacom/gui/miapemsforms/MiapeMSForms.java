@@ -122,7 +122,9 @@ public class MiapeMSForms extends javax.swing.JDialog {
 
 		final List<String> metadataList = FileManager.getMetadataTemplateList(cvManager);
 		Collections.sort(metadataList);
-		metadataList.add(0, "");
+		if (!metadataList.isEmpty() && !"".equals(metadataList.get(0))) {
+			metadataList.add(0, "");
+		}
 		this.jComboBoxConfigurations.setModel(new DefaultComboBoxModel(metadataList.toArray()));
 	}
 
