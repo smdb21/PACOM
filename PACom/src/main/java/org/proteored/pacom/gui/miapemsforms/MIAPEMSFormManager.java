@@ -2184,7 +2184,7 @@ public class MIAPEMSFormManager {
 
 		if (text == null)
 			text = "";
-		log.info("Getting text field: " + text);
+		log.debug("Getting text field: " + text);
 		final JTextField ret = new JTextField(text);
 		ret.setColumns(TEXT_FIELD_COLUMNS);
 		// ret.setPreferredSize(dimension);
@@ -2193,7 +2193,7 @@ public class MIAPEMSFormManager {
 	}
 
 	private JTextArea getTextArea(String text) {
-		log.info("Getting text area: " + text);
+		log.debug("Getting text area: " + text);
 
 		JTextArea ret = new JTextArea(text);
 		ret.setFont(font);
@@ -2208,7 +2208,7 @@ public class MIAPEMSFormManager {
 	}
 
 	private JCheckBox getCheckBox(String text, boolean selected) {
-		log.info("Getting check box: " + text);
+		log.debug("Getting check box: " + text);
 		JCheckBox ret = new JCheckBox(text);
 		ret.setSelected(selected);
 		return ret;
