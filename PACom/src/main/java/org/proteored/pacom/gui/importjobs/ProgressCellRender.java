@@ -55,8 +55,8 @@ public class ProgressCellRender implements TableCellRenderer {
 						progressBar.setStringPainted(true);
 						progressBar.setForeground(new Color(214, 146, 11));
 					} else if (task.getError() != null) {
-						progressBar.setToolTipText(
-								"<html>Import task with an error:<br><b>" + task.getError() + "</b></html>");
+						progressBar.setToolTipText("<html>Import task with an error:<br><b>"
+								+ task.getError().replace("\n", "<br>") + "</b></html>");
 						progressBar.setString("Error");
 						progressBar.setStringPainted(true);
 						progressBar.setForeground(Color.red);
