@@ -1,7 +1,6 @@
 package org.proteored.pacom.gui.tasks;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -48,7 +47,6 @@ public class InputDataTypeGuesser extends SwingWorker<Void, Void> {
 
 	private InputFileType guessInputDataType(File file) {
 		List<String> fiveFirstLines = FileUtils.readFirstLines(file, 5l);
-
 		// PEP XML
 		if (contains(fiveFirstLines, "<msms_pipeline_analysis ")) {
 			return InputFileType.PEPXML;
@@ -64,7 +62,7 @@ public class InputDataTypeGuesser extends SwingWorker<Void, Void> {
 
 		try {
 			// PEPXML
-			Iterator<MsmsRunSummary> iterator = PepXmlParser.parse(new FileInputStream(file));
+			Iterator<MsmsRunSummary> iterator = PepXmlParser.parse(FileUtils.getInputStream(file));
 			if (iterator != null) {
 				if (iterator.hasNext()) {
 					return InputFileType.PEPXML;
@@ -86,9 +84,11 @@ public class InputDataTypeGuesser extends SwingWorker<Void, Void> {
 	}
 
 	private boolean contains(List<String> fiveFirstLines, String toFind) {
-		for (String string : fiveFirstLines) {
-			if (string.toLowerCase().contains(toFind.toLowerCase())) {
-				return true;
+		if (fiveFirstLines != null) {
+			for (String string : fiveFirstLines) {
+				if (string.toLowerCase().contains(toFind.toLowerCase())) {
+					return true;
+				}
 			}
 		}
 		return false;
