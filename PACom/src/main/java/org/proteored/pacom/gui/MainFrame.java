@@ -197,7 +197,7 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 		StringBuilder sb = new StringBuilder();
 		sb.append("<html>Error initializating the tool: <b>" + message
 				+ "</b><br/>Try to restart and if the problem persist, contact to 'salvador@scripps.edu'</html>");
-		// this.jLabelInit.setText(sb.toString());
+				// this.jLabelInit.setText(sb.toString());
 
 		// cancel tasks
 		if (ontologyLoader != null)
