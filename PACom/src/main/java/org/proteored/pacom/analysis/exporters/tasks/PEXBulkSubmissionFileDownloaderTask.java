@@ -27,9 +27,9 @@ import org.proteored.miapeapi.experiment.model.Replicate;
 import org.proteored.miapeapi.interfaces.ms.ResultingData;
 import org.proteored.miapeapi.util.URLParamEncoder;
 import org.proteored.miapeapi.util.URLValidator;
-import org.proteored.miapeapi.zip.ZipManager;
 import org.proteored.pacom.analysis.exporters.ProteomeXchangeFilev2_1;
 
+import edu.scripps.yates.utilities.files.ZipManager;
 import gnu.trove.set.hash.THashSet;
 import sun.net.www.protocol.ftp.FtpURLConnection;
 
