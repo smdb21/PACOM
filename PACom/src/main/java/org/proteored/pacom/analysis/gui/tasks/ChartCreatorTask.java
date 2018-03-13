@@ -955,7 +955,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	private Object showAllChrMappingBarChart() {
 
 		parent.setInformation1(parent.getCurrentChartType());
-		String xAxisLabel;
+		final String xAxisLabel = "Human chromosomes";
 
 		String proteinOrGene = optionsFactory.getProteinOrGene();
 		String yAxisLabel;
@@ -972,7 +972,6 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 		if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
 
-			xAxisLabel = "experiment list";
 			if (!pieChart) {
 				CategoryDataset dataset = DatasetFactory.createAllHumanChromosomeMappingCategoryDataSet(experimentList,
 						proteinOrGene, true, takeGeneFromFirstProteinSelected, countNonConclusiveProteins);
@@ -993,7 +992,6 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			for (Experiment experiment : experimentList.getExperiments()) {
 
 				if (!pieChart) {
-					xAxisLabel = experiment.getName();
 
 					CategoryDataset dataset = DatasetFactory.createAllHumanChromosomeMappingCategoryDataSet(experiment,
 							proteinOrGene, experimentList.getExperiments().size() == 1,
@@ -1024,7 +1022,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	private Object showAllChrPeptideMappingBarChart() {
 
 		parent.setInformation1(parent.getCurrentChartType());
-		String xAxisLabel;
+		final String xAxisLabel = "Human chromosomes";
 
 		String peptideOrPSM = optionsFactory.getPeptideOrPSM();
 		String yAxisLabel;
@@ -1041,7 +1039,6 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 		if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
 
-			xAxisLabel = "experiment list";
 			if (!pieChart) {
 				CategoryDataset dataset = DatasetFactory.createAllHumanChromosomePeptideMappingCategoryDataSet(
 						experimentList, peptideOrPSM, true, distinguisModPep);
@@ -1062,7 +1059,6 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			for (Experiment experiment : experimentList.getExperiments()) {
 
 				if (!pieChart) {
-					xAxisLabel = experiment.getName();
 
 					CategoryDataset dataset = DatasetFactory.createAllHumanChromosomePeptideMappingCategoryDataSet(
 							experiment, peptideOrPSM, true, distinguisModPep);
