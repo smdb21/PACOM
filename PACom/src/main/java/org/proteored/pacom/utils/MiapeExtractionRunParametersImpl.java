@@ -54,18 +54,21 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 
 	@Override
 	public boolean isMIAPEMSChecked() {
-		switch (inputFileType) {
-		case DTASELECTPLUSMGF:
-		case MZIDENTMLPLUSMGF:
-		case MZIDENTMLPLUSMZML:
-		case PEPXMLPLUSMGF:
-		case XTANDEMPLUSMGF:
+		if (inputFileType != null) {
+			switch (inputFileType) {
+			case DTASELECTPLUSMGF:
+			case MZIDENTMLPLUSMGF:
+			case MZIDENTMLPLUSMZML:
+			case PEPXMLPLUSMGF:
+			case XTANDEMPLUSMGF:
 
-			return true;
+				return true;
 
-		default:
-			return false;
+			default:
+				return false;
+			}
 		}
+		return false;
 	}
 
 	@Override
