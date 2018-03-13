@@ -2585,6 +2585,7 @@ public class AdditionalOptionsPanelFactory {
 
 		if (jcheckBoxShowSpiderPlot == null) {
 			jcheckBoxShowSpiderPlot = new JCheckBox("show spider plot");
+			jcheckBoxShowSpiderPlot.setSelected(true);
 			jcheckBoxShowSpiderPlot.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
