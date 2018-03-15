@@ -15,6 +15,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
+import javax.swing.border.BevelBorder;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -79,13 +80,14 @@ public class ScrollableJTable extends JPanel {
 		// Turn off JTable's auto resize so that JScrollpane
 		// will show a horizontal scroll bar.
 		//
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+		// table.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
 		table.setSize(new Dimension(wide, 400));
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		addProteinACCCellListener();
 
 		JScrollPane pane = new JScrollPane(table);
+		pane.setViewportBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		add(pane, BorderLayout.CENTER);
 
 		super.repaint();

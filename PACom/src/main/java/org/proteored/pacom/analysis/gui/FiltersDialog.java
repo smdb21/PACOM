@@ -4,6 +4,7 @@
 
 package org.proteored.pacom.analysis.gui;
 
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -1083,6 +1084,7 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 		jComboBoxProteinOrPeptide = new javax.swing.JComboBox();
 		jLabel5 = new javax.swing.JLabel();
 		jTextFieldOccurrenceThreshold = new javax.swing.JTextField();
+		jTextFieldOccurrenceThreshold.setColumns(3);
 		jCheckBoxDistinguishModPeptides = new javax.swing.JCheckBox();
 		jComboBoxReplicatesOrTimes = new javax.swing.JComboBox();
 		jPanelModificationFilter = new javax.swing.JPanel();
@@ -1214,11 +1216,13 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 								.addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
 								.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-		jPanelScoreFDRParametersLayout.setVerticalGroup(
-				jPanelScoreFDRParametersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(jPanelScoreFDRParametersLayout.createSequentialGroup()
-								.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
-								.addContainerGap()));
+		jPanelScoreFDRParametersLayout
+				.setVerticalGroup(
+						jPanelScoreFDRParametersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addGroup(jPanelScoreFDRParametersLayout
+										.createSequentialGroup().addComponent(jScrollPane1,
+												javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+										.addContainerGap()));
 
 		jLabelPeptideFDRThreshold.setText("FDR Threshold (%):");
 		jLabelPeptideFDRThreshold.setToolTipText("FDR threshold at peptide level");
@@ -1254,27 +1258,25 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 														Short.MAX_VALUE)
 												.addComponent(jTextFieldPrefix, javax.swing.GroupLayout.PREFERRED_SIZE,
 														73, javax.swing.GroupLayout.PREFERRED_SIZE))
-										.addGroup(jPanelFDRParametersLayout.createSequentialGroup()
-												.addComponent(jRadioButtonRegexp)
-												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-												.addComponent(jTextFieldRegexp, javax.swing.GroupLayout.DEFAULT_SIZE,
-														86, Short.MAX_VALUE))
-										.addGroup(jPanelFDRParametersLayout.createSequentialGroup()
-												.addComponent(jLabelPeptideFDRThreshold)
-												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-												.addComponent(jTextFieldPeptideFDRThreshold,
-														javax.swing.GroupLayout.PREFERRED_SIZE, 39,
-														javax.swing.GroupLayout.PREFERRED_SIZE)
-												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-												.addComponent(jButtonAddThresholdToReplicates))
-										.addComponent(jComboBoxPeptideOrProteinFDR,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.PREFERRED_SIZE))
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jPanelScoreFDRParameters, javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addGap(40, 40, 40)));
+								.addGroup(jPanelFDRParametersLayout.createSequentialGroup()
+										.addComponent(jRadioButtonRegexp)
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(jTextFieldRegexp, javax.swing.GroupLayout.DEFAULT_SIZE, 86,
+												Short.MAX_VALUE))
+								.addGroup(jPanelFDRParametersLayout.createSequentialGroup()
+										.addComponent(jLabelPeptideFDRThreshold)
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(jTextFieldPeptideFDRThreshold,
+												javax.swing.GroupLayout.PREFERRED_SIZE, 39,
+												javax.swing.GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(jButtonAddThresholdToReplicates))
+								.addComponent(jComboBoxPeptideOrProteinFDR, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jPanelScoreFDRParameters, javax.swing.GroupLayout.PREFERRED_SIZE,
+								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addGap(40, 40, 40)));
 		jPanelFDRParametersLayout.setVerticalGroup(jPanelFDRParametersLayout
 				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(jPanelFDRParametersLayout.createSequentialGroup().addGroup(jPanelFDRParametersLayout
@@ -1283,8 +1285,8 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 								.addGroup(jPanelFDRParametersLayout
 										.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-										.addComponent(jRadioButtonPrefix).addComponent(jTextFieldPrefix,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
+										.addComponent(jRadioButtonPrefix)
+										.addComponent(jTextFieldPrefix, javax.swing.GroupLayout.PREFERRED_SIZE,
 												javax.swing.GroupLayout.DEFAULT_SIZE,
 												javax.swing.GroupLayout.PREFERRED_SIZE))
 								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1329,7 +1331,7 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 										.addComponent(jPanelFDRParameters, javax.swing.GroupLayout.DEFAULT_SIZE,
 												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addContainerGap()));
+						.addContainerGap()));
 
 		jTabbedPaneFilters.addTab("FDR filter", jPanelFDRFilter);
 
@@ -1399,80 +1401,65 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 
 		javax.swing.GroupLayout jPanelScoreParametersLayout = new javax.swing.GroupLayout(jPanelScoreParameters);
 		jPanelScoreParameters.setLayout(jPanelScoreParametersLayout);
-		jPanelScoreParametersLayout
-				.setHorizontalGroup(
-						jPanelScoreParametersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-								.addGroup(jPanelScoreParametersLayout
-										.createSequentialGroup().addContainerGap()
+		jPanelScoreParametersLayout.setHorizontalGroup(jPanelScoreParametersLayout
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanelScoreParametersLayout.createSequentialGroup().addContainerGap()
+						.addGroup(jPanelScoreParametersLayout
+								.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(jLabel1)
+								.addGroup(jPanelScoreParametersLayout.createSequentialGroup()
 										.addGroup(jPanelScoreParametersLayout
 												.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-												.addComponent(jLabel1).addGroup(jPanelScoreParametersLayout
-														.createSequentialGroup().addGroup(jPanelScoreParametersLayout
-																.createParallelGroup(
-																		javax.swing.GroupLayout.Alignment.LEADING)
-																.addComponent(jLabel2).addComponent(jLabel3))
-														.addGap(5, 5, 5)
-														.addGroup(jPanelScoreParametersLayout.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.TRAILING, false)
-																.addGroup(jPanelScoreParametersLayout
-																		.createSequentialGroup()
-																		.addComponent(jButtonRemoveScoreToList)
-																		.addPreferredGap(
-																				javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-																				javax.swing.GroupLayout.DEFAULT_SIZE,
-																				Short.MAX_VALUE)
-																		.addComponent(jButtonAddScoreToList))
-																.addGroup(jPanelScoreParametersLayout
-																		.createParallelGroup(
-																				javax.swing.GroupLayout.Alignment.LEADING)
-																		.addComponent(jComboBoxProteinScoreNames,
-																				javax.swing.GroupLayout.PREFERRED_SIZE,
-																				119,
-																				javax.swing.GroupLayout.PREFERRED_SIZE)
-																		.addComponent(jComboBoxPeptideScoreNames,
-																				javax.swing.GroupLayout.PREFERRED_SIZE,
-																				119,
-																				javax.swing.GroupLayout.PREFERRED_SIZE)))
-														.addGap(36, 36, 36).addComponent(jScrollPane2,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
+												.addComponent(jLabel2).addComponent(jLabel3))
+										.addGap(5, 5, 5)
+										.addGroup(jPanelScoreParametersLayout
+												.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+												.addGroup(jPanelScoreParametersLayout.createSequentialGroup()
+														.addComponent(jButtonRemoveScoreToList)
+														.addPreferredGap(
+																javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+																javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+														.addComponent(jButtonAddScoreToList))
+												.addGroup(jPanelScoreParametersLayout
+														.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+														.addComponent(jComboBoxProteinScoreNames,
+																javax.swing.GroupLayout.PREFERRED_SIZE, 119,
+																javax.swing.GroupLayout.PREFERRED_SIZE)
+														.addComponent(jComboBoxPeptideScoreNames,
+																javax.swing.GroupLayout.PREFERRED_SIZE, 119,
 																javax.swing.GroupLayout.PREFERRED_SIZE)))
-										.addContainerGap(40, Short.MAX_VALUE)));
+										.addGap(36, 36, 36).addComponent(jScrollPane2,
+												javax.swing.GroupLayout.PREFERRED_SIZE,
+												javax.swing.GroupLayout.DEFAULT_SIZE,
+												javax.swing.GroupLayout.PREFERRED_SIZE)))
+						.addContainerGap(40, Short.MAX_VALUE)));
 		jPanelScoreParametersLayout.setVerticalGroup(
 				jPanelScoreParametersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(jPanelScoreParametersLayout.createSequentialGroup().addComponent(jLabel1).addGroup(
-								jPanelScoreParametersLayout
-										.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-												jPanelScoreParametersLayout.createSequentialGroup().addGap(7, 7, 7)
-														.addGroup(jPanelScoreParametersLayout
-																.createParallelGroup(
-																		javax.swing.GroupLayout.Alignment.BASELINE)
-																.addComponent(jLabel2)
-																.addComponent(jComboBoxProteinScoreNames,
-																		javax.swing.GroupLayout.PREFERRED_SIZE,
-																		javax.swing.GroupLayout.DEFAULT_SIZE,
-																		javax.swing.GroupLayout.PREFERRED_SIZE))
-														.addPreferredGap(
-																javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-														.addGroup(jPanelScoreParametersLayout
-																.createParallelGroup(
-																		javax.swing.GroupLayout.Alignment.BASELINE)
-																.addComponent(jLabel3)
-																.addComponent(jComboBoxPeptideScoreNames,
-																		javax.swing.GroupLayout.PREFERRED_SIZE,
-																		javax.swing.GroupLayout.DEFAULT_SIZE,
-																		javax.swing.GroupLayout.PREFERRED_SIZE))
-														.addPreferredGap(
-																javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-														.addGroup(jPanelScoreParametersLayout
-																.createParallelGroup(
-																		javax.swing.GroupLayout.Alignment.BASELINE)
-																.addComponent(jButtonAddScoreToList)
-																.addComponent(jButtonRemoveScoreToList)))
-										.addGroup(jPanelScoreParametersLayout.createSequentialGroup()
-												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-												.addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 176,
-														Short.MAX_VALUE)))
+						.addGroup(jPanelScoreParametersLayout.createSequentialGroup().addComponent(jLabel1)
+								.addGroup(jPanelScoreParametersLayout
+										.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+										.addGroup(jPanelScoreParametersLayout.createSequentialGroup().addGap(7, 7, 7)
+												.addGroup(jPanelScoreParametersLayout
+														.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+														.addComponent(jLabel2).addComponent(jComboBoxProteinScoreNames,
+																javax.swing.GroupLayout.PREFERRED_SIZE,
+																javax.swing.GroupLayout.DEFAULT_SIZE,
+																javax.swing.GroupLayout.PREFERRED_SIZE))
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addGroup(jPanelScoreParametersLayout
+												.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+												.addComponent(jLabel3).addComponent(jComboBoxPeptideScoreNames,
+														javax.swing.GroupLayout.PREFERRED_SIZE,
+														javax.swing.GroupLayout.DEFAULT_SIZE,
+														javax.swing.GroupLayout.PREFERRED_SIZE))
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addGroup(jPanelScoreParametersLayout
+												.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+												.addComponent(jButtonAddScoreToList)
+												.addComponent(jButtonRemoveScoreToList)))
+								.addGroup(jPanelScoreParametersLayout.createSequentialGroup()
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 176,
+												Short.MAX_VALUE)))
 								.addContainerGap()));
 
 		javax.swing.GroupLayout jPanelScoreFilterLayout = new javax.swing.GroupLayout(jPanelScoreFilter);
@@ -1493,7 +1480,7 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 										.addComponent(jPanelScoreParameters, javax.swing.GroupLayout.DEFAULT_SIZE,
 												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addContainerGap()));
+						.addContainerGap()));
 
 		jTabbedPaneFilters.addTab("Score filter", jPanelScoreFilter);
 
@@ -1511,7 +1498,8 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 		jLabel4.setText("Just include");
 		jLabel4.setEnabled(false);
 
-		jComboBoxProteinOrPeptide.setModel(new javax.swing.DefaultComboBoxModel(IdentificationItemEnum.values()));
+		jComboBoxProteinOrPeptide
+				.setModel(new javax.swing.DefaultComboBoxModel(IdentificationItemEnum.valuesWithNoPSMs()));
 		jComboBoxProteinOrPeptide.setEnabled(false);
 		jComboBoxProteinOrPeptide.addItemListener(new java.awt.event.ItemListener() {
 			@Override
@@ -1538,63 +1526,39 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 			}
 		});
 
-		javax.swing.GroupLayout jPanelOccurrenceParametersLayout = new javax.swing.GroupLayout(
-				jPanelOccurrenceParameters);
-		jPanelOccurrenceParameters.setLayout(jPanelOccurrenceParametersLayout);
-		jPanelOccurrenceParametersLayout.setHorizontalGroup(jPanelOccurrenceParametersLayout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanelOccurrenceParametersLayout.createSequentialGroup().addContainerGap()
-						.addComponent(jLabel4).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jComboBoxProteinOrPeptide, javax.swing.GroupLayout.PREFERRED_SIZE, 66,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jLabel5)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jTextFieldOccurrenceThreshold, javax.swing.GroupLayout.PREFERRED_SIZE, 26,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jComboBoxReplicatesOrTimes, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-								javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(jCheckBoxDistinguishModPeptides).addContainerGap()));
-		jPanelOccurrenceParametersLayout.setVerticalGroup(jPanelOccurrenceParametersLayout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanelOccurrenceParametersLayout.createSequentialGroup()
-						.addGroup(jPanelOccurrenceParametersLayout
-								.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jLabel4)
-								.addComponent(jLabel5)
-								.addComponent(jTextFieldOccurrenceThreshold, javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addComponent(jComboBoxReplicatesOrTimes, javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addComponent(jComboBoxProteinOrPeptide, javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addComponent(jCheckBoxDistinguishModPeptides))
-						.addContainerGap(13, Short.MAX_VALUE)));
-
 		javax.swing.GroupLayout jPanelOccurrenceFilterLayout = new javax.swing.GroupLayout(jPanelOccurrenceFilter);
+		jPanelOccurrenceFilterLayout
+				.setHorizontalGroup(jPanelOccurrenceFilterLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(jPanelOccurrenceFilterLayout.createSequentialGroup().addContainerGap()
+								.addGroup(jPanelOccurrenceFilterLayout.createParallelGroup(Alignment.LEADING)
+										.addComponent(jPanelOccurrenceParameters, GroupLayout.DEFAULT_SIZE, 760,
+												Short.MAX_VALUE)
+										.addComponent(jCheckBoxOccurrenceFilterActivation))
+								.addContainerGap()));
+		jPanelOccurrenceFilterLayout.setVerticalGroup(jPanelOccurrenceFilterLayout
+				.createParallelGroup(Alignment.LEADING)
+				.addGroup(jPanelOccurrenceFilterLayout.createSequentialGroup().addContainerGap()
+						.addComponent(jCheckBoxOccurrenceFilterActivation)
+						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jPanelOccurrenceParameters,
+								GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(203, Short.MAX_VALUE)));
 		jPanelOccurrenceFilter.setLayout(jPanelOccurrenceFilterLayout);
-		jPanelOccurrenceFilterLayout.setHorizontalGroup(
-				jPanelOccurrenceFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(jPanelOccurrenceFilterLayout.createSequentialGroup().addContainerGap()
-								.addGroup(jPanelOccurrenceFilterLayout
-										.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-										.addGroup(jPanelOccurrenceFilterLayout.createSequentialGroup()
-												.addComponent(jCheckBoxOccurrenceFilterActivation).addContainerGap(693,
-														Short.MAX_VALUE))
-										.addGroup(jPanelOccurrenceFilterLayout.createSequentialGroup()
-												.addComponent(jPanelOccurrenceParameters,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-												.addGap(159, 159, 159)))));
-		jPanelOccurrenceFilterLayout.setVerticalGroup(
-				jPanelOccurrenceFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(jPanelOccurrenceFilterLayout.createSequentialGroup().addContainerGap()
-								.addComponent(jCheckBoxOccurrenceFilterActivation)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jPanelOccurrenceParameters, javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addContainerGap(187, Short.MAX_VALUE)));
+		jPanelOccurrenceParameters.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		jPanelOccurrenceParameters.add(jLabel4);
+		jPanelOccurrenceParameters.add(jComboBoxProteinOrPeptide);
+		jPanelOccurrenceParameters.add(jLabel5);
+		jPanelOccurrenceParameters.add(jTextFieldOccurrenceThreshold);
+		jPanelOccurrenceParameters.add(jComboBoxReplicatesOrTimes);
+
+		jLabel6 = new JLabel("at level");
+		jLabel6.setEnabled(false);
+		jPanelOccurrenceParameters.add(jLabel6);
+
+		jComboBoxLevel = new JComboBox();
+		jComboBoxLevel.setEnabled(false);
+		jComboBoxLevel.setModel(new DefaultComboBoxModel(new String[] { "level 0", "level 1", "level 2" }));
+		jPanelOccurrenceParameters.add(jComboBoxLevel);
+		jPanelOccurrenceParameters.add(jCheckBoxDistinguishModPeptides);
 
 		jTabbedPaneFilters.addTab("Occurrence filter", jPanelOccurrenceFilter);
 
@@ -1635,7 +1599,7 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 								.addComponent(jPanelOccurrenceParameters1, javax.swing.GroupLayout.PREFERRED_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addContainerGap(196, Short.MAX_VALUE)));
+						.addContainerGap(196, Short.MAX_VALUE)));
 
 		jTabbedPaneFilters.addTab("PTM filter", jPanelModificationFilter);
 
@@ -1722,15 +1686,14 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 								.addGroup(jPanelProteinACCListLayout
 										.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
 										.addComponent(jRadioButtonSelectFastaFile).addComponent(jLabelFastaFilePath))
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jRadioButtonPasteProteinACCList)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addGroup(jPanelProteinACCListLayout
-										.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-										.addComponent(jScrollPaneProteinACCList, javax.swing.GroupLayout.DEFAULT_SIZE,
-												127, Short.MAX_VALUE)
-										.addComponent(jLabelNumProteinsProteinACCFilter))
-								.addContainerGap()));
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(jRadioButtonPasteProteinACCList)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addGroup(jPanelProteinACCListLayout
+								.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addComponent(jScrollPaneProteinACCList, javax.swing.GroupLayout.DEFAULT_SIZE, 127,
+										Short.MAX_VALUE)
+								.addComponent(jLabelNumProteinsProteinACCFilter)).addContainerGap()));
 
 		javax.swing.GroupLayout jPanelProteinAccessionFilterLayout = new javax.swing.GroupLayout(
 				jPanelProteinAccessionFilter);
@@ -1742,9 +1705,9 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 										.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 										.addComponent(jPanelProteinACCList, javax.swing.GroupLayout.DEFAULT_SIZE,
 												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(jCheckBoxProteinACCFilterActivation,
-												javax.swing.GroupLayout.PREFERRED_SIZE, 88,
-												javax.swing.GroupLayout.PREFERRED_SIZE))
+								.addComponent(jCheckBoxProteinACCFilterActivation,
+										javax.swing.GroupLayout.PREFERRED_SIZE, 88,
+										javax.swing.GroupLayout.PREFERRED_SIZE))
 								.addContainerGap()));
 		jPanelProteinAccessionFilterLayout
 				.setVerticalGroup(
@@ -1755,7 +1718,7 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 										.addComponent(jPanelProteinACCList, javax.swing.GroupLayout.DEFAULT_SIZE,
 												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addContainerGap()));
+						.addContainerGap()));
 
 		jTabbedPaneFilters.addTab("Protein accession filter", jPanelProteinAccessionFilter);
 
@@ -1795,12 +1758,12 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 												.addPreferredGap(ComponentPlacement.RELATED)
 												.addComponent(jTextFieldPeptideNumber, GroupLayout.PREFERRED_SIZE, 31,
 														GroupLayout.PREFERRED_SIZE))
-										.addComponent(jLabelPeptideNumber)
-										.addGroup(jPanelProteinACCList1Layout.createSequentialGroup()
-												.addComponent(jLabelRequireDifferentSequences)
-												.addPreferredGap(ComponentPlacement.UNRELATED)
-												.addComponent(checkBoxDifferentSequences)))
-								.addContainerGap(428, Short.MAX_VALUE)));
+								.addComponent(jLabelPeptideNumber)
+								.addGroup(jPanelProteinACCList1Layout.createSequentialGroup()
+										.addComponent(jLabelRequireDifferentSequences)
+										.addPreferredGap(ComponentPlacement.UNRELATED)
+										.addComponent(checkBoxDifferentSequences)))
+						.addContainerGap(428, Short.MAX_VALUE)));
 		jPanelProteinACCList1Layout.setVerticalGroup(jPanelProteinACCList1Layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(jPanelProteinACCList1Layout.createSequentialGroup().addComponent(jLabelPeptideNumber)
 						.addPreferredGap(ComponentPlacement.RELATED)
@@ -1823,9 +1786,9 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 										.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 										.addComponent(jPanelProteinACCList1, javax.swing.GroupLayout.DEFAULT_SIZE,
 												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(jCheckBoxPeptideNumberFilterActivation,
-												javax.swing.GroupLayout.PREFERRED_SIZE, 88,
-												javax.swing.GroupLayout.PREFERRED_SIZE))
+								.addComponent(jCheckBoxPeptideNumberFilterActivation,
+										javax.swing.GroupLayout.PREFERRED_SIZE, 88,
+										javax.swing.GroupLayout.PREFERRED_SIZE))
 								.addContainerGap()));
 		jPanelPeptideNumberLayout
 				.setVerticalGroup(
@@ -1835,7 +1798,7 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 										.addComponent(jPanelProteinACCList1, javax.swing.GroupLayout.DEFAULT_SIZE,
 												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addContainerGap()));
+						.addContainerGap()));
 
 		jTabbedPaneFilters.addTab("Peptides per protein filter", jPanelPeptideNumber);
 
@@ -1871,17 +1834,17 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 
 		javax.swing.GroupLayout jPanelProteinACCList2Layout = new javax.swing.GroupLayout(jPanelProteinACCList2);
 		jPanelProteinACCList2.setLayout(jPanelProteinACCList2Layout);
-		jPanelProteinACCList2Layout.setHorizontalGroup(jPanelProteinACCList2Layout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanelProteinACCList2Layout.createSequentialGroup().addContainerGap()
-						.addGroup(jPanelProteinACCList2Layout
-								.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-								.addGroup(jPanelProteinACCList2Layout.createSequentialGroup()
-										.addComponent(jLabelPeptideLengthMin)
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jTextFieldPeptideLengthMin,
-												javax.swing.GroupLayout.PREFERRED_SIZE, 31,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
+		jPanelProteinACCList2Layout.setHorizontalGroup(
+				jPanelProteinACCList2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addGroup(jPanelProteinACCList2Layout.createSequentialGroup().addContainerGap()
+								.addGroup(jPanelProteinACCList2Layout
+										.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+										.addGroup(jPanelProteinACCList2Layout.createSequentialGroup()
+												.addComponent(jLabelPeptideLengthMin)
+												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+												.addComponent(jTextFieldPeptideLengthMin,
+														javax.swing.GroupLayout.PREFERRED_SIZE, 31,
+														javax.swing.GroupLayout.PREFERRED_SIZE)
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 										.addComponent(jLabelPeptideLengthMin1)
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1890,8 +1853,7 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 												javax.swing.GroupLayout.PREFERRED_SIZE)
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 										.addComponent(jLabelPeptideLengthMin2).addGap(28, 28, 28)
-										.addComponent(jLabelPeptideLengthMin3))
-								.addComponent(jLabelPeptideLength))
+										.addComponent(jLabelPeptideLengthMin3)).addComponent(jLabelPeptideLength))
 						.addContainerGap(150, Short.MAX_VALUE)));
 		jPanelProteinACCList2Layout.setVerticalGroup(jPanelProteinACCList2Layout
 				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1917,9 +1879,9 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 										.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 										.addComponent(jPanelProteinACCList2, javax.swing.GroupLayout.DEFAULT_SIZE,
 												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(jCheckBoxPeptideLengthFilterActivation,
-												javax.swing.GroupLayout.PREFERRED_SIZE, 88,
-												javax.swing.GroupLayout.PREFERRED_SIZE))
+								.addComponent(jCheckBoxPeptideLengthFilterActivation,
+										javax.swing.GroupLayout.PREFERRED_SIZE, 88,
+										javax.swing.GroupLayout.PREFERRED_SIZE))
 								.addContainerGap()));
 		jPanelPeptideLengthLayout
 				.setVerticalGroup(
@@ -1929,7 +1891,7 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 										.addComponent(jPanelProteinACCList2, javax.swing.GroupLayout.DEFAULT_SIZE,
 												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addContainerGap()));
+						.addContainerGap()));
 
 		jTabbedPaneFilters.addTab("Peptide length filter", jPanelPeptideLength);
 
@@ -1992,13 +1954,22 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 
 		javax.swing.GroupLayout jPanelProteinACCList3Layout = new javax.swing.GroupLayout(jPanelProteinACCList3);
 		jPanelProteinACCList3.setLayout(jPanelProteinACCList3Layout);
-		jPanelProteinACCList3Layout.setHorizontalGroup(jPanelProteinACCList3Layout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanelProteinACCList3Layout.createSequentialGroup().addContainerGap()
-						.addGroup(jPanelProteinACCList3Layout
-								.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-								.addComponent(jCheckBoxRequireUniquePeptides).addComponent(jCheckBoxIgnoreQ)
-								.addComponent(jCheckBoxIgnoreW).addComponent(jCheckBoxIgnoreM)
+		jPanelProteinACCList3Layout
+				.setHorizontalGroup(
+						jPanelProteinACCList3Layout
+								.createParallelGroup(
+										javax.swing.GroupLayout.Alignment.LEADING)
+								.addGroup(
+										jPanelProteinACCList3Layout.createSequentialGroup().addContainerGap()
+												.addGroup(
+														jPanelProteinACCList3Layout
+																.createParallelGroup(
+																		javax.swing.GroupLayout.Alignment.LEADING)
+																.addComponent(jCheckBoxRequireUniquePeptides)
+																.addComponent(jCheckBoxIgnoreQ)
+																.addComponent(jCheckBoxIgnoreW)
+																.addComponent(
+																		jCheckBoxIgnoreM)
 								.addGroup(jPanelProteinACCList3Layout.createSequentialGroup()
 										.addComponent(jLabelPeptideMRMFrom)
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -2013,9 +1984,8 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 												javax.swing.GroupLayout.PREFERRED_SIZE)
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 										.addComponent(jLabelPeptidMRMAminoacids).addGap(28, 28, 28)
-										.addComponent(jLabelPeptideMRMExplanation))
-								.addComponent(jLabelPeptideMRM1).addComponent(jCheckBoxIgnoreMissedCleavages))
-						.addContainerGap(150, Short.MAX_VALUE)));
+										.addComponent(jLabelPeptideMRMExplanation)).addComponent(jLabelPeptideMRM1)
+								.addComponent(jCheckBoxIgnoreMissedCleavages)).addContainerGap(150, Short.MAX_VALUE)));
 		jPanelProteinACCList3Layout.setVerticalGroup(jPanelProteinACCList3Layout
 				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(jPanelProteinACCList3Layout.createSequentialGroup().addComponent(jLabelPeptideMRM1)
@@ -2049,9 +2019,9 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 										.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 										.addComponent(jPanelProteinACCList3, javax.swing.GroupLayout.DEFAULT_SIZE,
 												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(jCheckBoxPeptideForMRMFilterActivation,
-												javax.swing.GroupLayout.PREFERRED_SIZE, 88,
-												javax.swing.GroupLayout.PREFERRED_SIZE))
+								.addComponent(jCheckBoxPeptideForMRMFilterActivation,
+										javax.swing.GroupLayout.PREFERRED_SIZE, 88,
+										javax.swing.GroupLayout.PREFERRED_SIZE))
 								.addContainerGap()));
 		jPanelPeptideForMRMLayout
 				.setVerticalGroup(
@@ -2061,7 +2031,7 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 										.addComponent(jPanelProteinACCList3, javax.swing.GroupLayout.DEFAULT_SIZE,
 												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addContainerGap()));
+						.addContainerGap()));
 
 		jTabbedPaneFilters.addTab("Peptides for MRM filter", jPanelPeptideForMRM);
 
@@ -2105,17 +2075,16 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 										279, javax.swing.GroupLayout.PREFERRED_SIZE)
 								.addGroup(jPanelProteinACCList4Layout
 										.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-										.addGroup(jPanelProteinACCList4Layout.createSequentialGroup()
-												.addGap(33, 33, 33).addComponent(jLabelNumPeptidesPeptideSequenceFilter,
+										.addGroup(jPanelProteinACCList4Layout.createSequentialGroup().addGap(33, 33, 33)
+												.addComponent(jLabelNumPeptidesPeptideSequenceFilter,
 														javax.swing.GroupLayout.PREFERRED_SIZE, 225,
 														javax.swing.GroupLayout.PREFERRED_SIZE))
-										.addGroup(jPanelProteinACCList4Layout.createSequentialGroup().addGap(18, 18, 18)
-												.addGroup(jPanelProteinACCList4Layout
-														.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-														.addComponent(jLabelPeptideSequenceFilterExplanation)
-														.addComponent(
-																jCheckBoxDistinguishModificatedPeptidesSequenceFilter))))
-								.addContainerGap()));
+								.addGroup(jPanelProteinACCList4Layout.createSequentialGroup().addGap(18, 18, 18)
+										.addGroup(jPanelProteinACCList4Layout
+												.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+												.addComponent(jLabelPeptideSequenceFilterExplanation)
+												.addComponent(jCheckBoxDistinguishModificatedPeptidesSequenceFilter))))
+						.addContainerGap()));
 		jPanelProteinACCList4Layout.setVerticalGroup(
 				jPanelProteinACCList4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 						.addGroup(jPanelProteinACCList4Layout.createSequentialGroup()
@@ -2126,8 +2095,8 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 												.addComponent(jLabelPeptideSequenceFilterExplanation).addGap(28, 28, 28)
 												.addComponent(jLabelNumPeptidesPeptideSequenceFilter))
-										.addComponent(jScrollPanePeptideSequencesList,
-												javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE))
+								.addComponent(jScrollPanePeptideSequencesList, javax.swing.GroupLayout.DEFAULT_SIZE,
+										199, Short.MAX_VALUE))
 								.addContainerGap()));
 
 		javax.swing.GroupLayout jPanelPeptideSequencesFilterLayout = new javax.swing.GroupLayout(
@@ -2153,24 +2122,27 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 										.addComponent(jPanelProteinACCList4, javax.swing.GroupLayout.DEFAULT_SIZE,
 												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addContainerGap()));
+						.addContainerGap()));
 
 		jTabbedPaneFilters.addTab("Peptide sequences filter", jPanelPeptideSequencesFilter);
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout
-				.createSequentialGroup()
-				.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(layout.createSequentialGroup().addGap(352, 352, 352).addComponent(jButtonFinish))
-						.addComponent(jTabbedPaneFilters, javax.swing.GroupLayout.PREFERRED_SIZE, 785,
-								javax.swing.GroupLayout.PREFERRED_SIZE))
+		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup()
+						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addGroup(layout.createSequentialGroup().addGap(352, 352, 352)
+										.addComponent(jButtonFinish))
+								.addComponent(jTabbedPaneFilters, javax.swing.GroupLayout.PREFERRED_SIZE, 785,
+										javax.swing.GroupLayout.PREFERRED_SIZE))
 				.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-						.addComponent(jTabbedPaneFilters, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jButtonFinish)
-						.addContainerGap()));
+				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+						layout.createSequentialGroup()
+								.addComponent(jTabbedPaneFilters, javax.swing.GroupLayout.DEFAULT_SIZE, 334,
+										Short.MAX_VALUE)
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jButtonFinish).addContainerGap()));
 
 		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds((screenSize.width - 813) / 2, (screenSize.height - 417) / 2, 813, 417);
@@ -2284,10 +2256,20 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 	private void jComboBoxReplicatesOrTimesItemStateChanged(java.awt.event.ItemEvent evt) {
 		final String string1 = "that are present in at least";
 		final String string2 = "that are present at least";
-		if (jComboBoxReplicatesOrTimes.getSelectedItem().toString().equals("replicates"))
+		String level = jComboBoxLevel.getSelectedItem().toString();
+		if (jComboBoxReplicatesOrTimes.getSelectedItem().toString().equals("replicates")) {
 			jLabel5.setText(string1);
-		else if (jComboBoxReplicatesOrTimes.getSelectedItem().toString().equals("times"))
+			String[] model = { "level 0", "level 1" };
+			jComboBoxLevel.setModel(new DefaultComboBoxModel<String>(model));
+			if (level.equals("level 2")) {
+				jComboBoxLevel.setSelectedItem(level);
+			}
+		} else if (jComboBoxReplicatesOrTimes.getSelectedItem().toString().equals("times")) {
 			jLabel5.setText(string2);
+			String[] model = { "level 0", "level 1", "level 2" };
+			jComboBoxLevel.setModel(new DefaultComboBoxModel<String>(model));
+			jComboBoxLevel.setSelectedItem(level);
+		}
 	}
 
 	protected void jButtonFinishActionPerformed(ActionEvent evt) {
@@ -2465,9 +2447,11 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 		log.info("occurrence filter selected=" + selected);
 		jLabel4.setEnabled(selected);
 		jLabel5.setEnabled(selected);
+		jLabel6.setEnabled(selected);
+		jComboBoxLevel.setEnabled(selected);
 		jComboBoxProteinOrPeptide.setEnabled(selected);
 		jTextFieldOccurrenceThreshold.setEnabled(selected);
-		// disabled because at the begining it is disabled:
+		// disabled because at the beginning it is disabled:
 		// this.jCheckBoxDistinguishModPeptides.setEnabled(selected);
 		jComboBoxReplicatesOrTimes.setEnabled(selected);
 		parent.jCheckBoxMenuItemOcurrenceFilter.setSelected(selected);
@@ -2751,16 +2735,17 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 				replicatesBool = false;
 			try {
 				Integer minOccurrence = Integer.valueOf(jTextFieldOccurrenceThreshold.getText());
+				Integer level = Integer.valueOf(jComboBoxLevel.getSelectedItem().toString().split(" ")[1]);
 				boolean distinguisModificatedPeptides = getDistinguisModificatedPeptides();
-				OccurrenceFilter filter = new OccurrenceFilter(minOccurrence, item, distinguisModificatedPeptides,
-						replicatesBool, GeneralOptionsDialog.getInstance(parent).isDoNotGroupNonConclusiveProteins(),
+				OccurrenceFilter filter = new OccurrenceFilter(minOccurrence, level, item,
+						distinguisModificatedPeptides, replicatesBool,
+						GeneralOptionsDialog.getInstance(parent).isDoNotGroupNonConclusiveProteins(),
 						GeneralOptionsDialog.getInstance(parent).isSeparateNonConclusiveProteins(),
 						PACOMSoftware.getInstance());
 
 				return filter;
 			} catch (NumberFormatException e) {
-				log.info(
-						jTextFieldOccurrenceThreshold.getText() + " cannot be converted to Integer: " + e.getMessage());
+
 			}
 		}
 		return null;
@@ -2998,6 +2983,8 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 	private javax.swing.JTextField jTextFieldRegexp;
 	private JLabel jLabelRequireDifferentSequences;
 	private JCheckBox checkBoxDifferentSequences;
+	private JComboBox jComboBoxLevel;
+	private JLabel jLabel6;
 
 	// End of variables declaration//GEN-END:variables
 
@@ -3068,7 +3055,8 @@ public class FiltersDialog extends javax.swing.JDialog implements PropertyChange
 
 			if (parent instanceof ChartManagerFrame) {
 				ChartManagerFrame chartManager = parent;
-
+				// to let know the data table to load when open
+				chartManager.setFiltered(true);
 				chartManager.appendStatus("Filter done.");
 				chartManager.setFDRLabel();
 				chartManager.showChart();

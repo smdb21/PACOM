@@ -58,6 +58,7 @@ public class ExporterUtil {
 	private static boolean retrieveFromUniprot;
 	private static boolean testOntologies;
 	public static final String VALUE_SEPARATOR = ",";
+
 	static {
 		threeDigitsDecimal = DecimalFormat.getInstance();
 		threeDigitsDecimal.setMaximumFractionDigits(3);
@@ -138,7 +139,7 @@ public class ExporterUtil {
 				} else if (column.equals(ExportedColumns.IS_UNIQUE.toString())) {
 					ArrayList<String> accs = new ArrayList<String>();
 					for (ExtendedIdentifiedPeptide pep : peptideOccurrence.getItemList()) {
-						for (IdentifiedProtein protein : pep.getIdentifiedProteins()) {
+						for (ExtendedIdentifiedProtein protein : pep.getProteins()) {
 							if (!accs.contains(protein.getAccession()))
 								accs.add(protein.getAccession());
 						}

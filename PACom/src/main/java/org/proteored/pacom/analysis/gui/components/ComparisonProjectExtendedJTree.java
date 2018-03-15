@@ -59,8 +59,8 @@ public class ComparisonProjectExtendedJTree extends AbstractExtendedJTree<MyProj
 
 		} else if (selNode.getUserObject() instanceof CPReplicate) {
 			final CPReplicate cpRep = (CPReplicate) selNode.getUserObject();
-			CPExperiment cpExp = (CPExperiment) ((MyProjectTreeNode) this.getSelectedNode().getParent())
-					.getUserObject();
+
+			CPExperiment cpExp = (CPExperiment) ((MyProjectTreeNode) selNode.getParent()).getUserObject();
 			cpExp.getCPReplicate().remove(cpRep);
 
 		} else if (selNode.getUserObject() instanceof CPMSI) {

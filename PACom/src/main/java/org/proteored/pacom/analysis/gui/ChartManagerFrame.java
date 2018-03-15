@@ -295,6 +295,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	@Override
 	public void setVisible(boolean b) {
+		log.info("ChartManager visible=" + b);
 
 		if (b) {
 			// Memory checker
@@ -984,34 +985,38 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		jButtonHelp = new OpenHelpButton(this);
 		javax.swing.GroupLayout jPanelStatusLayout = new javax.swing.GroupLayout(jPanelStatus);
 		jPanelStatusLayout
-				.setHorizontalGroup(jPanelStatusLayout.createParallelGroup(Alignment.TRAILING)
-						.addGroup(jPanelStatusLayout.createSequentialGroup().addContainerGap()
-								.addGroup(jPanelStatusLayout.createParallelGroup(Alignment.LEADING)
-										.addGroup(jPanelStatusLayout.createSequentialGroup()
-												.addComponent(jProgressBarMemoryUsage, GroupLayout.DEFAULT_SIZE, 983,
-														Short.MAX_VALUE)
-												.addContainerGap())
-										.addGroup(jPanelStatusLayout.createSequentialGroup()
+				.setHorizontalGroup(
+						jPanelStatusLayout.createParallelGroup(Alignment.TRAILING)
+								.addGroup(jPanelStatusLayout.createSequentialGroup().addContainerGap()
+										.addGroup(jPanelStatusLayout.createParallelGroup(Alignment.LEADING)
+												.addGroup(jPanelStatusLayout.createSequentialGroup()
+														.addComponent(jProgressBarMemoryUsage, GroupLayout.DEFAULT_SIZE,
+																983, Short.MAX_VALUE)
+														.addContainerGap())
+								.addGroup(
+										jPanelStatusLayout.createSequentialGroup()
 												.addComponent(jScrollPane3, GroupLayout.DEFAULT_SIZE, 983,
 														Short.MAX_VALUE)
 												.addContainerGap())
-										.addGroup(Alignment.TRAILING,
-												jPanelStatusLayout.createSequentialGroup().addComponent(jButtonHelp)
-														.addContainerGap())
-										.addGroup(Alignment.TRAILING,
-												jPanelStatusLayout
-														.createSequentialGroup().addComponent(jProgressBar,
-																GroupLayout.DEFAULT_SIZE, 983, Short.MAX_VALUE)
-														.addContainerGap()))));
-		jPanelStatusLayout.setVerticalGroup(jPanelStatusLayout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(jPanelStatusLayout.createSequentialGroup()
-						.addComponent(jScrollPane3, GroupLayout.PREFERRED_SIZE, 92, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(jProgressBar, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addGroup(Alignment.TRAILING,
+								jPanelStatusLayout.createSequentialGroup().addComponent(jButtonHelp).addContainerGap())
+						.addGroup(Alignment.TRAILING,
+								jPanelStatusLayout.createSequentialGroup()
+										.addComponent(jProgressBar, GroupLayout.DEFAULT_SIZE, 983, Short.MAX_VALUE)
+										.addContainerGap()))));
+		jPanelStatusLayout
+				.setVerticalGroup(
+						jPanelStatusLayout.createParallelGroup(Alignment.TRAILING)
+								.addGroup(jPanelStatusLayout.createSequentialGroup()
+										.addComponent(jScrollPane3, GroupLayout.PREFERRED_SIZE, 92,
+												GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addComponent(jProgressBar, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+												Short.MAX_VALUE)
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addComponent(jProgressBarMemoryUsage, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jButtonHelp).addContainerGap()));
+								GroupLayout.PREFERRED_SIZE).addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(jButtonHelp).addContainerGap()));
 		jPanelStatus.setLayout(jPanelStatusLayout);
 		getContentPane().add(jPanelStatus, BorderLayout.PAGE_END);
 
@@ -1154,57 +1159,55 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		jButtonCancel.setEnabled(false);
 
 		javax.swing.GroupLayout jPanelInformationLayout = new javax.swing.GroupLayout(jPanelInformation);
-		jPanelInformationLayout
-				.setHorizontalGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(jPanelInformationLayout.createSequentialGroup().addContainerGap()
-								.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
-										.addComponent(jLabelInformation3, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE,
-												292, Short.MAX_VALUE)
-										.addComponent(jLabelInformation2, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE,
-												292, Short.MAX_VALUE)
-										.addComponent(jLabelInformation1, GroupLayout.DEFAULT_SIZE, 292,
-												Short.MAX_VALUE)
-										.addGroup(jPanelInformationLayout.createSequentialGroup()
-												.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
-														.addGroup(jPanelInformationLayout.createSequentialGroup()
-																.addComponent(jButtonSeeAppliedFilters,
-																		GroupLayout.PREFERRED_SIZE, 47,
-																		GroupLayout.PREFERRED_SIZE)
-																.addPreferredGap(ComponentPlacement.RELATED)
-																.addComponent(jButtonSaveAsFiltered,
-																		GroupLayout.PREFERRED_SIZE, 47,
-																		GroupLayout.PREFERRED_SIZE))
-														.addComponent(jButtonExport2PRIDE, GroupLayout.DEFAULT_SIZE,
-																101, Short.MAX_VALUE))
-												.addPreferredGap(ComponentPlacement.RELATED)
-												.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
-														.addGroup(jPanelInformationLayout.createSequentialGroup()
-																.addComponent(jButtonShowTable,
-																		GroupLayout.PREFERRED_SIZE, 47,
-																		GroupLayout.PREFERRED_SIZE)
-																.addPreferredGap(ComponentPlacement.RELATED)
-																.addComponent(jButtonExport2Excel,
-																		GroupLayout.PREFERRED_SIZE, 46,
-																		GroupLayout.PREFERRED_SIZE))
-														.addComponent(jButtonCancel, GroupLayout.PREFERRED_SIZE, 101,
-																GroupLayout.PREFERRED_SIZE))
-												.addGap(54)))
-								.addContainerGap()));
-		jPanelInformationLayout.setVerticalGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanelInformationLayout.createSequentialGroup()
-						.addComponent(jLabelInformation1, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(jLabelInformation2, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(jLabelInformation3, GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
-						.addPreferredGap(ComponentPlacement.RELATED)
+		jPanelInformationLayout.setHorizontalGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(jPanelInformationLayout.createSequentialGroup().addContainerGap()
 						.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(jButtonShowTable, GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
-								.addComponent(jButtonSeeAppliedFilters, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(jButtonSaveAsFiltered, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+								.addComponent(jLabelInformation3, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 292,
 										Short.MAX_VALUE)
-								.addComponent(jButtonExport2Excel, 0, 0, Short.MAX_VALUE))
+								.addComponent(jLabelInformation2, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 292,
+										Short.MAX_VALUE)
+								.addComponent(jLabelInformation1, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
+								.addGroup(jPanelInformationLayout.createSequentialGroup()
+										.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
+												.addGroup(jPanelInformationLayout.createSequentialGroup()
+														.addComponent(jButtonSeeAppliedFilters,
+																GroupLayout.PREFERRED_SIZE, 47,
+																GroupLayout.PREFERRED_SIZE)
+														.addPreferredGap(ComponentPlacement.RELATED)
+														.addComponent(jButtonSaveAsFiltered, GroupLayout.PREFERRED_SIZE,
+																47, GroupLayout.PREFERRED_SIZE))
+												.addComponent(jButtonExport2PRIDE, GroupLayout.DEFAULT_SIZE, 101,
+														Short.MAX_VALUE))
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
+												.addGroup(jPanelInformationLayout.createSequentialGroup()
+														.addComponent(jButtonShowTable, GroupLayout.PREFERRED_SIZE, 47,
+																GroupLayout.PREFERRED_SIZE)
+														.addPreferredGap(ComponentPlacement.RELATED)
+														.addComponent(jButtonExport2Excel, GroupLayout.PREFERRED_SIZE,
+																46, GroupLayout.PREFERRED_SIZE))
+												.addComponent(jButtonCancel, GroupLayout.PREFERRED_SIZE, 101,
+														GroupLayout.PREFERRED_SIZE))
+										.addGap(54)))
+						.addContainerGap()));
+		jPanelInformationLayout
+				.setVerticalGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(jPanelInformationLayout.createSequentialGroup()
+								.addComponent(jLabelInformation1, GroupLayout.PREFERRED_SIZE, 21,
+										GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(jLabelInformation2, GroupLayout.PREFERRED_SIZE, 24,
+										GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(jLabelInformation3, GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
+										.addComponent(jButtonShowTable, GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
+										.addComponent(jButtonSeeAppliedFilters, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+										.addComponent(jButtonSaveAsFiltered, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+										.addComponent(jButtonExport2Excel, 0, 0, Short.MAX_VALUE))
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
 								.addComponent(jButtonExport2PRIDE).addComponent(jButtonCancel,
@@ -1513,7 +1516,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		} else {
 			log.info("Showing identification table");
 			// if (this.identificationTable == null)
-			identificationTable = IdentificationTableFrame.getInstance(this, toSet(experimentList));
+			identificationTable = IdentificationTableFrame.getInstance(this, toSet(experimentList), this.filtered);
+
 			identificationTable.setVisible(true);
 		}
 
@@ -3769,10 +3773,12 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 						if (retVal == JFileChooser.APPROVE_OPTION) {
 							file = fileChooser.getSelectedFile();
 							if ("".equals(FilenameUtils.getExtension(file.getAbsolutePath()))) {
-								file = new File(file.getAbsolutePath() + "."
-										+ ImageFileFormat
-												.getFromDescription(fileChooser.getFileFilter().getDescription())
-												.getExtension());
+								file = new File(
+										file.getAbsolutePath() + "."
+												+ ImageFileFormat
+														.getFromDescription(
+																fileChooser.getFileFilter().getDescription())
+														.getExtension());
 							}
 							MainFrame.currentFolder = file.getParentFile();
 							String path = ImageUtils.saveImage(image, file);
@@ -3806,10 +3812,12 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 						if (retVal == JFileChooser.APPROVE_OPTION) {
 							file = fileChooser.getSelectedFile();
 							if ("".equals(FilenameUtils.getExtension(file.getAbsolutePath()))) {
-								file = new File(file.getAbsolutePath() + "."
-										+ ImageFileFormat
-												.getFromDescription(fileChooser.getFileFilter().getDescription())
-												.getExtension());
+								file = new File(
+										file.getAbsolutePath() + "."
+												+ ImageFileFormat
+														.getFromDescription(
+																fileChooser.getFileFilter().getDescription())
+														.getExtension());
 							}
 							MainFrame.currentFolder = file.getParentFile();
 							String path = ImageUtils.saveImage(image, file);
@@ -4335,6 +4343,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	private JButton jButtonHelp;
 
 	private boolean proteinSequencesRetrieved;
+
+	private boolean filtered;
 
 	// End of variables declaration//GEN-END:variables
 
@@ -4999,5 +5009,9 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	public void setProteinSequencesRetrieved(boolean b) {
 		this.proteinSequencesRetrieved = b;
+	}
+
+	public void setFiltered(boolean b) {
+		this.filtered = b;
 	}
 }

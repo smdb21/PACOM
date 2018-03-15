@@ -139,8 +139,9 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 					for (IdentificationSet idSet : idSets) {
 						final Map<String, PeptideOccurrence> peptideOccurrenceHashMap = idSet
 								.getPeptideOccurrenceList(true);
-						// sort if there is a FDR Filter activated that tells us
-						// which is the score sort
+								// sort if there is a FDR Filter activated that
+								// tells us
+								// which is the score sort
 
 						// firePropertyChange(DATA_EXPORTING_SORTING, null,
 						// peptideOccurrenceHashMap.size());
@@ -171,8 +172,11 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 
 							progress++;
 							if (total > 0) {
-								final int percentage = progress * 100 / total;
+								int percentage = progress * 100 / total;
 								// log.info(percentage + " %");
+								if (percentage > 100) {
+									percentage = 100;
+								}
 								setProgress(percentage);
 							}
 							SwingUtilities.invokeLater(new Runnable() {
@@ -222,7 +226,10 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 							}
 
 							progress++;
-							final int percentage = progress * 100 / total;
+							int percentage = progress * 100 / total;
+							if (percentage > 100) {
+								percentage = 100;
+							}
 							// log.info(percentage + " %");
 							setProgress(percentage);
 							SwingUtilities.invokeLater(new Runnable() {
@@ -288,7 +295,10 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 							}
 
 							progress++;
-							final int percentage = progress * 100 / total;
+							int percentage = progress * 100 / total;
+							if (percentage > 100) {
+								percentage = 100;
+							}
 							// log.info(percentage + " %");
 							setProgress(percentage);
 							SwingUtilities.invokeLater(new Runnable() {
@@ -335,7 +345,10 @@ public class JTableLoader extends SwingWorker<Void, Void> implements Exporter<JT
 							}
 
 							progress++;
-							final int percentage = progress * 100 / total;
+							int percentage = progress * 100 / total;
+							if (percentage > 100) {
+								percentage = 100;
+							}
 							// log.info(percentage + " %");
 							setProgress(percentage);
 							SwingUtilities.invokeLater(new Runnable() {

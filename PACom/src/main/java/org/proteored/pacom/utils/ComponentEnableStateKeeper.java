@@ -115,13 +115,13 @@ public class ComponentEnableStateKeeper {
 			while (callDisabled) {
 				try {
 					Thread.sleep(1);
-					log.info("Waiting for keeping enabling state");
+					log.warn("Waiting for keeping enabling state");
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
 			lock.lock();
-			log.info("Keeping state of all components in the container");
+			log.debug("Keeping state of all components in the container");
 			synchronized (container.getTreeLock()) {
 				componentToEnableStateMap.clear();
 			}

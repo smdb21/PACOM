@@ -2587,24 +2587,30 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		final boolean isTotalSerieShown = optionsFactory.isTotalSerieShown();
 		final boolean differentIdentificationsShown = !optionsFactory.isDifferentIdentificationsShown();
 		final boolean totalVersusDifferentSelected = optionsFactory.isTotalVersusDifferentSelected();
-		String title = parent.getChartTitle(chartType);
+		String chartTitle = parent.getChartTitle(chartType);
 		if (totalVersusDifferentSelected) {
 			if (plotItem.equals(IdentificationItemEnum.PEPTIDE)) {
 				yAxisLabel = "# peptides / # PSMs";
+				chartTitle = "Ratio number of peptides / number of PSMs";
 			} else {
 				yAxisLabel = "# diff proteins / # total proteins";
+				chartTitle = "Ratio number of different proteins / number of proteins";
 			}
 		} else if (differentIdentificationsShown) {
 			if (plotItem.equals(IdentificationItemEnum.PEPTIDE)) {
 				yAxisLabel = "# different peptides";
+				chartTitle = "Number of peptides";
 			} else {
+				chartTitle = "Number of proteins";
 				yAxisLabel = "# different proteins";
 			}
 		} else {
 			if (plotItem.equals(IdentificationItemEnum.PEPTIDE)) {
 				yAxisLabel = "# PSMs";
+				chartTitle = "Number of PSMs";
 			} else {
 				yAxisLabel = "# total proteins";
+				chartTitle = "Number of proteins";
 			}
 		}
 
@@ -2626,8 +2632,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 							parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 							countNonConclusiveProteins);
 				}
-				PieChart chart = new PieChart(parent.getChartTitle(chartType),
-						parent.getChartSubtitle(chartType, option), dataset);
+				PieChart chart = new PieChart(chartTitle, parent.getChartSubtitle(chartType, option), dataset);
 				return chart.getChartPanel();
 			} else if (stackedChart) {
 				CategoryDataset dataset = null;
@@ -2639,9 +2644,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 							parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 							countNonConclusiveProteins);
 				}
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
-						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
-						asPercentage);
+				StackedBarChart chart = new StackedBarChart(chartTitle, parent.getChartSubtitle(chartType, option),
+						xAxisLabel, yAxisLabel, dataset, plotOrientation, asPercentage);
 				if (!totalVersusDifferentSelected) {
 					chart.setIntegerItemLabels();
 				}
@@ -2668,8 +2672,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 								countNonConclusiveProteins);
 					}
 				}
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
-						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
+				BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option), xAxisLabel,
+						yAxisLabel, dataset, plotOrientation);
 				if (totalVersusDifferentSelected) {
 					chart.setNonIntegerItemLabels();
 				}
@@ -2697,8 +2701,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 							parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 							countNonConclusiveProteins);
 				}
-				PieChart chart = new PieChart(parent.getChartTitle(chartType),
-						parent.getChartSubtitle(chartType, option), dataset);
+				PieChart chart = new PieChart(chartTitle, parent.getChartSubtitle(chartType, option), dataset);
 				return chart.getChartPanel();
 			} else if (stackedChart) {
 				CategoryDataset dataset = null;
@@ -2710,9 +2713,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 							parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 							countNonConclusiveProteins);
 				}
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
-						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
-						asPercentage);
+				StackedBarChart chart = new StackedBarChart(chartTitle, parent.getChartSubtitle(chartType, option),
+						xAxisLabel, yAxisLabel, dataset, plotOrientation, asPercentage);
 				if (!totalVersusDifferentSelected) {
 					chart.setIntegerItemLabels();
 				}
@@ -2739,8 +2741,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 								countNonConclusiveProteins);
 					}
 				}
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
-						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
+				BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option), xAxisLabel,
+						yAxisLabel, dataset, plotOrientation);
 				if (totalVersusDifferentSelected) {
 					chart.setNonIntegerItemLabels();
 				}
@@ -2771,8 +2773,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 							parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 							countNonConclusiveProteins);
 				}
-				PieChart chart = new PieChart(parent.getChartTitle(chartType),
-						parent.getChartSubtitle(chartType, option), dataset);
+				PieChart chart = new PieChart(chartTitle, parent.getChartSubtitle(chartType, option), dataset);
 				return chart.getChartPanel();
 			} else if (stackedChart) {
 				CategoryDataset dataset = null;
@@ -2784,9 +2785,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 							parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 							countNonConclusiveProteins);
 				}
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
-						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
-						asPercentage);
+				StackedBarChart chart = new StackedBarChart(chartTitle, parent.getChartSubtitle(chartType, option),
+						xAxisLabel, yAxisLabel, dataset, plotOrientation, asPercentage);
 				if (!totalVersusDifferentSelected) {
 					chart.setIntegerItemLabels();
 				}
@@ -2813,8 +2813,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 								countNonConclusiveProteins);
 					}
 				}
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
-						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
+				BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option), xAxisLabel,
+						yAxisLabel, dataset, plotOrientation);
 				if (totalVersusDifferentSelected) {
 					chart.setNonIntegerItemLabels();
 				}
@@ -2840,8 +2840,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 								parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 								countNonConclusiveProteins);
 					}
-					PieChart chart = new PieChart(parent.getChartTitle(chartType),
-							parent.getChartSubtitle(chartType, option), dataset);
+					PieChart chart = new PieChart(chartTitle, parent.getChartSubtitle(chartType, option), dataset);
 
 					chartList.add(chart.getChartPanel());
 				} else if (stackedChart) {
@@ -2854,9 +2853,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 								parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 								countNonConclusiveProteins);
 					}
-					StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
-							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
-							plotOrientation, asPercentage);
+					StackedBarChart chart = new StackedBarChart(chartTitle, parent.getChartSubtitle(chartType, option),
+							xAxisLabel, yAxisLabel, dataset, plotOrientation, asPercentage);
 					if (!totalVersusDifferentSelected) {
 						chart.setIntegerItemLabels();
 					}
@@ -2884,9 +2882,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 									countNonConclusiveProteins);
 						}
 					}
-					BarChart chart = new BarChart(parent.getChartTitle(chartType),
-							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
-							plotOrientation);
+					BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option), xAxisLabel,
+							yAxisLabel, dataset, plotOrientation);
 					if (totalVersusDifferentSelected) {
 						chart.setNonIntegerItemLabels();
 					}
