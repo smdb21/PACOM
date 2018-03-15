@@ -1041,7 +1041,7 @@ public class AdditionalOptionsPanelFactory {
 		} else {
 			jComboBoxPeptideScoreNames.setModel(peptideScoreNames);
 		}
-
+		jComboBoxPeptideScoreNames.setEnabled(true);
 		jPanelAdditional4.setLayout(new BorderLayout());
 		jPanelAdditional4.add(jlabel4, BorderLayout.LINE_START);
 		jPanelAdditional4.add(jComboBoxPeptideScoreNames, BorderLayout.CENTER);

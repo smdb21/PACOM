@@ -26,9 +26,22 @@ import org.jfree.data.statistics.Statistics;
 import org.jfree.data.xy.XYDataset;
 import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
 
+import edu.scripps.yates.utilities.util.Pair;
+
 public class XYPointChart {
 	private final JFreeChart chart;
 	private final ChartPanel chartPanel;
+
+	public XYPointChart(String title, String subtitle, Pair<XYDataset, MyXYItemLabelGenerator> pair, String xAxisLabel,
+			String yAxisLabel) {
+		this(title, subtitle, pair.getFirstelement(), pair.getSecondElement(), xAxisLabel, yAxisLabel, true);
+	}
+
+	public XYPointChart(String title, String subtitle, Pair<XYDataset, MyXYItemLabelGenerator> pair, String xAxisLabel,
+			String yAxisLabel, boolean sameRangeInBothAxis) {
+		this(title, subtitle, pair.getFirstelement(), pair.getSecondElement(), xAxisLabel, yAxisLabel,
+				sameRangeInBothAxis);
+	}
 
 	/**
 	 * Creates a Scatter plot chart
@@ -39,11 +52,13 @@ public class XYPointChart {
 	 * @param xAxisLabel
 	 * @param yAxisLabel
 	 */
-	public XYPointChart(String title, String subtitle, XYDataset dataset, String xAxisLabel, String yAxisLabel) {
+	public XYPointChart(String title, String subtitle, XYDataset dataset, MyXYItemLabelGenerator tooltipGenerator,
+			String xAxisLabel, String yAxisLabel, boolean sameRangeInBothAxis) {
 
 		this.chart = ChartFactory.createScatterPlot(title, xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL,
-				true, true, false);
+				true, tooltipGenerator == null, false);
 		this.chart.addSubtitle(new TextTitle(subtitle));
+
 		final XYPlot plot = (XYPlot) this.chart.getPlot();
 		// // Colors
 		plot.setBackgroundPaint(Color.white);
@@ -53,10 +68,14 @@ public class XYPointChart {
 		final ValueAxis domainAxis = plot.getDomainAxis();
 		final double upperBound1 = rangeAxis.getUpperBound();
 		final double upperBound2 = domainAxis.getUpperBound();
-		if (upperBound1 > upperBound2)
-			domainAxis.setUpperBound(upperBound1);
-		if (upperBound2 > upperBound1)
-			rangeAxis.setUpperBound(upperBound2);
+		if (sameRangeInBothAxis) {
+			if (upperBound1 > upperBound2) {
+				domainAxis.setUpperBound(upperBound1);
+			}
+			if (upperBound2 > upperBound1) {
+				rangeAxis.setUpperBound(upperBound2);
+			}
+		}
 		final double lowerBound1 = rangeAxis.getLowerBound();
 		final double lowerBound2 = domainAxis.getLowerBound();
 		if (lowerBound1 > lowerBound2)
@@ -67,6 +86,9 @@ public class XYPointChart {
 		Shape shape = new Ellipse2D.Double(-1.0, -1.0, 2.0, 2.0);
 		for (int i = 0; i < plot.getSeriesCount(); i++) {
 			renderer.setSeriesShape(i, shape);
+		}
+		if (tooltipGenerator != null) {
+			renderer.setDefaultToolTipGenerator(tooltipGenerator);
 		}
 
 		this.chartPanel = new ChartPanel(chart);

@@ -39,6 +39,7 @@ import org.proteored.pacom.analysis.charts.CombinedChart;
 import org.proteored.pacom.analysis.charts.HeatMapChart;
 import org.proteored.pacom.analysis.charts.HistogramChart;
 import org.proteored.pacom.analysis.charts.LineCategoryChart;
+import org.proteored.pacom.analysis.charts.MyXYItemLabelGenerator;
 import org.proteored.pacom.analysis.charts.PieChart;
 import org.proteored.pacom.analysis.charts.SpiderChart;
 import org.proteored.pacom.analysis.charts.StackedBarChart;
@@ -51,6 +52,7 @@ import org.proteored.pacom.analysis.gui.AdditionalOptionsPanelFactory;
 import org.proteored.pacom.analysis.gui.ChartManagerFrame;
 import org.proteored.pacom.analysis.gui.ChartType;
 
+import edu.scripps.yates.utilities.util.Pair;
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.set.hash.THashSet;
 
@@ -414,7 +416,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 
-			XYDataset dataset = DatasetFactory.createRTXYDataSet(idSets, inMinutes);
+			Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createRTXYDataSet(idSets, inMinutes);
 			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 			if (showRegressionLine)
@@ -425,7 +427,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
 
-			XYDataset dataset = DatasetFactory.createRTXYDataSet(idSets, inMinutes);
+			Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createRTXYDataSet(idSets, inMinutes);
 			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 			if (showRegressionLine)
@@ -441,7 +443,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 					idSets = getIdentificationSets(experiment.getFullName(), scoreComparisonJCheckBoxes, false);
 
 					if (!idSets.isEmpty()) {
-						XYDataset dataset = DatasetFactory.createRTXYDataSet(idSets, inMinutes);
+						Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createRTXYDataSet(idSets,
+								inMinutes);
 						XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 								parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 						if (showRegressionLine)
@@ -1284,7 +1287,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		final Map<String, JCheckBox> experimentJCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
 		List<IdentificationSet> idSets = getIdentificationSets(null, experimentJCheckBoxes, false);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
-			XYDataset dataset = DatasetFactory.createDeltaMzOverMzXYDataSet(idSets);
+			Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createDeltaMzOverMzXYDataSet(idSets);
 			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 			chart.setTinnySeriesShape();
@@ -1294,7 +1297,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			chart.addHorizontalLine(0);
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			XYDataset dataset = DatasetFactory.createDeltaMzOverMzXYDataSet(idSets);
+			Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createDeltaMzOverMzXYDataSet(idSets);
 			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 			chart.setTinnySeriesShape();
@@ -1305,7 +1308,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			XYDataset dataset = DatasetFactory.createDeltaMzOverMzXYDataSet(idSets);
+			Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createDeltaMzOverMzXYDataSet(idSets);
 			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 			chart.setTinnySeriesShape();
@@ -1320,7 +1323,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			for (Experiment experiment : experimentList.getExperiments()) {
 				try {
 					idSets = getIdentificationSets(experiment.getName(), experimentJCheckBoxes, false);
-					XYDataset dataset = DatasetFactory.createDeltaMzOverMzXYDataSet(idSets);
+					Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory
+							.createDeltaMzOverMzXYDataSet(idSets);
 					XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 					chart.setTinnySeriesShape();
@@ -3450,8 +3454,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		}
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 
-			XYDataset dataset = DatasetFactory.createScoreXYDataSet(idSets, scoreName, plotItem, distinguish, applyLog,
-					separateDecoyHits, countNonConclusiveProteins);
+			Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createScoreXYDataSet(idSets, scoreName,
+					plotItem, distinguish, applyLog, separateDecoyHits, countNonConclusiveProteins);
 			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 			if (showRegressionLine)
@@ -3462,8 +3466,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
 
-			XYDataset dataset = DatasetFactory.createScoreXYDataSet(idSets, scoreName, plotItem, distinguish, applyLog,
-					separateDecoyHits, countNonConclusiveProteins);
+			Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createScoreXYDataSet(idSets, scoreName,
+					plotItem, distinguish, applyLog, separateDecoyHits, countNonConclusiveProteins);
 			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 			if (showRegressionLine)
@@ -3479,8 +3483,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 					idSets = getIdentificationSets(experiment.getFullName(), scoreComparisonJCheckBoxes, false);
 
 					if (!idSets.isEmpty()) {
-						XYDataset dataset = DatasetFactory.createScoreXYDataSet(idSets, scoreName, plotItem,
-								distinguish, applyLog, separateDecoyHits, countNonConclusiveProteins);
+						Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createScoreXYDataSet(idSets,
+								scoreName, plotItem, distinguish, applyLog, separateDecoyHits,
+								countNonConclusiveProteins);
 						XYPointChart chart = new XYPointChart(
 								parent.getChartTitle(chartType) + ": " + experiment.getName(),
 								parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
@@ -3879,29 +3884,29 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			throw new IllegalMiapeArgumentException("Select two datasets");
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 
-			XYDataset dataset = DatasetFactory.createPeptideCountingVsScoreXYDataSet(idSets.get(0), idSets.get(1),
-					proteinGroupComparisonType, distinguish, selectedScoreName);
+			Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createPeptideCountingVsScoreXYDataSet(
+					idSets.get(0), idSets.get(1), proteinGroupComparisonType, distinguish, selectedScoreName);
 			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
-					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel, false);
 			chart.centerRangeAxisOnZero();
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			XYDataset dataset = DatasetFactory.createPeptideCountingVsScoreXYDataSet(idSets.get(0), idSets.get(1),
-					proteinGroupComparisonType, distinguish, selectedScoreName);
+			Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createPeptideCountingVsScoreXYDataSet(
+					idSets.get(0), idSets.get(1), proteinGroupComparisonType, distinguish, selectedScoreName);
 
 			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
-					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel, false);
 			chart.centerRangeAxisOnZero();
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			XYDataset dataset = DatasetFactory.createPeptideCountingVsScoreXYDataSet(idSets.get(0), idSets.get(1),
-					proteinGroupComparisonType, distinguish, selectedScoreName);
+			Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createPeptideCountingVsScoreXYDataSet(
+					idSets.get(0), idSets.get(1), proteinGroupComparisonType, distinguish, selectedScoreName);
 			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
-					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
+					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel, false);
 			chart.centerRangeAxisOnZero();
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
@@ -3910,10 +3915,10 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			List<JPanel> chartList = new ArrayList<JPanel>();
 			for (Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, true);
-				XYDataset dataset = DatasetFactory.createPeptideCountingVsScoreXYDataSet(idSets.get(0), idSets.get(1),
-						proteinGroupComparisonType, distinguish, selectedScoreName);
+				Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createPeptideCountingVsScoreXYDataSet(
+						idSets.get(0), idSets.get(1), proteinGroupComparisonType, distinguish, selectedScoreName);
 				XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
-						parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
+						parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel, false);
 				chart.centerRangeAxisOnZero();
 				// chart.setXRangeValues(0, 100);
 				chartList.add(chart.getChartPanel());

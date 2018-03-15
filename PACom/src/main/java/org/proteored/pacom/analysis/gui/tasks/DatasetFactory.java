@@ -3,6 +3,7 @@ package org.proteored.pacom.analysis.gui.tasks;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -41,6 +42,7 @@ import org.proteored.miapeapi.interfaces.ms.Spectrometer;
 import org.proteored.miapeapi.interfaces.msi.Database;
 import org.proteored.miapeapi.interfaces.msi.InputParameter;
 import org.proteored.miapeapi.util.ProteinSequenceRetrieval;
+import org.proteored.pacom.analysis.charts.MyXYItemLabelGenerator;
 import org.proteored.pacom.analysis.exporters.util.ExporterUtil;
 import org.proteored.pacom.analysis.genes.ENSGInfo;
 import org.proteored.pacom.analysis.genes.GeneDistributionReader;
@@ -54,6 +56,7 @@ import edu.scripps.yates.annotations.uniprot.UniprotEntryUtil;
 import edu.scripps.yates.annotations.uniprot.xml.Entry;
 import edu.scripps.yates.utilities.fasta.FastaParser;
 import edu.scripps.yates.utilities.maths.Maths;
+import edu.scripps.yates.utilities.util.Pair;
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.map.hash.TIntIntHashMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
@@ -2031,20 +2034,22 @@ public class DatasetFactory {
 	 *            identification occurrence
 	 * @return
 	 */
-	public static XYDataset createScoreXYDataSet(List<IdentificationSet> idsets, String scoreName,
-			IdentificationItemEnum plotItem, boolean distinguish, boolean applyLog, boolean separateDecoyHits,
-			Boolean countNonConclusiveProteins) {
+	public static Pair<XYDataset, MyXYItemLabelGenerator> createScoreXYDataSet(List<IdentificationSet> idsets,
+			String scoreName, IdentificationItemEnum plotItem, boolean distinguish, boolean applyLog,
+			boolean separateDecoyHits, Boolean countNonConclusiveProteins) {
 
 		XYSeriesCollection xySeriesCollection = new XYSeriesCollection();
 		if (idsets.size() < 2)
 			throw new IllegalMiapeArgumentException("At least two series are needed to paint this chart");
 		boolean thereisData = false;
+		int numSeries = 0;
+		Map<String, String> tooltipValues = new HashMap<String, String>();
 		for (int i = 0; i < idsets.size(); i++) {
 			for (int j = i + 1; j < idsets.size(); j++) {
 				IdentificationSet idSet1 = idsets.get(i);
 				IdentificationSet idSet2 = idsets.get(j);
-				List<XYSeries> series = getXYScoreSeries(idSet1, idSet2, scoreName, plotItem, distinguish, applyLog,
-						separateDecoyHits, countNonConclusiveProteins);
+				List<XYSeries> series = getXYScoreSeries(numSeries++, idSet1, idSet2, scoreName, plotItem, distinguish,
+						applyLog, separateDecoyHits, countNonConclusiveProteins, tooltipValues);
 				for (XYSeries xySeries : series) {
 					if (xySeries.getItems() != null && xySeries.getItems().size() > 0)
 						thereisData = true;
@@ -2057,24 +2062,32 @@ public class DatasetFactory {
 			throw new IllegalMiapeArgumentException(
 					"<html>There is not data to show.<br>Please, be sure that the datasets contains the score '"
 							+ scoreName + "' <br>and that the overlapping is not zero.</html>");
-		return xySeriesCollection;
+		return new Pair<XYDataset, MyXYItemLabelGenerator>(xySeriesCollection,
+				new MyXYItemLabelGenerator(tooltipValues));
 	}
 
-	public static XYDataset createDeltaMzOverMzXYDataSet(List<IdentificationSet> idsets) {
+	public static Pair<XYDataset, MyXYItemLabelGenerator> createDeltaMzOverMzXYDataSet(List<IdentificationSet> idsets) {
 
 		XYSeriesCollection xySeriesCollection = new XYSeriesCollection();
-
+		Map<String, String> tooltips = new HashMap<String, String>();
+		int numSeries = -1;
+		int numItem = -1;
 		for (IdentificationSet identificationSet : idsets) {
 			List<ExtendedIdentifiedPeptide> identifiedPeptides = identificationSet.getIdentifiedPeptides();
 			XYSeries serie = new XYSeries(identificationSet.getName());
+			numSeries++;
 			for (ExtendedIdentifiedPeptide extendedIdentifiedPeptide : identifiedPeptides) {
 				try {
 					Double experimentalMZ = Double.valueOf(extendedIdentifiedPeptide.getExperimentalMassToCharge());
 					Double theoreticalMZ = Double.valueOf(extendedIdentifiedPeptide.getCalculatedMassToCharge());
 					if (experimentalMZ != 0.0 && theoreticalMZ != 0.0) {
 						Double deltaMZ = (experimentalMZ - theoreticalMZ);
-						if (deltaMZ < 1 && deltaMZ > -1)
+						if (deltaMZ < 1 && deltaMZ > -1) {
 							serie.add(experimentalMZ, deltaMZ);
+							tooltips.put(MyXYItemLabelGenerator.getKey(numSeries, numItem),
+									extendedIdentifiedPeptide.getSequence());
+							numItem++;
+						}
 					}
 				} catch (Exception e) {
 
@@ -2086,7 +2099,9 @@ public class DatasetFactory {
 
 		}
 
-		return xySeriesCollection;
+		Pair<XYDataset, MyXYItemLabelGenerator> pair = new Pair<XYDataset, MyXYItemLabelGenerator>(xySeriesCollection,
+				new MyXYItemLabelGenerator(tooltips));
+		return pair;
 	}
 
 	/**
@@ -2322,9 +2337,9 @@ public class DatasetFactory {
 		return xySeriesCollection;
 	}
 
-	private static List<XYSeries> getXYScoreSeries(IdentificationSet idSet1, IdentificationSet idSet2, String scoreName,
-			IdentificationItemEnum plotItem, boolean distinguish, boolean applyLog, boolean separateDecoyHits,
-			Boolean countNonConclusiveProteins) {
+	private static List<XYSeries> getXYScoreSeries(int numSeries, IdentificationSet idSet1, IdentificationSet idSet2,
+			String scoreName, IdentificationItemEnum plotItem, boolean distinguish, boolean applyLog,
+			boolean separateDecoyHits, Boolean countNonConclusiveProteins, Map<String, String> tooltipValues) {
 
 		XYSeries normalSeries = new XYSeries(idSet1.getName() + " vs " + idSet2.getName());
 		XYSeries decoySeries = null;
@@ -2335,7 +2350,7 @@ public class DatasetFactory {
 		// Foreach protein in replicate2, look it in the Map and add an XY
 		// point to the
 		// series
-
+		int numItem = 0;
 		if (plotItem.equals(IdentificationItemEnum.PEPTIDE)) {
 			Map<String, PeptideOccurrence> peptideOccurrences1 = idSet1.getPeptideOccurrenceList(distinguish);
 			Map<String, PeptideOccurrence> peptideOccurrences2 = idSet2.getPeptideOccurrenceList(distinguish);
@@ -2371,6 +2386,8 @@ public class DatasetFactory {
 							} else {
 								normalSeries.add(x, y);
 							}
+							tooltipValues.put(MyXYItemLabelGenerator.getKey(numSeries, numItem++),
+									occurrence1.getKey());
 						}
 					} catch (IllegalMiapeArgumentException e) {
 						// do nothing, not plot it
@@ -2399,10 +2416,13 @@ public class DatasetFactory {
 						Float x = occurrence1.getBestProteinScore(scoreName);
 						Float y = occurrence2.getBestProteinScore(scoreName);
 						if (x != null && y != null) {
-							if (separateDecoyHits && (occurrence1.isDecoy() || occurrence2.isDecoy()))
+							if (separateDecoyHits && (occurrence1.isDecoy() || occurrence2.isDecoy())) {
 								decoySeries.add(x, y);
-							else
+							} else {
 								normalSeries.add(x, y);
+							}
+							tooltipValues.put(MyXYItemLabelGenerator.getKey(numSeries, numItem++),
+									occurrence1.getAccessionsString());
 						}
 					} catch (IllegalMiapeArgumentException e) {
 						// do nothing, not plot it
@@ -3717,41 +3737,48 @@ public class DatasetFactory {
 		return ret;
 	}
 
-	public static XYDataset createRTXYDataSet(List<IdentificationSet> idSets, boolean inMinutes) {
+	public static Pair<XYDataset, MyXYItemLabelGenerator> createRTXYDataSet(List<IdentificationSet> idSets,
+			boolean inMinutes) {
 		XYSeriesCollection xySeriesCollection = new XYSeriesCollection();
+		Map<String, String> tooltipValues = new HashMap<String, String>();
 		if (idSets.size() < 2)
 			throw new IllegalMiapeArgumentException("At least two series are needed to paint this chart");
 		boolean thereisData = false;
+		int numSeries = 0;
 		for (int i = 0; i < idSets.size(); i++) {
 			for (int j = i + 1; j < idSets.size(); j++) {
 				IdentificationSet idSet1 = idSets.get(i);
 				IdentificationSet idSet2 = idSets.get(j);
-				List<XYSeries> series = getXYRTSeries(idSet1, idSet2, inMinutes);
-				for (XYSeries xySeries : series) {
-					if (xySeries.getItems() != null && xySeries.getItems().size() > 0)
-						thereisData = true;
-					xySeriesCollection.addSeries(xySeries);
-				}
+				XYSeries xySeries = getXYRTSeries(numSeries++, idSet1, idSet2, inMinutes, tooltipValues);
+				if (xySeries.getItems() != null && xySeries.getItems().size() > 0)
+					thereisData = true;
+				xySeriesCollection.addSeries(xySeries);
 
 			}
 		}
 		if (!thereisData)
 			throw new IllegalMiapeArgumentException(
 					"<html>There is not data to show.<br>Please, be sure that the overlapping is not zero<br> or that retention times are captured.</html>");
-		return xySeriesCollection;
+
+		Pair<XYDataset, MyXYItemLabelGenerator> pair = new Pair<XYDataset, MyXYItemLabelGenerator>(xySeriesCollection,
+				new MyXYItemLabelGenerator(tooltipValues));
+		return pair;
 	}
 
-	private static List<XYSeries> getXYRTSeries(IdentificationSet idSet1, IdentificationSet idSet2, boolean inMinutes) {
+	private static XYSeries getXYRTSeries(int seriesNumber, IdentificationSet idSet1, IdentificationSet idSet2,
+			boolean inMinutes, Map<String, String> tooltipValues) {
 		XYSeries normalSeries = new XYSeries(idSet1.getName() + " (x) vs " + idSet2.getName() + " (y)");
 
 		Map<String, PeptideOccurrence> peptideOccurrences1 = idSet1.getPeptideChargeOccurrenceList(true);
 		Map<String, PeptideOccurrence> peptideOccurrences2 = idSet2.getPeptideChargeOccurrenceList(true);
 		boolean someValidData = false;
+		int numValue = 0;
 		for (PeptideOccurrence occurrence2 : peptideOccurrences2.values()) {
 
 			if (peptideOccurrences1.containsKey(occurrence2.getKey())) {
 				try {
 					final PeptideOccurrence occurrence1 = peptideOccurrences1.get(occurrence2.getKey());
+
 					// get the average of the retention times
 					List<Double> rt1 = new ArrayList<Double>();
 					for (ExtendedIdentifiedPeptide pep : occurrence1.getItemList()) {
@@ -3791,6 +3818,8 @@ public class DatasetFactory {
 						if (inMinutes) {
 							y = y / 60.0;
 						}
+						tooltipValues.put(MyXYItemLabelGenerator.getKey(seriesNumber, numValue++),
+								occurrence1.getItemList().get(0).getSequence());
 						normalSeries.add(x, y);
 					}
 				} catch (IllegalMiapeArgumentException e) {
@@ -3806,9 +3835,8 @@ public class DatasetFactory {
 			throw new IllegalMiapeArgumentException(
 					"There is no data to display. Be sure that your imported datasets contain RT information.");
 		}
-		List<XYSeries> ret = new ArrayList<XYSeries>();
-		ret.add(normalSeries);
-		return ret;
+
+		return normalSeries;
 	}
 
 	public static CategoryDataset createSinglePeptideRTMonitoringCategoryDataSet(List<IdentificationSet> idSets,
@@ -4107,19 +4135,21 @@ public class DatasetFactory {
 		return logRatios;
 	}
 
-	public static XYSeriesCollection createPeptideCountingVsScoreXYDataSet(IdentificationSet idSet1,
-			IdentificationSet idSet2, ProteinGroupComparisonType proteinGroupComparisonType, boolean distinguish,
-			String scoreName) {
+	public static Pair<XYDataset, MyXYItemLabelGenerator> createPeptideCountingVsScoreXYDataSet(
+			IdentificationSet idSet1, IdentificationSet idSet2, ProteinGroupComparisonType proteinGroupComparisonType,
+			boolean distinguish, String scoreName) {
 		XYSeriesCollection xySeriesCollection = new XYSeriesCollection();
 		XYSeries serie = new XYSeries(idSet1.getName() + " vs " + idSet2.getName());
 		xySeriesCollection.addSeries(serie);
-
+		Map<String, String> tooltipValues = new HashMap<String, String>();
+		int numSeries = 0;
 		VennData venn = new VennDataForProteins(idSet1.getProteinGroupOccurrenceList().values(),
 				idSet2.getProteinGroupOccurrenceList().values(), null, proteinGroupComparisonType);
 		final Collection<Object> intersection = venn.getIntersection12();
 		log.info(intersection.size() + " proteins in common");
 		double[] logRatios = new double[intersection.size()];
 		int i = 0;
+		int numItem = 0;
 		for (Object object : intersection) {
 			if (object instanceof ProteinGroupOccurrence) {
 				ProteinGroupOccurrence pgo = (ProteinGroupOccurrence) object;
@@ -4140,11 +4170,17 @@ public class DatasetFactory {
 								continue;
 							}
 							Float score1 = pgo1.getBestPeptideScore(scoreName);
-							if (score1 != null)
+							if (score1 != null) {
 								serie.add(logratio, score1);
+								tooltipValues.put(MyXYItemLabelGenerator.getKey(numSeries, numItem++),
+										pgo.getAccessionsString());
+							}
 							Float score2 = pgo2.getBestPeptideScore(scoreName);
-							if (score2 != null)
+							if (score2 != null) {
 								serie.add(logratio, score2);
+								tooltipValues.put(MyXYItemLabelGenerator.getKey(numSeries, numItem++),
+										pgo.getAccessionsString());
+							}
 						}
 					}
 				}
@@ -4153,6 +4189,8 @@ public class DatasetFactory {
 		if (serie.getItemCount() < 1)
 			throw new IllegalMiapeArgumentException(
 					"<html>There is not data to show.<br>Please, be sure that the datasets contains common proteins<br>were the overlapping is not zero.</html>");
-		return xySeriesCollection;
+
+		return new Pair<XYDataset, MyXYItemLabelGenerator>(xySeriesCollection,
+				new MyXYItemLabelGenerator(tooltipValues));
 	}
 }
