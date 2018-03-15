@@ -295,7 +295,7 @@ public class AttachedChartTypesHelpDialog extends JDialog {
 
 			@Override
 			public void componentShown(ComponentEvent e) {
-				log.info(e.getID());
+				log.debug(e.getID());
 				AttachedChartTypesHelpDialog.this.setVisible(true);
 			}
 
@@ -313,7 +313,7 @@ public class AttachedChartTypesHelpDialog extends JDialog {
 
 			@Override
 			public void componentHidden(ComponentEvent e) {
-				log.info(e.getID());
+				log.debug(e.getID());
 				AttachedChartTypesHelpDialog.this.setVisible(false);
 			}
 		});
@@ -321,20 +321,20 @@ public class AttachedChartTypesHelpDialog extends JDialog {
 
 			@Override
 			public void windowOpened(WindowEvent e) {
-				log.info(e.getID() + " from " + e.getOldState() + " to " + e.getNewState());
+				log.debug(e.getID() + " from " + e.getOldState() + " to " + e.getNewState());
 				// open by default
 				AttachedChartTypesHelpDialog.this.setVisible(true);
 			}
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-				log.info(e.getID() + " from " + e.getOldState() + " to " + e.getNewState());
+				log.debug(e.getID() + " from " + e.getOldState() + " to " + e.getNewState());
 
 			}
 
 			@Override
 			public void windowClosed(WindowEvent e) {
-				log.info(e.getID() + " from " + e.getOldState() + " to " + e.getNewState());
+				log.debug(e.getID() + " from " + e.getOldState() + " to " + e.getNewState());
 				AttachedChartTypesHelpDialog.this.dispose();
 
 			}
