@@ -39,12 +39,12 @@ This tool has been enterely designed and implemented by [Salvador Martinez-Barto
 
 #### Other people that contributed to this project:
 - Miguel Angel Lopez (the best hardware support).
-- J. Alberto Medina (software developement support and beta tester).
-- Gorka Prieto ([@akrogp](https://github.com/akrogp)) (PAanlyzer grouping algorithm developer).
+- J. Alberto Medina (software development support and beta tester).
+- Gorka Prieto ([@akrogp](https://github.com/akrogp)) (PAnalyzer grouping algorithm developer).
 - Rosana Navajas (beta tester and manuscript contributor).
 - Carmen Gonzalez (beta tester and manucript contributor).
 - Carolina Fernandez Costa (beta tester and manuscript contributor).
-- Emilio Salazar-Donate ([@emiliosalazardonate](https://github.com/emiliosalazardonate)) (First developer contributing this project in its very early phase).
+- Emilio Salazar-Donate ([@emiliosalazardonate](https://github.com/emiliosalazardonate)) (First developer contributing to this project in its very early phase).
 - Juan Pablo Albar (main supporter of this project. All success of this project is dedicated to him).
 - John R. Yates III ([@proteomicsyates](https://github.com/proteomicsyates)) (supporter of this project in its second phase). 
 ---
