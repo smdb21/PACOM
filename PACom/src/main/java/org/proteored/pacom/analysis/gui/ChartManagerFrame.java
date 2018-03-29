@@ -3763,8 +3763,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 							if (imageFileFormat == ImageFileFormat.GIF) {
 								continue;// if doesnt allow to zoom
 							}
-							fileChooser.addChoosableFileFilter(new ExtensionFileFilter(imageFileFormat.getDescription(),
-									imageFileFormat.getExtension()));
+							fileChooser.addChoosableFileFilter(new ExtensionFileFilter(imageFileFormat.getExtension(),
+									imageFileFormat.getDescription()));
 						}
 						fileChooser.setAcceptAllFileFilterUsed(false);
 
@@ -3803,8 +3803,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 							if (imageFileFormat == ImageFileFormat.GIF) {
 								continue;// if doesnt allow to zoom
 							}
-							fileChooser.addChoosableFileFilter(new ExtensionFileFilter(imageFileFormat.getDescription(),
-									imageFileFormat.getExtension()));
+							fileChooser.addChoosableFileFilter(new ExtensionFileFilter(imageFileFormat.getExtension(),
+									imageFileFormat.getDescription()));
 						}
 						fileChooser.setAcceptAllFileFilterUsed(false);
 						int retVal = fileChooser.showSaveDialog(this);
@@ -3869,7 +3869,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 							for (ImageFileFormat imageFileFormat : ImageFileFormat.values()) {
 								fileChooser.addChoosableFileFilter(new ExtensionFileFilter(
-										imageFileFormat.getDescription(), imageFileFormat.getExtension()));
+										imageFileFormat.getExtension(), imageFileFormat.getDescription()));
 							}
 							fileChooser.setDialogTitle("Saving overlap image '" + title + "'");
 							fileChooser.setAcceptAllFileFilterUsed(false);
@@ -3921,8 +3921,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 					final Image image = icon.getImage();
 					JFileChooser fileChooser = new JFileChooser(MainFrame.currentFolder);
 					for (ImageFileFormat imageFileFormat : ImageFileFormat.values()) {
-						fileChooser.addChoosableFileFilter(new ExtensionFileFilter(imageFileFormat.getDescription(),
-								imageFileFormat.getExtension()));
+						fileChooser.addChoosableFileFilter(new ExtensionFileFilter(imageFileFormat.getExtension(),
+								imageFileFormat.getDescription()));
 					}
 					fileChooser.setDialogTitle("Saving overlap image '" + title + "'");
 					fileChooser.setAcceptAllFileFilterUsed(false);
@@ -4866,7 +4866,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		if (charts != null && !charts.isEmpty()) {
 
 			JFileChooser fileChooser = new JFileChooser(MainFrame.currentFolder);
-			fileChooser.addChoosableFileFilter(new ExtensionFileFilter("TIFF Image File", "tif"));
+			fileChooser.addChoosableFileFilter(new ExtensionFileFilter("tif", "TIFF Image File"));
 
 			fileChooser.setDialogTitle("Saving protein word cloud image");
 			fileChooser.setAcceptAllFileFilterUsed(false);
