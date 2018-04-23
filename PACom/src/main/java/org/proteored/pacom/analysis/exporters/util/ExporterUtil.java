@@ -60,7 +60,7 @@ public class ExporterUtil {
 	public static final String VALUE_SEPARATOR = ",";
 
 	static {
-		threeDigitsDecimal = DecimalFormat.getInstance();
+		threeDigitsDecimal = NumberFormat.getInstance();
 		threeDigitsDecimal.setMaximumFractionDigits(3);
 		threeDigitsDecimal.setGroupingUsed(false);
 		df = new DecimalFormat("#.##");
@@ -107,13 +107,13 @@ public class ExporterUtil {
 	public List<String> getPeptideInfoList(PeptideOccurrence peptideOccurrence, List<String> columns, int index,
 			IdentificationSet idSet) {
 
-		List<String> ret = new ArrayList<String>();
+		final List<String> ret = new ArrayList<String>();
 		if (peptideOccurrence == null)
 			throw new IllegalMiapeArgumentException("peptide occurrence should be different to null");
 
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		String scoreName = "";
-		for (String column : columns) {
+		for (final String column : columns) {
 			try {
 				if (column.equals(ExportedColumns.NUMBER.toString())) {
 					ret.add(cleanString(String.valueOf(index)));
@@ -137,14 +137,14 @@ public class ExporterUtil {
 				} else if (column.equals(ExportedColumns.RETENTION_TIME_SG.toString())) {
 					ret.add(getRt(peptideOccurrence));
 				} else if (column.equals(ExportedColumns.IS_UNIQUE.toString())) {
-					ArrayList<String> accs = new ArrayList<String>();
-					for (ExtendedIdentifiedPeptide pep : peptideOccurrence.getItemList()) {
-						for (ExtendedIdentifiedProtein protein : pep.getProteins()) {
+					final ArrayList<String> accs = new ArrayList<String>();
+					for (final ExtendedIdentifiedPeptide pep : peptideOccurrence.getItemList()) {
+						for (final ExtendedIdentifiedProtein protein : pep.getProteins()) {
 							if (!accs.contains(protein.getAccession()))
 								accs.add(protein.getAccession());
 						}
 					}
-					int numProteins = accs.size();
+					final int numProteins = accs.size();
 					ret.add(cleanString(numProteins == 1 ? "1" : "0"));
 				} else if (column.equals(ExportedColumns.MISS.toString())) {
 					ret.add(cleanString(
@@ -162,12 +162,11 @@ public class ExporterUtil {
 					ret.add(getPeptideModifications(peptideOccurrence));
 
 				} else if (column.equals(ExportedColumns.EXP_MZ.toString())) {
-					ret.add(cleanString(peptideOccurrence.getFirstOccurrence().getExperimentalMassToCharge()));
+					ret.add(parseFloat(peptideOccurrence.getFirstOccurrence().getExperimentalMassToCharge()));
 				} else if (column.equals(ExportedColumns.CALC_MZ.toString())) {
-					ret.add(cleanString(peptideOccurrence.getFirstOccurrence().getCalculatedMassToCharge()));
+					ret.add(parseFloat(peptideOccurrence.getFirstOccurrence().getCalculatedMassToCharge()));
 				} else if (column.equals(ExportedColumns.ERROR_MZ.toString())) {
-					String errorMZ = peptideOccurrence.getFirstOccurrence().getMassError();
-					ret.add(cleanString(errorMZ));
+					ret.add(parseFloat(peptideOccurrence.getFirstOccurrence().getMassError()));
 				} else if (column.equals(ExportedColumns.PEPTIDE_OCCURRENCE.toString())) {
 					ret.add(String.valueOf(peptideOccurrence.getItemList().size()));
 				} else if (column.equals(ExportedColumns.PEPTIDE_LOCAL_FDR.toString())) {
@@ -221,7 +220,7 @@ public class ExporterUtil {
 								"Column " + column + " is not supported by this exporter");
 					}
 				}
-			} catch (NullPointerException e) {
+			} catch (final NullPointerException e) {
 				e.printStackTrace();
 			}
 		}
@@ -233,11 +232,11 @@ public class ExporterUtil {
 	public List<String> getProteinInfoList(ProteinGroupOccurrence proteinGroupOccurrence, List<String> columns,
 			Integer index, IdentificationSet idSet) {
 
-		List<String> ret = new ArrayList<String>();
+		final List<String> ret = new ArrayList<String>();
 		if (proteinGroupOccurrence == null)
 			throw new IllegalMiapeArgumentException("protein occurrence should be different to null");
 
-		for (String column : columns) {
+		for (final String column : columns) {
 
 			try {
 				if (column.equals(ExportedColumns.NUMBER.toString())) {
@@ -311,7 +310,7 @@ public class ExporterUtil {
 								"Column " + column + " is not supported by this exporter");
 					}
 				}
-			} catch (NullPointerException e) {
+			} catch (final NullPointerException e) {
 				e.printStackTrace();
 			}
 		}
@@ -322,10 +321,10 @@ public class ExporterUtil {
 
 	private String getProteinGroupType(ProteinGroupOccurrence proteinGroupOccurrence) {
 		final List<ProteinGroup> groupList = proteinGroupOccurrence.getItemList();
-		List<ProteinEvidence> evidences = new ArrayList<ProteinEvidence>();
+		final List<ProteinEvidence> evidences = new ArrayList<ProteinEvidence>();
 		String ret = "";
-		for (ProteinGroup proteinGroup : groupList) {
-			for (ExtendedIdentifiedProtein protein : proteinGroup) {
+		for (final ProteinGroup proteinGroup : groupList) {
+			for (final ExtendedIdentifiedProtein protein : proteinGroup) {
 				final ProteinEvidence evidence = protein.getEvidence();
 				if (!evidences.contains(evidence)) {
 					evidences.add(evidence);
@@ -341,9 +340,9 @@ public class ExporterUtil {
 	}
 
 	public String getStringFromList(List<String> lineStringList, char separator) {
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		if (lineStringList != null)
-			for (String obj : lineStringList) {
+			for (final String obj : lineStringList) {
 				if (obj != null)
 					sb.append(obj);
 				else
@@ -354,11 +353,11 @@ public class ExporterUtil {
 	}
 
 	private String getPeptideModifications(PeptideOccurrence peptideOccurrence) {
-		StringBuilder modifString = new StringBuilder();
+		final StringBuilder modifString = new StringBuilder();
 
 		final Set<PeptideModification> modifications = peptideOccurrence.getFirstOccurrence().getModifications();
 		if (modifications != null)
-			for (PeptideModification modification : modifications) {
+			for (final PeptideModification modification : modifications) {
 				if (!"".equals(modifString.toString()))
 					modifString.append(VALUE_SEPARATOR);
 				modifString.append(modification.getName() + "(" + modification.getResidues() + "-"
@@ -369,12 +368,12 @@ public class ExporterUtil {
 	}
 
 	private String getReplicateNames(PeptideOccurrence peptideOccurrence) {
-		StringBuilder sbReplicatesNames = new StringBuilder();
-		Set<String> replicateNames = new THashSet<String>();
+		final StringBuilder sbReplicatesNames = new StringBuilder();
+		final Set<String> replicateNames = new THashSet<String>();
 
-		List<ExtendedIdentifiedPeptide> peptides = peptideOccurrence.getItemList();
+		final List<ExtendedIdentifiedPeptide> peptides = peptideOccurrence.getItemList();
 		if (peptides != null) {
-			for (ExtendedIdentifiedPeptide extendedIdentifiedPeptide : peptides) {
+			for (final ExtendedIdentifiedPeptide extendedIdentifiedPeptide : peptides) {
 				String replicateName = extendedIdentifiedPeptide.getReplicateName();
 				// change on 3 February 2016
 				// final String experimentName =
@@ -388,7 +387,7 @@ public class ExporterUtil {
 			}
 		}
 
-		for (String replicateName : replicateNames) {
+		for (final String replicateName : replicateNames) {
 			if (!"".equals(sbReplicatesNames.toString()))
 				sbReplicatesNames.append(VALUE_SEPARATOR);
 			sbReplicatesNames.append(replicateName);
@@ -398,13 +397,13 @@ public class ExporterUtil {
 	}
 
 	private String getReplicateNames(ProteinGroupOccurrence proteinOccurrence) {
-		StringBuilder sbReplicatesNames = new StringBuilder();
-		Set<String> replicateNames = new THashSet<String>();
+		final StringBuilder sbReplicatesNames = new StringBuilder();
+		final Set<String> replicateNames = new THashSet<String>();
 
-		List<ProteinGroup> proteinGroups = proteinOccurrence.getItemList();
+		final List<ProteinGroup> proteinGroups = proteinOccurrence.getItemList();
 		if (proteinGroups != null) {
-			for (ProteinGroup proteinGroup : proteinGroups) {
-				for (ExtendedIdentifiedProtein extendedIdentifiedProtein : proteinGroup) {
+			for (final ProteinGroup proteinGroup : proteinGroups) {
+				for (final ExtendedIdentifiedProtein extendedIdentifiedProtein : proteinGroup) {
 					String replicateName = extendedIdentifiedProtein.getReplicateName();
 
 					// change on 3 February 2016
@@ -420,7 +419,7 @@ public class ExporterUtil {
 				}
 			}
 		}
-		for (String replicateName : replicateNames) {
+		for (final String replicateName : replicateNames) {
 			if (!"".equals(sbReplicatesNames.toString()))
 				sbReplicatesNames.append(VALUE_SEPARATOR);
 			sbReplicatesNames.append(replicateName);
@@ -430,17 +429,17 @@ public class ExporterUtil {
 	}
 
 	private String getExperimentName(PeptideOccurrence peptideOccurrence) {
-		StringBuilder sbExperimentNames = new StringBuilder();
-		Set<String> experimentNames = new THashSet<String>();
+		final StringBuilder sbExperimentNames = new StringBuilder();
+		final Set<String> experimentNames = new THashSet<String>();
 
-		List<ExtendedIdentifiedPeptide> peptides = peptideOccurrence.getItemList();
-		for (ExtendedIdentifiedPeptide extendedIdentifiedPeptide : peptides) {
+		final List<ExtendedIdentifiedPeptide> peptides = peptideOccurrence.getItemList();
+		for (final ExtendedIdentifiedPeptide extendedIdentifiedPeptide : peptides) {
 			final String experimentName = extendedIdentifiedPeptide.getExperimentName();
 			if (!experimentNames.contains(experimentName))
 				experimentNames.add(experimentName);
 		}
 
-		for (String experimentName : experimentNames) {
+		for (final String experimentName : experimentNames) {
 			if (!"".equals(sbExperimentNames.toString()))
 				sbExperimentNames.append(VALUE_SEPARATOR);
 			sbExperimentNames.append(experimentName);
@@ -450,16 +449,16 @@ public class ExporterUtil {
 	}
 
 	private String getExperimentName(ProteinGroupOccurrence proteinOccurrence) {
-		StringBuilder sbExperimentNames = new StringBuilder();
-		Set<String> experimentNames = new THashSet<String>();
+		final StringBuilder sbExperimentNames = new StringBuilder();
+		final Set<String> experimentNames = new THashSet<String>();
 
 		final List<ExtendedIdentifiedProtein> proteins = proteinOccurrence.getProteins();
-		for (ExtendedIdentifiedProtein extendedIdentifiedProtein : proteins) {
+		for (final ExtendedIdentifiedProtein extendedIdentifiedProtein : proteins) {
 			final String experimentName = extendedIdentifiedProtein.getExperimentName();
 			if (!experimentNames.contains(experimentName))
 				experimentNames.add(experimentName);
 		}
-		for (String experimentName : experimentNames) {
+		for (final String experimentName : experimentNames) {
 			if (!"".equals(sbExperimentNames.toString()))
 				sbExperimentNames.append(VALUE_SEPARATOR);
 			sbExperimentNames.append(experimentName);
@@ -470,7 +469,7 @@ public class ExporterUtil {
 
 	private String getPeptideScore(PeptideOccurrence peptideOccurrence, String scoreName) {
 
-		Float score = peptideOccurrence.getBestPeptideScore();
+		final Float score = peptideOccurrence.getBestPeptideScore();
 
 		return parseFloat(score);
 
@@ -480,15 +479,15 @@ public class ExporterUtil {
 
 		try {
 
-			StringBuilder bestScores = new StringBuilder();
-			ArrayList<String> proteinACCs = new ArrayList<String>();
-			for (ExtendedIdentifiedPeptide pep : peptideOccurrence.getItemList()) {
-				List<IdentifiedProtein> peptideProteins = pep.getIdentifiedProteins();
-				for (IdentifiedProtein identifiedProtein : peptideProteins) {
-					String acc = identifiedProtein.getAccession();
+			final StringBuilder bestScores = new StringBuilder();
+			final ArrayList<String> proteinACCs = new ArrayList<String>();
+			for (final ExtendedIdentifiedPeptide pep : peptideOccurrence.getItemList()) {
+				final List<IdentifiedProtein> peptideProteins = pep.getIdentifiedProteins();
+				for (final IdentifiedProtein identifiedProtein : peptideProteins) {
+					final String acc = identifiedProtein.getAccession();
 					if (!proteinACCs.contains(acc)) {
 						proteinACCs.add(acc);
-						ProteinGroupOccurrence proteinocc = idSet.getProteinGroupOccurrence(acc);
+						final ProteinGroupOccurrence proteinocc = idSet.getProteinGroupOccurrence(acc);
 						if (proteinocc != null) {
 							if (!"".equals(bestScores.toString()))
 								bestScores.append(VALUE_SEPARATOR);
@@ -499,20 +498,20 @@ public class ExporterUtil {
 			}
 
 			return cleanString(bestScores.toString());
-		} catch (IllegalMiapeArgumentException e) {
+		} catch (final IllegalMiapeArgumentException e) {
 			return null;
 		}
 	}
 
 	private String getNumPeptides(PeptideOccurrence peptideOccurrence) {
-		StringBuilder proteinsNumPeps = new StringBuilder();
+		final StringBuilder proteinsNumPeps = new StringBuilder();
 
-		Map<String, List<IdentifiedPeptide>> hashProteins = new THashMap<String, List<IdentifiedPeptide>>();
+		final Map<String, List<IdentifiedPeptide>> hashProteins = new THashMap<String, List<IdentifiedPeptide>>();
 
-		for (ExtendedIdentifiedPeptide pep : peptideOccurrence.getItemList()) {
-			List<IdentifiedProtein> peptideProteins = pep.getIdentifiedProteins();
-			for (IdentifiedProtein protein : peptideProteins) {
-				String acc = protein.getAccession();
+		for (final ExtendedIdentifiedPeptide pep : peptideOccurrence.getItemList()) {
+			final List<IdentifiedProtein> peptideProteins = pep.getIdentifiedProteins();
+			for (final IdentifiedProtein protein : peptideProteins) {
+				final String acc = protein.getAccession();
 				final List<IdentifiedPeptide> peps = protein.getIdentifiedPeptides();
 				if (peps != null)
 					if (hashProteins.containsKey(acc)) {
@@ -522,7 +521,7 @@ public class ExporterUtil {
 					}
 			}
 		}
-		for (List<IdentifiedPeptide> peptides : hashProteins.values()) {
+		for (final List<IdentifiedPeptide> peptides : hashProteins.values()) {
 			if (!"".equals(proteinsNumPeps.toString()))
 				proteinsNumPeps.append(VALUE_SEPARATOR);
 			proteinsNumPeps.append(peptides.size());
@@ -532,11 +531,11 @@ public class ExporterUtil {
 	}
 
 	private String getNumPeptides(ProteinGroupOccurrence proteinOccurrence) {
-		StringBuilder proteinsNumPeps = new StringBuilder();
+		final StringBuilder proteinsNumPeps = new StringBuilder();
 
 		int numPeptides = 0;
 
-		for (ProteinGroup proteinGroup : proteinOccurrence.getItemList()) {
+		for (final ProteinGroup proteinGroup : proteinOccurrence.getItemList()) {
 			final List<ExtendedIdentifiedPeptide> peptides = proteinGroup.getPeptides();
 			if (peptides != null)
 				numPeptides = numPeptides + peptides.size();
@@ -548,14 +547,14 @@ public class ExporterUtil {
 	}
 
 	private String getProteinDiffSeq(PeptideOccurrence peptideOccurrence) {
-		StringBuilder proteinsDiffSeqs = new StringBuilder();
+		final StringBuilder proteinsDiffSeqs = new StringBuilder();
 
-		Map<String, List<IdentifiedPeptide>> hashProteins = new THashMap<String, List<IdentifiedPeptide>>();
+		final Map<String, List<IdentifiedPeptide>> hashProteins = new THashMap<String, List<IdentifiedPeptide>>();
 
-		for (ExtendedIdentifiedPeptide pep : peptideOccurrence.getItemList()) {
-			List<IdentifiedProtein> peptideProteins = pep.getIdentifiedProteins();
-			for (IdentifiedProtein protein : peptideProteins) {
-				String acc = protein.getAccession();
+		for (final ExtendedIdentifiedPeptide pep : peptideOccurrence.getItemList()) {
+			final List<IdentifiedProtein> peptideProteins = pep.getIdentifiedProteins();
+			for (final IdentifiedProtein protein : peptideProteins) {
+				final String acc = protein.getAccession();
 				final List<IdentifiedPeptide> peps = protein.getIdentifiedPeptides();
 				if (peps != null)
 					if (hashProteins.containsKey(acc)) {
@@ -565,9 +564,9 @@ public class ExporterUtil {
 					}
 			}
 		}
-		for (List<IdentifiedPeptide> peptides : hashProteins.values()) {
+		for (final List<IdentifiedPeptide> peptides : hashProteins.values()) {
 			if (peptides != null) {
-				int numDifPeptides = getNumDifPeptides(peptides);
+				final int numDifPeptides = getNumDifPeptides(peptides);
 				if (!"".equals(proteinsDiffSeqs.toString()))
 					proteinsDiffSeqs.append(VALUE_SEPARATOR);
 				proteinsDiffSeqs.append(numDifPeptides);
@@ -578,7 +577,7 @@ public class ExporterUtil {
 	}
 
 	private String getProteinDiffSeq(ProteinGroupOccurrence proteinOccurrence) {
-		StringBuilder proteinsDiffSeqs = new StringBuilder();
+		final StringBuilder proteinsDiffSeqs = new StringBuilder();
 
 		proteinsDiffSeqs.append(getNumDifExtendedPeptides(proteinOccurrence.getPeptides()));
 
@@ -586,17 +585,17 @@ public class ExporterUtil {
 	}
 
 	private String getProteinDescription(PeptideOccurrence peptideOccurrence) {
-		StringBuilder proteinsDescriptions = new StringBuilder();
+		final StringBuilder proteinsDescriptions = new StringBuilder();
 
-		List<String> descriptions = new ArrayList<String>();
+		final List<String> descriptions = new ArrayList<String>();
 
-		for (ExtendedIdentifiedProtein protein : peptideOccurrence.getProteinList()) {
+		for (final ExtendedIdentifiedProtein protein : peptideOccurrence.getProteinList()) {
 
 			if (!descriptions.contains(protein.getDescription()))
 				descriptions.add(protein.getDescription());
 
 		}
-		for (String description : descriptions) {
+		for (final String description : descriptions) {
 			if (!"".equals(proteinsDescriptions.toString()))
 				proteinsDescriptions.append(VALUE_SEPARATOR);
 			proteinsDescriptions.append(description);
@@ -606,22 +605,22 @@ public class ExporterUtil {
 	}
 
 	private String getProteinDescription(ProteinGroupOccurrence proteinOccurrence) {
-		StringBuilder proteinsDescriptions = new StringBuilder();
+		final StringBuilder proteinsDescriptions = new StringBuilder();
 
-		List<String> descriptions = new ArrayList<String>();
+		final List<String> descriptions = new ArrayList<String>();
 
-		for (ExtendedIdentifiedProtein protein : proteinOccurrence.getProteins()) {
+		for (final ExtendedIdentifiedProtein protein : proteinOccurrence.getProteins()) {
 
 			String description = protein.getDescription();
 			if (description == null || "".equals(description)) {
 				if (retrieveFromUniprot) {
-					String uniprotACC = FastaParser.getUniProtACC(protein.getAccession());
+					final String uniprotACC = FastaParser.getUniProtACC(protein.getAccession());
 					if (uniprotACC != null) {
 						if (retrieveFromUniprot) {
-							Map<String, Entry> annotatedProtein = FileManager.getUniprotProteinLocalRetriever()
+							final Map<String, Entry> annotatedProtein = FileManager.getUniprotProteinLocalRetriever()
 									.getAnnotatedProtein(null, uniprotACC);
 							if (annotatedProtein.containsKey(uniprotACC)) {
-								Entry entry = annotatedProtein.get(uniprotACC);
+								final Entry entry = annotatedProtein.get(uniprotACC);
 								description = UniprotEntryUtil.getProteinDescription(entry);
 							}
 						}
@@ -633,7 +632,7 @@ public class ExporterUtil {
 			}
 
 		}
-		for (String description : descriptions) {
+		for (final String description : descriptions) {
 			if (!"".equals(proteinsDescriptions.toString()))
 				proteinsDescriptions.append(VALUE_SEPARATOR);
 			proteinsDescriptions.append(description);
@@ -642,11 +641,11 @@ public class ExporterUtil {
 	}
 
 	private String getProteinCoverage(PeptideOccurrence peptideOccurrence, IdentificationSet idSet) {
-		StringBuilder proteinsCovs = new StringBuilder();
-		UniprotProteinLocalRetriever uplr = FileManager.getUniprotProteinLocalRetriever();
+		final StringBuilder proteinsCovs = new StringBuilder();
+		final UniprotProteinLocalRetriever uplr = FileManager.getUniprotProteinLocalRetriever();
 		final ExtendedIdentifiedPeptide peptide = peptideOccurrence.getFirstOccurrence();
-		List<IdentifiedProtein> peptideProteins = peptide.getIdentifiedProteins();
-		for (IdentifiedProtein identifiedProtein : peptideProteins) {
+		final List<IdentifiedProtein> peptideProteins = peptide.getIdentifiedProteins();
+		for (final IdentifiedProtein identifiedProtein : peptideProteins) {
 			String coverage = ProteinMerger.getCoverage(
 					idSet.getProteinGroupOccurrence(identifiedProtein.getAccession()), null, retrieveFromUniprot, uplr);
 			if (coverage != null) {
@@ -664,12 +663,12 @@ public class ExporterUtil {
 	}
 
 	private String getProteinCoverage(ProteinGroupOccurrence occurrence) {
-		StringBuilder proteinsCovs = new StringBuilder();
+		final StringBuilder proteinsCovs = new StringBuilder();
 
 		if (occurrence.isDecoy())
 			return cleanString("");
 		try {
-			UniprotProteinLocalRetriever upr = FileManager.getUniprotProteinLocalRetriever();
+			final UniprotProteinLocalRetriever upr = FileManager.getUniprotProteinLocalRetriever();
 			String coverage = ProteinMerger.getCoverage(occurrence, null, retrieveFromUniprot, upr);
 
 			if (coverage != null) {
@@ -680,23 +679,23 @@ public class ExporterUtil {
 					proteinsCovs.append(VALUE_SEPARATOR);
 				proteinsCovs.append(coverage);
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 
 		}
 		return cleanString(proteinsCovs.toString());
 	}
 
 	private String getProteinAcc(PeptideOccurrence peptideOccurrence) {
-		StringBuilder proteinsAccs = new StringBuilder();
+		final StringBuilder proteinsAccs = new StringBuilder();
 
-		ArrayList<String> accs = new ArrayList<String>();
+		final ArrayList<String> accs = new ArrayList<String>();
 
-		for (ExtendedIdentifiedProtein protein : peptideOccurrence.getProteinList()) {
+		for (final ExtendedIdentifiedProtein protein : peptideOccurrence.getProteinList()) {
 			if (!accs.contains(protein.getAccession()))
 				accs.add(protein.getAccession());
 		}
 
-		for (String acc : accs) {
+		for (final String acc : accs) {
 			if (!"".equals(proteinsAccs.toString()))
 				proteinsAccs.append(VALUE_SEPARATOR);
 			proteinsAccs.append(acc);
@@ -706,9 +705,9 @@ public class ExporterUtil {
 	}
 
 	private String getENSGID(PeptideOccurrence peptideOccurrence) {
-		ArrayList<String> accs = new ArrayList<String>();
-		for (ExtendedIdentifiedPeptide pep : peptideOccurrence.getItemList()) {
-			for (IdentifiedProtein protein : pep.getIdentifiedProteins()) {
+		final ArrayList<String> accs = new ArrayList<String>();
+		for (final ExtendedIdentifiedPeptide pep : peptideOccurrence.getItemList()) {
+			for (final IdentifiedProtein protein : pep.getIdentifiedProteins()) {
 				if (!accs.contains(protein.getAccession()))
 					accs.add(protein.getAccession());
 			}
@@ -718,28 +717,28 @@ public class ExporterUtil {
 
 	private String getENSGID(ProteinGroupOccurrence proteinOccurrence) {
 
-		List<String> accs = proteinOccurrence.getAccessions();
+		final List<String> accs = proteinOccurrence.getAccessions();
 		return getENSGID(accs);
 
 	}
 
 	private String getENSGID(List<String> accs) {
-		Set<String> dicc = new THashSet<String>();
-		StringBuilder ENSG_IDS = new StringBuilder();
-		for (String acc : accs) {
+		final Set<String> dicc = new THashSet<String>();
+		final StringBuilder ENSG_IDS = new StringBuilder();
+		for (final String acc : accs) {
 			if (FastaParser.isContaminant(acc) || FastaParser.isReverse(acc)) {
 				continue;
 			}
-			String uniprotACC = FastaParser.getUniProtACC(acc);
+			final String uniprotACC = FastaParser.getUniProtACC(acc);
 
 			boolean added = false;
 			if (uniprotACC != null) {
 				if (retrieveFromUniprot) {
-					Map<String, Entry> annotatedProtein = FileManager.getUniprotProteinLocalRetriever()
+					final Map<String, Entry> annotatedProtein = FileManager.getUniprotProteinLocalRetriever()
 							.getAnnotatedProtein(null, uniprotACC);
 					if (annotatedProtein.containsKey(uniprotACC)) {
-						Entry entry = annotatedProtein.get(uniprotACC);
-						String ensg_id = UniprotEntryUtil.getENSGID(entry);
+						final Entry entry = annotatedProtein.get(uniprotACC);
+						final String ensg_id = UniprotEntryUtil.getENSGID(entry);
 						if (ensg_id != null) {
 							if (!dicc.contains(ensg_id)) {
 								dicc.add(ensg_id);
@@ -752,9 +751,9 @@ public class ExporterUtil {
 					}
 				}
 				if (proteinGeneMapping.containsKey(uniprotACC)) {
-					List<ENSGInfo> genes = proteinGeneMapping.get(uniprotACC);
-					for (ENSGInfo gene : genes) {
-						String ensg_id = gene.getEnsG_ID();
+					final List<ENSGInfo> genes = proteinGeneMapping.get(uniprotACC);
+					for (final ENSGInfo gene : genes) {
+						final String ensg_id = gene.getEnsG_ID();
 						if (ensg_id != null && !"null".equals(ensg_id))
 							if (!dicc.contains(ensg_id)) {
 								dicc.add(ensg_id);
@@ -780,9 +779,9 @@ public class ExporterUtil {
 
 	private String getGeneName(PeptideOccurrence peptideOccurrence) {
 
-		List<String> accs = new ArrayList<String>();
-		for (ExtendedIdentifiedPeptide pep : peptideOccurrence.getItemList()) {
-			for (IdentifiedProtein protein : pep.getIdentifiedProteins()) {
+		final List<String> accs = new ArrayList<String>();
+		for (final ExtendedIdentifiedPeptide pep : peptideOccurrence.getItemList()) {
+			for (final IdentifiedProtein protein : pep.getIdentifiedProteins()) {
 				if (!accs.contains(protein.getAccession()))
 					accs.add(protein.getAccession());
 			}
@@ -794,27 +793,27 @@ public class ExporterUtil {
 
 		// take all the gene names and then, if there is more than one, report
 		// all, other wise, report just one
-		List<String> accs = proteinOccurrence.getAccessions();
+		final List<String> accs = proteinOccurrence.getAccessions();
 		return getGeneName(accs);
 	}
 
 	private String getGeneName(List<String> accs) {
 
-		StringBuilder ret = new StringBuilder();
-		for (String acc : accs) {
+		final StringBuilder ret = new StringBuilder();
+		for (final String acc : accs) {
 			if (FastaParser.isContaminant(acc) || FastaParser.isReverse(acc)) {
 				continue;
 			}
-			List<String> geneNames = new ArrayList<String>();
+			final List<String> geneNames = new ArrayList<String>();
 			// try first in the internet
-			String uniprotACC = FastaParser.getUniProtACC(acc);
+			final String uniprotACC = FastaParser.getUniProtACC(acc);
 			if (uniprotACC != null) {
 				if (retrieveFromUniprot) {
-					UniprotProteinLocalRetriever upr = FileManager.getUniprotProteinLocalRetriever();
-					Map<String, Entry> annotatedProtein = upr.getAnnotatedProtein(null, uniprotACC);
+					final UniprotProteinLocalRetriever upr = FileManager.getUniprotProteinLocalRetriever();
+					final Map<String, Entry> annotatedProtein = upr.getAnnotatedProtein(null, uniprotACC);
 					if (annotatedProtein.containsKey(uniprotACC)) {
-						Entry entry = annotatedProtein.get(uniprotACC);
-						List<String> geneNameList = UniprotEntryUtil.getGeneName(entry, true, true);
+						final Entry entry = annotatedProtein.get(uniprotACC);
+						final List<String> geneNameList = UniprotEntryUtil.getGeneName(entry, true, true);
 						if (!geneNameList.isEmpty()) {
 							if (!geneNames.contains(geneNameList.get(0))) {
 								geneNames.add(geneNameList.get(0));
@@ -824,10 +823,10 @@ public class ExporterUtil {
 				}
 
 				if (proteinGeneMapping.containsKey(uniprotACC)) {
-					List<ENSGInfo> genes = proteinGeneMapping.get(uniprotACC);
+					final List<ENSGInfo> genes = proteinGeneMapping.get(uniprotACC);
 
-					for (ENSGInfo gene : genes) {
-						String geneName = gene.getGeneName();
+					for (final ENSGInfo gene : genes) {
+						final String geneName = gene.getGeneName();
 						if (geneName != null) {
 							if (!geneNames.contains(geneName)) {
 								geneNames.add(geneName);
@@ -845,7 +844,7 @@ public class ExporterUtil {
 					ret.append("[");
 				}
 				int i = 0;
-				for (String geneName : geneNames) {
+				for (final String geneName : geneNames) {
 					ret.append(geneName);
 					if (i > 0) {
 						ret.append(",");
@@ -864,9 +863,9 @@ public class ExporterUtil {
 	}
 
 	private String getChromosomeName(PeptideOccurrence peptideOccurrence) {
-		List<String> accs = new ArrayList<String>();
-		for (ExtendedIdentifiedPeptide pep : peptideOccurrence.getItemList()) {
-			for (IdentifiedProtein protein : pep.getIdentifiedProteins()) {
+		final List<String> accs = new ArrayList<String>();
+		for (final ExtendedIdentifiedPeptide pep : peptideOccurrence.getItemList()) {
+			for (final IdentifiedProtein protein : pep.getIdentifiedProteins()) {
 				if (!accs.contains(protein.getAccession()))
 					accs.add(protein.getAccession());
 			}
@@ -876,27 +875,27 @@ public class ExporterUtil {
 
 	private String getChromosomeName(ProteinGroupOccurrence proteinOccurrence) {
 
-		List<String> accs = proteinOccurrence.getAccessions();
+		final List<String> accs = proteinOccurrence.getAccessions();
 
 		return getChromosomeName(accs);
 	}
 
 	public String getChromosomeName(List<String> accs) {
-		Set<String> dicc = new THashSet<String>();
-		StringBuilder chrNames = new StringBuilder();
-		for (String acc : accs) {
+		final Set<String> dicc = new THashSet<String>();
+		final StringBuilder chrNames = new StringBuilder();
+		for (final String acc : accs) {
 			boolean added = false;
 			if (FastaParser.isContaminant(acc) || FastaParser.isReverse(acc)) {
 				continue;
 			}
-			String uniprotACC = FastaParser.getUniProtACC(acc);
+			final String uniprotACC = FastaParser.getUniProtACC(acc);
 			if (uniprotACC != null) {
 				if (retrieveFromUniprot) {
 					// try from internet
-					UniprotProteinLocalRetriever upr = FileManager.getUniprotProteinLocalRetriever();
-					Map<String, Entry> annotatedProtein = upr.getAnnotatedProtein(null, uniprotACC);
+					final UniprotProteinLocalRetriever upr = FileManager.getUniprotProteinLocalRetriever();
+					final Map<String, Entry> annotatedProtein = upr.getAnnotatedProtein(null, uniprotACC);
 					if (annotatedProtein.containsKey(uniprotACC)) {
-						Entry entry = annotatedProtein.get(uniprotACC);
+						final Entry entry = annotatedProtein.get(uniprotACC);
 						String chrName = UniprotEntryUtil.getChromosomeName(entry);
 						if (chrName != null) {
 							if (chrName.startsWith("Chromosome")) {
@@ -913,9 +912,9 @@ public class ExporterUtil {
 					}
 				}
 				if (proteinGeneMapping.containsKey(uniprotACC)) {
-					List<ENSGInfo> genes = proteinGeneMapping.get(uniprotACC);
-					for (ENSGInfo gene : genes) {
-						String chrName = gene.getChrName();
+					final List<ENSGInfo> genes = proteinGeneMapping.get(uniprotACC);
+					for (final ENSGInfo gene : genes) {
+						final String chrName = gene.getChrName();
 						if (chrName != null) {
 							if (!dicc.contains(chrName)) {
 								added = true;
@@ -940,29 +939,29 @@ public class ExporterUtil {
 	}
 
 	private String getProteinEvidenceName(PeptideOccurrence peptideOccurrence) {
-		Set<String> dicc = new THashSet<String>();
-		StringBuilder evidences = new StringBuilder();
+		final Set<String> dicc = new THashSet<String>();
+		final StringBuilder evidences = new StringBuilder();
 		if (!retrieveFromUniprot) {
 			return cleanString("");
 		}
-		List<String> accs = new ArrayList<String>();
-		for (ExtendedIdentifiedPeptide pep : peptideOccurrence.getItemList()) {
-			for (ExtendedIdentifiedProtein protein : pep.getProteins()) {
+		final List<String> accs = new ArrayList<String>();
+		for (final ExtendedIdentifiedPeptide pep : peptideOccurrence.getItemList()) {
+			for (final ExtendedIdentifiedProtein protein : pep.getProteins()) {
 				if (!accs.contains(protein.getAccession()))
 					accs.add(protein.getAccession());
 			}
 		}
-		for (String acc : accs) {
+		for (final String acc : accs) {
 			if (FastaParser.isContaminant(acc) || FastaParser.isReverse(acc)) {
 				continue;
 			}
-			String uniprotACC = FastaParser.getUniProtACC(acc);
+			final String uniprotACC = FastaParser.getUniProtACC(acc);
 			if (uniprotACC != null) {
-				Map<String, Entry> annotatedProtein = FileManager.getUniprotProteinLocalRetriever()
+				final Map<String, Entry> annotatedProtein = FileManager.getUniprotProteinLocalRetriever()
 						.getAnnotatedProtein(null, uniprotACC);
 				if (annotatedProtein.containsKey(uniprotACC)) {
-					Entry entry = annotatedProtein.get(uniprotACC);
-					String evidence = UniprotEntryUtil.getUniprotEvidence(entry);
+					final Entry entry = annotatedProtein.get(uniprotACC);
+					final String evidence = UniprotEntryUtil.getUniprotEvidence(entry);
 					if (evidence != null) {
 						if (!dicc.contains(evidence)) {
 							dicc.add(evidence);
@@ -980,23 +979,23 @@ public class ExporterUtil {
 	}
 
 	private String getProteinEvidenceName(ProteinGroupOccurrence proteinOccurrence) {
-		Set<String> dicc = new THashSet<String>();
-		StringBuilder evidences = new StringBuilder();
+		final Set<String> dicc = new THashSet<String>();
+		final StringBuilder evidences = new StringBuilder();
 		if (!retrieveFromUniprot) {
 			return cleanString("");
 		}
-		List<String> accs = proteinOccurrence.getAccessions();
-		for (String acc : accs) {
+		final List<String> accs = proteinOccurrence.getAccessions();
+		for (final String acc : accs) {
 			if (FastaParser.isContaminant(acc) || FastaParser.isReverse(acc)) {
 				continue;
 			}
-			String uniprotACC = FastaParser.getUniProtACC(acc);
+			final String uniprotACC = FastaParser.getUniProtACC(acc);
 			if (uniprotACC != null) {
-				Map<String, Entry> annotatedProtein = FileManager.getUniprotProteinLocalRetriever()
+				final Map<String, Entry> annotatedProtein = FileManager.getUniprotProteinLocalRetriever()
 						.getAnnotatedProtein(null, uniprotACC);
 				if (annotatedProtein.containsKey(uniprotACC)) {
-					Entry entry = annotatedProtein.get(uniprotACC);
-					String evidence = UniprotEntryUtil.getUniprotEvidence(entry);
+					final Entry entry = annotatedProtein.get(uniprotACC);
+					final String evidence = UniprotEntryUtil.getUniprotEvidence(entry);
 					if (evidence != null) {
 						if (!dicc.contains(evidence)) {
 							dicc.add(evidence);
@@ -1015,9 +1014,9 @@ public class ExporterUtil {
 	private int getNumDifExtendedPeptides(List<ExtendedIdentifiedPeptide> list) {
 		if (list != null) {
 
-			Set<String> seqs = new THashSet<String>();
-			for (IdentifiedPeptide pep : list) {
-				String seq = pep.getSequence();
+			final Set<String> seqs = new THashSet<String>();
+			for (final IdentifiedPeptide pep : list) {
+				final String seq = pep.getSequence();
 				if (!seqs.contains(seq))
 					seqs.add(seq);
 			}
@@ -1029,9 +1028,9 @@ public class ExporterUtil {
 	private int getNumDifPeptides(List<IdentifiedPeptide> list) {
 		if (list != null) {
 
-			Set<String> seqs = new THashSet<String>();
-			for (IdentifiedPeptide pep : list) {
-				String seq = pep.getSequence();
+			final Set<String> seqs = new THashSet<String>();
+			for (final IdentifiedPeptide pep : list) {
+				final String seq = pep.getSequence();
 				if (!seqs.contains(seq))
 					seqs.add(seq);
 			}
@@ -1041,8 +1040,8 @@ public class ExporterUtil {
 	}
 
 	private String getCharge(PeptideOccurrence peptideOccurrence) {
-		Set<String> charges = new THashSet<String>();
-		for (ExtendedIdentifiedPeptide extendedPeptide : peptideOccurrence.getItemList()) {
+		final Set<String> charges = new THashSet<String>();
+		for (final ExtendedIdentifiedPeptide extendedPeptide : peptideOccurrence.getItemList()) {
 			final String charge = extendedPeptide.getCharge();
 			if (charge != null && !charges.contains(charge)) {
 				charges.add(charge);
@@ -1052,8 +1051,8 @@ public class ExporterUtil {
 	}
 
 	private String getRt(PeptideOccurrence peptideOccurrence) {
-		Set<String> rts = new THashSet<String>();
-		for (ExtendedIdentifiedPeptide extendedPeptide : peptideOccurrence.getItemList()) {
+		final Set<String> rts = new THashSet<String>();
+		for (final ExtendedIdentifiedPeptide extendedPeptide : peptideOccurrence.getItemList()) {
 			final String rt = extendedPeptide.getRetentionTimeInSeconds();
 			if (rt != null && !rts.contains(rt)) {
 				rts.add(rt);
@@ -1076,13 +1075,13 @@ public class ExporterUtil {
 		if (!string.contains(VALUE_SEPARATOR)) {
 
 			try {
-				Integer i = Integer.valueOf(string);
+				final Integer i = Integer.valueOf(string);
 				return String.valueOf(i);
-			} catch (NumberFormatException e1) {
+			} catch (final NumberFormatException e1) {
 				try {
-					Double d = Double.valueOf(string);
+					final Double d = Double.valueOf(string);
 					return parseDouble(d);
-				} catch (NumberFormatException e) {
+				} catch (final NumberFormatException e) {
 					return string.trim();
 				}
 			}
@@ -1093,10 +1092,10 @@ public class ExporterUtil {
 	}
 
 	private String cleanString(Collection<String> objs) {
-		StringBuilder sb = new StringBuilder("");
+		final StringBuilder sb = new StringBuilder("");
 		if (objs == null || objs.isEmpty())
 			return "-";
-		for (String obj : objs) {
+		for (final String obj : objs) {
 			if (!"".equals(sb.toString()))
 				sb.append(VALUE_SEPARATOR);
 			sb.append(obj);
@@ -1108,8 +1107,6 @@ public class ExporterUtil {
 	private String parseDouble(Double score) {
 		if (score == null)
 			return "-";
-		DecimalFormat df = null;
-
 		// String test = DecimalFormat.getNumberInstance().format(score);
 		// return test;
 		String format = "";
@@ -1133,11 +1130,11 @@ public class ExporterUtil {
 			return "-";
 		}
 		try {
-			Number test = NumberFormat.getInstance().parse(format);
+			NumberFormat.getInstance().parse(format);
 
-		} catch (NumberFormatException e) {
+		} catch (final NumberFormatException e) {
 			log.info("CUIDADO");
-		} catch (ParseException e) {
+		} catch (final ParseException e) {
 			log.info("CUIDADO");
 		}
 		return format;
@@ -1146,15 +1143,13 @@ public class ExporterUtil {
 	private String parseFloat(Float score) {
 		if (score == null)
 			return "-";
-		DecimalFormat df = null;
-
 		// String test = DecimalFormat.getNumberInstance().format(score);
 		// return test;
 		String format = "";
 		if (score == 0.0)
 			return "0";
 		if (score > 0.01) {
-			NumberFormat formater = DecimalFormat.getInstance();
+			final NumberFormat formater = NumberFormat.getInstance();
 			formater.setMaximumFractionDigits(3);
 			formater.setGroupingUsed(false);
 			format = formater.format(score);
@@ -1173,11 +1168,11 @@ public class ExporterUtil {
 			return "-";
 		}
 		try {
-			Number test = NumberFormat.getInstance().parse(format);
+			NumberFormat.getInstance().parse(format);
 
-		} catch (NumberFormatException e) {
+		} catch (final NumberFormatException e) {
 			log.info("CUIDADO");
-		} catch (ParseException e) {
+		} catch (final ParseException e) {
 			log.info("CUIDADO");
 		}
 		return format;
@@ -1185,7 +1180,7 @@ public class ExporterUtil {
 
 	public static boolean isNonConclusiveProtein(ProteinGroup proteinGroup) {
 		if (proteinGroup != null) {
-			for (ExtendedIdentifiedProtein protein : proteinGroup) {
+			for (final ExtendedIdentifiedProtein protein : proteinGroup) {
 				if (protein.getEvidence() == ProteinEvidence.NONCONCLUSIVE)
 					return true;
 			}
@@ -1197,9 +1192,9 @@ public class ExporterUtil {
 		if (proteinGroupOccurrence.getEvidence().equals(ProteinEvidence.NONCONCLUSIVE))
 			return true;
 		if (proteinGroupOccurrence != null) {
-			List<ExtendedIdentifiedProtein> proteins = proteinGroupOccurrence.getProteins();
+			final List<ExtendedIdentifiedProtein> proteins = proteinGroupOccurrence.getProteins();
 			if (proteins != null) {
-				for (ExtendedIdentifiedProtein protein : proteins) {
+				for (final ExtendedIdentifiedProtein protein : proteins) {
 					if (protein.getEvidence().equals(ProteinEvidence.NONCONCLUSIVE))
 						return true;
 				}
@@ -1211,9 +1206,9 @@ public class ExporterUtil {
 
 	public static boolean isNonConclusivePeptide(ExtendedIdentifiedPeptide peptide) {
 		if (peptide != null) {
-			List<ExtendedIdentifiedProtein> proteins = peptide.getProteins();
+			final List<ExtendedIdentifiedProtein> proteins = peptide.getProteins();
 			if (proteins != null)
-				for (ExtendedIdentifiedProtein protein : proteins) {
+				for (final ExtendedIdentifiedProtein protein : proteins) {
 					if (protein.getEvidence() == ProteinEvidence.NONCONCLUSIVE)
 						return true;
 				}
@@ -1223,10 +1218,10 @@ public class ExporterUtil {
 
 	public static boolean isNonConclusivePeptide(PeptideOccurrence peptideOccurrence) {
 		if (peptideOccurrence != null) {
-			for (ExtendedIdentifiedPeptide peptide : peptideOccurrence.getItemList()) {
-				List<ExtendedIdentifiedProtein> proteins = peptide.getProteins();
+			for (final ExtendedIdentifiedPeptide peptide : peptideOccurrence.getItemList()) {
+				final List<ExtendedIdentifiedProtein> proteins = peptide.getProteins();
 				if (proteins != null)
-					for (ExtendedIdentifiedProtein protein : proteins) {
+					for (final ExtendedIdentifiedProtein protein : proteins) {
 						if (protein.getEvidence() == ProteinEvidence.NONCONCLUSIVE)
 							return true;
 					}
@@ -1240,11 +1235,11 @@ public class ExporterUtil {
 	 * @return
 	 */
 	public static List<String> getProteinScoreNames(Collection<IdentificationSet> idSets) {
-		Set<String> ret = new THashSet<String>();
-		for (IdentificationSet idSet : idSets) {
+		final Set<String> ret = new THashSet<String>();
+		for (final IdentificationSet idSet : idSets) {
 			ret.addAll(idSet.getProteinScoreNames());
 		}
-		List<String> list = new ArrayList<String>();
+		final List<String> list = new ArrayList<String>();
 		Collections.sort(list);
 		return list;
 	}
@@ -1254,19 +1249,19 @@ public class ExporterUtil {
 	 * @return
 	 */
 	public static List<String> getPeptideScoreNames(Collection<IdentificationSet> idSets) {
-		Set<String> ret = new THashSet<String>();
-		for (IdentificationSet idSet : idSets) {
+		final Set<String> ret = new THashSet<String>();
+		for (final IdentificationSet idSet : idSets) {
 			ret.addAll(idSet.getPeptideScoreNames());
 		}
 
-		List<String> list = new ArrayList<String>();
+		final List<String> list = new ArrayList<String>();
 		list.addAll(ret);
 		Collections.sort(list);
 		return list;
 	}
 
 	public static Set<IdentificationSet> getSelectedIdentificationSets(IdentificationSet idSet, DataLevel dataLevel) {
-		Set<IdentificationSet> set = new THashSet<IdentificationSet>();
+		final Set<IdentificationSet> set = new THashSet<IdentificationSet>();
 		set.add(idSet);
 		return set;
 	}
@@ -1283,24 +1278,24 @@ public class ExporterUtil {
 		if (idSets.isEmpty()) {
 			return Collections.emptySet();
 		}
-		Set<IdentificationSet> ret = new THashSet<IdentificationSet>();
+		final Set<IdentificationSet> ret = new THashSet<IdentificationSet>();
 
 		switch (dataLevel) {
 		case LEVEL0:
-			for (IdentificationSet idSet : idSets) {
+			for (final IdentificationSet idSet : idSets) {
 				if (idSet instanceof ExperimentList) {
 					try {
 						ret.add(idSet);
-					} catch (UnsupportedOperationException e) {
+					} catch (final UnsupportedOperationException e) {
 
 					}
 				}
 			}
 			if (ret.isEmpty()) {
-				for (IdentificationSet idSet : idSets) {
+				for (final IdentificationSet idSet : idSets) {
 					try {
 						ret.addAll(idSet.getNextLevelIdentificationSetList());
-					} catch (UnsupportedOperationException e) {
+					} catch (final UnsupportedOperationException e) {
 
 					}
 				}
@@ -1308,16 +1303,16 @@ public class ExporterUtil {
 			}
 			break;
 		case LEVEL1:
-			for (IdentificationSet idSet : idSets) {
+			for (final IdentificationSet idSet : idSets) {
 				if (idSet instanceof Experiment) {
 					ret.add(idSet);
 				}
 			}
 			if (ret.isEmpty()) {
-				for (IdentificationSet idSet : idSets) {
+				for (final IdentificationSet idSet : idSets) {
 					try {
 						ret.addAll(idSet.getNextLevelIdentificationSetList());
-					} catch (UnsupportedOperationException e) {
+					} catch (final UnsupportedOperationException e) {
 
 					}
 				}
@@ -1325,13 +1320,13 @@ public class ExporterUtil {
 			}
 			break;
 		case LEVEL2:
-			for (IdentificationSet idSet : idSets) {
+			for (final IdentificationSet idSet : idSets) {
 				if (idSet instanceof Replicate) {
 					ret.add(idSet);
 				}
 			}
 			if (ret.isEmpty()) {
-				for (IdentificationSet idSet : idSets) {
+				for (final IdentificationSet idSet : idSets) {
 					ret.addAll(idSet.getNextLevelIdentificationSetList());
 				}
 				return getSelectedIdentificationSets(ret, dataLevel);
