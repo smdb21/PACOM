@@ -7,10 +7,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
+
+import gnu.trove.map.hash.THashMap;
 
 /**
  * <p>
@@ -27,7 +28,7 @@ import java.util.Random;
 public class ClientHttpRequest {
 	URLConnection connection;
 	OutputStream os = null;
-	Map cookies = new HashMap();
+	Map cookies = new THashMap();
 
 	protected void connect() throws IOException {
 		if (os == null)
@@ -105,10 +106,10 @@ public class ClientHttpRequest {
 	}
 
 	private void postCookies() {
-		StringBuffer cookieList = new StringBuffer();
+		final StringBuffer cookieList = new StringBuffer();
 
-		for (Iterator i = cookies.entrySet().iterator(); i.hasNext();) {
-			Map.Entry entry = (Map.Entry) (i.next());
+		for (final Iterator i = cookies.entrySet().iterator(); i.hasNext();) {
+			final Map.Entry entry = (Map.Entry) (i.next());
 			cookieList.append(entry.getKey().toString() + "=" + entry.getValue());
 
 			if (i.hasNext()) {
@@ -189,7 +190,7 @@ public class ClientHttpRequest {
 	private static void pipe(InputStream in, OutputStream out) throws IOException {
 		byte[] buf = new byte[500000];
 		int nread;
-		int navailable;
+		final int navailable;
 		int total = 0;
 		synchronized (in) {
 			while ((nread = in.read(buf, 0, buf.length)) >= 0) {
@@ -220,7 +221,7 @@ public class ClientHttpRequest {
 		write('"');
 		newline();
 		write("Content-Type: ");
-		String type = connection.guessContentTypeFromName(filename);
+		String type = URLConnection.guessContentTypeFromName(filename);
 		if (type == null)
 			type = "application/octet-stream";
 		writeln(type);
@@ -274,8 +275,8 @@ public class ClientHttpRequest {
 	public void setParameters(Map parameters) throws IOException {
 		if (parameters == null)
 			return;
-		for (Iterator i = parameters.entrySet().iterator(); i.hasNext();) {
-			Map.Entry entry = (Map.Entry) i.next();
+		for (final Iterator i = parameters.entrySet().iterator(); i.hasNext();) {
+			final Map.Entry entry = (Map.Entry) i.next();
 			setParameter(entry.getKey().toString(), entry.getValue());
 		}
 	}

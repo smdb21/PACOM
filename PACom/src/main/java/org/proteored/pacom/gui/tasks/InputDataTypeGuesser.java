@@ -1,7 +1,6 @@
 package org.proteored.pacom.gui.tasks;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,6 +11,7 @@ import org.proteored.pacom.gui.importjobs.InputFileType;
 
 import edu.scripps.yates.dtaselectparser.DTASelectParser;
 import edu.scripps.yates.utilities.files.FileUtils;
+import gnu.trove.map.hash.THashMap;
 import umich.ms.fileio.filetypes.pepxml.PepXmlParser;
 import umich.ms.fileio.filetypes.pepxml.jaxb.standard.MsmsRunSummary;
 
@@ -32,11 +32,11 @@ public class InputDataTypeGuesser extends SwingWorker<Void, Void> {
 
 	private final File[] files;
 	private final MiapeExtractionTask associatedTask;
-	private HashMap<File, InputFileType> map;
+	private THashMap<File, InputFileType> map;
 
 	public InputDataTypeGuesser(File[] files) {
 		this.files = files;
-		this.associatedTask = null;
+		associatedTask = null;
 	}
 
 	public InputDataTypeGuesser(File file, MiapeExtractionTask associatedTask) {
@@ -46,7 +46,7 @@ public class InputDataTypeGuesser extends SwingWorker<Void, Void> {
 	}
 
 	private InputFileType guessInputDataType(File file) {
-		List<String> fiveFirstLines = FileUtils.readFirstLines(file, 5l);
+		final List<String> fiveFirstLines = FileUtils.readFirstLines(file, 5l);
 		// PEP XML
 		if (contains(fiveFirstLines, "<msms_pipeline_analysis ")) {
 			return InputFileType.PEPXML;
@@ -62,13 +62,13 @@ public class InputDataTypeGuesser extends SwingWorker<Void, Void> {
 
 		try {
 			// PEPXML
-			Iterator<MsmsRunSummary> iterator = PepXmlParser.parse(FileUtils.getInputStream(file));
+			final Iterator<MsmsRunSummary> iterator = PepXmlParser.parse(FileUtils.getInputStream(file));
 			if (iterator != null) {
 				if (iterator.hasNext()) {
 					return InputFileType.PEPXML;
 				}
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			log.debug("It is not a PEPXML " + e.getMessage());
 		}
 		try {
@@ -76,7 +76,7 @@ public class InputDataTypeGuesser extends SwingWorker<Void, Void> {
 			if (new DTASelectParser(file).canRead(file)) {
 				return InputFileType.DTASELECT;
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			log.debug("It is not a DTASelect file " + e.getMessage());
 		}
 
@@ -85,7 +85,7 @@ public class InputDataTypeGuesser extends SwingWorker<Void, Void> {
 
 	private boolean contains(List<String> fiveFirstLines, String toFind) {
 		if (fiveFirstLines != null) {
-			for (String string : fiveFirstLines) {
+			for (final String string : fiveFirstLines) {
 				if (string.toLowerCase().contains(toFind.toLowerCase())) {
 					return true;
 				}
@@ -97,12 +97,12 @@ public class InputDataTypeGuesser extends SwingWorker<Void, Void> {
 	@Override
 	protected Void doInBackground() throws Exception {
 		try {
-			map = new HashMap<File, InputFileType>();
+			map = new THashMap<File, InputFileType>();
 			firePropertyChange(INPUT_DATA_TYPE_GUESSING_STARTED, null, this);
 
 			for (int i = 0; i < files.length; i++) {
-				File file = files[i];
-				InputFileType guessedInputDataType = guessInputDataType(file);
+				final File file = files[i];
+				final InputFileType guessedInputDataType = guessInputDataType(file);
 				// fire signal even if it is null
 				firePropertyChange(INPUT_DATA_TYPE_GUESSED, file, this);
 
@@ -111,7 +111,7 @@ public class InputDataTypeGuesser extends SwingWorker<Void, Void> {
 			}
 			firePropertyChange(INPUT_DATA_TYPE_GUESSING_FINISHED, null, this);
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			firePropertyChange(INPUT_DATA_TYPE_GUESSING_ERROR, null, e);
 		}
 		return null;
@@ -129,11 +129,11 @@ public class InputDataTypeGuesser extends SwingWorker<Void, Void> {
 		return associatedTask;
 	}
 
-	public HashMap<File, InputFileType> getGuessedTypes() {
+	public THashMap<File, InputFileType> getGuessedTypes() {
 		return map;
 	}
 
 	public File[] getFiles() {
-		return this.files;
+		return files;
 	}
 }

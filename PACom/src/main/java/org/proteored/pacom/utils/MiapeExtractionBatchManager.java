@@ -9,7 +9,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.SwingWorker.StateValue;
@@ -28,6 +27,8 @@ import org.proteored.pacom.gui.importjobs.InputFileType;
 import org.proteored.pacom.gui.tasks.MiapeExtractionTask;
 
 import edu.scripps.yates.utilities.dates.DatesUtil;
+import gnu.trove.iterator.TIntIterator;
+import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.set.hash.TIntHashSet;
 
@@ -49,7 +50,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 	private static final Integer NUM_RETRIES = 1; // 1 means no retries
 	public static final String MIAPE_BATCH_DONE = "Miape batch done";
 
-	private final List<Integer> miapeExtractionQueueOrder = new ArrayList<Integer>();
+	private final TIntArrayList miapeExtractionQueueOrder = new TIntArrayList();
 	private final TIntObjectHashMap<MiapeExtractionTask> miapeExtractionTasks = new TIntObjectHashMap<MiapeExtractionTask>();
 	private static int CONCURRENT_MIAPE_EXTRACTIONS = 1;
 	private final File inputBatchFile;
@@ -96,7 +97,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 	private void createInputBatchTasksFromInputFiles(List<File> inputFiles, List<File> attachedMSFiles,
 			InputFileType mode, String projectName, TableTextFileSeparator separator) {
 		int index = 0;
-		for (File file : inputFiles) {
+		for (final File file : inputFiles) {
 			File attachedMSFile = null;
 			if (attachedMSFiles != null) {
 				if (attachedMSFiles.size() == inputFiles.size()) {
@@ -124,22 +125,22 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 	 */
 	public MiapeExtractionTask addImportTask(File inputFile, InputFileType inputFileType, File attachedMSFile,
 			String projectName, TableTextFileSeparator separator) {
-		MiapeExtractionRunParametersImpl params = new MiapeExtractionRunParametersImpl();
+		final MiapeExtractionRunParametersImpl params = new MiapeExtractionRunParametersImpl();
 		params.setInputFile(inputFile);
 		params.setProjectName(projectName);
-		int jobID = getNextJobIDAvailable();
+		final int jobID = getNextJobIDAvailable();
 
 		params.setInputFileType(inputFileType);
 		params.setSeparator(separator);
 
 		try {
 			params.consolidate();
-		} catch (IllegalMiapeArgumentException e) {
+		} catch (final IllegalMiapeArgumentException e) {
 			e.printStackTrace();
 
 		}
 
-		MiapeExtractionTask task = new MiapeExtractionTask(jobID, params);
+		final MiapeExtractionTask task = new MiapeExtractionTask(jobID, params);
 		addTaskToQueue(task);
 		log.info("Task id:" + task.getRunIdentifier() + " added to queue");
 
@@ -147,8 +148,8 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 	}
 
 	public List<MiapeExtractionTask> getMiapeExtractionQueue() {
-		List<MiapeExtractionTask> ret = new ArrayList<MiapeExtractionTask>();
-		for (Integer index : miapeExtractionQueueOrder) {
+		final List<MiapeExtractionTask> ret = new ArrayList<MiapeExtractionTask>();
+		for (final int index : miapeExtractionQueueOrder.toArray()) {
 			ret.add(miapeExtractionTasks.get(index));
 		}
 		return ret;
@@ -168,7 +169,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 				while ((strLine = br.readLine()) != null) {
 					strLine = strLine.trim();
 					if (strLine.contains("#")) {
-						String[] split = strLine.split("#");
+						final String[] split = strLine.split("#");
 						strLine = split[0];
 					}
 
@@ -177,12 +178,12 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 
 						params = new MiapeExtractionRunParametersImpl();
 
-						String[] split = strLine.split("\t");
+						final String[] split = strLine.split("\t");
 
 						params.setId(Integer.valueOf(split[1]));
 					} else if (strLine.startsWith(MZIDENTML)) {
-						String[] split = strLine.split("\t");
-						File inputFile = new File(getLocationOfFile(split[1]));
+						final String[] split = strLine.split("\t");
+						final File inputFile = new File(getLocationOfFile(split[1]));
 						params.setInputFile(inputFile);
 						if (params.isMGFSelected()) {
 							params.setInputFileType(InputFileType.MZIDENTMLPLUSMGF);
@@ -197,7 +198,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 						}
 
 					} else if (strLine.startsWith(MGF)) {
-						String[] split = strLine.split("\t");
+						final String[] split = strLine.split("\t");
 						if (params.isDTASelectSelected()) {
 							params.setInputFileType(InputFileType.DTASELECTPLUSMGF);
 						} else if (params.isMzIdentMLSelected()) {
@@ -207,104 +208,104 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 						} else if (params.isXTandemSelected()) {
 							params.setInputFileType(InputFileType.XTANDEMPLUSMGF);
 						}
-						File inputFile = new File(getLocationOfFile(split[1]));
+						final File inputFile = new File(getLocationOfFile(split[1]));
 						params.setInputFile(inputFile);
 						if (!inputFile.exists() || !inputFile.isFile())
 							throw new IllegalMiapeArgumentException("File not found: " + params.getInputFileName());
 
 					} else if (strLine.startsWith(MZML)) {
-						String[] split = strLine.split("\t");
+						final String[] split = strLine.split("\t");
 						params.setInputFileType(InputFileType.MZIDENTMLPLUSMZML);
-						File inputFile = new File(getLocationOfFile(split[1]));
+						final File inputFile = new File(getLocationOfFile(split[1]));
 						params.setInputFile(inputFile);
 						if (!inputFile.exists() || !inputFile.isFile())
 							throw new IllegalMiapeArgumentException("File not found: " + params.getInputFileName());
 
 					} else if (strLine.startsWith(PRIDE)) {
-						String[] split = strLine.split("\t");
+						final String[] split = strLine.split("\t");
 						params.setInputFileType(InputFileType.PRIDEXML);
-						File inputFile = new File(getLocationOfFile(split[1]));
+						final File inputFile = new File(getLocationOfFile(split[1]));
 						params.setInputFile(inputFile);
 						if (!inputFile.exists() || !inputFile.isFile())
 							throw new IllegalMiapeArgumentException("File not found: " + params.getInputFileName());
 
 					} else if (strLine.startsWith(XTANDEM)) {
-						String[] split = strLine.split("\t");
+						final String[] split = strLine.split("\t");
 						if (params.isMGFSelected()) {
 							params.setInputFileType(InputFileType.XTANDEMPLUSMGF);
 						} else {
 							params.setInputFileType(InputFileType.XTANDEM);
 						}
-						File inputFile = new File(getLocationOfFile(split[1]));
+						final File inputFile = new File(getLocationOfFile(split[1]));
 						params.setInputFile(inputFile);
 						if (!inputFile.exists() || !inputFile.isFile())
 							throw new IllegalMiapeArgumentException("File not found: " + params.getInputFileName());
 
 					} else if (strLine.startsWith(DTASELECT)) {
-						String[] split = strLine.split("\t");
+						final String[] split = strLine.split("\t");
 						if (params.isMGFSelected()) {
 							params.setInputFileType(InputFileType.DTASELECTPLUSMGF);
 						} else {
 							params.setInputFileType(InputFileType.DTASELECT);
 						}
-						File inputFile = new File(getLocationOfFile(split[1]));
+						final File inputFile = new File(getLocationOfFile(split[1]));
 						params.setInputFile(inputFile);
 						if (!inputFile.exists() || !inputFile.isFile())
 							throw new IllegalMiapeArgumentException("File not found: " + params.getInputFileName());
 
 					} else if (strLine.startsWith(PEPXML)) {
-						String[] split = strLine.split("\t");
+						final String[] split = strLine.split("\t");
 						if (params.isMGFSelected()) {
 							params.setInputFileType(InputFileType.PEPXMLPLUSMGF);
 						} else {
 							params.setInputFileType(InputFileType.PEPXML);
 						}
-						File inputFile = new File(getLocationOfFile(split[1]));
+						final File inputFile = new File(getLocationOfFile(split[1]));
 						params.setInputFile(inputFile);
 						if (!inputFile.exists() || !inputFile.isFile())
 							throw new IllegalMiapeArgumentException("File not found: " + params.getInputFileName());
 
 					} else if (strLine.startsWith(TEXT_DATA_TABLE)) {
-						String[] split = strLine.split("\t");
+						final String[] split = strLine.split("\t");
 						params.setInputFileType(InputFileType.TABLETEXT);
 
-						File inputFile = new File(getLocationOfFile(split[1]));
+						final File inputFile = new File(getLocationOfFile(split[1]));
 						params.setInputFile(inputFile);
 						if (!inputFile.exists() || !inputFile.isFile())
 							throw new IllegalMiapeArgumentException("File not found: " + params.getInputFileName());
 
 					} else if (strLine.startsWith(MIAPE_PROJECT)) {
-						String[] split = strLine.split("\t");
+						final String[] split = strLine.split("\t");
 						params.setProjectName(split[1]);
 
 					} else if (strLine.startsWith(METADATA)) {
-						String[] split = strLine.split("\t");
-						String metadataFileName = split[1];
-						File metadataFile = FileManager.getMetadataFile(metadataFileName);
+						final String[] split = strLine.split("\t");
+						final String metadataFileName = split[1];
+						final File metadataFile = FileManager.getMetadataFile(metadataFileName);
 						if (metadataFile == null)
 							throw new IllegalMiapeArgumentException("Metadata template '" + metadataFileName
 									+ "' is not present at /userdata/miape_ms_metadata/ folder");
 						if (cvManager == null)
 							throw new IllegalMiapeArgumentException(
 									"Please wait until ontologies are internally loaded. It will take just some seconds...");
-						MIAPEMSXmlFile xmlFile = new MIAPEMSXmlFile(metadataFile);
-						MiapeMSDocument metadataMiapeMS = MiapeMSXmlFactory.getFactory().toDocument(xmlFile, cvManager,
-								null, null, null);
+						final MIAPEMSXmlFile xmlFile = new MIAPEMSXmlFile(metadataFile);
+						final MiapeMSDocument metadataMiapeMS = MiapeMSXmlFactory.getFactory().toDocument(xmlFile,
+								cvManager, null, null, null);
 
 						params.setMiapeMSMetadata(metadataMiapeMS);
 						params.setTemplateName(metadataFileName);
 					} else if (strLine.startsWith(END_MIAPE_EXTRACTION)) {
 						params.consolidate();
-						MiapeExtractionTask task = new MiapeExtractionTask(params.getId(), params,
+						final MiapeExtractionTask task = new MiapeExtractionTask(params.getId(), params,
 
 								MainFrame.parallelProcessingOnExtraction);
 						addTaskToQueue(task);
 					} else if (strLine.startsWith(MS_JOB_REF)) {
-						String[] split = strLine.split("\t");
+						final String[] split = strLine.split("\t");
 						try {
-							Integer associatedMIAPEMSGeneratorJobID = Integer.valueOf(split[1]);
+							final Integer associatedMIAPEMSGeneratorJobID = Integer.valueOf(split[1]);
 							params.setAssociatedMIAPEMSGeneratorJob(associatedMIAPEMSGeneratorJobID);
-						} catch (NumberFormatException e) {
+						} catch (final NumberFormatException e) {
 							throw new IllegalMiapeArgumentException(
 									"A positive number should be located after 'MS_REF' tag");
 						}
@@ -322,7 +323,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 				}
 
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			if (e instanceof ArrayIndexOutOfBoundsException)
 				throw new IllegalMiapeArgumentException("Error in batch import file: Line " + numLine
@@ -335,7 +336,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 			if (br != null) {
 				try {
 					br.close();
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					e.printStackTrace();
 				}
 			}
@@ -374,7 +375,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 	 * @param task
 	 */
 	public void addTaskToQueue(MiapeExtractionTask task) {
-		for (Integer jobID : miapeExtractionQueueOrder) {
+		for (final int jobID : miapeExtractionQueueOrder.toArray()) {
 			if (jobID == task.getRunIdentifier())
 				throw new IllegalMiapeArgumentException(
 						"Duplicated MIAPE extraction job identifier: '" + task.getRunIdentifier() + "'");
@@ -397,12 +398,12 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 		log.debug(completedJobs.size() + " tasks completed");
 		boolean allDone = true;
 		if (getRunningJobs().size() < CONCURRENT_MIAPE_EXTRACTIONS) {
-			for (Integer jobID : miapeExtractionQueueOrder) {
-				MiapeExtractionTask miapeExtractionTask = miapeExtractionTasks.get(jobID);
+			for (final int jobID : miapeExtractionQueueOrder.toArray()) {
+				final MiapeExtractionTask miapeExtractionTask = miapeExtractionTasks.get(jobID);
 
 				if (!completedJobs.contains(jobID)) {
 					if (miapeExtractionTask.getState() == StateValue.PENDING) {
-						boolean started = startMiapeExtraction(jobID);
+						final boolean started = startMiapeExtraction(jobID);
 						if (started) {
 							allDone = false;
 							return true;
@@ -427,7 +428,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 		MiapeExtractionTask miapeTask = null;
 		if (numTaskRunning < CONCURRENT_MIAPE_EXTRACTIONS) {
 			if (miapeExtractionTasks.containsKey(jobID)) {
-				MiapeExtractionTask miapeExtractionTask = miapeExtractionTasks.get(jobID);
+				final MiapeExtractionTask miapeExtractionTask = miapeExtractionTasks.get(jobID);
 
 				// if (miapeExtractionTask.getRunIdentifier() == jobID) {
 				if (miapeExtractionTask.getState() == StateValue.PENDING) {
@@ -441,7 +442,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 					return true;
 				} else if (miapeExtractionTask.getState() == StateValue.DONE) {
 					if (numStartsMap.containsKey(jobID)) {
-						Integer numStarts = numStartsMap.get(jobID);
+						final Integer numStarts = numStartsMap.get(jobID);
 						// if the task has been retried before twice, do not
 						// start again
 						if (numStarts > NUM_RETRIES) {
@@ -454,9 +455,9 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 							miapeExtractionTask.getParameters(), miapeExtractionTask.isLocalProcessingInParallel());
 					miapeTask.addPropertyChangeListener(this);
 					miapeTask.addPropertyChangeListener(listener);
-					Iterator<Integer> iterator = miapeExtractionQueueOrder.iterator();
+					final TIntIterator iterator = miapeExtractionQueueOrder.iterator();
 					while (iterator.hasNext()) {
-						Integer jobID2 = iterator.next();
+						final Integer jobID2 = iterator.next();
 						if (jobID2 == jobID)
 							iterator.remove();
 					}
@@ -496,11 +497,11 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 		cancelAll = true;
 		// if none where started, fire MIAPE_BATCHDONE
 		boolean someStarted = false;
-		for (MiapeExtractionTask miapeExtractionTask : miapeExtractionTasks.valueCollection()) {
+		for (final MiapeExtractionTask miapeExtractionTask : miapeExtractionTasks.valueCollection()) {
 			if (miapeExtractionTask.getState() == StateValue.STARTED) {
 				someStarted = true;
 				while (true) {
-					boolean cancelled = miapeExtractionTask.cancel(true);
+					final boolean cancelled = miapeExtractionTask.cancel(true);
 					if (cancelled) {
 						log.info("Task " + miapeExtractionTask.getRunIdentifier() + " cancelled=" + cancelled);
 						break;
@@ -515,7 +516,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 
 	public synchronized void cancelMiapeExtraction(int runID) {
 		log.info("Cancelling task " + runID);
-		MiapeExtractionTask miapeExtractionTask = miapeExtractionTasks.get(runID);
+		final MiapeExtractionTask miapeExtractionTask = miapeExtractionTasks.get(runID);
 		if (miapeExtractionTask.getState() == StateValue.STARTED && miapeExtractionTask.getRunIdentifier() == runID) {
 			miapeExtractionTask.cancel(true);
 		}
@@ -525,7 +526,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (MiapeExtractionTask.MIAPE_CREATION_TOTAL_DONE.equals(evt.getPropertyName())) {
 
-			MiapeExtractionResult result = (MiapeExtractionResult) evt.getNewValue();
+			final MiapeExtractionResult result = (MiapeExtractionResult) evt.getNewValue();
 			log.info("Import task " + result.getMiapeExtractionTaskIdentifier() + " is done in "
 					+ DatesUtil.getDescriptiveTimeFromMillisecs(result.getMilliseconds()));
 			log.info(getNumberOfPendingTasks() + " still in the queue");
@@ -552,7 +553,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 		} else if (MiapeExtractionTask.MIAPE_CREATION_ERROR.equals(evt.getPropertyName())) {
 			numTaskRunning--;
 
-			MiapeExtractionResult result = (MiapeExtractionResult) evt.getNewValue();
+			final MiapeExtractionResult result = (MiapeExtractionResult) evt.getNewValue();
 			log.info("Error in task " + result.getMiapeExtractionTaskIdentifier() + " message: "
 					+ result.getErrorMessage());
 			log.info(getNumberOfPendingTasks() + " still in the queue");
@@ -567,7 +568,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 		} else if (MiapeExtractionTask.MIAPE_CREATION_CANCELED.equals(evt.getPropertyName())) {
 			numTaskRunning--;
 
-			int jobID = (Integer) evt.getNewValue();
+			final int jobID = (Integer) evt.getNewValue();
 			// remove from running job set
 			runningJobs.remove(jobID);
 			// add to failed jobs
@@ -579,7 +580,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 				startMiapeExtractionNextInQueue();
 
 		} else if (MiapeExtractionTask.MIAPE_CREATION_WAITING_FOR_OTHER_JOB_COMPLETION.equals(evt.getPropertyName())) {
-			MiapeExtractionResult result = (MiapeExtractionResult) evt.getNewValue();
+			final MiapeExtractionResult result = (MiapeExtractionResult) evt.getNewValue();
 			log.info("Error message: " + result.getErrorMessage());
 			log.info(getNumberOfPendingTasks() + " still in the queue");
 			numTaskRunning--;
@@ -594,7 +595,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 			cancelAll = false;
 
 			// add to running job set
-			int jobID = (Integer) evt.getNewValue();
+			final int jobID = (Integer) evt.getNewValue();
 			runningJobs.add(jobID);
 			startMiapeExtractionNextInQueue();
 
@@ -611,10 +612,10 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 	}
 
 	private String getStatisticsOnTasks() {
-		StringBuilder sb = new StringBuilder();
-		int total = this.miapeExtractionTasks.size();
-		int completed = this.completedJobs.size();
-		int failedJobs = this.failedJobs.size();
+		final StringBuilder sb = new StringBuilder();
+		final int total = miapeExtractionTasks.size();
+		final int completed = completedJobs.size();
+		final int failedJobs = this.failedJobs.size();
 		sb.append(total + " datasets to import: " + completed + " datasets imported. " + failedJobs + " failed.");
 		return sb.toString();
 	}
@@ -625,17 +626,17 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 
 	private void printqueueStatus() {
 		log.debug("Status of the job queue: " + miapeExtractionQueueOrder.size());
-		for (Integer jobID : miapeExtractionQueueOrder) {
-			MiapeExtractionTask task = miapeExtractionTasks.get(jobID);
+		for (final int jobID : miapeExtractionQueueOrder.toArray()) {
+			final MiapeExtractionTask task = miapeExtractionTasks.get(jobID);
 			log.debug(task.getRunIdentifier() + " -> " + task.getState() + " cancelled: " + task.isCancelled());
 		}
 	}
 
 	private void updateMiapeMSGeneratorTaskReference(MiapeExtractionResult result) {
-		for (MiapeExtractionTask task : miapeExtractionTasks.valueCollection()) {
-			MiapeExtractionRunParameters taskParameters = task.getParameters();
+		for (final MiapeExtractionTask task : miapeExtractionTasks.valueCollection()) {
+			final MiapeExtractionRunParameters taskParameters = task.getParameters();
 			if (taskParameters != null) {
-				Integer associatedMiapeMSGeneratorJob = taskParameters.getAssociatedMiapeMSGeneratorJob();
+				final Integer associatedMiapeMSGeneratorJob = taskParameters.getAssociatedMiapeMSGeneratorJob();
 				if (associatedMiapeMSGeneratorJob != null) {
 					if (associatedMiapeMSGeneratorJob == result.getMiapeExtractionTaskIdentifier()) {
 						if (taskParameters instanceof MiapeExtractionRunParametersImpl) {
@@ -654,7 +655,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 
 	private synchronized int getNumberOfPendingTasks() {
 		int ret = 0;
-		for (MiapeExtractionTask miapeTask : miapeExtractionTasks.valueCollection()) {
+		for (final MiapeExtractionTask miapeTask : miapeExtractionTasks.valueCollection()) {
 			if (miapeTask.getState() == StateValue.PENDING) {
 				ret++;
 			}
@@ -664,7 +665,7 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 
 	public boolean isProcessing(int jobID) {
 		if (miapeExtractionTasks.containsKey(jobID)) {
-			MiapeExtractionTask miapeExtractionTask = miapeExtractionTasks.get(jobID);
+			final MiapeExtractionTask miapeExtractionTask = miapeExtractionTasks.get(jobID);
 			if (miapeExtractionTask.getState() == StateValue.STARTED)
 				return true;
 		}
@@ -697,17 +698,8 @@ public class MiapeExtractionBatchManager implements PropertyChangeListener {
 			jobID = 1;
 		}
 
-		while (true)
-
-		{
-			boolean found = false;
-			for (Integer id : miapeExtractionQueueOrder) {
-				if (id == jobID) {
-					found = true;
-					break;
-				}
-			}
-			if (found) {
+		while (true) {
+			if (miapeExtractionQueueOrder.contains(jobID)) {
 				jobID++;
 			} else {
 				break;

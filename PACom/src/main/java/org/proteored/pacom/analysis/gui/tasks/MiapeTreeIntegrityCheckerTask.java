@@ -25,6 +25,7 @@ import org.proteored.pacom.analysis.gui.Miape2ExperimentListDialog;
 import org.proteored.pacom.analysis.util.FileManager;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 
+import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.set.hash.THashSet;
 
@@ -54,7 +55,7 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 				parent.jProgressBar.setIndeterminate(true);
 				checkIntegrity();
 				parent.appendStatus("Project: '" + expList.getName() + "' is OK.");
-			} catch (IllegalMiapeArgumentException e) {
+			} catch (final IllegalMiapeArgumentException e) {
 				return e.getMessage();
 			}
 		}
@@ -66,14 +67,14 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 		if (!isCancelled()) {
 
 			try {
-				String message = this.get();
+				final String message = this.get();
 				if (message != null)
 					firePropertyChange(INTEGRITY_ERROR, null, message);
 				else
 					firePropertyChange(INTEGRITY_OK, null, null);
-			} catch (InterruptedException e) {
+			} catch (final InterruptedException e) {
 				e.printStackTrace();
-			} catch (ExecutionException e) {
+			} catch (final ExecutionException e) {
 				e.printStackTrace();
 			}
 
@@ -81,16 +82,16 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 	}
 
 	private void checkIntegrity() {
-		List<String> databaseNames = new ArrayList<String>();
-		List<Integer> listofNonExistingFiles = new ArrayList<Integer>();
-		Set<String> uniqueIds = new THashSet<String>();
+		final List<String> databaseNames = new ArrayList<String>();
+		final TIntArrayList listofNonExistingFiles = new TIntArrayList();
+		final Set<String> uniqueIds = new THashSet<String>();
 		if (expList != null) {
 			uniqueIds.add(expList.getName());
 			final List<CPExperiment> cpExperiments = expList.getCPExperiment();
 			if (cpExperiments != null) {
-				int total = cpExperiments.size();
+				final int total = cpExperiments.size();
 				int n = 1;
-				for (CPExperiment cpExperiment : cpExperiments) {
+				for (final CPExperiment cpExperiment : cpExperiments) {
 					if (uniqueIds.contains(cpExperiment.getName())) {
 						throw new IllegalMiapeArgumentException("'" + cpExperiment.getName()
 								+ "' node name is repeated. You can not name different nodes with the same name."
@@ -99,34 +100,34 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 					uniqueIds.add(cpExperiment.getName());
 					setProgress(n * 100 / total);
 					n++;
-					boolean curated = cpExperiment.isCurated();
+					final boolean curated = cpExperiment.isCurated();
 					if (cpExperiment.getCPReplicate() != null) {
-						for (CPReplicate cpReplicate : cpExperiment.getCPReplicate()) {
-							String uniqueName = cpExperiment.getName() + cpReplicate.getName();
+						for (final CPReplicate cpReplicate : cpExperiment.getCPReplicate()) {
+							final String uniqueName = cpExperiment.getName() + cpReplicate.getName();
 							if (uniqueIds.contains(uniqueName)) {
 								throw new IllegalMiapeArgumentException("'" + cpReplicate.getName()
 										+ "' node name is repeated. You can not name different nodes with the same name."
 										+ " Please rename one of them with a unique name");
 							}
 							uniqueIds.add(uniqueName);
-							List<String> repScoreNames = new ArrayList<String>();
+							final List<String> repScoreNames = new ArrayList<String>();
 
 							if (true) {
 								continue;
 							}
 
 							// key=MIAPEMSI_ID - value=List<scoreNames>:
-							TIntObjectHashMap<List<String>> replicateScoreNames = new TIntObjectHashMap<List<String>>();
+							final TIntObjectHashMap<List<String>> replicateScoreNames = new TIntObjectHashMap<List<String>>();
 							// just check if more than one MIAPE MSI is in a
 							// replicate
 							if (!cpReplicate.getCPMSIList().getCPMSI().isEmpty())
-								for (CPMSI cpMSI : cpReplicate.getCPMSIList().getCPMSI()) {
-									List<MiapeMSIDocument> miapeMSIs = new ArrayList<MiapeMSIDocument>();
+								for (final CPMSI cpMSI : cpReplicate.getCPMSIList().getCPMSI()) {
+									final List<MiapeMSIDocument> miapeMSIs = new ArrayList<MiapeMSIDocument>();
 									final MiapeMSIDocument miapeMSI = getMIAPEMSIFromFile(cpMSI, curated);
 									if (miapeMSI != null) {
 										miapeMSIs.add(miapeMSI);
 										// create a replicate with one miape msi
-										Replicate replicate = new Replicate(cpReplicate.getName(),
+										final Replicate replicate = new Replicate(cpReplicate.getName(),
 												cpExperiment.getName(), null, miapeMSIs, null, true, false,
 												Integer.MAX_VALUE, // para
 												// que
@@ -146,9 +147,9 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 												OntologyLoaderTask.getCvManager(), processInParallel);
 
 										// check databaseNames
-										Set<String> databases = replicate.getDifferentSearchedDatabases();
+										final Set<String> databases = replicate.getDifferentSearchedDatabases();
 										if (databases != null) {
-											for (String database : databases) {
+											for (final String database : databases) {
 												if (!databaseNames.contains(database))
 													databaseNames.add(database);
 											}
@@ -156,12 +157,12 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 
 										final List<String> peptideScoreNames = replicate.getPeptideScoreNames();
 										if (repScoreNames.isEmpty()) {
-											for (String scoreName : peptideScoreNames) {
+											for (final String scoreName : peptideScoreNames) {
 												repScoreNames.add(scoreName);
 											}
 											Collections.sort(repScoreNames);
 										} else {
-											String message = "<html>Some datasets seems to have been searched by different search engines"
+											final String message = "<html>Some datasets seems to have been searched by different search engines"
 													+ " in level 2 node " + "'" + cpExperiment.getName()
 													+ "'<br>If you continue, you will not be able to apply a valid FDR threshold at level 2."
 													+ "<br>Do you want to continue?</html>";
@@ -177,7 +178,7 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 
 										}
 										if (!replicateScoreNames.isEmpty()) {
-											for (int miape_msi_id : replicateScoreNames.keys()) {
+											for (final int miape_msi_id : replicateScoreNames.keys()) {
 												final List<String> scores = replicateScoreNames.get(miape_msi_id);
 												if (scores != null && !scores.isEmpty())
 													if (!hasOneElementInCommon(scores, peptideScoreNames))
@@ -210,11 +211,8 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 		if (!listofNonExistingFiles.isEmpty()) {
 			// Check if they are in the UnnatendedRetriever waiting to be
 			// dowloaded
-			List<Integer> miapesNotBeingDownloaded = new ArrayList<Integer>();
-			for (Integer miapeId : listofNonExistingFiles) {
-				miapesNotBeingDownloaded.add(miapeId);
+			final TIntArrayList miapesNotBeingDownloaded = new TIntArrayList(listofNonExistingFiles);
 
-			}
 			String message = "<html><b>Warning:</b><br>" + "Some datasets are not stored locally in "
 					+ FileManager.getMiapeDataPath() + ".<br>" + "Some datasets in the comparison project";
 			if (!miapesNotBeingDownloaded.isEmpty()) {
@@ -229,13 +227,13 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 
 	}
 
-	private String getCSVStringFromIntegerList(List<Integer> list) {
+	private String getCSVStringFromIntegerList(TIntArrayList list) {
 		String ret = "";
 		if (list != null) {
-			for (Object string : list) {
+			for (final int string : list.toArray()) {
 				if (!"".equals(ret))
 					ret = ret + ", ";
-				ret = ret + string.toString();
+				ret = ret + string;
 			}
 		}
 		return ret;
@@ -244,7 +242,7 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 	private String getCSVStringFromStringList(List<String> list) {
 		String ret = "";
 		if (list != null) {
-			for (Object string : list) {
+			for (final Object string : list) {
 				if (!"".equals(ret))
 					ret = ret + ", ";
 				ret = ret + string;
@@ -254,13 +252,13 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 	}
 
 	private void checkExperimentListNames(CPExperimentList cpExpList) throws IllegalMiapeArgumentException {
-		Set<String> experimentNames = new THashSet<String>();
+		final Set<String> experimentNames = new THashSet<String>();
 		if (cpExpList != null) {
 			final List<CPExperiment> experiments = cpExpList.getCPExperiment();
 			if (experiments != null) {
 				boolean thereIsAReplicate = false;
-				for (CPExperiment cpExperiment : experiments) {
-					String expName = cpExperiment.getName();
+				for (final CPExperiment cpExperiment : experiments) {
+					final String expName = cpExperiment.getName();
 					if (experimentNames.contains(expName))
 						throw new IllegalMiapeArgumentException(
 								"<html>Error in comparison project tree.<br>Level 1 node name duplicated: '" + expName
@@ -268,11 +266,11 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 					else
 						experimentNames.add(expName);
 					final List<CPReplicate> replicates = cpExperiment.getCPReplicate();
-					Set<String> replicateNames = new THashSet<String>();
+					final Set<String> replicateNames = new THashSet<String>();
 					if (replicates != null) {
-						for (CPReplicate cpReplicate : replicates) {
+						for (final CPReplicate cpReplicate : replicates) {
 							thereIsAReplicate = true;
-							String repName = cpReplicate.getName();
+							final String repName = cpReplicate.getName();
 							if (replicateNames.contains(repName)) {
 								throw new IllegalMiapeArgumentException(
 										"<html>Error in comparison project tree.<br>Level 2 node name duplicated: '"
@@ -301,8 +299,8 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 
 	private boolean hasOneElementInCommon(List<String> list1, List<String> list2) {
 
-		for (String string1 : list1) {
-			for (String string2 : list2) {
+		for (final String string1 : list1) {
+			for (final String string2 : list2) {
 				if (string1.equals(string2))
 					return true;
 			}
@@ -326,20 +324,20 @@ public class MiapeTreeIntegrityCheckerTask extends SwingWorker<String, Void> {
 		if (file == null || !file.exists())
 			return null;
 		MiapeMSIDocument ret;
-		MIAPEMSIXmlFile msiFile = new MIAPEMSIXmlFile(file);
-		ControlVocabularyManager cvManager = OntologyLoaderTask.getCvManager();
+		final MIAPEMSIXmlFile msiFile = new MIAPEMSIXmlFile(file);
+		final ControlVocabularyManager cvManager = OntologyLoaderTask.getCvManager();
 		msiFile.setCvUtil(cvManager);
 		try {
 			ret = msiFile.toDocument();
 
 			return ret;
-		} catch (MiapeDatabaseException e) {
+		} catch (final MiapeDatabaseException e) {
 			log.warn(e.getMessage());
 			e.printStackTrace();
-		} catch (MiapeSecurityException e) {
+		} catch (final MiapeSecurityException e) {
 			log.warn(e.getMessage());
 			e.printStackTrace();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			log.warn(e.getMessage());
 			e.printStackTrace();
 		}

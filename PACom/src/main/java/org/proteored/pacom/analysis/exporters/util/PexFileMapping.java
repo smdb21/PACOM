@@ -1,19 +1,17 @@
 package org.proteored.pacom.analysis.exporters.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.proteored.pacom.analysis.exporters.Exporter;
 import org.proteored.pacom.analysis.exporters.ProteomeXchangeFilev2_1;
+
+import gnu.trove.list.array.TIntArrayList;
 
 public class PexFileMapping {
 	private final String fileType;
 	private final int id;
 	private final String path;
-	private List<Integer> relationships = new ArrayList<Integer>();
+	private TIntArrayList relationships = new TIntArrayList();
 
-	public PexFileMapping(String fileType, int id, String path,
-			List<Integer> relationships) {
+	public PexFileMapping(String fileType, int id, String path, TIntArrayList relationships) {
 		super();
 		this.fileType = fileType;
 		this.id = id;
@@ -22,22 +20,20 @@ public class PexFileMapping {
 			this.relationships = relationships;
 	}
 
-	public List<Integer> getRelationships() {
+	public TIntArrayList getRelationships() {
 		return relationships;
 	}
 
 	@Override
 	public String toString() {
-		return ProteomeXchangeFilev2_1.FME + Exporter.TAB
-				+ removeNotAllowedCharacteres(id) + Exporter.TAB
-				+ removeNotAllowedCharacteres(fileType) + Exporter.TAB
-				+ removeNotAllowedCharacteres(path) + Exporter.TAB
-				+ removeNotAllowedCharacteres(getRelationshipsAsString());
+		return ProteomeXchangeFilev2_1.FME + Exporter.TAB + removeNotAllowedCharacteres(id) + Exporter.TAB
+				+ removeNotAllowedCharacteres(fileType) + Exporter.TAB + removeNotAllowedCharacteres(path)
+				+ Exporter.TAB + removeNotAllowedCharacteres(getRelationshipsAsString());
 	}
 
 	private String removeNotAllowedCharacteres(Object obj) {
 		if (obj != null) {
-			String string = obj.toString();
+			final String string = obj.toString();
 			String ret = "";
 			ret = string.replace(Exporter.NEWLINE, " ");
 			ret = ret.replace(String.valueOf(Exporter.TAB), " ");
@@ -48,7 +44,7 @@ public class PexFileMapping {
 
 	private String getRelationshipsAsString() {
 		String ret = "";
-		for (Integer id : relationships) {
+		for (final int id : relationships.toArray()) {
 			if (!"".equals(ret))
 				ret += ",";
 			ret += id;
@@ -56,19 +52,19 @@ public class PexFileMapping {
 		return ret;
 	}
 
-	public void setRelationships(List<Integer> relationships) {
+	public void setRelationships(TIntArrayList relationships) {
 		this.relationships = relationships;
 	}
 
-	public void addRelationships(List<Integer> relationships) {
+	public void addRelationships(TIntArrayList relationships) {
 		if (relationships == null)
-			this.relationships = new ArrayList<Integer>();
+			this.relationships = new TIntArrayList();
 		this.relationships.addAll(relationships);
 	}
 
 	public void addRelationship(Integer relationship) {
 		if (relationships == null)
-			relationships = new ArrayList<Integer>();
+			relationships = new TIntArrayList();
 		if (!relationships.contains(relationship))// do not duplicate
 													// relationships
 			relationships.add(relationship);

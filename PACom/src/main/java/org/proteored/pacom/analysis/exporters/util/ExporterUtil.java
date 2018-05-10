@@ -31,9 +31,9 @@ import org.proteored.pacom.analysis.genes.GeneDistributionReader;
 import org.proteored.pacom.analysis.util.DataLevel;
 import org.proteored.pacom.analysis.util.FileManager;
 
-import edu.scripps.yates.annotations.uniprot.UniprotEntryUtil;
 import edu.scripps.yates.annotations.uniprot.UniprotProteinLocalRetriever;
 import edu.scripps.yates.annotations.uniprot.xml.Entry;
+import edu.scripps.yates.annotations.util.UniprotEntryUtil;
 import edu.scripps.yates.utilities.fasta.FastaParser;
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.set.hash.THashSet;

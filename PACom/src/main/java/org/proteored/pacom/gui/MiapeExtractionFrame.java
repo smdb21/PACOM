@@ -27,7 +27,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -77,6 +76,7 @@ import org.proteored.pacom.utils.MiapeExtractionBatchManager;
 import org.proteored.pacom.utils.MiapeExtractionResult;
 import org.proteored.pacom.utils.MiapeExtractionRunParametersImpl;
 
+import gnu.trove.map.hash.THashMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
 /**
@@ -100,7 +100,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 		if (miapeExtractorBatchManager != null && !miapeExtractorBatchManager.getRunningJobs().isEmpty()) {
 			miapeExtractorBatchManager.cancelMiapeExtractions();
 		}
-		if (this.inputDataTypeGuesser != null) {
+		if (inputDataTypeGuesser != null) {
 			inputDataTypeGuesser.cancel(true);
 		}
 		if (mainFrame != null) {
@@ -161,14 +161,14 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 		// wait for the ontology loading. When done, it will notify to this
 		// class and metadata combo will be able to be filled
 		appendStatus("Loading ontologies...");
-		OntologyLoaderWaiter waiter = new OntologyLoaderWaiter();
+		final OntologyLoaderWaiter waiter = new OntologyLoaderWaiter();
 		waiter.addPropertyChangeListener(this);
 		waiter.execute();
 
-		AppVersion version = MainFrame.getVersion();
+		final AppVersion version = MainFrame.getVersion();
 		if (version != null) {
-			String suffix = " (v" + version.toString() + ")";
-			this.setTitle(getTitle() + suffix);
+			final String suffix = " (v" + version.toString() + ")";
+			setTitle(getTitle() + suffix);
 		}
 		getContentPane().setLayout(new BorderLayout(5, 5));
 		getContentPane().add(jPanelSouth, BorderLayout.SOUTH);
@@ -268,7 +268,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 		/// listener to change the radio buttons depending on the file type of
 		/// the selected row
 		// and to enable or disable the button for row deletion
-		ListSelectionListener listener = new ListSelectionListener() {
+		final ListSelectionListener listener = new ListSelectionListener() {
 
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
@@ -276,15 +276,15 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 					return;
 				}
 				if (e.getSource() instanceof DefaultListSelectionModel) {
-					DefaultListSelectionModel model = (DefaultListSelectionModel) e.getSource();
+					final DefaultListSelectionModel model = (DefaultListSelectionModel) e.getSource();
 
-					int firstIndex = model.getMinSelectionIndex();
+					final int firstIndex = model.getMinSelectionIndex();
 					if (firstIndex >= 0) {
 						// enable button for row deletion
-						MiapeExtractionFrame.this.btnDeleteImportTask.setEnabled(true);
+						btnDeleteImportTask.setEnabled(true);
 					} else {
 						// disable button for row deletion
-						MiapeExtractionFrame.this.btnDeleteImportTask.setEnabled(false);
+						btnDeleteImportTask.setEnabled(false);
 					}
 				}
 			}
@@ -326,7 +326,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 
 	private void tableChangeListener() {
 		// listener to change the file type
-		TableModelListener fileTypeListener = new TableModelListener() {
+		final TableModelListener fileTypeListener = new TableModelListener() {
 
 			@Override
 			public void tableChanged(TableModelEvent e) {
@@ -349,31 +349,33 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 			@Override
 			public void keyReleased(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_DELETE) {
-					ImportTasksTable table = (ImportTasksTable) e.getSource();
-					int[] rowIndexes = table.getSelectedRows();
+					final ImportTasksTable table = (ImportTasksTable) e.getSource();
+					final int[] rowIndexes = table.getSelectedRows();
 
-					int columnIndex = table.getSelectedColumn();
-					ImportTaskColumns columnType = ImportTaskColumns.values()[columnIndex];
+					final int columnIndex = table.getSelectedColumn();
+					final ImportTaskColumns columnType = ImportTaskColumns.values()[columnIndex];
 					if (columnType == ImportTaskColumns.ASSOCIATEDMSFILE) {
-						for (int rowIndex : rowIndexes) {
-							MiapeExtractionTask task = table.getImportTaskTableModel().getTaskByRowIndex(rowIndex);
+						for (final int rowIndex : rowIndexes) {
+							final MiapeExtractionTask task = table.getImportTaskTableModel()
+									.getTaskByRowIndex(rowIndex);
 							((MiapeExtractionRunParametersImpl) task.getParameters()).setAssociatedMSFile(null);
 							table.setRowSelectionInterval(rowIndex, rowIndex);
 						}
 						table.getImportTaskTableModel().fireTableDataChanged();
 
 					} else if (columnType == ImportTaskColumns.FILE) {
-						for (int rowIndex : rowIndexes) {
-							MiapeExtractionTask task = table.getImportTaskTableModel().getTaskByRowIndex(rowIndex);
+						for (final int rowIndex : rowIndexes) {
+							final MiapeExtractionTask task = table.getImportTaskTableModel()
+									.getTaskByRowIndex(rowIndex);
 							((MiapeExtractionRunParametersImpl) task.getParameters()).setInputFile(null);
 							table.setRowSelectionInterval(rowIndex, rowIndex);
 						}
 						table.getImportTaskTableModel().fireTableDataChanged();
 					} else {
 						if (rowIndexes.length > 0) {
-							String plural = rowIndexes.length > 1 ? "s" : "";
-							StringBuilder identifiers = new StringBuilder();
-							for (int rowIndex : rowIndexes) {
+							final String plural = rowIndexes.length > 1 ? "s" : "";
+							final StringBuilder identifiers = new StringBuilder();
+							for (final int rowIndex : rowIndexes) {
 								if (!"".equals(identifiers.toString())) {
 									identifiers.append(",");
 								}
@@ -381,7 +383,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 										table.getImportTaskTableModel().getTaskByRowIndex(rowIndex).getRunIdentifier());
 							}
 							// ask if the user wants to delete the row
-							int option = JOptionPane.showConfirmDialog(MiapeExtractionFrame.this,
+							final int option = JOptionPane.showConfirmDialog(MiapeExtractionFrame.this,
 									"Are you sure you want to delete import task" + plural + " (ID" + plural + ":'"
 											+ identifiers.toString() + "')",
 									"Delete import task", JOptionPane.YES_NO_OPTION);
@@ -403,25 +405,25 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 
 	private void addTableMouseListeners() {
 		// add mouse listener to files
-		MouseListener mouseListener = new MouseListener() {
+		final MouseListener mouseListener = new MouseListener() {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				try {
-					ImportTasksTable table = (ImportTasksTable) e.getSource();
+					final ImportTasksTable table = (ImportTasksTable) e.getSource();
 					int rowIndex = table.getSelectedRow();
 					if (table.getRowSorter() != null) {
 						rowIndex = table.getRowSorter().convertRowIndexToModel(rowIndex);
 					}
-					MiapeExtractionTask task = table.getImportTaskTableModel().getTaskByRowIndex(rowIndex);
-					int columnIndex = table.getSelectedColumn();
+					final MiapeExtractionTask task = table.getImportTaskTableModel().getTaskByRowIndex(rowIndex);
+					final int columnIndex = table.getSelectedColumn();
 					log.info("Row=" + rowIndex + " Column=" + columnIndex);
 					if (e.getClickCount() == 2) {
 						log.debug("It is a double click");
-						ImportTaskColumns columnType = ImportTaskColumns.values()[columnIndex];
+						final ImportTaskColumns columnType = ImportTaskColumns.values()[columnIndex];
 						if (columnType == ImportTaskColumns.FILE) {
-							File[] newFiles = selectFiles(false);
-							File file = newFiles[0];
+							final File[] newFiles = selectFiles(false);
+							final File file = newFiles[0];
 							// set file to table model
 							((MiapeExtractionRunParametersImpl) task.getParameters()).setInputFile(file);
 							// guess the type
@@ -430,14 +432,14 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 							scrollableImportTaskTable.getTable().getImportTaskTableModel().fireTableRowsUpdated(task);
 						} else if (columnType == ImportTaskColumns.ASSOCIATEDMSFILE) {
 
-							List<File> newFiles = selectAttachedMSFiles(null);
+							final List<File> newFiles = selectAttachedMSFiles(null);
 							if (newFiles != null && !newFiles.isEmpty()) {
 								// set value of new file
 								((MiapeExtractionRunParametersImpl) task.getParameters())
 										.setAssociatedMSFile(newFiles.get(0));
 								// try to guess the new value of the associated
 								// ms FIle
-								String extension = FilenameUtils.getExtension(newFiles.get(0).getAbsolutePath());
+								final String extension = FilenameUtils.getExtension(newFiles.get(0).getAbsolutePath());
 								if (extension != null) {
 									if ("mgf".equalsIgnoreCase(extension)) {
 										((MiapeExtractionRunParametersImpl) task.getParameters())
@@ -463,14 +465,14 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 					} else if (e.getClickCount() == 1) {
 						log.debug("It is a single click");
 						if (columnIndex >= 0) {
-							ImportTaskColumns columnType = ImportTaskColumns.values()[columnIndex];
+							final ImportTaskColumns columnType = ImportTaskColumns.values()[columnIndex];
 							if (columnType == ImportTaskColumns.FILE
 									|| columnType == ImportTaskColumns.ASSOCIATEDMSFILE) {
 								appendStatus("Double click to select a new file");
 							}
 						}
 					}
-				} catch (IllegalArgumentException ex) {
+				} catch (final IllegalArgumentException ex) {
 					ex.printStackTrace();
 				}
 			}
@@ -503,9 +505,9 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 	}
 
 	protected void deleteImportTaskAction(ActionEvent e) {
-		int[] selectedRowIndexes = scrollableImportTaskTable.getTable().getSelectedRows();
+		final int[] selectedRowIndexes = scrollableImportTaskTable.getTable().getSelectedRows();
 		if (selectedRowIndexes.length > 0) {
-			int[] jobIDs = scrollableImportTaskTable.getTable().getImportTaskTableModel()
+			final int[] jobIDs = scrollableImportTaskTable.getTable().getImportTaskTableModel()
 					.removeRows(selectedRowIndexes);
 			for (int i = 0; i < jobIDs.length; i++) {
 				appendStatus("Import task '" + jobIDs[i] + "' in row '" + (selectedRowIndexes[i] + 1) + "' deleted.");
@@ -514,19 +516,19 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 	}
 
 	private void asynchronouslyLoadMetadataTemplateNames() {
-		Runnable task = () -> {
+		final Runnable task = () -> {
 
-			List<String> metadataList = new ArrayList<String>();
+			final List<String> metadataList = new ArrayList<String>();
 			while (!FileManager.isMetadataTemplatesLoaded()) {
 				try {
 					Thread.sleep(500);
-				} catch (InterruptedException e) {
+				} catch (final InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
 			log.debug("Wait for metadata templates finished");
 
-			List<String> list = FileManager.getMetadataTemplateList(cvManager);
+			final List<String> list = FileManager.getMetadataTemplateList(cvManager);
 			metadataList.addAll(list);
 			// sort by name
 			if (metadataList != null) {
@@ -536,10 +538,10 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 				}
 
 				// load them into the cell editor of the corresponding column
-				TableColumn column = scrollableImportTaskTable.getTable()
+				final TableColumn column = scrollableImportTaskTable.getTable()
 						.getColumn(ImportTaskColumns.METADATA_TEMPLATE.getName());
 				if (column != null && column.getCellEditor() instanceof UpdatableComboBoxEditor) {
-					UpdatableComboBoxEditor<String> cellEditor = (UpdatableComboBoxEditor<String>) column
+					final UpdatableComboBoxEditor<String> cellEditor = (UpdatableComboBoxEditor<String>) column
 							.getCellEditor();
 					cellEditor.setComboItems(metadataList);
 					scrollableImportTaskTable.getTable().getImportTaskTableModel().fireTableDataChanged();
@@ -555,8 +557,8 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 
 	protected void jButtonInputfileAttachActionPerformed(ActionEvent evt) {
 		// get input file type from the table, from the selected row
-		InputFileType inputFileType = this.scrollableImportTaskTable.getSelectedInputFileTypeFromSelectedRow();
-		List<File> attachedMSFiles = selectAttachedMSFiles(inputFileType);
+		final InputFileType inputFileType = scrollableImportTaskTable.getSelectedInputFileTypeFromSelectedRow();
+		final List<File> attachedMSFiles = selectAttachedMSFiles(inputFileType);
 
 		// if the user selected one single file, ask whether he wants to
 		// assign it to all input files or not
@@ -564,31 +566,31 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 		// same number of rows in the table. If so, assign one by one. If
 		// not, throw error message.d
 		if (attachedMSFiles != null && !attachedMSFiles.isEmpty()) {
-			List<MiapeExtractionTask> importTasks = this.scrollableImportTaskTable.getTable().getImportTasks();
-			List<MiapeExtractionTask> selectedImportTasks = this.scrollableImportTaskTable.getTable()
+			final List<MiapeExtractionTask> importTasks = scrollableImportTaskTable.getTable().getImportTasks();
+			final List<MiapeExtractionTask> selectedImportTasks = scrollableImportTaskTable.getTable()
 					.getSelectedImportTasks();
-			int rowCount = importTasks.size();
+			final int rowCount = importTasks.size();
 			if (attachedMSFiles.size() == 1) {
 				if (rowCount == 0) {
 					// throw error
 					log.error("This shoudn't happen. Button should be disable if there is not data in the table");
 					appendStatus("Select an input file before selecting associated MS files");
 				} else if (rowCount == 1) {
-					int firstJobID = importTasks.get(0).getRunIdentifier();
+					final int firstJobID = importTasks.get(0).getRunIdentifier();
 					// add to the row in the table
 					scrollableImportTaskTable.getTable().associateMSFileToJobID(attachedMSFiles.get(0), firstJobID);
 				} else {
 					// there is more than one job in the table and 1 MS File
-					int firstJobID = importTasks.get(0).getRunIdentifier();
+					final int firstJobID = importTasks.get(0).getRunIdentifier();
 					// check if there is selected rows
 
 					if (selectedImportTasks.isEmpty() || selectedImportTasks.size() == importTasks.size()) {
-						String message = "You selected one MS file, but in the table there are " + rowCount
+						final String message = "You selected one MS file, but in the table there are " + rowCount
 								+ " import tasks.\nDo you want to associate it to JUST the first one (jobID="
 								+ firstJobID + ") or to ALL of them";
-						String title = "How to associate MS file to import tasks";
-						String[] options = { "associate to first import task", "associate to all tasks" };
-						Object userSelection = JOptionPane.showInputDialog(this, message, title,
+						final String title = "How to associate MS file to import tasks";
+						final String[] options = { "associate to first import task", "associate to all tasks" };
+						final Object userSelection = JOptionPane.showInputDialog(this, message, title,
 								JOptionPane.WARNING_MESSAGE, null, options, "associate to all");
 						if ("associate to all tasks".equals(userSelection)) {
 							scrollableImportTaskTable.getTable().associateMSFileToAll(attachedMSFiles.get(0));
@@ -600,16 +602,17 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 						}
 					} else {
 						if (selectedImportTasks.size() != importTasks.size()) {
-							String message = "You selected one MS file, and you have " + selectedImportTasks.size()
+							final String message = "You selected one MS file, and you have "
+									+ selectedImportTasks.size()
 									+ " import tasks selected in the table.\nDo you want to associate it to just JUST of the selected tasks or to ALL the jobs in the table";
-							String title = "How to associate MS file to import tasks";
-							String[] options = { "associate to selected tasks", "associate to all tasks" };
-							Object userSelection = JOptionPane.showInputDialog(this, message, title,
+							final String title = "How to associate MS file to import tasks";
+							final String[] options = { "associate to selected tasks", "associate to all tasks" };
+							final Object userSelection = JOptionPane.showInputDialog(this, message, title,
 									JOptionPane.WARNING_MESSAGE, null, options, "associate to selected tasks");
 							if ("associate to all tasks".equals(userSelection)) {
 								scrollableImportTaskTable.getTable().associateMSFileToAll(attachedMSFiles.get(0));
 							} else if ("associate to selected tasks".equals(userSelection)) {
-								for (MiapeExtractionTask task : selectedImportTasks) {
+								for (final MiapeExtractionTask task : selectedImportTasks) {
 									scrollableImportTaskTable.getTable().associateMSFileToJobID(attachedMSFiles.get(0),
 											task.getRunIdentifier());
 								}
@@ -646,22 +649,22 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 					} else if (importTasks.size() == selectedImportTasks.size()) {
 						// add one by one in order
 						int i = 0;
-						for (MiapeExtractionTask task : importTasks) {
+						for (final MiapeExtractionTask task : importTasks) {
 							scrollableImportTaskTable.getTable().associateMSFileToJobID(attachedMSFiles.get(i++),
 									task.getRunIdentifier());
 						}
 					} else if (attachedMSFiles.size() == selectedImportTasks.size()) {
 						// warn and add one by one
-						String message = "You selected " + attachedMSFiles.size() + " MS files and there are "
+						final String message = "You selected " + attachedMSFiles.size() + " MS files and there are "
 								+ selectedImportTasks.size() + " import task selected in the table.\n"
 								+ "Do you want to associated them in order to the selected import tasks?";
-						String title = "How to associate MS file to import tasks";
+						final String title = "How to associate MS file to import tasks";
 
-						int userSelection = JOptionPane.showConfirmDialog(this, message, title,
+						final int userSelection = JOptionPane.showConfirmDialog(this, message, title,
 								JOptionPane.WARNING_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION);
 						if (userSelection == JOptionPane.YES_OPTION) {
 							int i = 0;
-							for (MiapeExtractionTask task : selectedImportTasks) {
+							for (final MiapeExtractionTask task : selectedImportTasks) {
 								scrollableImportTaskTable.getTable().associateMSFileToJobID(attachedMSFiles.get(i++),
 										task.getRunIdentifier());
 							}
@@ -672,16 +675,16 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 					} else if (attachedMSFiles.size() == importTasks.size()) {
 						// warn and add one by one
 						// warn and add one by one
-						String message = "You selected " + attachedMSFiles.size() + " MS files and there are "
+						final String message = "You selected " + attachedMSFiles.size() + " MS files and there are "
 								+ importTasks.size() + " import task in the table.\n"
 								+ "Do you want to associated them in order to all import tasks in the table?";
-						String title = "How to associate MS file to import tasks";
+						final String title = "How to associate MS file to import tasks";
 
-						int userSelection = JOptionPane.showConfirmDialog(this, message, title,
+						final int userSelection = JOptionPane.showConfirmDialog(this, message, title,
 								JOptionPane.WARNING_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION);
 						if (userSelection == JOptionPane.YES_OPTION) {
 							int i = 0;
-							for (MiapeExtractionTask task : importTasks) {
+							for (final MiapeExtractionTask task : importTasks) {
 								scrollableImportTaskTable.getTable().associateMSFileToJobID(attachedMSFiles.get(i++),
 										task.getRunIdentifier());
 							}
@@ -736,7 +739,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 	}
 
 	private void loadProjectsFromDisk(boolean silence) {
-		LoadProjectsTask loadProjectsThread = new LoadProjectsTask(this);
+		final LoadProjectsTask loadProjectsThread = new LoadProjectsTask(this);
 		if (!silence) {
 			loadProjectsThread.addPropertyChangeListener(this);
 		}
@@ -744,8 +747,8 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 	}
 
 	boolean isGeneratingMS() {
-		List<MiapeExtractionTask> tasks = scrollableImportTaskTable.getTable().getImportTasks();
-		for (MiapeExtractionTask miapeExtractionTask : tasks) {
+		final List<MiapeExtractionTask> tasks = scrollableImportTaskTable.getTable().getImportTasks();
+		for (final MiapeExtractionTask miapeExtractionTask : tasks) {
 			if (miapeExtractionTask.getParameters().getAssociatedMSFileType() != null) {
 				return true;
 			}
@@ -855,7 +858,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 
 		jButtonHelp = new OpenHelpButton(this);
 
-		javax.swing.GroupLayout gl_jPanelSouth = new javax.swing.GroupLayout(jPanelSouth);
+		final javax.swing.GroupLayout gl_jPanelSouth = new javax.swing.GroupLayout(jPanelSouth);
 		gl_jPanelSouth.setHorizontalGroup(gl_jPanelSouth.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_jPanelSouth.createSequentialGroup().addContainerGap()
 						.addGroup(gl_jPanelSouth.createParallelGroup(Alignment.TRAILING)
@@ -886,18 +889,18 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 	}// </editor-fold>
 
 	protected void goToDataInspection() {
-		this.setVisible(false);
-		this.mainFrame.startProjectComparison();
+		setVisible(false);
+		mainFrame.startProjectComparison();
 	}
 
 	public static String getTextTableFormatText1() {
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append(
 				"<html>PACOM supports text files containing a table with different predefined columns, separated by a symbol (select one in the combo-box).<br>");
 		sb.append(
 				"These files <b>MUST</b> contain a header in which the following <b>header names</b> are allowed at the first row:");
 		sb.append("<ul>");
-		for (TableTextFileColumn columnName : TableTextFileColumn.values()) {
+		for (final TableTextFileColumn columnName : TableTextFileColumn.values()) {
 			sb.append(getHeaderString(columnName));
 		}
 		sb.append("</ul>");
@@ -910,14 +913,14 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 	}
 
 	private static String getHeaderString(TableTextFileColumn column) {
-		String mandatory = column.isMandatory() ? " (mandatory)" : " (optional)";
+		final String mandatory = column.isMandatory() ? " (mandatory)" : " (optional)";
 		return "<li><b>" + column.getHeaderName() + "</b>" + mandatory + ": " + column.getHeaderExplanation() + "</li>";
 	}
 
 	private void jButtonInputFileActionPerformed(java.awt.event.ActionEvent evt) {
 		try {
 			selectFilesAndGuessTypes();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			appendStatus(e.getMessage());
 		}
 	}
@@ -949,11 +952,11 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 	 */
 	private void createAndLoadImportTasks(File[] inputFiles, Map<File, InputFileType> filesAndTypes) {
 		// create manager from the table
-		this.miapeExtractorBatchManager = createMiapeExtractorBatchManagerFromTable();
+		miapeExtractorBatchManager = createMiapeExtractorBatchManagerFromTable();
 		if (inputFiles != null) {
 
 			// add one task per selected file
-			for (File selectedFile : inputFiles) {
+			for (final File selectedFile : inputFiles) {
 				InputFileType inputFileType = null; // by default
 				InputFileType guessedInputDataType = filesAndTypes.get(selectedFile);
 				if (guessedInputDataType != null) {
@@ -969,7 +972,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 						inputFileType = guessedInputDataType;
 					}
 				}
-				MiapeExtractionTask task = this.miapeExtractorBatchManager.addImportTask(selectedFile, inputFileType,
+				final MiapeExtractionTask task = miapeExtractorBatchManager.addImportTask(selectedFile, inputFileType,
 						null, getProjectName(), null);
 				// add that task to the table
 				scrollableImportTaskTable.getTable().addRow(task);
@@ -984,11 +987,11 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 	}
 
 	private MiapeExtractionBatchManager createMiapeExtractorBatchManagerFromTable() {
-		MiapeExtractionBatchManager ret = new MiapeExtractionBatchManager(this, cvManager);
-		List<MiapeExtractionTask> importTasks = scrollableImportTaskTable.getTable().getImportTasks();
-		for (MiapeExtractionTask task : importTasks) {
+		final MiapeExtractionBatchManager ret = new MiapeExtractionBatchManager(this, cvManager);
+		final List<MiapeExtractionTask> importTasks = scrollableImportTaskTable.getTable().getImportTasks();
+		for (final MiapeExtractionTask task : importTasks) {
 			if (task.isDone() && (task.getResult() == null || task.getResult().getErrorMessage() != null)) {
-				MiapeExtractionTask newTask = new MiapeExtractionTask(task.getParameters());
+				final MiapeExtractionTask newTask = new MiapeExtractionTask(task.getParameters());
 				scrollableImportTaskTable.getTable().getImportTaskTableModel().replaceImportTask(task, newTask);
 				ret.addTaskToQueue(newTask);
 			} else if (!task.isDone()) {
@@ -999,8 +1002,8 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 	}
 
 	private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {
-		if (this.miapeExtractorBatchManager != null) {
-			this.miapeExtractorBatchManager.cancelMiapeExtractions();
+		if (miapeExtractorBatchManager != null) {
+			miapeExtractorBatchManager.cancelMiapeExtractions();
 		}
 		if (inputDataTypeGuesser != null && inputDataTypeGuesser.getState() == StateValue.STARTED) {
 			inputDataTypeGuesser.cancel(true);
@@ -1103,7 +1106,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 		}
 		if (selectedFiles != null && selectedFiles.length > 0) {
 			log.info(selectedFiles.length + " selected Files");
-			List<File> validFiles = Arrays.asList(selectedFiles);
+			final List<File> validFiles = Arrays.asList(selectedFiles);
 
 			return validFiles;
 		}
@@ -1117,7 +1120,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 				return;
 		}
 		// check the tasks in the table
-		boolean valid = checkTaskConsistency();
+		final boolean valid = checkTaskConsistency();
 		if (valid) {
 			// clear status
 			jTextAreaStatus.setText("");
@@ -1133,10 +1136,10 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 	private boolean checkTaskConsistency() {
 		appendStatus("Checking import tasks...");
 		boolean valid = true;
-		for (MiapeExtractionTask task : scrollableImportTaskTable.getTable().getImportTasks()) {
+		for (final MiapeExtractionTask task : scrollableImportTaskTable.getTable().getImportTasks()) {
 			try {
 				task.checkConsistency();
-			} catch (MiapeDataInconsistencyException e) {
+			} catch (final MiapeDataInconsistencyException e) {
 				valid = false;
 				appendStatus("Error in import task '" + task.getRunIdentifier() + "': " + e.getMessage());
 			}
@@ -1211,17 +1214,17 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if ("progress".equals(evt.getPropertyName())) {
-			int progress = (Integer) evt.getNewValue();
+			final int progress = (Integer) evt.getNewValue();
 			jProgressBar.setValue(progress);
 		} else if (MiapeExtractionTask.NOTIFICATION.equals(evt.getPropertyName())) {
-			String notificacion = evt.getNewValue().toString();
+			final String notificacion = evt.getNewValue().toString();
 			appendStatus(notificacion);
 		} else if (MiapeExtractionTask.MIAPE_CREATION_ERROR.equals(evt.getPropertyName())) {
 			if (evt.getNewValue() != null) {
-				MiapeExtractionResult extractionResult = (MiapeExtractionResult) evt.getNewValue();
+				final MiapeExtractionResult extractionResult = (MiapeExtractionResult) evt.getNewValue();
 				appendStatus(extractionResult.getErrorMessage());
-				ImportTaskDataModel model = scrollableImportTaskTable.getTable().getImportTaskTableModel();
-				int row = model.indexOf(model.getTaskByID(extractionResult.getMiapeExtractionTaskIdentifier()));
+				final ImportTaskDataModel model = scrollableImportTaskTable.getTable().getImportTaskTableModel();
+				final int row = model.indexOf(model.getTaskByID(extractionResult.getMiapeExtractionTaskIdentifier()));
 				model.fireTableRowsUpdated(row, row);
 			}
 		} else if (MiapeExtractionTask.MIAPE_CREATION_CANCELED.equals(evt.getPropertyName())) {
@@ -1230,7 +1233,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 			this.setCursor(null); // turn off the wait cursor
 			jProgressBar.setIndeterminate(false);
 		} else if (MiapeExtractionTask.MIAPE_MSI_CREATED_DONE.equals(evt.getPropertyName())) {
-			File miapeIDString = (File) evt.getNewValue();
+			final File miapeIDString = (File) evt.getNewValue();
 			log.info("Dataset imported: " + miapeIDString.getAbsolutePath());
 			FileManager.deleteMetadataFile(MIAPEMSChecker.CURRENT_MZML);
 			MiapeMSFormsDialog.getInstance(this, getControlVocabularyManager()).initMetadataCombo(null,
@@ -1238,7 +1241,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 			// load new projects
 			loadProjects(false, true);
 		} else if (MiapeExtractionTask.MIAPE_MS_CREATED_DONE.equals(evt.getPropertyName())) {
-			File miapeIDString = (File) evt.getNewValue();
+			final File miapeIDString = (File) evt.getNewValue();
 			log.info("MS dataset imported: " + miapeIDString.getAbsolutePath());
 			// load new projects
 			loadProjects(false, true);
@@ -1256,14 +1259,14 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 					"Error loading ontologies. Please check your internet connection or institution firewall and run again the software. If the problem persist, you can contact salvador@scripps.edu for help.");
 
 		} else if (MiapeExtractionTask.MIAPE_CREATION_TOTAL_DONE.equals(evt.getPropertyName())) {
-			MiapeExtractionResult extractionResult = (MiapeExtractionResult) evt.getNewValue();
+			final MiapeExtractionResult extractionResult = (MiapeExtractionResult) evt.getNewValue();
 			appendStatus(
 					"Import task '" + extractionResult.getMiapeExtractionTaskIdentifier() + "' finished correctly.");
-			ImportTaskDataModel model = scrollableImportTaskTable.getTable().getImportTaskTableModel();
-			int row = model.indexOf(model.getTaskByID(extractionResult.getMiapeExtractionTaskIdentifier()));
+			final ImportTaskDataModel model = scrollableImportTaskTable.getTable().getImportTaskTableModel();
+			final int row = model.indexOf(model.getTaskByID(extractionResult.getMiapeExtractionTaskIdentifier()));
 			model.fireTableRowsUpdated(row, row);
 		} else if (MiapeExtractionBatchManager.MIAPE_BATCH_DONE.equals(evt.getPropertyName())) {
-			String statisticsString = (String) evt.getNewValue();
+			final String statisticsString = (String) evt.getNewValue();
 			enableStateKeeper.setToPreviousState(this);
 			jProgressBar.setIndeterminate(false);
 			this.setCursor(null); // turn off the wait cursor
@@ -1287,19 +1290,19 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 		} else if (InputDataTypeGuesser.INPUT_DATA_TYPE_GUESSING_STARTED.equals(evt.getPropertyName())) {
 			enableStateKeeper.keepEnableStates(this);
 			enableStateKeeper.disable(this);
-			InputDataTypeGuesser inputDataTypeGuesser = (InputDataTypeGuesser) evt.getNewValue();
-			int totalFiles = inputDataTypeGuesser.getFiles().length;
-			String plural = totalFiles > 1 ? "s" : "";
+			final InputDataTypeGuesser inputDataTypeGuesser = (InputDataTypeGuesser) evt.getNewValue();
+			final int totalFiles = inputDataTypeGuesser.getFiles().length;
+			final String plural = totalFiles > 1 ? "s" : "";
 			jProgressBar.setMaximum(totalFiles);
 			jProgressBar.setIndeterminate(true);
 			jProgressBar.setStringPainted(true);
-			String message = "Checking input file" + plural + " format...";
+			final String message = "Checking input file" + plural + " format...";
 			jProgressBar.setString(message);
 			appendStatus(message);
 		} else if (InputDataTypeGuesser.INPUT_DATA_TYPE_GUESSED.equals(evt.getPropertyName())) {
-			InputDataTypeGuesser guesser = (InputDataTypeGuesser) evt.getNewValue();
-			File file = (File) evt.getOldValue();
-			InputFileType inputFileType = guesser.getGuessedTypes().get(file);
+			final InputDataTypeGuesser guesser = (InputDataTypeGuesser) evt.getNewValue();
+			final File file = (File) evt.getOldValue();
+			final InputFileType inputFileType = guesser.getGuessedTypes().get(file);
 
 			if (inputFileType != null) {
 				appendStatus("File '" + FilenameUtils.getName(file.getAbsolutePath()) + "' has been recognized as a '"
@@ -1311,13 +1314,13 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 					// in that case, add it to the table
 					((MiapeExtractionRunParametersImpl) guesser.getAssociatedTask().getParameters())
 							.setInputFileType(inputFileType);
-					int row = scrollableImportTaskTable.getTable().getImportTaskTableModel()
+					final int row = scrollableImportTaskTable.getTable().getImportTaskTableModel()
 							.indexOf(guesser.getAssociatedTask());
 					scrollableImportTaskTable.getTable().getImportTaskTableModel().fireTableRowsUpdated(row, row);
 				}
 
 			} else {
-				InputFileType guessedInputDataType = ImportTasksUtil.getSuggestedFileTypeByFileName(file);
+				final InputFileType guessedInputDataType = ImportTasksUtil.getSuggestedFileTypeByFileName(file);
 				if (guessedInputDataType != null) {
 					appendStatus(
 							"Guessing by its name, the input file '" + FilenameUtils.getName(file.getAbsolutePath())
@@ -1329,20 +1332,20 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 					if (guesser.getAssociatedTask() != null) {
 						((MiapeExtractionRunParametersImpl) guesser.getAssociatedTask().getParameters())
 								.setInputFileType(guessedInputDataType);
-						int row = scrollableImportTaskTable.getTable().getImportTaskTableModel()
+						final int row = scrollableImportTaskTable.getTable().getImportTaskTableModel()
 								.indexOf(guesser.getAssociatedTask());
 						scrollableImportTaskTable.getTable().getImportTaskTableModel().fireTableRowsUpdated(row, row);
 					}
 				}
 			}
 		} else if (InputDataTypeGuesser.INPUT_DATA_TYPE_GUESSING_FINISHED.equals(evt.getPropertyName())) {
-			InputDataTypeGuesser inputDataTypeGuesser = (InputDataTypeGuesser) evt.getNewValue();
+			final InputDataTypeGuesser inputDataTypeGuesser = (InputDataTypeGuesser) evt.getNewValue();
 			enableStateKeeper.setToPreviousState(this);
 			jProgressBar.setStringPainted(false);
 			jProgressBar.setIndeterminate(false);
 			jProgressBar.setValue(0);
-			HashMap<File, InputFileType> map = inputDataTypeGuesser.getGuessedTypes();
-			String plural = map.size() > 1 ? "s" : "";
+			final THashMap<File, InputFileType> map = inputDataTypeGuesser.getGuessedTypes();
+			final String plural = map.size() > 1 ? "s" : "";
 			appendStatus("Input file" + plural + " format checked.");
 			// if it is coming from a check from a single file, dont load
 			// everything
@@ -1350,7 +1353,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 				createAndLoadImportTasks(selectedInputFiles, map);
 			}
 		} else if (InputDataTypeGuesser.INPUT_DATA_TYPE_GUESSING_ERROR.equals(evt.getPropertyName())) {
-			Exception error = (Exception) evt.getNewValue();
+			final Exception error = (Exception) evt.getNewValue();
 			enableStateKeeper.setToPreviousState(this);
 			jProgressBar.setStringPainted(false);
 			jProgressBar.setMaximum(0);
@@ -1368,7 +1371,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 
 	private void showLoadedProjectTable() {
 		if (showProjectTable) {
-			TIntObjectHashMap<String> miapeProjects = getLoadedProjects();
+			final TIntObjectHashMap<String> miapeProjects = getLoadedProjects();
 			// this.appendStatus(miapeProjects.size() + " projects
 			// retrieved\n");
 			if (miapeProjects != null && !miapeProjects.isEmpty()) {
@@ -1407,9 +1410,9 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 	}
 
 	void appendStatus(String text) {
-		ZonedDateTime zonedDateTime = ZonedDateTime.now();
+		final ZonedDateTime zonedDateTime = ZonedDateTime.now();
 
-		String dateText = zonedDateTime.format(formatter);
+		final String dateText = zonedDateTime.format(formatter);
 		jTextAreaStatus.append(dateText + ": " + text + "\n");
 		jTextAreaStatus.setCaretPosition(jTextAreaStatus.getText().length() - 1);
 	}
@@ -1425,7 +1428,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 			try {
 				Thread.currentThread();
 				Thread.sleep(1000);
-			} catch (InterruptedException e) {
+			} catch (final InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
@@ -1442,7 +1445,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 	}
 
 	public static void main(String[] args) {
-		MiapeExtractionFrame instance = new MiapeExtractionFrame(null, false);
+		final MiapeExtractionFrame instance = new MiapeExtractionFrame(null, false);
 		instance.setVisible(true);
 
 	}
@@ -1460,20 +1463,20 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 		if (msURL != null && msiURL != null)
 			plural = "(s)";
 
-		Object[] dialog_options = { "Yes, open system explorer", "No, close this dialog" };
-		int selected_option = JOptionPane.showOptionDialog(this,
+		final Object[] dialog_options = { "Yes, open system explorer", "No, close this dialog" };
+		final int selected_option = JOptionPane.showOptionDialog(this,
 				directLinks + "\n"
 						+ "\nClick on yes to open the system explorer to go directly to the imported dataset file"
 						+ plural + "\n",
 				"Dataset" + plural + " imported", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 				dialog_options, dialog_options[1]);
 		if (selected_option == JOptionPane.YES_OPTION) { // Yes
-			Desktop desktop = Desktop.getDesktop();
+			final Desktop desktop = Desktop.getDesktop();
 			if (msURL != null) {
 
 				try {
 					desktop.open(msURL.getParentFile());
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					appendStatus(e.getMessage());
 				}
 				// HttpUtilities.openURL(msURL.toString());
@@ -1481,7 +1484,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 			if (msiURL != null) {
 				try {
 					desktop.open(msiURL.getParentFile());
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					appendStatus(e.getMessage());
 				}
 				// HttpUtilities.openURL(msiURL.toString());
@@ -1495,7 +1498,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 
 	@Override
 	public List<String> getHelpMessages() {
-		String[] array = { "Import datasets into PACOM:", //
+		final String[] array = { "Import datasets into PACOM:", //
 				"<b>How to import datasets:</b>", //
 
 				"1. Type the <b>name of the dataset folder</b> or select one by clicking on <i>'Select dataset folder'</i> button. "

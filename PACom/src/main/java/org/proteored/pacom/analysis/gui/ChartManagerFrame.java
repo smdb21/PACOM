@@ -33,8 +33,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -62,6 +60,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingWorker.StateValue;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
@@ -123,6 +122,7 @@ import edu.scripps.yates.utilities.checksum.MD5Checksum;
 import edu.scripps.yates.utilities.dates.DatesUtil;
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.map.hash.TObjectIntHashMap;
 import gnu.trove.set.hash.THashSet;
 
 /**
@@ -174,10 +174,10 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	private Boolean isLocalProcessingInParallel;
 	private boolean errorLoadingData;
 	private String previousMd5Checksum;
-	private Map<Object, Object> previousTogleValues = new THashMap<Object, Object>();
+	private final Map<Object, Object> previousTogleValues = new THashMap<Object, Object>();
 	private long t1;
 	private final ComponentEnableStateKeeper enableStateKeeper = new ComponentEnableStateKeeper();
-	private ReentrantLock chartCreatorlock = new ReentrantLock(true);
+	private final ReentrantLock chartCreatorlock = new ReentrantLock(true);
 	private boolean creatingChartLock = false;;
 
 	@Override
@@ -230,7 +230,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			// generalOptionsDialog.groupProteinsAtExperimentListLevel(),
 			// cfgFile, generalOptionsDialog.isLocalProcessingInParallel());
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			log.error(e.getMessage());
 			appendStatus(e.getMessage());
@@ -245,10 +245,10 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 		jTextAreaStatus.setFont(new JTextField().getFont());
 
-		AppVersion version = MainFrame.getVersion();
+		final AppVersion version = MainFrame.getVersion();
 		if (version != null) {
-			String suffix = " (v" + version.toString() + ")";
-			this.setTitle(getTitle() + suffix);
+			final String suffix = " (v" + version.toString() + ")";
+			setTitle(getTitle() + suffix);
 		}
 		enableStateKeeper.addReverseComponent(jButtonCancel);
 		enableStateKeeper.addInvariableComponent(jTextAreaStatus);
@@ -270,12 +270,12 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		if (resetErrorLoadingData != null && resetErrorLoadingData) {
 			instance.errorLoadingData = false;
 		}
-		GeneralOptionsDialog generalOptionsDialog = GeneralOptionsDialog.getInstance(instance, true);
-		boolean group = generalOptionsDialog.groupProteinsAtExperimentListLevel();
-		boolean donotGroupNonConclusiveProteins = generalOptionsDialog.isDoNotGroupNonConclusiveProteins();
-		boolean separateNonConclusiveProteins = generalOptionsDialog.isSeparateNonConclusiveProteins();
-		int pepLength = generalOptionsDialog.getMinPeptideLength();
-		boolean parallel = generalOptionsDialog.isLocalProcessingInParallel();
+		final GeneralOptionsDialog generalOptionsDialog = GeneralOptionsDialog.getInstance(instance, true);
+		final boolean group = generalOptionsDialog.groupProteinsAtExperimentListLevel();
+		final boolean donotGroupNonConclusiveProteins = generalOptionsDialog.isDoNotGroupNonConclusiveProteins();
+		final boolean separateNonConclusiveProteins = generalOptionsDialog.isSeparateNonConclusiveProteins();
+		final int pepLength = generalOptionsDialog.getMinPeptideLength();
+		final boolean parallel = generalOptionsDialog.isLocalProcessingInParallel();
 
 		if (!generalOptionsDialog.isDoNotAskAgainSelected()) {
 			generalOptionsDialog.setVisible(true);
@@ -328,12 +328,12 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		if (cfgFile != null && !cfgFile.getAbsolutePath().equals(this.cfgFile.getAbsolutePath()))
 			return true;
 		try {
-			String md5Checksum = MD5Checksum.getMD5ChecksumFromFileName(cfgFile.getAbsolutePath());
+			final String md5Checksum = MD5Checksum.getMD5ChecksumFromFileName(cfgFile.getAbsolutePath());
 			if (previousMd5Checksum == null || (cfgFile != null && !md5Checksum.equals(previousMd5Checksum))) {
 				previousMd5Checksum = md5Checksum;
 				return true;
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 
@@ -370,11 +370,11 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	 * {@link GeneralOptionsDialog}
 	 */
 	private void loadData() {
-		GeneralOptionsDialog generalOptionsDialog = GeneralOptionsDialog.getInstance(instance, true);
-		boolean groupingAtExperimentListLevel = generalOptionsDialog.groupProteinsAtExperimentListLevel();
-		boolean doNotGroupNonConclusiveProteins = generalOptionsDialog.isDoNotGroupNonConclusiveProteins();
-		boolean separateNonConclusiveProteins = generalOptionsDialog.isSeparateNonConclusiveProteins();
-		int minPeptideLength = generalOptionsDialog.getMinPeptideLength();
+		final GeneralOptionsDialog generalOptionsDialog = GeneralOptionsDialog.getInstance(instance, true);
+		final boolean groupingAtExperimentListLevel = generalOptionsDialog.groupProteinsAtExperimentListLevel();
+		final boolean doNotGroupNonConclusiveProteins = generalOptionsDialog.isDoNotGroupNonConclusiveProteins();
+		final boolean separateNonConclusiveProteins = generalOptionsDialog.isSeparateNonConclusiveProteins();
+		final int minPeptideLength = generalOptionsDialog.getMinPeptideLength();
 
 		this.loadData(minPeptideLength, groupingAtExperimentListLevel, doNotGroupNonConclusiveProteins,
 				separateNonConclusiveProteins, cfgFile, isLocalProcessingInParallel);
@@ -387,17 +387,17 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 		this.cfgFile = cfgFile;
 		this.minPeptideLength = minPeptideLength;
-		this.groupProteinsAtExperimentListLevel = groupingAtExperimentListLevel;
+		groupProteinsAtExperimentListLevel = groupingAtExperimentListLevel;
 		this.doNotGroupNonConclusiveProteins = doNotGroupNonConclusiveProteins;
 		this.separateNonConclusiveProteins = separateNonConclusiveProteins;
 		previousCfgFileSize = this.cfgFile.length();
 		isLocalProcessingInParallel = processInParallel;
-		CPExperimentList cpExpList = getCPExperimentList(cfgFile);
+		final CPExperimentList cpExpList = getCPExperimentList(cfgFile);
 		setTitle(cpExpList.getName() + " - Chart Viewer");
-		AppVersion version = MainFrame.getVersion();
+		final AppVersion version = MainFrame.getVersion();
 		if (version != null) {
-			String suffix = " (v" + version.toString() + ")";
-			this.setTitle(getTitle() + suffix);
+			final String suffix = " (v" + version.toString() + ")";
+			setTitle(getTitle() + suffix);
 		}
 		// set to "loading data..." the information labels
 		setInformation1("Loading data...");
@@ -406,7 +406,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 		experimentList = null;
 
-		OntologyLoaderTask ontologyLoaderTask = new OntologyLoaderTask();
+		final OntologyLoaderTask ontologyLoaderTask = new OntologyLoaderTask();
 		ontologyLoaderTask.addPropertyChangeListener(this);
 		ontologyLoaderTask.execute();
 
@@ -427,7 +427,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	}
 
 	private CPExperimentList getCPExperimentList(File cfgFile) {
-		CPExperimentList cpExpList = new ExperimentListAdapter(cfgFile, isAnnotateProteinsInUniprot(),
+		final CPExperimentList cpExpList = new ExperimentListAdapter(cfgFile, isAnnotateProteinsInUniprot(),
 				GeneralOptionsDialog.getInstance(this).isDoNotGroupNonConclusiveProteins(),
 				GeneralOptionsDialog.getInstance(this).isSeparateNonConclusiveProteins()).getCpExperimentList();
 		return cpExpList;
@@ -469,8 +469,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	private void initializeChartTypeMenu() {
 
 		// Identification numbers
-		JMenu menuIdNumbers = new JMenu("Number of identifications");
-		List<String> idNumbersMenus = new ArrayList<String>();
+		final JMenu menuIdNumbers = new JMenu("Number of identifications");
+		final List<String> idNumbersMenus = new ArrayList<String>();
 		idNumbersMenus.add(ChartType.PSM_PEP_PROT.getName());
 		idNumbersMenus.add(MENU_SEPARATION); // MENU SEPARATION
 		idNumbersMenus.add(ChartType.PEPTIDE_NUMBER_HISTOGRAM.getName());
@@ -487,8 +487,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		menuIdNumbers.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(idNumbersMenus));
 
 		// Overlappings
-		JMenu menuOverlappings = new JMenu("Reproducibility and Overlap");
-		List<String> overlappingMenus = new ArrayList<String>();
+		final JMenu menuOverlappings = new JMenu("Reproducibility and Overlap");
+		final List<String> overlappingMenus = new ArrayList<String>();
 		overlappingMenus.add(ChartType.PEPTIDE_OVERLAPING.getName());
 		overlappingMenus.add(ChartType.EXCLUSIVE_PEPTIDE_NUMBER.getName());
 		overlappingMenus.add(ChartType.PEPTIDE_REPEATABILITY.getName());
@@ -504,8 +504,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		menuOverlappings.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(overlappingMenus));
 
 		// Sensibility
-		JMenu menuSensitivity = new JMenu("FDR, Sensitivity, Specificity, Accuracy");
-		List<String> sensitivityMenus = new ArrayList<String>();
+		final JMenu menuSensitivity = new JMenu("FDR, Sensitivity, Specificity, Accuracy");
+		final List<String> sensitivityMenus = new ArrayList<String>();
 		sensitivityMenus.add(ChartType.FDR.getName());
 		sensitivityMenus.add(ChartType.FDR_VS_SCORE.getName());
 		sensitivityMenus.add(MENU_SEPARATION);
@@ -515,8 +515,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		menuSensitivity.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(sensitivityMenus));
 
 		// Scores
-		JMenu menuScores = new JMenu("Scores");
-		List<String> scoreMenus = new ArrayList<String>();
+		final JMenu menuScores = new JMenu("Scores");
+		final List<String> scoreMenus = new ArrayList<String>();
 		scoreMenus.add(ChartType.PEPTIDE_SCORE_COMPARISON.getName());
 		scoreMenus.add(ChartType.PEPTIDE_SCORE_DISTRIBUTION.getName());
 		scoreMenus.add(MENU_SEPARATION); // MENU SEPARATION
@@ -529,8 +529,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		menuScores.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(scoreMenus));
 
 		// protein features
-		JMenu menuProteinFeatures = new JMenu("Protein features");
-		List<String> proteinFeaturesMenus = new ArrayList<String>();
+		final JMenu menuProteinFeatures = new JMenu("Protein features");
+		final List<String> proteinFeaturesMenus = new ArrayList<String>();
 		proteinFeaturesMenus.add(ChartType.PROTEIN_NAME_CLOUD.getName());
 		proteinFeaturesMenus.add(MENU_SEPARATION); // MENU SEPARATION
 		proteinFeaturesMenus.add(ChartType.PROTEIN_GROUP_TYPES.getName());
@@ -551,8 +551,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 				.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(proteinFeaturesMenus));
 
 		// peptide features
-		JMenu menuPeptideFeatures = new JMenu("Peptide features");
-		List<String> peptideFeaturesMenus = new ArrayList<String>();
+		final JMenu menuPeptideFeatures = new JMenu("Peptide features");
+		final List<String> peptideFeaturesMenus = new ArrayList<String>();
 		peptideFeaturesMenus.add(ChartType.MISSEDCLEAVAGE_DISTRIBUTION.getName());
 		peptideFeaturesMenus.add(MENU_SEPARATION); // MENU SEPARATION
 		peptideFeaturesMenus.add(ChartType.PEPTIDE_MASS_DISTRIBUTION.getName());
@@ -580,8 +580,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 				.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(peptideFeaturesMenus));
 
 		// Peptide modifications as submenu of peptide features
-		JMenu subMenuPeptideModifications = new JMenu("Peptide modifications");
-		List<String> peptideModificationsMenus = new ArrayList<String>();
+		final JMenu subMenuPeptideModifications = new JMenu("Peptide modifications");
+		final List<String> peptideModificationsMenus = new ArrayList<String>();
 		peptideModificationsMenus.add(ChartType.PEPTIDE_MODIFICATION_DISTRIBUTION.getName());
 		peptideModificationsMenus.add(ChartType.PEPTIDE_MONITORING.getName());
 		peptideModificationsMenus.add(ChartType.MODIFICATED_PEPTIDE_NUMBER.getName());
@@ -591,15 +591,15 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		subMenuPeptideModifications
 				.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(peptideModificationsMenus));
 
-		JMenu menuPeptideModifications = new JMenu("Peptide modifications");
+		final JMenu menuPeptideModifications = new JMenu("Peptide modifications");
 		addSubmenus(menuPeptideModifications, peptideModificationsMenus, jMenuChartType);
 		// add action to show right panel
 		menuPeptideModifications
 				.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(peptideModificationsMenus));
 
 		// heatmaps
-		JMenu menuHeatMaps = new JMenu("Heatmaps");
-		List<String> heatMapsMenus = new ArrayList<String>();
+		final JMenu menuHeatMaps = new JMenu("Heatmaps");
+		final List<String> heatMapsMenus = new ArrayList<String>();
 		heatMapsMenus.add(ChartType.PROTEIN_OCURRENCE_HEATMAP.getName());
 		heatMapsMenus.add(ChartType.PEPTIDE_OCCURRENCE_HEATMAP.getName());
 		heatMapsMenus.add(ChartType.PEPTIDES_PER_PROTEIN_HEATMAP.getName());
@@ -611,8 +611,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		menuHeatMaps.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(heatMapsMenus));
 
 		// Gene mapping
-		JMenu menuHumanGenes = new JMenu("Human genes and chromosomes");
-		List<String> humanGenesMenus = new ArrayList<String>();
+		final JMenu menuHumanGenes = new JMenu("Human genes and chromosomes");
+		final List<String> humanGenesMenus = new ArrayList<String>();
 		humanGenesMenus.add(ChartType.HUMAN_CHROMOSOME_COVERAGE.getName());
 		humanGenesMenus.add(ChartType.CHR_MAPPING.getName());
 		humanGenesMenus.add(ChartType.CHR_PEPTIDES_MAPPING.getName());
@@ -623,8 +623,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		menuHumanGenes.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(humanGenesMenus));
 
 		// Peptide counting
-		JMenu menuPeptideCounting = new JMenu("Peptide counting");
-		List<String> peptideCountingMenus = new ArrayList<String>();
+		final JMenu menuPeptideCounting = new JMenu("Peptide counting");
+		final List<String> peptideCountingMenus = new ArrayList<String>();
 		peptideCountingMenus.add(ChartType.PEPTIDE_COUNTING_HISTOGRAM.getName());
 		peptideCountingMenus.add(ChartType.PEPTIDE_COUNTING_VS_SCORE.getName());
 		addSubmenus(menuPeptideCounting, peptideCountingMenus, jMenuChartType);
@@ -633,8 +633,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 				.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(peptideCountingMenus));
 
 		// Metadata
-		JMenu menuMetadata = new JMenu("Metadata");
-		List<String> metadataMenus = new ArrayList<String>();
+		final JMenu menuMetadata = new JMenu("Metadata");
+		final List<String> metadataMenus = new ArrayList<String>();
 		metadataMenus.add(ChartType.SPECTROMETERS.getName());
 		metadataMenus.add(ChartType.INPUT_PARAMETERS.getName());
 		addSubmenus(menuMetadata, metadataMenus, jMenuChartType);
@@ -644,7 +644,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	}
 
 	private MouseListener getMouseListenerForShowingAttachedPanelForChartTypes(List<String> idNumbersMenus) {
-		MouseListener ret = new MouseListener() {
+		final MouseListener ret = new MouseListener() {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -673,16 +673,16 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void addSubmenus(JMenu menu, List<String> chartTypesForSubmenus, JMenu parentMenu) {
 
-		for (String chartType : chartTypesForSubmenus) {
+		for (final String chartType : chartTypesForSubmenus) {
 			if (MENU_SEPARATION.equals(chartType)) {
 				menu.addSeparator();
 				// } else if (radioButtonMenuMap.containsKey(chartType)){
 				// menu.add(radioButtonMenuMap.get(chartType));
 				// }
 			} else {
-				JRadioButtonMenuItem menuItem = new JRadioButtonMenuItem(chartType);
-				ChartType chartTypeObj = ChartType.getFromName(chartType);
-				String menuTooltip = "<html><b>" + chartTypeObj.getName() + "</b><br>"
+				final JRadioButtonMenuItem menuItem = new JRadioButtonMenuItem(chartType);
+				final ChartType chartTypeObj = ChartType.getFromName(chartType);
+				final String menuTooltip = "<html><b>" + chartTypeObj.getName() + "</b><br>"
 						+ ToolTipUtil.splitWordsInHTMLLines(chartTypeObj.getDescription(),
 								menuItem.getFontMetrics(menuItem.getFont()), 300)
 						+ "</html>";
@@ -700,7 +700,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 						registerNewValue(menuItem);
 					}
 				});
-				List<String> list = new ArrayList<String>();
+				final List<String> list = new ArrayList<String>();
 				list.add(chartType);
 				menuItem.addMouseListener(getMouseListenerForShowingAttachedPanelForChartTypes(list));
 
@@ -720,10 +720,10 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		final int numProteins = experimentList.getTotalNumProteinGroups(countNonConclusiveProteins());
 		final int numDifferentPeptides = experimentList.getNumDifferentPeptides(distinguishModifiedPeptides());
 		final int numPeptides = experimentList.getTotalNumPeptides();
-		long t1 = System.currentTimeMillis();
-		int genesFromProteinGroup = GeneDistributionReader.getInstance()
+		final long t1 = System.currentTimeMillis();
+		final int genesFromProteinGroup = GeneDistributionReader.getInstance()
 				.getGenesFromProteinGroup(experimentList.getIdentifiedProteinGroups()).size();
-		int firstGenesFromProteinGroup = GeneDistributionReader.getInstance()
+		final int firstGenesFromProteinGroup = GeneDistributionReader.getInstance()
 				.getFirstGenesFromProteinGroup(experimentList.getIdentifiedProteinGroups()).size();
 		log.debug((System.currentTimeMillis() - t1) + " msg");
 
@@ -747,10 +747,10 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private String getFDRString() {
 
-		String format = "#.##";
+		final String format = "#.##";
 		DecimalFormat df = new java.text.DecimalFormat(format);
 
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		if (experimentList != null && experimentList.validFDRCalculation()) {
 			final String uniqueFDRScoreName = filterDialog.getUniqueFDRScoreName();
 			// protein level
@@ -765,7 +765,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 					sb.append("Global FDRs (Prot - Pep - PSM) = " + df.format(proteinFDR) + "%");
 				}
-			} catch (IllegalMiapeArgumentException ex) {
+			} catch (final IllegalMiapeArgumentException ex) {
 				// log.info("The FDR cannot be calculated: " + ex.getMessage());
 			}
 
@@ -779,7 +779,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 						df = new DecimalFormat("#.###");
 					sb.append(" - " + df.format(peptideFDR) + "%");
 				}
-			} catch (IllegalMiapeArgumentException ex) {
+			} catch (final IllegalMiapeArgumentException ex) {
 				log.debug("The FDR cannot be calculated: " + ex.getMessage());
 			}
 
@@ -793,7 +793,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 						df = new DecimalFormat("#.###");
 					sb.append(" - " + df.format(psmFDR) + "%");
 				}
-			} catch (IllegalMiapeArgumentException ex) {
+			} catch (final IllegalMiapeArgumentException ex) {
 				log.debug("The FDR cannot be calculated: " + ex.getMessage());
 			}
 
@@ -814,8 +814,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	}
 
 	private void updateOptionComboBox() {
-		ChartType chartType = currentChartType;
-		String[] options = getOptionsByChartType(chartType);
+		final ChartType chartType = currentChartType;
+		final String[] options = getOptionsByChartType(chartType);
 		final DefaultComboBoxModel model = (DefaultComboBoxModel) jComboBoxChartOptions.getModel();
 		if (options == null) {
 			model.removeAllElements();
@@ -919,7 +919,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	// GEN-BEGIN:initComponents
 	// <editor-fold defaultstate="collapsed" desc="Generated Code">
 	private void initComponents() {
-		java.awt.GridBagConstraints gridBagConstraints;
+		final java.awt.GridBagConstraints gridBagConstraints;
 
 		chartTypeMenuButtonGroup = new javax.swing.ButtonGroup();
 		jPanelStatus = new javax.swing.JPanel();
@@ -983,40 +983,36 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		jProgressBarMemoryUsage.setStringPainted(true);
 
 		jButtonHelp = new OpenHelpButton(this);
-		javax.swing.GroupLayout jPanelStatusLayout = new javax.swing.GroupLayout(jPanelStatus);
+		final javax.swing.GroupLayout jPanelStatusLayout = new javax.swing.GroupLayout(jPanelStatus);
 		jPanelStatusLayout
-				.setHorizontalGroup(
-						jPanelStatusLayout.createParallelGroup(Alignment.TRAILING)
-								.addGroup(jPanelStatusLayout.createSequentialGroup().addContainerGap()
-										.addGroup(jPanelStatusLayout.createParallelGroup(Alignment.LEADING)
-												.addGroup(jPanelStatusLayout.createSequentialGroup()
-														.addComponent(jProgressBarMemoryUsage, GroupLayout.DEFAULT_SIZE,
-																983, Short.MAX_VALUE)
-														.addContainerGap())
-								.addGroup(
-										jPanelStatusLayout.createSequentialGroup()
+				.setHorizontalGroup(jPanelStatusLayout.createParallelGroup(Alignment.TRAILING)
+						.addGroup(jPanelStatusLayout.createSequentialGroup().addContainerGap()
+								.addGroup(jPanelStatusLayout.createParallelGroup(Alignment.LEADING)
+										.addGroup(jPanelStatusLayout.createSequentialGroup()
+												.addComponent(jProgressBarMemoryUsage, GroupLayout.DEFAULT_SIZE, 983,
+														Short.MAX_VALUE)
+												.addContainerGap())
+										.addGroup(jPanelStatusLayout.createSequentialGroup()
 												.addComponent(jScrollPane3, GroupLayout.DEFAULT_SIZE, 983,
 														Short.MAX_VALUE)
 												.addContainerGap())
-						.addGroup(Alignment.TRAILING,
-								jPanelStatusLayout.createSequentialGroup().addComponent(jButtonHelp).addContainerGap())
-						.addGroup(Alignment.TRAILING,
-								jPanelStatusLayout.createSequentialGroup()
-										.addComponent(jProgressBar, GroupLayout.DEFAULT_SIZE, 983, Short.MAX_VALUE)
-										.addContainerGap()))));
-		jPanelStatusLayout
-				.setVerticalGroup(
-						jPanelStatusLayout.createParallelGroup(Alignment.TRAILING)
-								.addGroup(jPanelStatusLayout.createSequentialGroup()
-										.addComponent(jScrollPane3, GroupLayout.PREFERRED_SIZE, 92,
-												GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(ComponentPlacement.RELATED)
-										.addComponent(jProgressBar, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
+										.addGroup(Alignment.TRAILING,
+												jPanelStatusLayout.createSequentialGroup().addComponent(jButtonHelp)
+														.addContainerGap())
+										.addGroup(Alignment.TRAILING,
+												jPanelStatusLayout
+														.createSequentialGroup().addComponent(jProgressBar,
+																GroupLayout.DEFAULT_SIZE, 983, Short.MAX_VALUE)
+														.addContainerGap()))));
+		jPanelStatusLayout.setVerticalGroup(jPanelStatusLayout.createParallelGroup(Alignment.TRAILING)
+				.addGroup(jPanelStatusLayout.createSequentialGroup()
+						.addComponent(jScrollPane3, GroupLayout.PREFERRED_SIZE, 92, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(jProgressBar, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addComponent(jProgressBarMemoryUsage, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE).addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(jButtonHelp).addContainerGap()));
+								GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED).addComponent(jButtonHelp).addContainerGap()));
 		jPanelStatus.setLayout(jPanelStatusLayout);
 		getContentPane().add(jPanelStatus, BorderLayout.PAGE_END);
 
@@ -1031,7 +1027,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			}
 		});
 
-		javax.swing.GroupLayout jPanelChartTypeLayout = new javax.swing.GroupLayout(jPanelChartType);
+		final javax.swing.GroupLayout jPanelChartTypeLayout = new javax.swing.GroupLayout(jPanelChartType);
 		jPanelChartType.setLayout(jPanelChartTypeLayout);
 		jPanelChartTypeLayout
 				.setHorizontalGroup(jPanelChartTypeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1049,7 +1045,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		jPanelAdditionalCustomizations
 				.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		jPanelAdditionalCustomizations.getVerticalScrollBar().setUnitIncrement(16);
-		javax.swing.GroupLayout jPanelAddOptionsLayout = new javax.swing.GroupLayout(jPanelAddOptions);
+		final javax.swing.GroupLayout jPanelAddOptionsLayout = new javax.swing.GroupLayout(jPanelAddOptions);
 		jPanelAddOptions.setLayout(jPanelAddOptionsLayout);
 		jPanelAddOptionsLayout.setHorizontalGroup(jPanelAddOptionsLayout
 				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGap(0, 324, Short.MAX_VALUE));
@@ -1071,7 +1067,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			}
 		});
 
-		javax.swing.GroupLayout jPanelPeptideCountingLayout = new javax.swing.GroupLayout(jPanelPeptideCounting);
+		final javax.swing.GroupLayout jPanelPeptideCountingLayout = new javax.swing.GroupLayout(jPanelPeptideCounting);
 		jPanelPeptideCountingLayout.setHorizontalGroup(jPanelPeptideCountingLayout
 				.createParallelGroup(Alignment.LEADING).addGroup(jPanelPeptideCountingLayout.createSequentialGroup()
 						.addContainerGap().addComponent(jCheckBoxUniquePeptides).addContainerGap(55, Short.MAX_VALUE)));
@@ -1158,56 +1154,58 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 				"<html>\r\nClick here to <b>Cancel current task</b>,<br>\r\nthat is, data loading or chart creation.\r\n</html>");
 		jButtonCancel.setEnabled(false);
 
-		javax.swing.GroupLayout jPanelInformationLayout = new javax.swing.GroupLayout(jPanelInformation);
-		jPanelInformationLayout.setHorizontalGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanelInformationLayout.createSequentialGroup().addContainerGap()
-						.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(jLabelInformation3, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 292,
-										Short.MAX_VALUE)
-								.addComponent(jLabelInformation2, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 292,
-										Short.MAX_VALUE)
-								.addComponent(jLabelInformation1, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
-								.addGroup(jPanelInformationLayout.createSequentialGroup()
-										.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
-												.addGroup(jPanelInformationLayout.createSequentialGroup()
-														.addComponent(jButtonSeeAppliedFilters,
-																GroupLayout.PREFERRED_SIZE, 47,
-																GroupLayout.PREFERRED_SIZE)
-														.addPreferredGap(ComponentPlacement.RELATED)
-														.addComponent(jButtonSaveAsFiltered, GroupLayout.PREFERRED_SIZE,
-																47, GroupLayout.PREFERRED_SIZE))
-												.addComponent(jButtonExport2PRIDE, GroupLayout.DEFAULT_SIZE, 101,
-														Short.MAX_VALUE))
-										.addPreferredGap(ComponentPlacement.RELATED)
-										.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
-												.addGroup(jPanelInformationLayout.createSequentialGroup()
-														.addComponent(jButtonShowTable, GroupLayout.PREFERRED_SIZE, 47,
-																GroupLayout.PREFERRED_SIZE)
-														.addPreferredGap(ComponentPlacement.RELATED)
-														.addComponent(jButtonExport2Excel, GroupLayout.PREFERRED_SIZE,
-																46, GroupLayout.PREFERRED_SIZE))
-												.addComponent(jButtonCancel, GroupLayout.PREFERRED_SIZE, 101,
-														GroupLayout.PREFERRED_SIZE))
-										.addGap(54)))
-						.addContainerGap()));
+		final javax.swing.GroupLayout jPanelInformationLayout = new javax.swing.GroupLayout(jPanelInformation);
 		jPanelInformationLayout
-				.setVerticalGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(jPanelInformationLayout.createSequentialGroup()
-								.addComponent(jLabelInformation1, GroupLayout.PREFERRED_SIZE, 21,
-										GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(jLabelInformation2, GroupLayout.PREFERRED_SIZE, 24,
-										GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(jLabelInformation3, GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
-								.addPreferredGap(ComponentPlacement.RELATED)
+				.setHorizontalGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(jPanelInformationLayout.createSequentialGroup().addContainerGap()
 								.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
-										.addComponent(jButtonShowTable, GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
-										.addComponent(jButtonSeeAppliedFilters, GroupLayout.DEFAULT_SIZE,
-												GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(jButtonSaveAsFiltered, GroupLayout.DEFAULT_SIZE,
-												GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(jButtonExport2Excel, 0, 0, Short.MAX_VALUE))
+										.addComponent(jLabelInformation3, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE,
+												292, Short.MAX_VALUE)
+										.addComponent(jLabelInformation2, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE,
+												292, Short.MAX_VALUE)
+										.addComponent(jLabelInformation1, GroupLayout.DEFAULT_SIZE, 292,
+												Short.MAX_VALUE)
+										.addGroup(jPanelInformationLayout.createSequentialGroup()
+												.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
+														.addGroup(jPanelInformationLayout.createSequentialGroup()
+																.addComponent(jButtonSeeAppliedFilters,
+																		GroupLayout.PREFERRED_SIZE, 47,
+																		GroupLayout.PREFERRED_SIZE)
+																.addPreferredGap(ComponentPlacement.RELATED)
+																.addComponent(jButtonSaveAsFiltered,
+																		GroupLayout.PREFERRED_SIZE, 47,
+																		GroupLayout.PREFERRED_SIZE))
+														.addComponent(jButtonExport2PRIDE, GroupLayout.DEFAULT_SIZE,
+																101, Short.MAX_VALUE))
+												.addPreferredGap(ComponentPlacement.RELATED)
+												.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
+														.addGroup(jPanelInformationLayout.createSequentialGroup()
+																.addComponent(jButtonShowTable,
+																		GroupLayout.PREFERRED_SIZE, 47,
+																		GroupLayout.PREFERRED_SIZE)
+																.addPreferredGap(ComponentPlacement.RELATED)
+																.addComponent(jButtonExport2Excel,
+																		GroupLayout.PREFERRED_SIZE, 46,
+																		GroupLayout.PREFERRED_SIZE))
+														.addComponent(jButtonCancel, GroupLayout.PREFERRED_SIZE, 101,
+																GroupLayout.PREFERRED_SIZE))
+												.addGap(54)))
+								.addContainerGap()));
+		jPanelInformationLayout.setVerticalGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(jPanelInformationLayout.createSequentialGroup()
+						.addComponent(jLabelInformation1, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(jLabelInformation2, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(jLabelInformation3, GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(jButtonShowTable, GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
+								.addComponent(jButtonSeeAppliedFilters, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(jButtonSaveAsFiltered, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
+								.addComponent(jButtonExport2Excel, 0, 0, Short.MAX_VALUE))
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
 								.addComponent(jButtonExport2PRIDE).addComponent(jButtonCancel,
@@ -1215,7 +1213,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 						.addContainerGap()));
 		jPanelInformation.setLayout(jPanelInformationLayout);
 
-		javax.swing.GroupLayout jPanelLeftLayout = new javax.swing.GroupLayout(jPanelLeft);
+		final javax.swing.GroupLayout jPanelLeftLayout = new javax.swing.GroupLayout(jPanelLeft);
 		jPanelLeftLayout.setHorizontalGroup(jPanelLeftLayout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(jPanelLeftLayout.createSequentialGroup().addGroup(jPanelLeftLayout
 						.createParallelGroup(Alignment.TRAILING)
@@ -1245,7 +1243,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		jScrollPaneChart.setBorder(null);
 		jScrollPaneChart.getVerticalScrollBar().setUnitIncrement(16);
 		jScrollPaneChart.setViewportView(jPanelChart);
-		GridBagLayout gbl_jPanelChart = new GridBagLayout();
+		final GridBagLayout gbl_jPanelChart = new GridBagLayout();
 		gbl_jPanelChart.columnWidths = new int[] { 0 };
 		gbl_jPanelChart.rowHeights = new int[] { 0 };
 		gbl_jPanelChart.columnWeights = new double[] { Double.MIN_VALUE };
@@ -1386,7 +1384,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 		setJMenuBar(jMenuBar1);
 
-		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+		final java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 		final int screenSizeWidth = screenSize.width;
 		final int screenSizeHeight = screenSize.height;
 		final int windowWidth = screenSizeWidth / 2;
@@ -1399,12 +1397,12 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	}// </editor-fold>
 
 	protected void cancelTask() {
-		if (this.dataLoader != null && this.dataLoader.getState() == StateValue.STARTED) {
+		if (dataLoader != null && dataLoader.getState() == StateValue.STARTED) {
 			log.info("Cancelling data loader");
 			appendStatus("Cancelling data loader...");
 			cancelDataLoader();
 		}
-		if (this.chartCreator != null && this.chartCreator.getState() == StateValue.STARTED) {
+		if (chartCreator != null && chartCreator.getState() == StateValue.STARTED) {
 			log.info("Cancelling chart creator");
 			appendStatus("Cancelling chart creator");
 			cancelChartCreator();
@@ -1419,7 +1417,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 					log.info("Waiting for cancelling data loader");
 					Thread.sleep(100);
 					canceled = dataLoader.cancel(true);
-				} catch (InterruptedException e) {
+				} catch (final InterruptedException e) {
 				}
 			}
 
@@ -1435,7 +1433,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 					Thread.sleep(100);
 					canceled = chartCreator.cancel(true);
 
-				} catch (InterruptedException e) {
+				} catch (final InterruptedException e) {
 				}
 			}
 
@@ -1496,7 +1494,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	}
 
 	private void saveAsCuratedExperiment() {
-		curatedExperimentSaver = new CuratedExperimentSaver(this, this.cfgFile, experimentList,
+		curatedExperimentSaver = new CuratedExperimentSaver(this, cfgFile, experimentList,
 				OntologyLoaderTask.getCvManager(),
 				GeneralOptionsDialog.getInstance(this).isDoNotGroupNonConclusiveProteins(),
 				GeneralOptionsDialog.getInstance(this).isSeparateNonConclusiveProteins());
@@ -1516,7 +1514,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		} else {
 			log.info("Showing identification table");
 			// if (this.identificationTable == null)
-			identificationTable = IdentificationTableFrame.getInstance(this, toSet(experimentList), this.filtered);
+			identificationTable = IdentificationTableFrame.getInstance(this, toSet(experimentList), filtered);
 
 			identificationTable.setVisible(true);
 		}
@@ -1581,7 +1579,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 				|| (chartCreator != null && chartCreator.getState() == StateValue.STARTED)) {
 			appendStatus("Please, wait until task is done.");
 		} else {
-			ExporterDialog exporterDialog = new ExporterDialog(this, this, toSet(experimentList), null);
+			final ExporterDialog exporterDialog = new ExporterDialog(this, this, toSet(experimentList), null);
 			exporterDialog.setVisible(true);
 		}
 	}
@@ -1591,7 +1589,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 				|| (chartCreator != null && chartCreator.getState() == StateValue.STARTED)) {
 			appendStatus("Please, wait until task is done.");
 		} else {
-			ExporterToPRIDEDialog exporterDialog = new ExporterToPRIDEDialog(this, experimentList);
+			final ExporterToPRIDEDialog exporterDialog = new ExporterToPRIDEDialog(this, experimentList);
 			exporterDialog.setVisible(true);
 		}
 	}
@@ -1623,14 +1621,14 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	private void jCheckBoxMenuItemScoreFiltersActionPerformed(java.awt.event.ActionEvent evt) {
 		filterDialog.setScoreFilterEnabled(jCheckBoxMenuItemScoreFilters.isSelected());
 		if (jCheckBoxMenuItemScoreFilters.isSelected()) {
-			List<ScoreFilter> filters = filterDialog.getScoreFilters(IdentificationItemEnum.PROTEIN);
+			final List<ScoreFilter> filters = filterDialog.getScoreFilters(IdentificationItemEnum.PROTEIN);
 			filters.addAll(filterDialog.getScoreFilters(IdentificationItemEnum.PEPTIDE));
 			if (filters.isEmpty()) {
 				filterDialog.setCurrentIndex(FiltersDialog.SCOREFILTER_INDEX);
 				filterDialog.setVisible(true);
 			} else {
 				boolean thereIsScoreFilterDefined = false;
-				for (Filter filter : filters) {
+				for (final Filter filter : filters) {
 					if (filter instanceof ScoreFilter)
 						thereIsScoreFilterDefined = true;
 				}
@@ -1649,7 +1647,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 		filterDialog.setFDRFilterEnabled(jCheckBoxMenuItemFDRFilter.isSelected());
 		if (jCheckBoxMenuItemFDRFilter.isSelected()) {
-			List<Filter> filters = filterDialog.getFilters();
+			final List<Filter> filters = filterDialog.getFilters();
 			if (filters.isEmpty()) {
 				log.info("There is not filters defined");
 				filterDialog.setCurrentIndex(FiltersDialog.FDRFILTER_INDEX);
@@ -1659,7 +1657,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			} else {
 				// log.info("There are " + filters.size() + " filters defined");
 				boolean thereIsFDRFilterDefined = false;
-				for (Filter filter : filters) {
+				for (final Filter filter : filters) {
 					if (filter instanceof FDRFilter) {
 						thereIsFDRFilterDefined = true;
 						continue;
@@ -1697,8 +1695,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	public void addCustomizationControls() {
 		// TODO add more customizations if you add more chart types
 
-		ChartType chartType = currentChartType;
-		String options = (String) jComboBoxChartOptions.getSelectedItem();
+		final ChartType chartType = currentChartType;
+		final String options = (String) jComboBoxChartOptions.getSelectedItem();
 
 		// remove all content
 		jPanelAddOptions.removeAll();
@@ -1792,7 +1790,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void addPeptideCoutingControls(String options) {
 		jPanelAddOptions.setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final GridBagConstraints c = new GridBagConstraints();
 
 		// Just in case of proteins
 
@@ -1801,7 +1799,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		c.gridy = 0;
 
 		if (ChartType.PEPTIDE_COUNTING_VS_SCORE.equals(currentChartType)) {
-			DefaultComboBoxModel peptideScoreNames = getPeptideScoreNames();
+			final DefaultComboBoxModel peptideScoreNames = getPeptideScoreNames();
 			jPanelAddOptions.add(optionsFactory.getPeptideScorePanel(peptideScoreNames), c);
 		}
 		if (ChartType.PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
@@ -1837,33 +1835,33 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void addSingleRTControls(String options) {
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		// c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 0, 0, 0);
 		// /////////////// ROW1
-		JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
+		final JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
 		c.gridx = 0;
 		c.gridy = 0;
 		panel.add(jPanelAdditional1, c);
 
 		// ////////////// ROW2
-		JPanel jPanelAdditional2 = optionsFactory.getPeptideSequencesPanel(true);
+		final JPanel jPanelAdditional2 = optionsFactory.getPeptideSequencesPanel(true);
 
 		c.gridx = 0;
 		c.gridy++;
 		c.fill = GridBagConstraints.BOTH;
 		panel.add(jPanelAdditional2, c);
 
-		JLabel jlabel = new JLabel("(Multiple selections are allowed)");
+		final JLabel jlabel = new JLabel("(Multiple selections are allowed)");
 		jlabel.setToolTipText(
 				"<html>Multiple selections are allowed:<br>Press CTRL key and select more than one modification.</html>");
 		c.gridy++;
 		panel.add(jlabel, c);
 
 		// /////////////// ROW5
-		JCheckBox checkbox6 = optionsFactory.getShowInMinutesCheckBox();
+		final JCheckBox checkbox6 = optionsFactory.getShowInMinutesCheckBox();
 		c.gridx = 0;
 		c.gridy++;
 		panel.add(checkbox6, c);
@@ -1874,19 +1872,19 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void addPeptideRTControls(String options) {
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		// c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 0, 0, 0);
 		// /////////////// ROW1
-		JPanel jPanelAdditional1 = optionsFactory.getHistogramTypePanel();
+		final JPanel jPanelAdditional1 = optionsFactory.getHistogramTypePanel();
 		c.gridx = 0;
 		c.gridy = 0;
 		panel.add(jPanelAdditional1, c);
 
 		// //////////////// ROW2
-		JPanel jPanelAdditional2 = optionsFactory.getBinsPanel();
+		final JPanel jPanelAdditional2 = optionsFactory.getBinsPanel();
 
 		c.gridy++;
 		panel.add(jPanelAdditional2, c);
@@ -1902,7 +1900,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		jPanelAddOptions.setLayout(new BorderLayout());
 		jPanelAddOptions.add(panel, BorderLayout.NORTH);
 		if (!ONE_SERIES_PER_EXPERIMENT_LIST.equals(options)) {
-			JLabel label = new JLabel("Select from the following checkBoxes:");
+			final JLabel label = new JLabel("Select from the following checkBoxes:");
 			c.gridy++;
 			panel.add(label, c);
 			JPanel checkboxesPanel = null;
@@ -1923,17 +1921,17 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		if (options == null)
 			options = ChartManagerFrame.ONE_CHART_PER_EXPERIMENT;
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 0;
 		c.gridy = 0;
 
 		// //////////////// ROW3
-		JPanel jPanelAdditional5 = optionsFactory.getShowRegressionLinePanel();
+		final JPanel jPanelAdditional5 = optionsFactory.getShowRegressionLinePanel();
 		panel.add(jPanelAdditional5, c);
 		// //////////////// ROW4
-		JPanel jPanelAdditional6 = optionsFactory.getShowDiagonalLinePanel();
+		final JPanel jPanelAdditional6 = optionsFactory.getShowDiagonalLinePanel();
 		c.gridy++;
 		panel.add(jPanelAdditional6, c);
 
@@ -1942,7 +1940,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		panel.add(showInMinutesCheckBox, c);
 
 		if (!ONE_SERIES_PER_EXPERIMENT_LIST.equals(options)) {
-			JLabel label = new JLabel("Select from the following checkBoxes:");
+			final JLabel label = new JLabel("Select from the following checkBoxes:");
 			c.gridy++;
 			panel.add(label, c);
 			JPanel checkboxesPanel = null;
@@ -1965,8 +1963,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void addWordCramControls() {
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		// c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 0, 0, 0);
@@ -2002,15 +2000,15 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		c.gridy++;
 		final JLabel label2 = new JLabel("Words to skip:");
 		panel.add(label2, c);
-		String tooltip = "Words in this text area will not be shown in the protein cloud";
+		final String tooltip = "Words in this text area will not be shown in the protein cloud";
 		label2.setToolTipText(tooltip);
 		c.gridy++;
 		final JTextArea skipWordsTextArea = optionsFactory.getSkipWordsTextArea();
 		skipWordsTextArea.setWrapStyleWord(true);
-		JScrollPane scrollPane = new JScrollPane(skipWordsTextArea);
+		final JScrollPane scrollPane = new JScrollPane(skipWordsTextArea);
 
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
 		panel.add(scrollPane, c);
 		skipWordsTextArea.setToolTipText(tooltip);
@@ -2030,8 +2028,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void addHumanChromosomeCoverageControls() {
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		// c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 0, 0, 0);
@@ -2058,24 +2056,24 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void addPeptidePresencyControls() {
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		// c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 0, 0, 0);
 
 		// /////////////// ROW1
-		JCheckBox jCheckBox2 = optionsFactory.getHeatMapBinaryCheckBox(false);
+		final JCheckBox jCheckBox2 = optionsFactory.getHeatMapBinaryCheckBox(false);
 		c.gridx = 0;
 		c.gridy = 0;
 		c.fill = GridBagConstraints.BOTH;
 		panel.add(jCheckBox2, c);
 		// /////////////// ROW2
-		JPanel jPanelAdditional3 = optionsFactory.getUserPeptideListPanel(false);
+		final JPanel jPanelAdditional3 = optionsFactory.getUserPeptideListPanel(false);
 		c.gridy++;
 		panel.add(jPanelAdditional3, c);
 		// /////////////// ROW3
-		JLabel jlabel = new JLabel("<html><b>Important</b>:<br>If peptide containing modifications are <br>"
+		final JLabel jlabel = new JLabel("<html><b>Important</b>:<br>If peptide containing modifications are <br>"
 				+ "inserted here, <font color='RED'>enable the 'distinguish mod.<br>"
 				+ "and unmod.' checkbox above</font>.<br><b>Examples</b>:<br>Without modifications:<br><ul><li>CSVFYGAPSK</li><li>DNQRPSGVPDR</li></ul>Containing modifications (modifications are<br>"
 				+ "specified inserting the monoisotopic mass delta<br>between braquets):<br><ul><li>C(+57.02)SVFYGAPSK</li><li>DGWSAQPTC(+57.02)IK</li></ul>"
@@ -2083,11 +2081,11 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		c.gridy++;
 		panel.add(jlabel, c);
 		// /////////////// ROW4
-		JPanel colorScalePanel = optionsFactory.getColorScalePanel(false);
+		final JPanel colorScalePanel = optionsFactory.getColorScalePanel(false);
 		c.gridy++;
 		panel.add(colorScalePanel, c);
 
-		JButton jbuttonSave = optionsFactory.getSaveButton();
+		final JButton jbuttonSave = optionsFactory.getSaveButton();
 		c.gridy++;
 		panel.add(jbuttonSave, c);
 
@@ -2107,8 +2105,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		}
 
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.insets = new Insets(10, 0, 0, 0);
 		c.gridx = 0;
 		c.gridy = 0;
@@ -2127,25 +2125,25 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void addFDR_VS_Score_Controls(String options) {
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.insets = new Insets(10, 0, 0, 0);
-		JCheckBox showPSMCheckBox = optionsFactory.getShowPSMCheckBox();
+		final JCheckBox showPSMCheckBox = optionsFactory.getShowPSMCheckBox();
 		c.gridx = 0;
 		c.gridy = 0;
 		panel.add(showPSMCheckBox, c);
-		JCheckBox showPeptidesCheckBox = optionsFactory.getShowPeptidesCheckBox();
+		final JCheckBox showPeptidesCheckBox = optionsFactory.getShowPeptidesCheckBox();
 		c.gridy++;
 		panel.add(showPeptidesCheckBox, c);
-		JCheckBox showProteinsCheckBox = optionsFactory.getShowProteinsCheckBox();
+		final JCheckBox showProteinsCheckBox = optionsFactory.getShowProteinsCheckBox();
 		c.gridy++;
 		panel.add(showProteinsCheckBox, c);
-		JCheckBox showScoreVsFDRCheckBox = optionsFactory.getShowScoreVsFDRCheckBox();
+		final JCheckBox showScoreVsFDRCheckBox = optionsFactory.getShowScoreVsFDRCheckBox();
 		c.gridy++;
 		panel.add(showScoreVsFDRCheckBox, c);
 
 		if (!ONE_SERIES_PER_EXPERIMENT_LIST.equals(options)) {
-			JLabel label = new JLabel("Select from the following checkBoxes:");
+			final JLabel label = new JLabel("Select from the following checkBoxes:");
 			c.gridy++;
 			panel.add(label, c);
 			JPanel checkboxesPanel = null;
@@ -2170,8 +2168,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void addAllHumanChromosomePeptideMappingControls() {
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		// c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 0, 0, 0);
@@ -2179,18 +2177,18 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		c.gridx = 0;
 		c.gridy = 0;
 
-		JCheckBox showAsPieChartCheckBox = optionsFactory.getShowAsPieChartCheckBox();
+		final JCheckBox showAsPieChartCheckBox = optionsFactory.getShowAsPieChartCheckBox();
 
 		// /////////////// ROW1
 		if (!showAsPieChartCheckBox.isSelected()) {
-			JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
+			final JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
 			c.gridy++;
 
 			panel.add(jPanelAdditional1, c);
 		}
 
 		c.gridy++;
-		JPanel peptideOrPSMSelector = optionsFactory.getPeptideOrPSMSelector();
+		final JPanel peptideOrPSMSelector = optionsFactory.getPeptideOrPSMSelector();
 		panel.add(peptideOrPSMSelector, c);
 
 		c.gridy++;
@@ -2203,10 +2201,10 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		});
 
 		// Filter button
-		JLabel label1 = new JLabel("<html><br><br>Filter by Human taxonomy or chromosome:</html>");
+		final JLabel label1 = new JLabel("<html><br><br>Filter by Human taxonomy or chromosome:</html>");
 		c.gridy++;
 		panel.add(label1, c);
-		JButton button = new JButton("Filter Human proteins");
+		final JButton button = new JButton("Filter Human proteins");
 		button.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2229,11 +2227,11 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		c.gridy++;
 		panel.add(chromosomesCombo, c);
 
-		JButton button2 = new JButton("Filter by chromosome");
+		final JButton button2 = new JButton("Filter by chromosome");
 		button2.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				String chr = (String) chromosomesCombo.getSelectedItem();
+				final String chr = (String) chromosomesCombo.getSelectedItem();
 				ChartManagerFrame.this.exportHumanProteins(chr);
 			}
 		});
@@ -2249,8 +2247,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void addAllHumanChromosomeMappingControls() {
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		// c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 0, 0, 0);
@@ -2258,24 +2256,24 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		c.gridx = 0;
 		c.gridy = 0;
 
-		JLabel label2 = new JLabel("<html><b>Note</b>: Number of genes can be different from<br>"
+		final JLabel label2 = new JLabel("<html><b>Note</b>: Number of genes can be different from<br>"
 				+ "number of proteins, since isoforms are considered<br>" + "as different proteins<br><br></html>");
 		panel.add(label2, c);
 
-		JCheckBox showAsPieChartCheckBox = optionsFactory.getShowAsPieChartCheckBox();
+		final JCheckBox showAsPieChartCheckBox = optionsFactory.getShowAsPieChartCheckBox();
 
-		JCheckBox takeGeneFromFirstProteinCheckBox = optionsFactory.getTakeGeneFromFirstProteinCheckbox();
+		final JCheckBox takeGeneFromFirstProteinCheckBox = optionsFactory.getTakeGeneFromFirstProteinCheckbox();
 
 		// /////////////// ROW1
 		if (!showAsPieChartCheckBox.isSelected()) {
-			JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
+			final JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
 			c.gridy++;
 
 			panel.add(jPanelAdditional1, c);
 		}
 
 		c.gridy++;
-		JPanel proteinOrGeneSelector = optionsFactory.getProteinOrGeneSelector();
+		final JPanel proteinOrGeneSelector = optionsFactory.getProteinOrGeneSelector();
 		panel.add(proteinOrGeneSelector, c);
 
 		c.gridy++;
@@ -2289,10 +2287,10 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		c.gridy++;
 		panel.add(takeGeneFromFirstProteinCheckBox, c);
 		// Filter button
-		JLabel label1 = new JLabel("<html><br><br>Filter by Human taxonomy or chromosome:</html>");
+		final JLabel label1 = new JLabel("<html><br><br>Filter by Human taxonomy or chromosome:</html>");
 		c.gridy++;
 		panel.add(label1, c);
-		JButton button = new JButton("Filter Human proteins");
+		final JButton button = new JButton("Filter Human proteins");
 		button.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2315,11 +2313,11 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		c.gridy++;
 		panel.add(chromosomesCombo, c);
 
-		JButton button2 = new JButton("Filter by chromosome");
+		final JButton button2 = new JButton("Filter by chromosome");
 		button2.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				String chr = (String) chromosomesCombo.getSelectedItem();
+				final String chr = (String) chromosomesCombo.getSelectedItem();
 				ChartManagerFrame.this.exportHumanProteins(chr);
 			}
 		});
@@ -2335,7 +2333,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	}
 
 	protected void exportHumanProteins(String chr) {
-		Set<String> filterProteinACC = GeneDistributionReader.getInstance().getProteinGeneMapping(chr).keySet();
+		final Set<String> filterProteinACC = GeneDistributionReader.getInstance().getProteinGeneMapping(chr).keySet();
 
 		filterDialog.enableProteinACCFilter(filterProteinACC);
 		filterDialog.applyFilters(experimentList);
@@ -2345,8 +2343,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	private void addPSM_PEP_PROT_Controls(String options) {
 		jPanelAddOptions.removeAll();
 		jPanelAddOptions.setLayout(new BorderLayout());
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.insets = new Insets(10, 0, 0, 0);
 		c.gridx = 0;
 		c.gridy = 0;
@@ -2354,26 +2352,26 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		// do not show PSMs if FDR filter is activated because number of PSMs
 		// will be equal to the number of peptides
 
-		JCheckBox showPSMCheckBox = optionsFactory.getShowPSMCheckBox();
+		final JCheckBox showPSMCheckBox = optionsFactory.getShowPSMCheckBox();
 		panel.add(showPSMCheckBox, c);
 
 		c.gridy++;
-		JCheckBox showPeptidesCheckBox = optionsFactory.getShowPeptidesCheckBox();
+		final JCheckBox showPeptidesCheckBox = optionsFactory.getShowPeptidesCheckBox();
 		panel.add(showPeptidesCheckBox, c);
 
 		c.gridy++;
-		JCheckBox showPeptidesCheckBoxPlusCharge = optionsFactory.getShowPeptidesPlusChargeCheckBox();
+		final JCheckBox showPeptidesCheckBoxPlusCharge = optionsFactory.getShowPeptidesPlusChargeCheckBox();
 		panel.add(showPeptidesCheckBoxPlusCharge, c);
 
 		c.gridy++;
-		JCheckBox showProteinsCheckBox = optionsFactory.getShowProteinsCheckBox();
+		final JCheckBox showProteinsCheckBox = optionsFactory.getShowProteinsCheckBox();
 		panel.add(showProteinsCheckBox, c);
 
 		final JCheckBox showTotalSerieCheckBox = optionsFactory.getShowTotalSerieCheckBox(false);
 		if (!ONE_SERIES_PER_EXPERIMENT_LIST.equals(options)
 				&& !(ONE_SERIES_PER_EXPERIMENT.equals(options) && experimentList.getExperiments().size() < 2)) {
 			c.gridy++;
-			JCheckBox showTotalSerie = showTotalSerieCheckBox;
+			final JCheckBox showTotalSerie = showTotalSerieCheckBox;
 			if (showTotalSerie != null) {
 				showTotalSerie.setEnabled(true);
 				panel.add(showTotalSerie, c);
@@ -2394,16 +2392,16 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			options = ChartManagerFrame.ONE_CHART_PER_EXPERIMENT;
 		jPanelAddOptions.removeAll();
 		jPanelAddOptions.setLayout(new BorderLayout());
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.insets = new Insets(10, 0, 0, 0);
-		JPanel showRegressionLinePanel = optionsFactory.getShowRegressionLinePanel();
+		final JPanel showRegressionLinePanel = optionsFactory.getShowRegressionLinePanel();
 		c.gridx = 0;
 		c.gridy = 0;
 		panel.add(showRegressionLinePanel, c);
 
 		if (!ONE_SERIES_PER_EXPERIMENT_LIST.equals(options)) {
-			JLabel label = new JLabel("Select from the following checkBoxes:");
+			final JLabel label = new JLabel("Select from the following checkBoxes:");
 			c.gridy++;
 			panel.add(label, c);
 			JPanel checkboxesPanel = null;
@@ -2428,38 +2426,38 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void addPeptideNumberInProteinsControls() {
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		// c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 0, 0, 0);
 		// /////////////// ROW1
-		JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
+		final JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
 		c.gridx = 0;
 		c.gridy = 0;
 
 		panel.add(jPanelAdditional1, c);
 		// /////////////// ROW2
-		JCheckBox checkbox2 = optionsFactory.getShowAsStackedChartCheckBox();
+		final JCheckBox checkbox2 = optionsFactory.getShowAsStackedChartCheckBox();
 		c.gridx = 0;
 		c.gridy = 1;
 
 		panel.add(checkbox2, c);
 		// /////////////// ROW3
-		JCheckBox checkbox3 = optionsFactory.getShowAsPercentageCheckBox();
+		final JCheckBox checkbox3 = optionsFactory.getShowAsPercentageCheckBox();
 		c.gridx = 0;
 		c.gridy = 2;
 
 		panel.add(checkbox3, c);
 		// /////////////// ROW6
-		JCheckBox jCheckBox6 = optionsFactory.getShowTotalSerieCheckBox(true);
+		final JCheckBox jCheckBox6 = optionsFactory.getShowTotalSerieCheckBox(true);
 		if (jCheckBox6 != null && !isOccurrenceFilterEnabled()) {
 			c.gridx = 0;
 			c.gridy = 5;
 			panel.add(jCheckBox6, c);
 		}
 		// /////////////// ROW7
-		JCheckBox jCheckBox7 = optionsFactory.getShowDifferentIdentificationsCheckBox("PSMs or peptides");
+		final JCheckBox jCheckBox7 = optionsFactory.getShowDifferentIdentificationsCheckBox("PSMs or peptides");
 		jCheckBox7.setToolTipText(
 				"<html>If this option is activated, the chart will show the number of proteins having x <b>number of PSMs</b>.<br>"
 						+ "If this option is not activated, the chart will show the number of proteins having x <b>number of peptides</b>.</html>");
@@ -2467,7 +2465,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		c.gridy = 6;
 		panel.add(jCheckBox7, c);
 		// /////////////// ROW7
-		JPanel jpanelMax = optionsFactory.getMaximumNumOccurrence("maximum", 30, 5);
+		final JPanel jpanelMax = optionsFactory.getMaximumNumOccurrence("maximum", 30, 5);
 		c.gridx = 0;
 		c.gridy = 7;
 		panel.add(jpanelMax, c);
@@ -2479,39 +2477,40 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void addSingleHitProteinControls() {
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		// c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 0, 0, 0);
 		// /////////////// ROW1
-		JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
+		final JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
 		c.gridx = 0;
 		c.gridy = 0;
 
 		panel.add(jPanelAdditional1, c);
 		// /////////////// ROW2
-		JCheckBox checkbox2 = optionsFactory.getShowAsStackedChartCheckBox();
+		final JCheckBox checkbox2 = optionsFactory.getShowAsStackedChartCheckBox();
 		c.gridx = 0;
 		c.gridy = 1;
 
 		panel.add(checkbox2, c);
 
 		// /////////////// ROW4
-		JCheckBox jCheckBox = optionsFactory.getShowAsPieChartCheckBox();
+		final JCheckBox jCheckBox = optionsFactory.getShowAsPieChartCheckBox();
 		c.gridx = 0;
 		c.gridy = 3;
 		panel.add(jCheckBox, c);
 
 		// /////////////// ROW6
-		JCheckBox jCheckBox6 = optionsFactory.getShowTotalSerieCheckBox(true);
+		final JCheckBox jCheckBox6 = optionsFactory.getShowTotalSerieCheckBox(true);
 		if (jCheckBox6 != null && !isOccurrenceFilterEnabled()) {
 			c.gridx = 0;
 			c.gridy = 5;
 			panel.add(jCheckBox6, c);
 		}
 		// /////////////// ROW7
-		JCheckBox jCheckBox7 = optionsFactory.getShowDifferentIdentificationsCheckBox("single hit peptide or PSM");
+		final JCheckBox jCheckBox7 = optionsFactory
+				.getShowDifferentIdentificationsCheckBox("single hit peptide or PSM");
 		jCheckBox7.setToolTipText(
 				"<html>If this option is activated, the chart will show the number of proteins having just one PSM.<br>"
 						+ "If the option is desactivated, the chart will show the number of proteins having just one peptide.</htm>");
@@ -2533,44 +2532,44 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void addMissedCleavageDistributionControls(String options) {
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		// c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 0, 0, 0);
 		// /////////////// ROW1
-		JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
+		final JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
 
 		c.gridx = 0;
 		c.gridy = 0;
 		panel.add(jPanelAdditional1, c);
 
 		// /////////////// ROW3
-		JPanel jPanelAdditional3 = optionsFactory.getMaximumNumOccurrence("Maximum occurrence:", 10, 4);
+		final JPanel jPanelAdditional3 = optionsFactory.getMaximumNumOccurrence("Maximum occurrence:", 10, 4);
 		c.gridx = 0;
 		c.gridy++;
 		panel.add(jPanelAdditional3, c);
 
 		// /////////////// ROW4
-		JCheckBox checkbox4 = optionsFactory.getShowAsPercentageCheckBox();
+		final JCheckBox checkbox4 = optionsFactory.getShowAsPercentageCheckBox();
 		c.gridx = 0;
 		c.gridy++;
 		panel.add(checkbox4, c);
 		// /////////////// ROW5
-		JCheckBox checkbox5 = optionsFactory.getShowAsStackedChartCheckBox();
+		final JCheckBox checkbox5 = optionsFactory.getShowAsStackedChartCheckBox();
 		c.gridx = 0;
 		c.gridy++;
 		panel.add(checkbox5, c);
 
 		if (!ONE_SERIES_PER_EXPERIMENT_LIST.equals(options)) {
-			JCheckBox checkbox6 = optionsFactory.getShowTotalSerieCheckBox(true);
+			final JCheckBox checkbox6 = optionsFactory.getShowTotalSerieCheckBox(true);
 			if (checkbox6 != null) {
 				c.gridy++;
 				panel.add(checkbox6, c);
 			}
 		}
 
-		JPanel jPanelCleavage = optionsFactory.getCleavagePanel();
+		final JPanel jPanelCleavage = optionsFactory.getCleavagePanel();
 		c.gridx = 0;
 		c.gridy++;
 		panel.add(jPanelCleavage, c);
@@ -2581,31 +2580,31 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void addProteingGroupTypesDistributionControls(String options) {
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		// c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 0, 0, 0);
 		// /////////////// ROW1
-		JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
+		final JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
 
 		c.gridx = 0;
 		c.gridy = 0;
 		panel.add(jPanelAdditional1, c);
 
 		// /////////////// ROW4
-		JCheckBox checkbox4 = optionsFactory.getShowAsPercentageCheckBox();
+		final JCheckBox checkbox4 = optionsFactory.getShowAsPercentageCheckBox();
 		c.gridx = 0;
 		c.gridy++;
 		panel.add(checkbox4, c);
 		// /////////////// ROW5
-		JCheckBox checkbox5 = optionsFactory.getShowAsStackedChartCheckBox();
+		final JCheckBox checkbox5 = optionsFactory.getShowAsStackedChartCheckBox();
 		c.gridx = 0;
 		c.gridy++;
 		panel.add(checkbox5, c);
 
 		if (!ONE_SERIES_PER_EXPERIMENT_LIST.equals(options)) {
-			JCheckBox checkbox6 = optionsFactory.getShowTotalSerieCheckBox(true);
+			final JCheckBox checkbox6 = optionsFactory.getShowTotalSerieCheckBox(true);
 			if (checkbox6 != null) {
 				c.gridy++;
 				panel.add(checkbox6, c);
@@ -2619,41 +2618,41 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void addPeptideLengthDistributionControls(String options) {
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		// c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 0, 0, 0);
 		// /////////////// ROW1
-		JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
+		final JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
 
 		c.gridx = 0;
 		c.gridy = 0;
 		panel.add(jPanelAdditional1, c);
 		// /////////////// ROW4
-		JCheckBox checkbox4 = optionsFactory.getShowAsPercentageCheckBox();
+		final JCheckBox checkbox4 = optionsFactory.getShowAsPercentageCheckBox();
 		c.gridx = 0;
 		c.gridy++;
 		panel.add(checkbox4, c);
 		// /////////////// ROW5
-		JCheckBox checkbox5 = optionsFactory.getShowAsStackedChartCheckBox();
+		final JCheckBox checkbox5 = optionsFactory.getShowAsStackedChartCheckBox();
 		c.gridx = 0;
 		c.gridy++;
 		panel.add(checkbox5, c);
 
 		if (!ONE_SERIES_PER_EXPERIMENT_LIST.equals(options)) {
-			JCheckBox checkbox6 = optionsFactory.getShowTotalSerieCheckBox(true);
+			final JCheckBox checkbox6 = optionsFactory.getShowTotalSerieCheckBox(true);
 			if (checkbox6 != null) {
 				c.gridy++;
 				panel.add(checkbox6, c);
 			}
 		}
 		// /////////////// ROW7
-		JPanel jpanelMin = optionsFactory.getMinimumNumOccurrence("minimum", 40, 7);
+		final JPanel jpanelMin = optionsFactory.getMinimumNumOccurrence("minimum", 40, 7);
 		c.gridy++;
 		panel.add(jpanelMin, c);
 
-		JPanel jpanelMax = optionsFactory.getMaximumNumOccurrence("maximum", 40, 20);
+		final JPanel jpanelMax = optionsFactory.getMaximumNumOccurrence("maximum", 40, 20);
 		c.gridy++;
 		panel.add(jpanelMax, c);
 
@@ -2664,13 +2663,13 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void addSensitivitySpecificityControls() {
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		// c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 0, 0, 0);
 		// /////////////// ROW1
-		JPanel jPanelAdditional1 = optionsFactory.getProteinsInSamplePanel();
+		final JPanel jPanelAdditional1 = optionsFactory.getProteinsInSamplePanel();
 		c.gridx = 0;
 		c.gridy = 0;
 		panel.add(jPanelAdditional1, c);
@@ -2710,25 +2709,25 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void addRepeatibilityControls() {
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		// c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 0, 0, 0);
 		// /////////////// ROW1
-		JCheckBox checkbox = optionsFactory.getShowAsPercentageCheckBox();
+		final JCheckBox checkbox = optionsFactory.getShowAsPercentageCheckBox();
 		c.gridx = 0;
 		c.gridy = 0;
 		panel.add(checkbox, c);
 
 		// /////////////// ROW2
-		JPanel jPanelAdditional3 = optionsFactory.getMaximumNumOccurrence("Maximum occurrence:", 40, 4);
+		final JPanel jPanelAdditional3 = optionsFactory.getMaximumNumOccurrence("Maximum occurrence:", 40, 4);
 		c.gridx = 0;
 		c.gridy = 1;
 		panel.add(jPanelAdditional3, c);
 
 		// /////////////// ROW3
-		JPanel jPanelAdditional4 = optionsFactory.getOverReplicatesPanel();
+		final JPanel jPanelAdditional4 = optionsFactory.getOverReplicatesPanel();
 
 		c.gridx = 0;
 		c.gridy = 2;
@@ -2741,18 +2740,18 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void addPeptideMonitoringControls() {
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		// c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 0, 0, 0);
 		// /////////////// ROW1
-		JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
+		final JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
 		c.gridx = 0;
 		c.gridy = 0;
 		panel.add(jPanelAdditional1, c);
 		// ////////////// ROW2
-		JPanel jPanelAdditional2 = optionsFactory.getPeptideSequencesPanel(distinguishModifiedPeptides());
+		final JPanel jPanelAdditional2 = optionsFactory.getPeptideSequencesPanel(distinguishModifiedPeptides());
 
 		c.gridx = 0;
 		c.gridy = 1;
@@ -2760,7 +2759,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		panel.add(jPanelAdditional2, c);
 
 		// /////////////// ROW3
-		JPanel jPanelAdditional3 = optionsFactory.getUserPeptideListPanel(true);
+		final JPanel jPanelAdditional3 = optionsFactory.getUserPeptideListPanel(true);
 
 		c.gridx = 0;
 		c.gridy = 2;
@@ -2779,15 +2778,15 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			final Collection<PeptideOccurrence> peptideOccurrences = experimentList
 					.getPeptideChargeOccurrenceList(distinguishModPep).values();
 			if (peptideOccurrences != null && !peptideOccurrences.isEmpty()) {
-				List<PeptideOccurrence> occurrenceList = new ArrayList<PeptideOccurrence>();
-				for (PeptideOccurrence identificationOccurrence : peptideOccurrences) {
+				final List<PeptideOccurrence> occurrenceList = new ArrayList<PeptideOccurrence>();
+				for (final PeptideOccurrence identificationOccurrence : peptideOccurrences) {
 					occurrenceList.add(identificationOccurrence);
 				}
 				log.info("There is " + occurrenceList.size() + " peptide sequences");
-				String[] ret = new String[occurrenceList.size()];
+				final String[] ret = new String[occurrenceList.size()];
 				int i = 0;
 				SorterUtil.sortPeptideOcurrencesBySequence(occurrenceList);
-				for (PeptideOccurrence identificationOccurrence : occurrenceList) {
+				for (final PeptideOccurrence identificationOccurrence : occurrenceList) {
 
 					ret[i] = identificationOccurrence.getKey();
 
@@ -2808,15 +2807,15 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			final Collection<PeptideOccurrence> peptideOccurrences = experimentList
 					.getPeptideChargeOccurrenceList(distinguishModPep).values();
 			if (peptideOccurrences != null && !peptideOccurrences.isEmpty()) {
-				List<PeptideOccurrence> occurrenceList = new ArrayList<PeptideOccurrence>();
-				for (PeptideOccurrence identificationOccurrence : peptideOccurrences) {
+				final List<PeptideOccurrence> occurrenceList = new ArrayList<PeptideOccurrence>();
+				for (final PeptideOccurrence identificationOccurrence : peptideOccurrences) {
 					occurrenceList.add(identificationOccurrence);
 				}
 				log.info("There is " + occurrenceList.size() + " peptide+charge sequences");
-				String[] ret = new String[occurrenceList.size()];
+				final String[] ret = new String[occurrenceList.size()];
 				int i = 0;
 				SorterUtil.sortPeptideOcurrencesBySequence(occurrenceList);
-				for (PeptideOccurrence identificationOccurrence : occurrenceList) {
+				for (final PeptideOccurrence identificationOccurrence : occurrenceList) {
 
 					ret[i] = identificationOccurrence.getKey();
 
@@ -2832,38 +2831,38 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void addPeptideModificationControls(boolean multipleSelectionOfPTMList) {
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		// c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 0, 0, 0);
 		// /////////////// ROW1
-		JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
+		final JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
 		c.gridx = 0;
 		c.gridy = 0;
 		panel.add(jPanelAdditional1, c);
 
 		// ////////////// ROW2
-		JPanel jPanelAdditional2 = optionsFactory.getModificationListPanel(multipleSelectionOfPTMList);
+		final JPanel jPanelAdditional2 = optionsFactory.getModificationListPanel(multipleSelectionOfPTMList);
 
 		c.gridx = 0;
 		c.gridy++;
 		c.fill = GridBagConstraints.BOTH;
 		panel.add(jPanelAdditional2, c);
 		if (multipleSelectionOfPTMList) {
-			JLabel jlabel = new JLabel("(Multiple selections are allowed)");
+			final JLabel jlabel = new JLabel("(Multiple selections are allowed)");
 			jlabel.setToolTipText(
 					"<html>Multiple selections are allowed:<br>Press CTRL key and select more than one modification.</html>");
 			c.gridy++;
 			panel.add(jlabel, c);
 		}
 		// /////////////// ROW4
-		JCheckBox checkBox4 = optionsFactory.getShowAsStackedChartCheckBox();
+		final JCheckBox checkBox4 = optionsFactory.getShowAsStackedChartCheckBox();
 		c.gridx = 0;
 		c.gridy++;
 		panel.add(checkBox4, c);
 		// /////////////// ROW5
-		JCheckBox checkbox5 = optionsFactory.getShowAsPercentageCheckBox();
+		final JCheckBox checkbox5 = optionsFactory.getShowAsPercentageCheckBox();
 		c.gridx = 0;
 		c.gridy++;
 		panel.add(checkbox5, c);
@@ -2876,8 +2875,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		if (options == null)
 			options = ChartManagerFrame.ONE_CHART_PER_EXPERIMENT;
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 0;
 		c.gridy = 0;
@@ -2885,7 +2884,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			// //////////////// ROW1
 			final DefaultComboBoxModel proteinScoreNames = getProteinScoreNames();
 			if (proteinScoreNames != null) {
-				JPanel jPanelAdditional3 = optionsFactory.getProteinScorePanel(proteinScoreNames);
+				final JPanel jPanelAdditional3 = optionsFactory.getProteinScorePanel(proteinScoreNames);
 
 				panel.add(jPanelAdditional3, c);
 			}
@@ -2895,31 +2894,31 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			// //////////////// ROW2
 			final DefaultComboBoxModel peptideScoreNames = getPeptideScoreNames();
 			if (peptideScoreNames != null) {
-				JPanel jPanelAdditional4 = optionsFactory.getPeptideScorePanel(peptideScoreNames);
+				final JPanel jPanelAdditional4 = optionsFactory.getPeptideScorePanel(peptideScoreNames);
 				c.gridy++;
 				panel.add(jPanelAdditional4, c);
 			}
 		}
 		// //////////////// ROW
-		JCheckBox jCheckApplyLog = optionsFactory.getApplyLogCheckBox();
+		final JCheckBox jCheckApplyLog = optionsFactory.getApplyLogCheckBox();
 		c.gridy++;
 		panel.add(jCheckApplyLog, c);
 
 		// //////////////// ROW3
-		JPanel jPanelAdditional5 = optionsFactory.getShowRegressionLinePanel();
+		final JPanel jPanelAdditional5 = optionsFactory.getShowRegressionLinePanel();
 		c.gridy++;
 		panel.add(jPanelAdditional5, c);
 		// //////////////// ROW4
-		JPanel jPanelAdditional6 = optionsFactory.getShowDiagonalLinePanel();
+		final JPanel jPanelAdditional6 = optionsFactory.getShowDiagonalLinePanel();
 		c.gridy++;
 		panel.add(jPanelAdditional6, c);
 		// /
-		JCheckBox separateDecoyHits = optionsFactory.getSeparatedDecoyHitsCheckBox();
+		final JCheckBox separateDecoyHits = optionsFactory.getSeparatedDecoyHitsCheckBox();
 		separateDecoyHits.setEnabled(experimentList.getFDRFilter() != null);
 		c.gridy++;
 		panel.add(separateDecoyHits, c);
 		if (!ONE_SERIES_PER_EXPERIMENT_LIST.equals(options)) {
-			JLabel label = new JLabel("Select from the following checkBoxes:");
+			final JLabel label = new JLabel("Select from the following checkBoxes:");
 			c.gridy++;
 			panel.add(label, c);
 			JPanel checkboxesPanel = null;
@@ -2941,23 +2940,23 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void addHeatMapControls(boolean occurrenceThreshold) {
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		// c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 0, 0, 0);
 		// /////////////// ROW1
-		JPanel jPanelAdditional1 = optionsFactory.getColorScalePanel(true);
+		final JPanel jPanelAdditional1 = optionsFactory.getColorScalePanel(true);
 		c.gridx = 0;
 		c.gridy = 0;
 		panel.add(jPanelAdditional1, c);
 
 		// //////////////// ROW2
-		JPanel jPanelAdditional2 = optionsFactory.getHeatMapThresholdPanel(occurrenceThreshold);
+		final JPanel jPanelAdditional2 = optionsFactory.getHeatMapThresholdPanel(occurrenceThreshold);
 		c.gridy++;
 		panel.add(jPanelAdditional2, c);
 
-		JButton jbuttonSave = optionsFactory.getSaveButton();
+		final JButton jbuttonSave = optionsFactory.getSaveButton();
 		c.gridy++;
 		panel.add(jbuttonSave, c);
 		jPanelAddOptions.setLayout(new BorderLayout());
@@ -2974,7 +2973,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		for (int i = 0; i < dataset.length; i++) {
 			double rowSum = 0;
 			for (int j = 0; j < dataset[i].length; j++) {
-				double d = dataset[i][j];
+				final double d = dataset[i][j];
 				rowSum += d;
 				if (d < min)
 					min = d;
@@ -2989,12 +2988,12 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			}
 		}
 
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.NORTHWEST;
 		c.insets = new Insets(10, 0, 0, 0);
 
-		JLabel label = new JLabel("<html>Heatmap counts:<br>min cell value= " + Double.valueOf(min).intValue()
+		final JLabel label = new JLabel("<html>Heatmap counts:<br>min cell value= " + Double.valueOf(min).intValue()
 				+ "<br>max cell value= " + Double.valueOf(max).intValue() + "<br>min sum of row cell values= "
 				+ Double.valueOf(minRow).intValue() + "<br>max sum of row cell value= "
 				+ Double.valueOf(maxRow).intValue() + "<br>" + "number of rows in the heatmap= " + dataset.length
@@ -3025,7 +3024,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		// jPanelAddOptions.setLayout(new BoxLayout(jPanelAddOptions,
 		// BoxLayout.PAGE_AXIS));
 		jPanelAddOptions.setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		c.insets = new Insets(5, 0, 5, 0);
 		c.gridx = 0;
@@ -3037,7 +3036,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			numberOfSelectedCheckBoxes = Integer.MAX_VALUE;
 
 		if (numberOfSelectedCheckBoxes.equals(Integer.MAX_VALUE)) {
-			JLabel label = new JLabel(
+			final JLabel label = new JLabel(
 					"<html>Number of identifications that are detected <b>just</b> <br>in each set.</html>");
 			jPanelAddOptions.add(label, c);
 			c.gridy++;
@@ -3071,7 +3070,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		if (!numberOfSelectedCheckBoxes.equals(Integer.MAX_VALUE)
 				&& !ChartType.PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
 			// Add save image button
-			JButton jbuttonSave = new JButton("Save image(s)");
+			final JButton jbuttonSave = new JButton("Save image(s)");
 			jbuttonSave.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3081,7 +3080,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			optionsFactory.getControlList().add(jbuttonSave);
 			jPanelAddOptions.add(jbuttonSave, c);
 			c.gridy++;
-			JLabel jLabelIntersectionsText = optionsFactory.getJLabelIntersectionsText();
+			final JLabel jLabelIntersectionsText = optionsFactory.getJLabelIntersectionsText();
 			jLabelIntersectionsText.setText(null);
 			jPanelAddOptions.add(jLabelIntersectionsText, c);
 			optionsFactory.getControlList().add(jLabelIntersectionsText);
@@ -3089,30 +3088,30 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 			// add the buttons per chart (in chart per experiment there is one
 			// graph per experiment
-			List<String> experimentNames = new ArrayList<String>();
-			Map<String, Integer> numReplicatesPerExperiment = new HashMap<String, Integer>();
+			final List<String> experimentNames = new ArrayList<String>();
+			final TObjectIntHashMap<String> numReplicatesPerExperiment = new TObjectIntHashMap<String>();
 
-			for (Experiment experiment : experimentList.getExperiments()) {
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				experimentNames.add(experiment.getFullName());
 				numReplicatesPerExperiment.put(experiment.getFullName(), experiment.getNumReplicates());
 			}
 
 			String overlapString = null;
 			// loop over the experiment names
-			for (String experimentName : experimentNames) {
-				int numDatasets = numReplicatesPerExperiment.get(experimentName);
+			for (final String experimentName : experimentNames) {
+				final int numDatasets = numReplicatesPerExperiment.get(experimentName);
 				if (numDatasets > 1) {
 					String labelString = "Export buttons:";
 					if (experimentName != null) {
 						labelString = "Export buttons for '" + experimentName + "':";
 					}
-					JLabel labelExperiment = new JLabel(labelString);
+					final JLabel labelExperiment = new JLabel(labelString);
 					jPanelAddOptions.add(labelExperiment, c);
 					optionsFactory.getControlList().add(labelExperiment);
 					c.gridy++;
 					overlapString = "A,B";
 					// export just in 1 button
-					JButton jbuttonExportJustIn1 = new JButton("Export just in A");
+					final JButton jbuttonExportJustIn1 = new JButton("Export just in A");
 					jbuttonExportJustIn1.addActionListener(new java.awt.event.ActionListener() {
 						@Override
 						public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3123,7 +3122,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 					optionsFactory.getControlList().add(jbuttonExportJustIn1);
 					c.gridy++;
 					// export just in 2 button
-					JButton jbuttonExportJustIn2 = new JButton("Export just in B");
+					final JButton jbuttonExportJustIn2 = new JButton("Export just in B");
 					jbuttonExportJustIn2.addActionListener(new java.awt.event.ActionListener() {
 						@Override
 						public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3139,7 +3138,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 					// if (numberOfSelectedCheckBoxes > 2) {
 					overlapString += ",C";
 					// export just in 3 button
-					JButton jbuttonExportJustIn3 = new JButton("Export just in C");
+					final JButton jbuttonExportJustIn3 = new JButton("Export just in C");
 					jbuttonExportJustIn3.addActionListener(new java.awt.event.ActionListener() {
 						@Override
 						public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3152,7 +3151,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 					c.gridy++;
 				}
 				// export overlapped button
-				JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
+				final JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
 				jbuttonExportOverlap.addActionListener(new java.awt.event.ActionListener() {
 					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3171,11 +3170,11 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	}
 
 	private DoSomethingToChangeColorInChart getMethodToUpdateColorInChart() {
-		DoSomethingToChangeColorInChart ret = new DoSomethingToChangeColorInChart() {
+		final DoSomethingToChangeColorInChart ret = new DoSomethingToChangeColorInChart() {
 
 			@Override
 			public Void doSomething(String experimentName, String idSetName, Color color) {
-				VennChart vennChart = chartCreator.getVennChart(experimentName);
+				final VennChart vennChart = chartCreator.getVennChart(experimentName);
 				if (vennChart != null) {
 					// set color
 					vennChart.setColorToSeries(idSetName, color);
@@ -3183,7 +3182,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 					try {
 						vennChart.updateChart();
 
-					} catch (MalformedURLException e) {
+					} catch (final MalformedURLException e) {
 						e.printStackTrace();
 						throw new IllegalMiapeArgumentException(e.getMessage());
 					}
@@ -3199,10 +3198,10 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	 */
 	protected void exportJustIn1(String experimentName) {
 		if (chartCreator != null) {
-			VennData vennData = chartCreator.getVennData(experimentName);
+			final VennData vennData = chartCreator.getVennData(experimentName);
 			if (vennData != null) {
 				log.info(vennData.getUniqueTo1().size() + " just in 1");
-				IdentificationSet idSet = getSelectedIdentificationSetsForVennChart(experimentName)[0];
+				final IdentificationSet idSet = getSelectedIdentificationSetsForVennChart(experimentName)[0];
 				String datasetName = null;
 				if (idSet != null) {
 					datasetName = idSet.getName();
@@ -3213,18 +3212,18 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	}
 
 	private IdentificationSet[] getSelectedIdentificationSetsForVennChart(String experimentName) {
-		IdentificationSet[] ret = new IdentificationSet[3];
+		final IdentificationSet[] ret = new IdentificationSet[3];
 		IdentificationSet idSet1 = null;
 		IdentificationSet idSet2 = null;
 		IdentificationSet idSet3 = null;
-		String option = (String) jComboBoxChartOptions.getSelectedItem();
+		final String option = (String) jComboBoxChartOptions.getSelectedItem();
 		final Map<String, JCheckBox> checkBoxControls = optionsFactory.getIdSetsJCheckBoxes();
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 			final List<Experiment> experiments = experimentList.getExperiments();
-			for (Experiment experiment : experiments) {
-				for (Object identificationSet : experiment.getNextLevelIdentificationSetList()) {
-					Replicate replicate = (Replicate) identificationSet;
-					String repName = replicate.getFullName();
+			for (final Experiment experiment : experiments) {
+				for (final Object identificationSet : experiment.getNextLevelIdentificationSetList()) {
+					final Replicate replicate = (Replicate) identificationSet;
+					final String repName = replicate.getFullName();
 					if (checkBoxControls.containsKey(repName) && checkBoxControls.get(repName).isSelected()) {
 						if (idSet1 == null) {
 							idSet1 = replicate;
@@ -3239,8 +3238,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
 			final List<Experiment> experiments = experimentList.getExperiments();
 
-			for (Experiment experiment : experiments) {
-				String expName = experiment.getFullName();
+			for (final Experiment experiment : experiments) {
+				final String expName = experiment.getFullName();
 				if (checkBoxControls.containsKey(expName) && checkBoxControls.get(expName).isSelected()) {
 					if (idSet1 == null) {
 						idSet1 = experiment;
@@ -3254,16 +3253,16 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
 			idSet1 = experimentList;
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			String intersectionText = "";
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			final String intersectionText = "";
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				if (experiment.getFullName().equals(experimentName)) {
-					int numReplicates = 1;
+					final int numReplicates = 1;
 					idSet1 = null;
 					idSet2 = null;
 					idSet3 = null;
-					for (Replicate replicate : experiment.getNextLevelIdentificationSetList()) {
-						String repName = replicate.getFullName();
+					for (final Replicate replicate : experiment.getNextLevelIdentificationSetList()) {
+						final String repName = replicate.getFullName();
 						if (checkBoxControls.containsKey(repName) && checkBoxControls.get(repName).isSelected()) {
 							if (idSet1 == null) {
 								idSet1 = replicate;
@@ -3285,10 +3284,10 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	protected void exportJustIn2(String experimentName) {
 		if (chartCreator != null) {
-			VennData vennData = chartCreator.getVennData(experimentName);
+			final VennData vennData = chartCreator.getVennData(experimentName);
 			if (vennData != null) {
 				log.info(vennData.getUniqueTo2().size() + " just in 2");
-				IdentificationSet idSet = getSelectedIdentificationSetsForVennChart(experimentName)[1];
+				final IdentificationSet idSet = getSelectedIdentificationSetsForVennChart(experimentName)[1];
 				String datasetName = null;
 				if (idSet != null) {
 					datasetName = idSet.getName();
@@ -3300,10 +3299,10 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	protected void exportJustIn3(String experimentName) {
 		if (chartCreator != null) {
-			VennData vennData = chartCreator.getVennData(experimentName);
+			final VennData vennData = chartCreator.getVennData(experimentName);
 			if (vennData != null) {
 				log.info(vennData.getUniqueTo3().size() + " just in 3");
-				IdentificationSet idSet = getSelectedIdentificationSetsForVennChart(experimentName)[2];
+				final IdentificationSet idSet = getSelectedIdentificationSetsForVennChart(experimentName)[2];
 				String datasetName = null;
 				if (idSet != null) {
 					datasetName = idSet.getName();
@@ -3315,44 +3314,44 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	protected void exportOverlapped(String experimentName) {
 		if (chartCreator != null) {
-			VennData vennData = chartCreator.getVennData(experimentName);
+			final VennData vennData = chartCreator.getVennData(experimentName);
 			if (vennData != null) {
-				Collection<Object> intersection123 = vennData.getIntersection123();
+				final Collection<Object> intersection123 = vennData.getIntersection123();
 				if (!intersection123.isEmpty()) {
 					log.info(intersection123.size() + " overlapped");
 					String datasetName1 = null;
 					String datasetName2 = null;
 					String datasetName3 = null;
-					Set<IdentificationSet> idSets = new HashSet<IdentificationSet>();
-					IdentificationSet idSet1 = getSelectedIdentificationSetsForVennChart(experimentName)[0];
+					final Set<IdentificationSet> idSets = new THashSet<IdentificationSet>();
+					final IdentificationSet idSet1 = getSelectedIdentificationSetsForVennChart(experimentName)[0];
 					if (idSet1 != null) {
 						datasetName1 = idSet1.getName();
 						idSets.add(idSet1);
 					}
-					IdentificationSet idSet2 = getSelectedIdentificationSetsForVennChart(experimentName)[1];
+					final IdentificationSet idSet2 = getSelectedIdentificationSetsForVennChart(experimentName)[1];
 					if (idSet2 != null) {
 						datasetName2 = idSet2.getName();
 						idSets.add(idSet2);
 					}
-					IdentificationSet idSet3 = getSelectedIdentificationSetsForVennChart(experimentName)[2];
+					final IdentificationSet idSet3 = getSelectedIdentificationSetsForVennChart(experimentName)[2];
 					if (idSet3 != null) {
 						datasetName3 = idSet3.getName();
 						idSets.add(idSet3);
 					}
 					exportSubset(intersection123, idSets, datasetName1, datasetName2, datasetName3);
 				} else {
-					Set<IdentificationSet> idSets = new HashSet<IdentificationSet>();
+					final Set<IdentificationSet> idSets = new THashSet<IdentificationSet>();
 
-					Collection<Object> intersection12 = vennData.getIntersection12();
+					final Collection<Object> intersection12 = vennData.getIntersection12();
 					if (!intersection12.isEmpty()) {
 						String datasetName1 = null;
 						String datasetName2 = null;
-						IdentificationSet idSet1 = getSelectedIdentificationSetsForVennChart(experimentName)[0];
+						final IdentificationSet idSet1 = getSelectedIdentificationSetsForVennChart(experimentName)[0];
 						if (idSet1 != null) {
 							datasetName1 = idSet1.getName();
 							idSets.add(idSet1);
 						}
-						IdentificationSet idSet2 = getSelectedIdentificationSetsForVennChart(experimentName)[1];
+						final IdentificationSet idSet2 = getSelectedIdentificationSetsForVennChart(experimentName)[1];
 						if (idSet2 != null) {
 							datasetName2 = idSet2.getName();
 							idSets.add(idSet2);
@@ -3368,8 +3367,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	}
 
 	private Set<IdentificationSet> toSet(IdentificationSet... idSets) {
-		Set<IdentificationSet> ret = new THashSet<IdentificationSet>();
-		for (IdentificationSet idSet : idSets) {
+		final Set<IdentificationSet> ret = new THashSet<IdentificationSet>();
+		for (final IdentificationSet idSet : idSets) {
 			if (idSet != null) {
 				ret.add(idSet);
 			}
@@ -3378,7 +3377,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	}
 
 	private void exportSubset(Collection<Object> collection, IdentificationSet idSet, String... datasetNames) {
-		Set<IdentificationSet> set = new HashSet<IdentificationSet>();
+		final Set<IdentificationSet> set = new THashSet<IdentificationSet>();
 		set.add(idSet);
 		exportSubset(collection, set, datasetNames);
 	}
@@ -3393,33 +3392,33 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			return;
 		}
 
-		ExporterDialog exporterDialog = new ExporterDialog(this, this, idSets, getDataLevel(), true);
+		final ExporterDialog exporterDialog = new ExporterDialog(this, this, idSets, getDataLevel(), true);
 
 		Filters filter = null;
 		if (currentChartType.equals(ChartType.PROTEIN_OVERLAPING)) {
 
-			Set<Object> keys = new THashSet<Object>();
-			ProteinGroupComparisonType proteinGroupComparisonType = additionalOptionsPanelFactory
+			final Set<Object> keys = new THashSet<Object>();
+			final ProteinGroupComparisonType proteinGroupComparisonType = additionalOptionsPanelFactory
 					.getProteinGroupComparisonType();
-			for (Object object : collection) {
+			for (final Object object : collection) {
 				if (object instanceof ProteinGroupOccurrence) {
-					ProteinGroupOccurrence pgo = (ProteinGroupOccurrence) object;
+					final ProteinGroupOccurrence pgo = (ProteinGroupOccurrence) object;
 					keys.add(pgo.getKey(proteinGroupComparisonType));
 				} else {
 					log.info(object.getClass().getName());
 				}
 			}
 			if (proteinGroupComparisonType == ProteinGroupComparisonType.SHARE_ONE_PROTEIN) {
-				Set<ProteinComparatorKey> set = new HashSet<ProteinComparatorKey>();
-				for (Object obj : keys) {
+				final Set<ProteinComparatorKey> set = new THashSet<ProteinComparatorKey>();
+				for (final Object obj : keys) {
 					set.add((ProteinComparatorKey) obj);
 				}
 				filter = new ProteinACCFilterByProteinComparatorKey(set,
 						GeneralOptionsDialog.getInstance(this).isDoNotGroupNonConclusiveProteins(),
 						GeneralOptionsDialog.getInstance(this).isSeparateNonConclusiveProteins());
 			} else {
-				Set<String> set = new HashSet<String>();
-				for (Object obj : keys) {
+				final Set<String> set = new THashSet<String>();
+				for (final Object obj : keys) {
 					set.add(obj.toString());
 				}
 				filter = new ProteinACCFilter(set,
@@ -3427,10 +3426,10 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 						GeneralOptionsDialog.getInstance(this).isSeparateNonConclusiveProteins());
 			}
 		} else if (currentChartType.equals(ChartType.PEPTIDE_OVERLAPING)) {
-			Set<String> sequences = new THashSet<String>();
-			for (Object object : collection) {
+			final Set<String> sequences = new THashSet<String>();
+			for (final Object object : collection) {
 				if (object instanceof PeptideOccurrence) {
-					PeptideOccurrence po = (PeptideOccurrence) object;
+					final PeptideOccurrence po = (PeptideOccurrence) object;
 					sequences.add(po.getKey());
 				} else if (object instanceof String) {
 					sequences.add((String) object);
@@ -3470,14 +3469,14 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			return idSet;
 		}
 		try {
-			for (Object obj : idSet.getNextLevelIdentificationSetList()) {
-				IdentificationSet idSet2 = (IdentificationSet) obj;
-				IdentificationSet ret = getDatasetFromName(idSet2, datasetName);
+			for (final Object obj : idSet.getNextLevelIdentificationSetList()) {
+				final IdentificationSet idSet2 = (IdentificationSet) obj;
+				final IdentificationSet ret = getDatasetFromName(idSet2, datasetName);
 				if (ret != null) {
 					return ret;
 				}
 			}
-		} catch (UnsupportedOperationException e) {
+		} catch (final UnsupportedOperationException e) {
 			return null;
 		}
 		return null;
@@ -3492,7 +3491,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		// jPanelAddOptions.setLayout(new BoxLayout(jPanelAddOptions,
 		// BoxLayout.PAGE_AXIS));
 		jPanelAddOptions.setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		c.insets = new Insets(5, 0, 5, 0);
 		c.gridx = 0;
@@ -3502,7 +3501,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		if (numberOfSelectedCheckBoxes == null)
 			numberOfSelectedCheckBoxes = Integer.MAX_VALUE;
 		if (numberOfSelectedCheckBoxes.equals(Integer.MAX_VALUE)) {
-			JLabel label = new JLabel(
+			final JLabel label = new JLabel(
 					"<html>Number of identifications that are detected<br><b>just</b> in each set.</html>");
 			jPanelAddOptions.add(label, c);
 			c.gridy++;
@@ -3541,7 +3540,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		if (!numberOfSelectedCheckBoxes.equals(Integer.MAX_VALUE)
 				&& !ChartType.PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
 			// Add save image button
-			JButton jbuttonSave = new JButton("Save image");
+			final JButton jbuttonSave = new JButton("Save image");
 			jbuttonSave.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3552,22 +3551,22 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			c.gridy++;
 
 			int numDatasets = 0;
-			for (Experiment experiment : experimentList.getExperiments()) {
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				numDatasets += experiment.getNumReplicates();
 			}
 			if (numDatasets > 1) {
 				String overlapString = "A,B";
 
-				JLabel jLabelIntersectionsText = optionsFactory.getJLabelIntersectionsText();
+				final JLabel jLabelIntersectionsText = optionsFactory.getJLabelIntersectionsText();
 				jLabelIntersectionsText.setText(null);
 				jPanelAddOptions.add(jLabelIntersectionsText, c);
 				c.gridy++;
 
-				JLabel labelExperiment = new JLabel("Export buttons:");
+				final JLabel labelExperiment = new JLabel("Export buttons:");
 				jPanelAddOptions.add(labelExperiment, c);
 				c.gridy++;
 				// export just in 1 button
-				JButton jbuttonExportJustIn1 = new JButton("Export just in A");
+				final JButton jbuttonExportJustIn1 = new JButton("Export just in A");
 				jbuttonExportJustIn1.addActionListener(new java.awt.event.ActionListener() {
 					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3577,7 +3576,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 				jPanelAddOptions.add(jbuttonExportJustIn1, c);
 				c.gridy++;
 				// export just in 2 button
-				JButton jbuttonExportJustIn2 = new JButton("Export just in B");
+				final JButton jbuttonExportJustIn2 = new JButton("Export just in B");
 				jbuttonExportJustIn2.addActionListener(new java.awt.event.ActionListener() {
 					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3591,7 +3590,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 					// if (numberOfSelectedCheckBoxes > 2) {
 					overlapString += ",C";
 					// export just in 3 button
-					JButton jbuttonExportJustIn3 = new JButton("Export just in C");
+					final JButton jbuttonExportJustIn3 = new JButton("Export just in C");
 					jbuttonExportJustIn3.addActionListener(new java.awt.event.ActionListener() {
 						@Override
 						public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3602,7 +3601,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 					c.gridy++;
 				}
 				// export overlapped button
-				JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
+				final JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
 				jbuttonExportOverlap.addActionListener(new java.awt.event.ActionListener() {
 					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3623,7 +3622,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		// jPanelAddOptions.setLayout(new BoxLayout(jPanelAddOptions,
 		// BoxLayout.PAGE_AXIS));
 		jPanelAddOptions.setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		c.insets = new Insets(5, 0, 5, 0);
 		c.gridx = 0;
@@ -3632,7 +3631,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		if (numberOfSelectedCheckBoxes == null)
 			numberOfSelectedCheckBoxes = Integer.MAX_VALUE;
 		if (numberOfSelectedCheckBoxes.equals(Integer.MAX_VALUE)) {
-			JLabel label = new JLabel(
+			final JLabel label = new JLabel(
 					"<html>Number of identifications that are detected<br><b>just</b> in each set.</html>");
 			jPanelAddOptions.add(label, c);
 			c.gridy++;
@@ -3669,7 +3668,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		if (!numberOfSelectedCheckBoxes.equals(Integer.MAX_VALUE)
 				&& !ChartType.PEPTIDE_COUNTING_HISTOGRAM.equals(currentChartType)) {
 			// Add save image button
-			JButton jbuttonSave = new JButton("Save image");
+			final JButton jbuttonSave = new JButton("Save image");
 			jbuttonSave.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3677,20 +3676,20 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 				}
 			});
 			optionsFactory.getControlList().add(jbuttonSave);
-			int numDatasets = experimentList.getNumExperiments();
+			final int numDatasets = experimentList.getNumExperiments();
 			String overlapString = "A,B";
 			if (numDatasets > 1) {
 				jPanelAddOptions.add(jbuttonSave, c);
 				c.gridy++;
-				JLabel jLabelIntersectionsText = optionsFactory.getJLabelIntersectionsText();
+				final JLabel jLabelIntersectionsText = optionsFactory.getJLabelIntersectionsText();
 				optionsFactory.setIntersectionText(null);
 				jPanelAddOptions.add(jLabelIntersectionsText, c);
 				c.gridy++;
-				JLabel labelExperiment = new JLabel("Export buttons:");
+				final JLabel labelExperiment = new JLabel("Export buttons:");
 				jPanelAddOptions.add(labelExperiment, c);
 				c.gridy++;
 				// export just in 1 button
-				JButton jbuttonExportJustIn1 = new JButton("Export just in A");
+				final JButton jbuttonExportJustIn1 = new JButton("Export just in A");
 				jbuttonExportJustIn1.addActionListener(new java.awt.event.ActionListener() {
 					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3700,7 +3699,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 				jPanelAddOptions.add(jbuttonExportJustIn1, c);
 				c.gridy++;
 				// export just in 2 button
-				JButton jbuttonExportJustIn2 = new JButton("Export just in B");
+				final JButton jbuttonExportJustIn2 = new JButton("Export just in B");
 				jbuttonExportJustIn2.addActionListener(new java.awt.event.ActionListener() {
 					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3714,7 +3713,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 					// if (numberOfSelectedCheckBoxes > 2) {
 					overlapString += ",C";
 					// export just in 3 button
-					JButton jbuttonExportJustIn3 = new JButton("Export just in C");
+					final JButton jbuttonExportJustIn3 = new JButton("Export just in C");
 					jbuttonExportJustIn3.addActionListener(new java.awt.event.ActionListener() {
 						@Override
 						public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3725,7 +3724,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 					c.gridy++;
 				}
 				// export overlapped button
-				JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
+				final JButton jbuttonExportOverlap = new JButton("Export Overlap (" + overlapString + ")");
 				jbuttonExportOverlap.addActionListener(new java.awt.event.ActionListener() {
 					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3748,18 +3747,18 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		try {
 			final Component component = jPanelChart.getComponent(0);
 			if (component instanceof JScrollPane) {
-				JScrollPane jpanel = (JScrollPane) component;
+				final JScrollPane jpanel = (JScrollPane) component;
 				final Component component2 = jpanel.getComponent(0);
 				if (component2 instanceof JViewport) {
-					JViewport viewPort = (JViewport) component2;
+					final JViewport viewPort = (JViewport) component2;
 					final Component component3 = viewPort.getComponent(0);
 					if (component3 instanceof JLabel) {
-						JLabel label = (JLabel) component3;
+						final JLabel label = (JLabel) component3;
 						final ImageIcon icon = (ImageIcon) label.getIcon();
 						final Image image = icon.getImage();
-						JFileChooser fileChooser = new JFileChooser(MainFrame.currentFolder);
+						final JFileChooser fileChooser = new JFileChooser(MainFrame.currentFolder);
 						fileChooser.setDialogTitle("Save heatmap");
-						for (ImageFileFormat imageFileFormat : ImageFileFormat.values()) {
+						for (final ImageFileFormat imageFileFormat : ImageFileFormat.values()) {
 							if (imageFileFormat == ImageFileFormat.GIF) {
 								continue;// if doesnt allow to zoom
 							}
@@ -3768,38 +3767,36 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 						}
 						fileChooser.setAcceptAllFileFilterUsed(false);
 
-						int retVal = fileChooser.showSaveDialog(this);
+						final int retVal = fileChooser.showSaveDialog(this);
 
 						if (retVal == JFileChooser.APPROVE_OPTION) {
 							file = fileChooser.getSelectedFile();
 							if ("".equals(FilenameUtils.getExtension(file.getAbsolutePath()))) {
-								file = new File(
-										file.getAbsolutePath() + "."
-												+ ImageFileFormat
-														.getFromDescription(
-																fileChooser.getFileFilter().getDescription())
-														.getExtension());
+								file = new File(file.getAbsolutePath() + "."
+										+ ImageFileFormat
+												.getFromDescription(fileChooser.getFileFilter().getDescription())
+												.getExtension());
 							}
 							MainFrame.currentFolder = file.getParentFile();
-							String path = ImageUtils.saveImage(image, file);
+							final String path = ImageUtils.saveImage(image, file);
 							appendStatus("Image file saved to:" + path);
 						}
 					}
 					return;
 				}
 			} else if (component instanceof JPanel) {
-				JPanel jpanel = (JPanel) component;
-				for (Component component2 : jpanel.getComponents()) {
+				final JPanel jpanel = (JPanel) component;
+				for (final Component component2 : jpanel.getComponents()) {
 					// if (component2 instanceof JPanel) {
 					// JPanel jpanel2 = (JPanel) component2;
 					final Component component3 = jpanel.getComponent(0);
 					if (component3 instanceof JLabel) {
-						JLabel label = (JLabel) component3;
+						final JLabel label = (JLabel) component3;
 						final ImageIcon icon = (ImageIcon) label.getIcon();
 						final Image image = icon.getImage();
-						JFileChooser fileChooser = new JFileChooser(MainFrame.currentFolder);
+						final JFileChooser fileChooser = new JFileChooser(MainFrame.currentFolder);
 						fileChooser.setDialogTitle("Save heatmap");
-						for (ImageFileFormat imageFileFormat : ImageFileFormat.values()) {
+						for (final ImageFileFormat imageFileFormat : ImageFileFormat.values()) {
 							if (imageFileFormat == ImageFileFormat.GIF) {
 								continue;// if doesnt allow to zoom
 							}
@@ -3807,20 +3804,18 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 									imageFileFormat.getDescription()));
 						}
 						fileChooser.setAcceptAllFileFilterUsed(false);
-						int retVal = fileChooser.showSaveDialog(this);
+						final int retVal = fileChooser.showSaveDialog(this);
 
 						if (retVal == JFileChooser.APPROVE_OPTION) {
 							file = fileChooser.getSelectedFile();
 							if ("".equals(FilenameUtils.getExtension(file.getAbsolutePath()))) {
-								file = new File(
-										file.getAbsolutePath() + "."
-												+ ImageFileFormat
-														.getFromDescription(
-																fileChooser.getFileFilter().getDescription())
-														.getExtension());
+								file = new File(file.getAbsolutePath() + "."
+										+ ImageFileFormat
+												.getFromDescription(fileChooser.getFileFilter().getDescription())
+												.getExtension());
 							}
 							MainFrame.currentFolder = file.getParentFile();
-							String path = ImageUtils.saveImage(image, file);
+							final String path = ImageUtils.saveImage(image, file);
 							appendStatus("Image file saved to:" + path);
 						}
 					}
@@ -3828,10 +3823,10 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 				}
 				return;
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			error = e.getMessage();
 			e.printStackTrace();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			error = e.getMessage();
 			e.printStackTrace();
 		}
@@ -3846,17 +3841,17 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		log.info("Saving overlapping image");
 		String error = "";
 		File file = null;
-		JFileChooser fileChooser = new JFileChooser(MainFrame.currentFolder);
+		final JFileChooser fileChooser = new JFileChooser(MainFrame.currentFolder);
 		try {
 			final Component component = jPanelChart.getComponent(0);
 			if (component instanceof JPanel) {
-				JPanel jpanel = (JPanel) component;
-				for (Component component2 : jpanel.getComponents()) {
+				final JPanel jpanel = (JPanel) component;
+				for (final Component component2 : jpanel.getComponents()) {
 					if (component2 instanceof JPanel) {
-						JPanel jpanel2 = (JPanel) component2;
+						final JPanel jpanel2 = (JPanel) component2;
 						final Component component3 = jpanel2.getComponent(0);
 						if (component3 instanceof JLabel) {
-							JLabel label = (JLabel) component3;
+							final JLabel label = (JLabel) component3;
 							String title = "";
 							if (label instanceof ImageLabel) {
 								title = ((ImageLabel) label).getTitle();
@@ -3867,19 +3862,19 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 							}
 							final Image image = icon.getImage();
 
-							for (ImageFileFormat imageFileFormat : ImageFileFormat.values()) {
+							for (final ImageFileFormat imageFileFormat : ImageFileFormat.values()) {
 								fileChooser.addChoosableFileFilter(new ExtensionFileFilter(
 										imageFileFormat.getExtension(), imageFileFormat.getDescription()));
 							}
 							fileChooser.setDialogTitle("Saving overlap image '" + title + "'");
 							fileChooser.setAcceptAllFileFilterUsed(false);
-							int retVal = fileChooser.showSaveDialog(this);
+							final int retVal = fileChooser.showSaveDialog(this);
 
 							if (retVal == JFileChooser.APPROVE_OPTION) {
 								file = fileChooser.getSelectedFile();
 								MainFrame.currentFolder = file.getParentFile();
 
-								String path = ImageUtils.saveImage(image, file);
+								final String path = ImageUtils.saveImage(image, file);
 								appendStatus("Image file saved to:" + path);
 							}
 						}
@@ -3888,10 +3883,10 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 				}
 				return;
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			error = e.getMessage();
 			e.printStackTrace();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			error = e.getMessage();
 			e.printStackTrace();
 		}
@@ -3909,24 +3904,24 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		try {
 			final Component component = jPanelChart.getComponent(0);
 			if (component instanceof JPanel) {
-				JPanel jpanel = (JPanel) component;
+				final JPanel jpanel = (JPanel) component;
 				final Component component2 = jpanel.getComponent(0);
 				if (component2 instanceof JLabel) {
-					JLabel label = (JLabel) component2;
+					final JLabel label = (JLabel) component2;
 					String title = "";
 					if (label instanceof ImageLabel) {
 						title = ((ImageLabel) label).getTitle();
 					}
 					final ImageIcon icon = (ImageIcon) label.getIcon();
 					final Image image = icon.getImage();
-					JFileChooser fileChooser = new JFileChooser(MainFrame.currentFolder);
-					for (ImageFileFormat imageFileFormat : ImageFileFormat.values()) {
+					final JFileChooser fileChooser = new JFileChooser(MainFrame.currentFolder);
+					for (final ImageFileFormat imageFileFormat : ImageFileFormat.values()) {
 						fileChooser.addChoosableFileFilter(new ExtensionFileFilter(imageFileFormat.getExtension(),
 								imageFileFormat.getDescription()));
 					}
 					fileChooser.setDialogTitle("Saving overlap image '" + title + "'");
 					fileChooser.setAcceptAllFileFilterUsed(false);
-					int retVal = fileChooser.showSaveDialog(this);
+					final int retVal = fileChooser.showSaveDialog(this);
 
 					if (retVal == JFileChooser.APPROVE_OPTION) {
 						file = fileChooser.getSelectedFile();
@@ -3935,16 +3930,16 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 									.getFromDescription(fileChooser.getFileFilter().getDescription()).getExtension());
 						}
 						MainFrame.currentFolder = file.getParentFile();
-						String path = ImageUtils.saveImage(image, file);
+						final String path = ImageUtils.saveImage(image, file);
 						appendStatus("Image file saved to:" + path);
 					}
 					return;
 				}
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			error = e.getMessage();
 			e.printStackTrace();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			error = e.getMessage();
 			e.printStackTrace();
 		}
@@ -3957,19 +3952,19 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void addLineHistogramControls(boolean showScoreNames, boolean addMOverZComboBox) {
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		// c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 0, 0, 0);
 		// /////////////// ROW1
-		JPanel jPanelAdditional1 = optionsFactory.getHistogramTypePanel();
+		final JPanel jPanelAdditional1 = optionsFactory.getHistogramTypePanel();
 		c.gridx = 0;
 		c.gridy = 0;
 		panel.add(jPanelAdditional1, c);
 
 		// //////////////// ROW2
-		JPanel jPanelAdditional2 = optionsFactory.getBinsPanel();
+		final JPanel jPanelAdditional2 = optionsFactory.getBinsPanel();
 
 		c.gridy++;
 		panel.add(jPanelAdditional2, c);
@@ -3979,7 +3974,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 				// //////////////// ROW3
 				final DefaultComboBoxModel<String> proteinScoreNames = getProteinScoreNames();
 				if (proteinScoreNames != null) {
-					JPanel jPanelAdditional3 = optionsFactory.getProteinScorePanel(proteinScoreNames);
+					final JPanel jPanelAdditional3 = optionsFactory.getProteinScorePanel(proteinScoreNames);
 					c.gridy++;
 					panel.add(jPanelAdditional3, c);
 				}
@@ -3988,27 +3983,27 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 				// //////////////// ROW4
 				final DefaultComboBoxModel<String> peptideScoreNames = getPeptideScoreNames();
 				if (peptideScoreNames != null) {
-					JPanel jPanelAdditional4 = optionsFactory.getPeptideScorePanel(peptideScoreNames);
+					final JPanel jPanelAdditional4 = optionsFactory.getPeptideScorePanel(peptideScoreNames);
 					c.gridy++;
 					panel.add(jPanelAdditional4, c);
 
 				}
 			}
 			// //////////////// ROW
-			JCheckBox jCheckApplyLog = optionsFactory.getApplyLogCheckBox();
+			final JCheckBox jCheckApplyLog = optionsFactory.getApplyLogCheckBox();
 			c.gridy++;
 			panel.add(jCheckApplyLog, c);
 		}
 		if (addMOverZComboBox) {
 			// //////////////// ROW5
-			JPanel jPanelAdditional3 = optionsFactory.getMOverZPanel();
+			final JPanel jPanelAdditional3 = optionsFactory.getMOverZPanel();
 			c.gridy++;
 			panel.add(jPanelAdditional3, c);
 		}
 
-		String option = (String) jComboBoxChartOptions.getSelectedItem();
+		final String option = (String) jComboBoxChartOptions.getSelectedItem();
 		if (!option.equals(ONE_SERIES_PER_EXPERIMENT_LIST)) {
-			JCheckBox showTotalSerieCheckBox = optionsFactory.getShowTotalSerieCheckBox(false);
+			final JCheckBox showTotalSerieCheckBox = optionsFactory.getShowTotalSerieCheckBox(false);
 			if (showTotalSerieCheckBox != null) {
 				c.gridy++;
 				panel.add(showTotalSerieCheckBox, c);
@@ -4017,7 +4012,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 		if (currentChartType.equals(ChartType.PEPTIDE_SCORE_DISTRIBUTION)
 				|| currentChartType.equals(ChartType.PROTEIN_SCORE_DISTRIBUTION)) {
-			JCheckBox separateDecoyHits = optionsFactory.getSeparatedDecoyHitsCheckBox();
+			final JCheckBox separateDecoyHits = optionsFactory.getSeparatedDecoyHitsCheckBox();
 			separateDecoyHits.setEnabled(experimentList.getFDRFilter() != null);
 			c.gridy++;
 			panel.add(separateDecoyHits, c);
@@ -4029,44 +4024,44 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void addHistogramBarControls(boolean showPeptideHistogram) {
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		// c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 0, 0, 0);
 		// /////////////// ROW1
-		JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
+		final JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
 		c.gridx = 0;
 		c.gridy = 0;
 
 		panel.add(jPanelAdditional1, c);
 		// /////////////// ROW2
-		JCheckBox checkbox2 = optionsFactory.getShowAsStackedChartCheckBox();
+		final JCheckBox checkbox2 = optionsFactory.getShowAsStackedChartCheckBox();
 		c.gridx = 0;
 		c.gridy = 1;
 
 		panel.add(checkbox2, c);
 		// /////////////// ROW3
-		JCheckBox checkbox3 = optionsFactory.getShowAsPercentageCheckBox();
+		final JCheckBox checkbox3 = optionsFactory.getShowAsPercentageCheckBox();
 		c.gridx = 0;
 		c.gridy = 2;
 
 		panel.add(checkbox3, c);
 		// /////////////// ROW4
-		JCheckBox jCheckBox = optionsFactory.getShowAsPieChartCheckBox();
+		final JCheckBox jCheckBox = optionsFactory.getShowAsPieChartCheckBox();
 		c.gridx = 0;
 		c.gridy = 3;
 		panel.add(jCheckBox, c);
 		// /////////////// ROW5
-		String option = (String) jComboBoxChartOptions.getSelectedItem();
+		final String option = (String) jComboBoxChartOptions.getSelectedItem();
 		if (ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			JCheckBox jCheckBox2 = optionsFactory.getShowAverageOverReplicatesCheckBox();
+			final JCheckBox jCheckBox2 = optionsFactory.getShowAverageOverReplicatesCheckBox();
 			c.gridx = 0;
 			c.gridy = 4;
 			panel.add(jCheckBox2, c);
 		}
 		// /////////////// ROW6
-		JCheckBox jCheckBox6 = optionsFactory.getShowTotalSerieCheckBox(true);
+		final JCheckBox jCheckBox6 = optionsFactory.getShowTotalSerieCheckBox(true);
 		if (jCheckBox6 != null && !isOccurrenceFilterEnabled()) {
 			c.gridx = 0;
 			c.gridy = 5;
@@ -4074,7 +4069,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		}
 		// /////////////// ROW7
 		if (showPeptideHistogram) {
-			JCheckBox jCheckBox7 = optionsFactory.getShowDifferentIdentificationsCheckBox("PSMs or peptides");
+			final JCheckBox jCheckBox7 = optionsFactory.getShowDifferentIdentificationsCheckBox("PSMs or peptides");
 			jCheckBox7.setToolTipText(
 					"<html>If this option is activated, the histogram will show the <b>number of PSMs</b>.<br>"
 							+ "If this option is desactivated, the histogram will show the <b>number of peptides</b>.</html>");
@@ -4083,7 +4078,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			panel.add(jCheckBox7, c);
 		}
 		// /////////////// ROW7
-		JCheckBox jCheckBox8 = optionsFactory.getShowTotalVersusDifferentCheckBox();
+		final JCheckBox jCheckBox8 = optionsFactory.getShowTotalVersusDifferentCheckBox();
 		c.gridx = 0;
 		c.gridy++;
 		panel.add(jCheckBox8, c);
@@ -4094,25 +4089,25 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void addChargeHistogramBarControls() {
 		jPanelAddOptions.removeAll();
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		// c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 0, 0, 0);
 		// /////////////// ROW1
-		JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
+		final JPanel jPanelAdditional1 = optionsFactory.getPlotOrientationPanel();
 		c.gridx = 0;
 		c.gridy = 0;
 
 		panel.add(jPanelAdditional1, c);
 		// /////////////// ROW2
-		JCheckBox checkbox2 = optionsFactory.getShowAsStackedChartCheckBox();
+		final JCheckBox checkbox2 = optionsFactory.getShowAsStackedChartCheckBox();
 		c.gridx = 0;
 		c.gridy = 1;
 
 		panel.add(checkbox2, c);
 		// /////////////// ROW3
-		JCheckBox checkbox3 = optionsFactory.getShowAsPercentageCheckBox();
+		final JCheckBox checkbox3 = optionsFactory.getShowAsPercentageCheckBox();
 		c.gridx = 0;
 		c.gridy = 2;
 
@@ -4123,7 +4118,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	}
 
 	void updateControlStates() {
-		ChartType chartType = currentChartType;
+		final ChartType chartType = currentChartType;
 		// String options = (String)
 		// this.jComboBoxChartOptions.getSelectedItem();
 		// TODO
@@ -4187,8 +4182,8 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	public void showChart() {
 
-		ChartType chartType = currentChartType;
-		String option = (String) jComboBoxChartOptions.getSelectedItem();
+		final ChartType chartType = currentChartType;
+		final String option = (String) jComboBoxChartOptions.getSelectedItem();
 
 		// if (chartCreator != null &&
 		// chartCreator.getState().equals(StateValue.STARTED)) {
@@ -4233,17 +4228,17 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	}
 
 	public void registerNewValue(Object component) {
-		Object currentValue = getcurrentvalueFromComponent(component);
+		final Object currentValue = getcurrentvalueFromComponent(component);
 		previousTogleValues.put(component, currentValue);
 	}
 
 	public void startShowingChart(Object causantComponent) {
 		if (causantComponent != null) {
 			try {
-				Object currentValue = getcurrentvalueFromComponent(causantComponent);
+				final Object currentValue = getcurrentvalueFromComponent(causantComponent);
 				if (currentValue != null) {
 					if (previousTogleValues.containsKey(causantComponent)) {
-						Object previousValuesOfSelection = previousTogleValues.get(causantComponent);
+						final Object previousValuesOfSelection = previousTogleValues.get(causantComponent);
 
 						if (currentValue.equals(previousValuesOfSelection)) {
 							log.info("Component didnt really changed: " + currentValue + ", causant: "
@@ -4253,7 +4248,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 					}
 					previousTogleValues.put(causantComponent, currentValue);
 				}
-			} catch (IllegalArgumentException e) {
+			} catch (final IllegalArgumentException e) {
 				// this is because the causant is a menu and it is not selected,
 				// so we dont want it to trigger the chart generator
 				log.info("component is a menu but it is not selected. Skipping execution of chart creator");
@@ -4277,16 +4272,16 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private Object getcurrentvalueFromComponent(Object causantComponent) {
 		if (causantComponent instanceof JCheckBox) {
-			JCheckBox checkBox = (JCheckBox) causantComponent;
+			final JCheckBox checkBox = (JCheckBox) causantComponent;
 			return checkBox.isSelected();
 		} else if (causantComponent instanceof JRadioButtonMenuItem) {
-			JRadioButtonMenuItem ratioItem = (JRadioButtonMenuItem) causantComponent;
+			final JRadioButtonMenuItem ratioItem = (JRadioButtonMenuItem) causantComponent;
 			return ratioItem.isSelected();
 		} else if (causantComponent instanceof JComboBox) {
-			JComboBox combo = (JComboBox) causantComponent;
+			final JComboBox combo = (JComboBox) causantComponent;
 			return combo.getSelectedItem();
 		} else if (causantComponent instanceof JRadioButton) {
-			JRadioButton combo = (JRadioButton) causantComponent;
+			final JRadioButton combo = (JRadioButton) causantComponent;
 			return combo.isSelected();
 		} else {
 			log.info("Class " + causantComponent.getClass());
@@ -4352,7 +4347,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	public synchronized void propertyChange(PropertyChangeEvent evt) {
 
 		if ("progress".equals(evt.getPropertyName())) {
-			int progress = (Integer) evt.getNewValue();
+			final int progress = (Integer) evt.getNewValue();
 			if (evt.getSource().equals(memoryChecker))
 				jProgressBarMemoryUsage.setValue(progress);
 			else
@@ -4379,7 +4374,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		// }
 		// }
 		else if ("notificacion".equals(evt.getPropertyName())) {
-			String notificacion = evt.getNewValue().toString();
+			final String notificacion = evt.getNewValue().toString();
 			appendStatus(notificacion);
 		} else if (DataLoaderTask.DATA_LOADED_START.equals(evt.getPropertyName())) {
 			enableStateKeeper.keepEnableStates(this);
@@ -4422,15 +4417,15 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			enableStateKeeper.setToPreviousState(this);
 			jButtonCancel.setEnabled(false);
 			errorLoadingData = true;
-			String erromessage = (String) evt.getNewValue();
+			final String erromessage = (String) evt.getNewValue();
 			setProgressBarIndeterminate(false);
-			GridBagConstraints c = new GridBagConstraints();
+			final GridBagConstraints c = new GridBagConstraints();
 			c.anchor = GridBagConstraints.WEST;
 			c.gridx = 0;
 			c.gridy = 0;
-			JLabel label = new JLabel(erromessage);
+			final JLabel label = new JLabel(erromessage);
 			label.setBackground(Color.white);
-			JPanel panel = new JPanel();
+			final JPanel panel = new JPanel();
 			panel.setBackground(Color.white);
 			panel.add(label, c);
 			jPanelChart.add(panel);
@@ -4442,14 +4437,14 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 			try { // to release the lock
 				jPanelChart.removeAll();
-				BorderLayout borderLayout = new BorderLayout();
+				final BorderLayout borderLayout = new BorderLayout();
 				jPanelChart.setLayout(borderLayout);
 
-				Object object = evt.getNewValue();
+				final Object object = evt.getNewValue();
 
 				if (object instanceof JComponent) {
 					// this.jPanelChart.setGraphicPanel((JComponent) object);
-					JComponent jComponent = (JComponent) object;
+					final JComponent jComponent = (JComponent) object;
 					jPanelChart.add(jComponent, BorderLayout.CENTER);
 					if (jComponent instanceof ChartPanel) {
 						((ChartPanel) jComponent).updateUI();
@@ -4459,13 +4454,13 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 						}
 					}
 				} else if (object instanceof List) {
-					List lista = (List) object;
+					final List lista = (List) object;
 					if (lista.get(0) instanceof JPanel) {
-						List<JPanel> chartList = (List<JPanel>) object;
-						JPanel panel = new JPanel();
+						final List<JPanel> chartList = (List<JPanel>) object;
+						final JPanel panel = new JPanel();
 						panel.setLayout(new GridLayout(chartList.size(), 1, 0, 20));
 						jPanelChart.add(panel, BorderLayout.CENTER);
-						for (JPanel jPanel : chartList) {
+						for (final JPanel jPanel : chartList) {
 							panel.add(jPanel);
 							if (jPanel instanceof ChartPanel) {
 								((ChartPanel) jPanel).updateUI();
@@ -4477,13 +4472,13 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 							}
 						}
 					} else if (lista.get(0) instanceof Panel) {
-						List<Panel> chartList = (List<Panel>) object;
-						JPanel panel = new JPanel();
+						final List<Panel> chartList = (List<Panel>) object;
+						final JPanel panel = new JPanel();
 						panel.setLayout(new GridLayout(chartList.size(), 1, 0, 20));
-						for (Panel jPanel : chartList) {
+						for (final Panel jPanel : chartList) {
 							panel.add(jPanel);
 							if (jPanel instanceof WordCramChart) {
-								WordCramChart wordCramChart = (WordCramChart) jPanel;
+								final WordCramChart wordCramChart = (WordCramChart) jPanel;
 								wordCramChart.addPropertyChangeListener(this);
 								wordCramChart.draw(Double.valueOf(jPanelChart.getSize().getWidth()).intValue(), 550);
 							}
@@ -4504,7 +4499,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 				} else if (object instanceof Component) {
 					jPanelChart.add((Component) object, BorderLayout.CENTER);
 					if (object instanceof WordCramChart) {
-						WordCramChart wordCramChart = (WordCramChart) object;
+						final WordCramChart wordCramChart = (WordCramChart) object;
 						wordCramChart.addPropertyChangeListener(this);
 						wordCramChart.draw(Double.valueOf(jPanelChart.getSize().getWidth()).intValue(),
 								Double.valueOf(jPanelChart.getSize().getHeight()).intValue());
@@ -4514,17 +4509,18 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 				if (ChartCreatorTask.CHART_GENERATED.equals(evt.getPropertyName())) {
 					// disable scroll in case of current chart is a word clod
 					if (currentChartType.equals(ChartType.PROTEIN_NAME_CLOUD)) {
-						jScrollPaneChart.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-						jScrollPaneChart.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+						jScrollPaneChart.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+						jScrollPaneChart.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 					} else {
-						jScrollPaneChart.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-						jScrollPaneChart.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+						jScrollPaneChart.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+						jScrollPaneChart
+								.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 					}
 
 					setNumIdentificationsLabel();
 					setFDRLabel();
-					double t2 = System.currentTimeMillis() * 1.0;
+					final double t2 = System.currentTimeMillis() * 1.0;
 					appendStatus("Chart created in " + DatesUtil.getDescriptiveTimeFromMillisecs(t2 - t1));
 					if (currentChartType.equals(ChartType.PROTEIN_NAME_CLOUD)) {
 						appendStatus("Wait some seconds for the cloud loading...");
@@ -4554,13 +4550,13 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 				creatingChartLock = false;
 			}
 		} else if (ChartCreatorTask.DATASET_PROGRESS.equals(evt.getPropertyName())) {
-			String message = (String) evt.getNewValue();
+			final String message = (String) evt.getNewValue();
 			jProgressBar.setStringPainted(true);
 			jProgressBar.setString(message);
 
 		} else if (MemoryCheckerTask.MEMORY_CHECKER_DATA_REPORT.equals(evt.getPropertyName())) {
 
-			String memoryUsage = (String) evt.getNewValue();
+			final String memoryUsage = (String) evt.getNewValue();
 			jProgressBarMemoryUsage.setString("Memory usage: " + memoryUsage);
 		} else if (CuratedExperimentSaver.CURATED_EXP_SAVER_START.equals(evt.getPropertyName())) {
 			enableStateKeeper.keepEnableStates(this);
@@ -4590,11 +4586,11 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 		} else if (OntologyLoaderTask.ONTOLOGY_LOADING_FINISHED.equals(evt.getPropertyName())) {
 			log.info("Ontologies loaded.");
-			long time = (Long) evt.getNewValue();
+			final long time = (Long) evt.getNewValue();
 
 			appendStatus("Ontologies loaded in " + DatesUtil.getDescriptiveTimeFromMillisecs(time));
 			jProgressBar.setIndeterminate(false);
-			CPExperimentList cpExpList = getCPExperimentList(cfgFile);
+			final CPExperimentList cpExpList = getCPExperimentList(cfgFile);
 			dataLoader = new DataLoaderTask(cpExpList, minPeptideLength, groupProteinsAtExperimentListLevel, null,
 					isLocalProcessingInParallel, isAnnotateProteinsInUniprot(),
 					GeneralOptionsDialog.getInstance(this).isDoNotGroupNonConclusiveProteins(),
@@ -4616,9 +4612,9 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 	private void destroyWordCrams(Container container) {
 		if (container.getComponentCount() > 0) {
-			for (Component component2 : container.getComponents()) {
+			for (final Component component2 : container.getComponents()) {
 				if (component2 instanceof WordCramChart) {
-					WordCramChart chart = (WordCramChart) component2;
+					final WordCramChart chart = (WordCramChart) component2;
 					chart.destroy();
 				} else {
 					if (component2 instanceof Container) {
@@ -4636,7 +4632,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	}
 
 	private DefaultComboBoxModel<String> getProteinScoreNames() {
-		List<String> scoreNames = experimentList.getProteinScoreNames();
+		final List<String> scoreNames = experimentList.getProteinScoreNames();
 		if (scoreNames != null && !scoreNames.isEmpty()) {
 			Collections.sort(scoreNames);
 			return new DefaultComboBoxModel<String>(scoreNames.toArray(new String[0]));
@@ -4645,7 +4641,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	}
 
 	private DefaultComboBoxModel<String> getPeptideScoreNames() {
-		List<String> scoreNames = experimentList.getPeptideScoreNames();
+		final List<String> scoreNames = experimentList.getPeptideScoreNames();
 		if (scoreNames != null && !scoreNames.isEmpty()) {
 			Collections.sort(scoreNames);
 			return new DefaultComboBoxModel<String>(scoreNames.toArray(new String[0]));
@@ -4657,7 +4653,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		if (notificacion == null) {
 			return;
 		}
-		String formatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG)
+		final String formatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG)
 				.format(new Date(System.currentTimeMillis()));
 		jTextAreaStatus.append(formatedDate + ": " + notificacion + "\n");
 		jTextAreaStatus.setCaretPosition(jTextAreaStatus.getText().length() - 1);
@@ -4805,7 +4801,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	}
 
 	public void exportChr16Proteins() {
-		Set<String> filterProteinACC = GeneDistributionReader.getInstance().getProteinGeneMapping("16").keySet();
+		final Set<String> filterProteinACC = GeneDistributionReader.getInstance().getProteinGeneMapping("16").keySet();
 
 		filterDialog.enableProteinACCFilter(filterProteinACC);
 		filterDialog.applyFilters(experimentList);
@@ -4834,17 +4830,17 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			log.info("Saving Protein name cloud");
 			String error = "";
 			try {
-				List<WordCramChart> charts = new ArrayList<WordCramChart>();
+				final List<WordCramChart> charts = new ArrayList<WordCramChart>();
 				final Component component = jPanelChart.getComponent(0);
 				if (component instanceof WordCramChart) {
-					WordCramChart wordCram = (WordCramChart) component;
+					final WordCramChart wordCram = (WordCramChart) component;
 					charts.add(wordCram);
 
 				} else if (component instanceof JPanel) {
-					JPanel jpanel = (JPanel) component;
+					final JPanel jpanel = (JPanel) component;
 					if (jpanel.getComponent(0) instanceof WordCramChart) {
 
-						for (Component component2 : jpanel.getComponents()) {
+						for (final Component component2 : jpanel.getComponents()) {
 							if (component2 instanceof WordCramChart) {
 								charts.add((WordCramChart) component2);
 							}
@@ -4853,7 +4849,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 					}
 				}
 				saveWordCramCharts(charts);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				error = e.getMessage();
 				e.printStackTrace();
 			}
@@ -4865,12 +4861,12 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	private void saveWordCramCharts(List<WordCramChart> charts) {
 		if (charts != null && !charts.isEmpty()) {
 
-			JFileChooser fileChooser = new JFileChooser(MainFrame.currentFolder);
+			final JFileChooser fileChooser = new JFileChooser(MainFrame.currentFolder);
 			fileChooser.addChoosableFileFilter(new ExtensionFileFilter("tif", "TIFF Image File"));
 
 			fileChooser.setDialogTitle("Saving protein word cloud image");
 			fileChooser.setAcceptAllFileFilterUsed(false);
-			int retVal = fileChooser.showSaveDialog(this);
+			final int retVal = fileChooser.showSaveDialog(this);
 
 			if (retVal == JFileChooser.APPROVE_OPTION) {
 				File file = fileChooser.getSelectedFile();
@@ -4882,7 +4878,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 					if (i > 0) {
 						file = getNextFile(file, i);
 					}
-					WordCramChart wordCram = charts.get(i);
+					final WordCramChart wordCram = charts.get(i);
 					wordCram.saveFrame(file.getAbsolutePath());
 
 					appendStatus("Image saved to:" + file.getAbsolutePath());
@@ -4918,11 +4914,11 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	}
 
 	public List<String> getProteinAccsFromACCFilter() {
-		List<Filter> filters = filterDialog.getFilters();
+		final List<Filter> filters = filterDialog.getFilters();
 		if (filters != null) {
-			for (Filter filter : filters) {
+			for (final Filter filter : filters) {
 				if (filter instanceof ProteinACCFilterByProteinComparatorKey) {
-					ProteinACCFilterByProteinComparatorKey proteinAccFilter = (ProteinACCFilterByProteinComparatorKey) filter;
+					final ProteinACCFilterByProteinComparatorKey proteinAccFilter = (ProteinACCFilterByProteinComparatorKey) filter;
 					return proteinAccFilter.getSortedAccessions();
 				}
 			}
@@ -4931,11 +4927,11 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	}
 
 	public List<String> getPeptideSequencesFromPeptideSequenceFilter() {
-		List<Filter> filters = filterDialog.getFilters();
+		final List<Filter> filters = filterDialog.getFilters();
 		if (filters != null) {
-			for (Filter filter : filters) {
+			for (final Filter filter : filters) {
 				if (filter instanceof PeptideSequenceFilter) {
-					PeptideSequenceFilter peptideSequenceFilter = (PeptideSequenceFilter) filter;
+					final PeptideSequenceFilter peptideSequenceFilter = (PeptideSequenceFilter) filter;
 					return peptideSequenceFilter.getSortedSequences();
 				}
 			}
@@ -4951,12 +4947,12 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	}
 
 	public AdditionalOptionsPanelFactory getAdditionalOptionsPanelFactory() {
-		return this.additionalOptionsPanelFactory;
+		return additionalOptionsPanelFactory;
 	}
 
 	@Override
 	public List<String> getHelpMessages() {
-		String[] ret = { "Chart Viewer help", //
+		final String[] ret = { "Chart Viewer help", //
 				"This window is where you will be able to explore and compare your datasets. The main panel will contain the chart and it will be automatically updated with any customization option selected.", //
 				"<b>Select a chart</b>", //
 				"You will be able to change the chart type by selecting a different <b>'Chart Type'</b> in the menu at any time. The chart types are arranged into 10 categories.", //
@@ -5008,10 +5004,10 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	}
 
 	public void setProteinSequencesRetrieved(boolean b) {
-		this.proteinSequencesRetrieved = b;
+		proteinSequencesRetrieved = b;
 	}
 
 	public void setFiltered(boolean b) {
-		this.filtered = b;
+		filtered = b;
 	}
 }

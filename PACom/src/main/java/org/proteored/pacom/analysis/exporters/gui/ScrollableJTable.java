@@ -21,6 +21,8 @@ import javax.swing.table.TableRowSorter;
 
 import org.apache.log4j.Logger;
 
+import gnu.trove.list.array.TIntArrayList;
+
 public class ScrollableJTable extends JPanel {
 	/**
 	 * 
@@ -37,12 +39,12 @@ public class ScrollableJTable extends JPanel {
 
 	public ScrollableJTable(JTable jtable, int wide) {
 		if (jtable != null) {
-			this.table = jtable;
+			table = jtable;
 		}
-		this.table.setModel(new MyDefaultTableModel());
+		table.setModel(new MyDefaultTableModel());
 
 		// Set renderer for painting different background colors
-		this.table.setDefaultRenderer(Object.class, new MyTableCellRenderer());
+		table.setDefaultRenderer(Object.class, new MyTableCellRenderer());
 		initializeUI(wide);
 	}
 
@@ -52,10 +54,10 @@ public class ScrollableJTable extends JPanel {
 
 	public ScrollableJTable(int wide) {
 
-		this.table.setModel(new MyDefaultTableModel());
+		table.setModel(new MyDefaultTableModel());
 
 		// Set renderer for painting different background colors
-		this.table.setDefaultRenderer(Object.class, new MyTableCellRenderer());
+		table.setDefaultRenderer(Object.class, new MyTableCellRenderer());
 		initializeUI(wide);
 	}
 
@@ -64,11 +66,11 @@ public class ScrollableJTable extends JPanel {
 	}
 
 	public void initializeSorter() {
-		this.sorter = new TableRowSorter<TableModel>(this.table.getModel());
+		sorter = new TableRowSorter<TableModel>(table.getModel());
 		final int columnCount = table.getModel().getColumnCount();
 		for (int i = 0; i < columnCount; i++)
 			sorter.setComparator(i, getMyComparator2());
-		this.table.setRowSorter(sorter);
+		table.setRowSorter(sorter);
 	}
 
 	private void initializeUI(int wide) {
@@ -86,7 +88,7 @@ public class ScrollableJTable extends JPanel {
 
 		addProteinACCCellListener();
 
-		JScrollPane pane = new JScrollPane(table);
+		final JScrollPane pane = new JScrollPane(table);
 		pane.setViewportBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		add(pane, BorderLayout.CENTER);
 
@@ -94,16 +96,16 @@ public class ScrollableJTable extends JPanel {
 	}
 
 	private void addProteinACCCellListener() {
-		if (this.table != null)
+		if (table != null)
 			table.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
 					try {
-						JTable target = (JTable) e.getSource();
+						final JTable target = (JTable) e.getSource();
 						int row = target.getSelectedRow();
 						if (target.getRowSorter() != null)
 							row = target.getRowSorter().convertRowIndexToModel(row);
-						int column = target.getSelectedColumn();
+						final int column = target.getSelectedColumn();
 						log.info("Row=" + row + " Column=" + column);
 						if (e.getClickCount() == 2) {
 							// int proteinACCIndex = -1;
@@ -126,7 +128,7 @@ public class ScrollableJTable extends JPanel {
 							//
 							// }
 						}
-					} catch (IllegalArgumentException ex) {
+					} catch (final IllegalArgumentException ex) {
 						ex.printStackTrace();
 					}
 				}
@@ -142,20 +144,20 @@ public class ScrollableJTable extends JPanel {
 			// if (paginatorFilter != null)
 			// filters.add(paginatorFilter);
 
-			if (this.sorter != null) {
+			if (sorter != null) {
 
-				this.sorter.setRowFilter(paginatorFilter);
-				this.table.setRowSorter(sorter);
+				sorter.setRowFilter(paginatorFilter);
+				table.setRowSorter(sorter);
 
 			}
-		} catch (java.util.regex.PatternSyntaxException e) {
+		} catch (final java.util.regex.PatternSyntaxException e) {
 			return;
 		}
 	}
 
 	private RowFilter<Object, Object> getColumnFilter(final String columnName, final String regexp) {
 		if (regexp != null && !"".equals(regexp)) {
-			int columnIndex = getColumnIndex(columnName);
+			final int columnIndex = getColumnIndex(columnName);
 			if (columnIndex >= 0)
 				return RowFilter.regexFilter(regexp, columnIndex);
 		}
@@ -163,40 +165,40 @@ public class ScrollableJTable extends JPanel {
 	}
 
 	private Comparator<?> getMyComparator2() {
-		if (this.comp == null)
-			this.comp = new Comparator() {
+		if (comp == null)
+			comp = new Comparator() {
 
 				@Override
 				public int compare(Object obj1, Object obj2) {
 					try {
-						Number n1 = NumberFormat.getInstance().parse(obj1.toString());
-						Number n2 = NumberFormat.getInstance().parse(obj2.toString());
-						Double d1 = getDouble(obj1);
-						Double d2 = getDouble(obj2);
+						final Number n1 = NumberFormat.getInstance().parse(obj1.toString());
+						final Number n2 = NumberFormat.getInstance().parse(obj2.toString());
+						final Double d1 = getDouble(obj1);
+						final Double d2 = getDouble(obj2);
 						return d1.compareTo(d2);
-					} catch (java.text.ParseException e1) {
+					} catch (final java.text.ParseException e1) {
 
 						if (obj1 instanceof String && obj2 instanceof String) {
-							String n1 = (String) obj1;
-							String n2 = (String) obj2;
+							final String n1 = (String) obj1;
+							final String n2 = (String) obj2;
 
-							String n3 = getHighesNumberIfAreCommaSeparated(n1);
-							String n4 = getHighesNumberIfAreCommaSeparated(n2);
+							final String n3 = getHighesNumberIfAreCommaSeparated(n1);
+							final String n4 = getHighesNumberIfAreCommaSeparated(n2);
 							if (n3 != null && n4 != null)
 								return compare(n3, n4);
 							return n1.compareTo(n2);
 
 						} else if (obj1 instanceof String && obj2 instanceof Double) {
-							String n1 = (String) obj1;
-							String n2 = String.valueOf(obj2);
+							final String n1 = (String) obj1;
+							final String n2 = String.valueOf(obj2);
 							return n1.compareTo(n2);
 						} else if (obj2 instanceof String && obj1 instanceof Double) {
-							String n2 = (String) obj2;
-							String n1 = String.valueOf(obj1);
+							final String n2 = (String) obj2;
+							final String n1 = String.valueOf(obj1);
 							return n1.compareTo(n2);
 						} else {
-							String n1 = obj1.toString();
-							String n2 = obj2.toString();
+							final String n1 = obj1.toString();
+							final String n2 = obj2.toString();
 							return n1.compareTo(n2);
 						}
 
@@ -206,23 +208,23 @@ public class ScrollableJTable extends JPanel {
 
 				private String getHighesNumberIfAreCommaSeparated(String string) {
 					if (string.contains(";")) {
-						String[] split = string.split(";");
+						final String[] split = string.split(";");
 						try {
-							List<Integer> ints = new ArrayList<Integer>();
-							for (String string2 : split) {
+							final TIntArrayList ints = new TIntArrayList();
+							for (final String string2 : split) {
 								ints.add(Integer.valueOf(string2));
 							}
-							return String.valueOf(getMaxFromIntegers(ints));
-						} catch (NumberFormatException e) {
+							return String.valueOf(ints.max());
+						} catch (final NumberFormatException e) {
 							try {
-								String[] split2 = string.split(";");
-								List<Double> doubles = new ArrayList<Double>();
-								for (String string2 : split2) {
+								final String[] split2 = string.split(";");
+								final List<Double> doubles = new ArrayList<Double>();
+								for (final String string2 : split2) {
 									doubles.add(getDouble(string2));
 								}
 								return String.valueOf(getMaxFromDoubles(doubles));
-							} catch (NumberFormatException e2) {
-							} catch (ParseException e3) {
+							} catch (final NumberFormatException e2) {
+							} catch (final ParseException e3) {
 
 							}
 						}
@@ -232,13 +234,13 @@ public class ScrollableJTable extends JPanel {
 				}
 
 				private Double getDouble(Object value) throws ParseException {
-					Number n1 = NumberFormat.getInstance().parse(value.toString());
+					final Number n1 = NumberFormat.getInstance().parse(value.toString());
 					return n1.doubleValue();
 				}
 
 				private String getMaxFromDoubles(List<Double> doubles) {
 					double max = Double.MIN_VALUE;
-					for (Double dou : doubles) {
+					for (final Double dou : doubles) {
 						if (max < dou)
 							max = dou;
 					}
@@ -247,7 +249,7 @@ public class ScrollableJTable extends JPanel {
 
 				private String getMaxFromIntegers(List<Integer> ints) {
 					int max = Integer.MIN_VALUE;
-					for (Integer integer : ints) {
+					for (final Integer integer : ints) {
 						if (max < integer)
 							max = integer;
 					}
@@ -259,14 +261,14 @@ public class ScrollableJTable extends JPanel {
 
 	public int getColumnIndex(String columnName) {
 		if (table != null)
-			for (int i = 0; i < this.table.getColumnCount(); i++) {
-				if (this.table.getColumnName(i).equals(columnName))
+			for (int i = 0; i < table.getColumnCount(); i++) {
+				if (table.getColumnName(i).equals(columnName))
 					return i;
 			}
 		return -1;
 	}
 
 	public JTable getTable() {
-		return this.table;
+		return table;
 	}
 }

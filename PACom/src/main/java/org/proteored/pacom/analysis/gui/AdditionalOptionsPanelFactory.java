@@ -56,9 +56,9 @@ import org.proteored.miapeapi.experiment.model.sort.SorterUtil;
 import org.proteored.pacom.analysis.charts.HeatChart;
 import org.proteored.pacom.analysis.charts.WordCramChart;
 import org.proteored.pacom.analysis.gui.components.JLabelColor;
-import org.proteored.pacom.analysis.gui.tasks.DatasetFactory;
 import org.proteored.pacom.analysis.util.DoSomethingToChangeColorInChart;
 
+import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.set.hash.THashSet;
 
@@ -237,12 +237,12 @@ public class AdditionalOptionsPanelFactory {
 	// }
 
 	public JPanel getPlotOrientationPanel() {
-		GridBagConstraints c = new GridBagConstraints();
-		JPanel panel = new JPanel();
+		final GridBagConstraints c = new GridBagConstraints();
+		final JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
 
-		JLabel jlabel = new JLabel("Plot orientation:");
-		PlotOrientation[] plotOrientations = { PlotOrientation.VERTICAL, PlotOrientation.HORIZONTAL };
+		final JLabel jlabel = new JLabel("Plot orientation:");
+		final PlotOrientation[] plotOrientations = { PlotOrientation.VERTICAL, PlotOrientation.HORIZONTAL };
 		if (jComboBoxPlotOrientation == null) {
 			jComboBoxPlotOrientation = new JComboBox<PlotOrientation>(plotOrientations);
 			getControlList().add(jComboBoxPlotOrientation);
@@ -271,14 +271,14 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public JPanel getMaximumNumOccurrence(String labelString, int maxMaximum, int selectedNumber) {
-		JPanel jPanelAdditional3 = new JPanel();
+		final JPanel jPanelAdditional3 = new JPanel();
 		if (labelString == null || "".equals(labelString))
 			labelString = "Maximum modif. occurrence:";
 
-		JLabel jlabel3 = new JLabel(labelString);
+		final JLabel jlabel3 = new JLabel(labelString);
 
 		if (jComboBoxMaximumOccurrence == null || jComboBoxMaximumOccurrence.getItemCount() != maxMaximum) {
-			Integer[] occurrences = new Integer[maxMaximum];
+			final Integer[] occurrences = new Integer[maxMaximum];
 			for (int i = 0; i < occurrences.length; i++) {
 				occurrences[i] = i + 1;
 			}
@@ -306,14 +306,14 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public JPanel getMinimumNumOccurrence(String labelString, int maxMinimum, int selectedNumber) {
-		JPanel jPanelAdditional3 = new JPanel();
+		final JPanel jPanelAdditional3 = new JPanel();
 		if (labelString == null || "".equals(labelString))
 			labelString = "Minimum occurrence:";
 
-		JLabel jlabel3 = new JLabel(labelString);
+		final JLabel jlabel3 = new JLabel(labelString);
 
 		if (jComboBoxMinimumOccurrence == null) {
-			Integer[] occurrences = new Integer[maxMinimum];
+			final Integer[] occurrences = new Integer[maxMinimum];
 			for (int i = 0; i < occurrences.length; i++) {
 				occurrences[i] = i + 1;
 			}
@@ -434,7 +434,7 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public JPanel getProteinsInSamplePanel() {
-		JPanel jPanelAdditional1 = new JPanel();
+		final JPanel jPanelAdditional1 = new JPanel();
 
 		if (jButtonShowInputTextFrame == null) {
 			jButtonShowInputTextFrame = new JButton("Define proteins in sample");
@@ -444,7 +444,7 @@ public class AdditionalOptionsPanelFactory {
 			jButtonShowInputTextFrame.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					InputTextDialog dialog = new InputTextDialog(frame, "Proteins in sample",
+					final InputTextDialog dialog = new InputTextDialog(frame, "Proteins in sample",
 							"<html>Paste the accession codes <br/>of the proteins in the sample</html>",
 							proteinsInSample);
 
@@ -581,7 +581,7 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public JPanel getOverReplicatesPanel() {
-		JPanel jPanelAdditional4 = new JPanel();
+		final JPanel jPanelAdditional4 = new JPanel();
 
 		if (jCheckBoxOverReplicates == null) {
 			jCheckBoxOverReplicates = new JCheckBox("Repeatibility over next level");
@@ -659,8 +659,8 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public JPanel getPeptideSequencesPanel(boolean distinguishModPep) {
-		JPanel jPanelAdditional2 = new JPanel();
-		String[] peptides = frame.getPeptidesFromExperiments(distinguishModPep);
+		final JPanel jPanelAdditional2 = new JPanel();
+		final String[] peptides = frame.getPeptidesFromExperiments(distinguishModPep);
 		String num = "";
 		if (peptides != null && peptides.length > 0)
 			num = String.valueOf(peptides.length);
@@ -685,7 +685,7 @@ public class AdditionalOptionsPanelFactory {
 			jListPeptides.jListPeptides.setListData(peptides);
 		}
 
-		GridBagConstraints c = new GridBagConstraints();
+		final GridBagConstraints c = new GridBagConstraints();
 		// c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 0, 0, 0);
 
@@ -702,11 +702,11 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public JPanel getUserPeptideListPanel(boolean addAddToPlotButton) {
-		JPanel jPanelAdditional3 = new JPanel();
-		JLabel jlabelUserPeptideList = new JLabel("Insert a peptide list:");
-		String peptideListTooltip = "<html>Insert a peptide list here (one peptide per line).<br>Peptide modifications are allowed.</html>";
+		final JPanel jPanelAdditional3 = new JPanel();
+		final JLabel jlabelUserPeptideList = new JLabel("Insert a peptide list:");
+		final String peptideListTooltip = "<html>Insert a peptide list here (one peptide per line).<br>Peptide modifications are allowed.</html>";
 		jlabelUserPeptideList.setToolTipText(peptideListTooltip);
-		GridBagConstraints c = new GridBagConstraints();
+		final GridBagConstraints c = new GridBagConstraints();
 		// c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 0, 0, 0);
 
@@ -730,14 +730,14 @@ public class AdditionalOptionsPanelFactory {
 		jPanelAdditional3.add(jlabelUserPeptideList, c);
 		c.gridx = 0;
 		c.gridy++;
-		JScrollPane scroll = new JScrollPane(jTextAreaUserPeptideList);
+		final JScrollPane scroll = new JScrollPane(jTextAreaUserPeptideList);
 		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		jPanelAdditional3.add(scroll, c);
 		c.gridx = 0;
 		c.gridy++;
 
 		if (addAddToPlotButton) {
-			JButton jbuttonAddToPlot = new JButton("Select from peptide list");
+			final JButton jbuttonAddToPlot = new JButton("Select from peptide list");
 			jbuttonAddToPlot.setToolTipText(
 					"<html>Click here to automatically select the peptides in the peptide list (if present)<br>"
 							+ " that contain the sequence tag or that are present in the Inserted peptide list.</html>");
@@ -774,11 +774,11 @@ public class AdditionalOptionsPanelFactory {
 	public List<String> getUserPeptideList() {
 		if (jTextAreaUserPeptideList != null) {
 			final String text = jTextAreaUserPeptideList.getText();
-			List<String> ret = new ArrayList<String>();
+			final List<String> ret = new ArrayList<String>();
 			if (text.contains("\n")) {
 				final String[] split = text.split("\n");
 				log.info("Returning " + split.length + " peptide sequences from user");
-				for (String string : split) {
+				for (final String string : split) {
 					ret.add(string);
 				}
 				return ret;
@@ -794,22 +794,22 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	protected void addUserPeptideListToPeptideSelection() {
-		String sequenceTag = jTextContaining.getText();
-		boolean distinguishModPep = frame.distinguishModifiedPeptides();
+		final String sequenceTag = jTextContaining.getText();
+		final boolean distinguishModPep = frame.distinguishModifiedPeptides();
 		final String userPeptideList = jTextAreaUserPeptideList.getText();
-		List<String> resultingSequences = new ArrayList<String>();
+		final List<String> resultingSequences = new ArrayList<String>();
 		if (userPeptideList != null && !"".equals(userPeptideList)) {
 			this.userPeptideList = userPeptideList;
-			String[] splitted = this.userPeptideList.split("\n");
+			final String[] splitted = this.userPeptideList.split("\n");
 			log.info("User has entered " + splitted.length + " sequences");
 
-			for (String userSequence : splitted) {
+			for (final String userSequence : splitted) {
 				final Collection<PeptideOccurrence> peptideSequences = frame.experimentList
 						.getPeptideChargeOccurrenceList(distinguishModPep).values();
-				for (PeptideOccurrence identificationOccurrence : peptideSequences) {
+				for (final PeptideOccurrence identificationOccurrence : peptideSequences) {
 					final List<ExtendedIdentifiedPeptide> identificationItemList = identificationOccurrence
 							.getPeptides();
-					for (ExtendedIdentifiedPeptide extendedIdentifiedPeptide : identificationItemList) {
+					for (final ExtendedIdentifiedPeptide extendedIdentifiedPeptide : identificationItemList) {
 						final String sequence = extendedIdentifiedPeptide.getSequence();
 						final String sequence_charge = extendedIdentifiedPeptide.getSequence()
 								+ extendedIdentifiedPeptide.getCharge() != null
@@ -819,7 +819,7 @@ public class AdditionalOptionsPanelFactory {
 								final List<String> modifiedSequences = ExtendedIdentifiedPeptide
 										.getModifiedSequences(sequence);
 								if (modifiedSequences != null && !modifiedSequences.isEmpty()) {
-									for (String modifiedSequence : modifiedSequences) {
+									for (final String modifiedSequence : modifiedSequences) {
 										if (!resultingSequences.contains(modifiedSequence)) {
 											if ((!"".equals(sequenceTag) && modifiedSequence.contains(sequenceTag))
 													|| "".equals(sequenceTag)) {
@@ -853,10 +853,10 @@ public class AdditionalOptionsPanelFactory {
 			if (!"".equals(sequenceTag)) {
 				final Collection<PeptideOccurrence> peptideSequences = frame.experimentList
 						.getPeptideChargeOccurrenceList(distinguishModPep).values();
-				for (PeptideOccurrence identificationOccurrence : peptideSequences) {
+				for (final PeptideOccurrence identificationOccurrence : peptideSequences) {
 					final List<ExtendedIdentifiedPeptide> identificationItemList = identificationOccurrence
 							.getPeptides();
-					for (ExtendedIdentifiedPeptide extendedIdentifiedPeptide : identificationItemList) {
+					for (final ExtendedIdentifiedPeptide extendedIdentifiedPeptide : identificationItemList) {
 						if (distinguishModPep) {
 							String modifiedSequence = extendedIdentifiedPeptide.getModificationString();
 							if (extendedIdentifiedPeptide.getCharge() != null) {
@@ -882,7 +882,8 @@ public class AdditionalOptionsPanelFactory {
 			} else {
 				// no sequence tag and no user peptide list
 				// reset the peptide list
-				Set<String> peptides = frame.experimentList.getPeptideChargeOccurrenceList(distinguishModPep).keySet();
+				final Set<String> peptides = frame.experimentList.getPeptideChargeOccurrenceList(distinguishModPep)
+						.keySet();
 				jListPeptides.jListPeptides.setListData(peptides.toArray(new String[0]));
 				jListPeptides.jListPeptides.clearSelection();
 				jListPeptides.repaint();
@@ -906,8 +907,8 @@ public class AdditionalOptionsPanelFactory {
 		if (!multipleSelection) {
 			selectionModel = ListSelectionModel.SINGLE_SELECTION;
 		}
-		JPanel jPanelAdditional2 = new JPanel();
-		Object[] modifications = getModifications();
+		final JPanel jPanelAdditional2 = new JPanel();
+		final Object[] modifications = getModifications();
 		String num = "";
 		if (modifications != null && modifications.length > 0)
 			num = String.valueOf(modifications.length);
@@ -926,7 +927,7 @@ public class AdditionalOptionsPanelFactory {
 				public void valueChanged(ListSelectionEvent evt) {
 					if (evt.getValueIsAdjusting())
 						return;
-					List selectedValues = ((JList) evt.getSource()).getSelectedValuesList();
+					final List selectedValues = ((JList) evt.getSource()).getSelectedValuesList();
 					if (!isTheSameSelection(selectedValues)) {
 						previousJListSelection = selectedValues;
 						frame.startShowingChart(evt.getSource());
@@ -944,10 +945,10 @@ public class AdditionalOptionsPanelFactory {
 					if (previousJListSelection.size() != selectedValues.size())
 						return false;
 
-					for (Object object : selectedValues) {
+					for (final Object object : selectedValues) {
 						boolean found = false;
 
-						for (Object object2 : previousJListSelection) {
+						for (final Object object2 : previousJListSelection) {
 							if (object.equals(object2))
 								found = true;
 						}
@@ -964,21 +965,15 @@ public class AdditionalOptionsPanelFactory {
 		jListModifications.setSelectionMode(selectionModel);
 
 		if (previousModificationsSelected != null && previousModificationsSelected.size() > 0) {
-			List<Integer> selectedIndexes = new ArrayList<Integer>();
-			for (Object modification : previousModificationsSelected) {
+			final TIntArrayList selectedIndexes = new TIntArrayList();
+			for (final Object modification : previousModificationsSelected) {
 				for (int i = 0; i < jListModifications.getModel().getSize(); i++) {
 					final Object element = jListModifications.getModel().getElementAt(i);
 					if (element.equals(modification))
 						selectedIndexes.add(i);
 				}
 			}
-			int[] temp = new int[selectedIndexes.size()];
-			int i = 0;
-			for (Integer index : selectedIndexes) {
-				temp[i] = index;
-				i++;
-			}
-			jListModifications.setSelectedIndices(temp);
+			jListModifications.setSelectedIndices(selectedIndexes.toArray());
 		}
 		jPanelAdditional2.setLayout(new BorderLayout());
 		jPanelAdditional2.add(jLabelModificationListHeader, BorderLayout.BEFORE_FIRST_LINE);
@@ -1000,8 +995,8 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public JPanel getProteinScorePanel(DefaultComboBoxModel<String> proteinScoreNames) {
-		JPanel jPanelAdditional3 = new JPanel();
-		JLabel jlabel3 = new JLabel("Protein score:");
+		final JPanel jPanelAdditional3 = new JPanel();
+		final JLabel jlabel3 = new JLabel("Protein score:");
 		if (jComboBoxProteinScoreNames == null) {
 			jComboBoxProteinScoreNames = new JComboBox(proteinScoreNames);
 			getControlList().add(jComboBoxProteinScoreNames);
@@ -1024,8 +1019,8 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public JPanel getPeptideScorePanel(DefaultComboBoxModel<String> peptideScoreNames) {
-		JPanel jPanelAdditional4 = new JPanel();
-		JLabel jlabel4 = new JLabel("Peptide score:");
+		final JPanel jPanelAdditional4 = new JPanel();
+		final JLabel jlabel4 = new JLabel("Peptide score:");
 
 		if (jComboBoxPeptideScoreNames == null) {
 			jComboBoxPeptideScoreNames = new JComboBox<String>(peptideScoreNames);
@@ -1049,7 +1044,7 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public JPanel getShowRegressionLinePanel() {
-		JPanel jPanelAdditional5 = new JPanel();
+		final JPanel jPanelAdditional5 = new JPanel();
 		if (jCheckBoxAddRegressionLine == null) {
 			jCheckBoxAddRegressionLine = new JCheckBox("Show regression line");
 			getControlList().add(jCheckBoxAddRegressionLine);
@@ -1068,7 +1063,7 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public JPanel getShowDiagonalLinePanel() {
-		JPanel jPanelAdditional6 = new JPanel();
+		final JPanel jPanelAdditional6 = new JPanel();
 		if (jCheckBoxAddDiagonalLine == null) {
 			jCheckBoxAddDiagonalLine = new JCheckBox("Show diagonal line");
 			getControlList().add(jCheckBoxAddDiagonalLine);
@@ -1099,9 +1094,9 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public JPanel getColorScalePanel(boolean alwaysEnabled) {
-		JPanel jPanelAdditional1 = new JPanel();
+		final JPanel jPanelAdditional1 = new JPanel();
 
-		String[] scaleTypes = { LINEAR_SCALE, LOGARITHMIC_SCALE, EXPONENTIAL_SCALE };
+		final String[] scaleTypes = { LINEAR_SCALE, LOGARITHMIC_SCALE, EXPONENTIAL_SCALE };
 		if (jComboBoxColorScale == null) {
 			jComboBoxColorScale = new JComboBox(scaleTypes);
 			getControlList().add(jComboBoxColorScale);
@@ -1151,7 +1146,7 @@ public class AdditionalOptionsPanelFactory {
 		}
 		jPanelAdditional1.setLayout(new GridBagLayout());
 
-		GridBagConstraints c = new GridBagConstraints();
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.NORTHWEST;
 		c.gridx = 0;
 		c.gridy = 0;
@@ -1220,7 +1215,7 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	private List<String> getColors() {
-		List<String> colors = new ArrayList<String>();
+		final List<String> colors = new ArrayList<String>();
 		colors.add("select a color...");
 		colors.add("blue");
 		colors.add("yellow");
@@ -1241,13 +1236,13 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public JPanel getHeatMapThresholdPanel(boolean occurrenceThreshold) {
-		JPanel jPanelAdditional2 = new JPanel();
+		final JPanel jPanelAdditional2 = new JPanel();
 
 		String label = "Do not paint rows with less than";
 		if (occurrenceThreshold) {
 			label += " (occurrence):";
 		}
-		JLabel jlabel2 = new JLabel(label);
+		final JLabel jlabel2 = new JLabel(label);
 		String text = "";
 		if (occurrenceThreshold) {
 			text = "<html>The number of identification sets that the item occurs <br>"
@@ -1297,7 +1292,7 @@ public class AdditionalOptionsPanelFactory {
 				if (fdr < 0.0)
 					throw new NumberFormatException();
 				return true;
-			} catch (NumberFormatException e) {
+			} catch (final NumberFormatException e) {
 				frame.appendStatus("That number is not well formed. It should be a positive number or 0");
 				log.info("FDR is not a number");
 			}
@@ -1306,9 +1301,9 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public JPanel getHistogramTypePanel() {
-		JPanel jPanelAdditional1 = new JPanel();
-		JLabel jlabel = new JLabel("Histogram type:");
-		HistogramType[] histogramTypes = { HistogramType.FREQUENCY, HistogramType.RELATIVE_FREQUENCY,
+		final JPanel jPanelAdditional1 = new JPanel();
+		final JLabel jlabel = new JLabel("Histogram type:");
+		final HistogramType[] histogramTypes = { HistogramType.FREQUENCY, HistogramType.RELATIVE_FREQUENCY,
 				HistogramType.SCALE_AREA_TO_1 };
 		if (jComboBoxHistogramType == null) {
 			jComboBoxHistogramType = new JComboBox(histogramTypes);
@@ -1343,8 +1338,8 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public JPanel getBinsPanel() {
-		JPanel jPanelAdditional2 = new JPanel();
-		JLabel jlabel2 = new JLabel("Bins:");
+		final JPanel jPanelAdditional2 = new JPanel();
+		final JLabel jlabel2 = new JLabel("Bins:");
 		if (jTextHistogramBin == null) {
 			jTextHistogramBin = new JTextField("30", 4);
 			getControlList().add(jTextHistogramBin);
@@ -1379,8 +1374,8 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public JPanel getMOverZPanel() {
-		JPanel jPanelAdditional3 = new JPanel();
-		JLabel jlabel3 = new JLabel("Mass type:");
+		final JPanel jPanelAdditional3 = new JPanel();
+		final JLabel jlabel3 = new JLabel("Mass type:");
 		if (jComboBoxMOverZ == null) {
 			jComboBoxMOverZ = new JComboBox(new String[] { M, MOVERZ });
 			getControlList().add(jComboBoxMOverZ);
@@ -1433,7 +1428,7 @@ public class AdditionalOptionsPanelFactory {
 		if (jTextHistogramBin != null) {
 			try {
 				return Integer.valueOf(jTextHistogramBin.getText());
-			} catch (NumberFormatException e) {
+			} catch (final NumberFormatException e) {
 
 			}
 		}
@@ -1443,7 +1438,7 @@ public class AdditionalOptionsPanelFactory {
 
 	public HistogramType getHistogramType() {
 		if (jComboBoxHistogramType != null) {
-			HistogramType histogramTypeString = (HistogramType) jComboBoxHistogramType.getSelectedItem();
+			final HistogramType histogramTypeString = (HistogramType) jComboBoxHistogramType.getSelectedItem();
 			if (HistogramType.FREQUENCY.equals(histogramTypeString))
 				return HistogramType.FREQUENCY;
 			else if (HistogramType.RELATIVE_FREQUENCY.equals(histogramTypeString))
@@ -1473,7 +1468,7 @@ public class AdditionalOptionsPanelFactory {
 		if (jTextHeatMapThreshold != null) {
 			try {
 				return Integer.valueOf(jTextHeatMapThreshold.getText());
-			} catch (NumberFormatException e) {
+			} catch (final NumberFormatException e) {
 
 			}
 		}
@@ -1486,7 +1481,7 @@ public class AdditionalOptionsPanelFactory {
 		if (jComboBoxPeptideScoreNames != null) {
 			try {
 				scoreName = (String) jComboBoxPeptideScoreNames.getSelectedItem();
-			} catch (Exception e) {
+			} catch (final Exception e) {
 
 			}
 		} else {
@@ -1501,7 +1496,7 @@ public class AdditionalOptionsPanelFactory {
 		if (jComboBoxProteinScoreNames != null) {
 			try {
 				scoreName = (String) jComboBoxProteinScoreNames.getSelectedItem();
-			} catch (Exception e) {
+			} catch (final Exception e) {
 
 			}
 		} else {
@@ -1511,10 +1506,10 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public void disableAdditionalOptionControls(boolean b) {
-		for (JComponent component : getControlList()) {
+		for (final JComponent component : getControlList()) {
 			component.setEnabled(b);
 		}
-		for (JCheckBox checkbox : idSetsJCheckBoxes.values()) {
+		for (final JCheckBox checkbox : idSetsJCheckBoxes.values()) {
 			checkbox.setEnabled(b);
 		}
 
@@ -1523,24 +1518,24 @@ public class AdditionalOptionsPanelFactory {
 	public JPanel getExperimentsCheckboxes(boolean selectAll, int numSelected, boolean addColorChooser,
 			DoSomethingToChangeColorInChart methodToChangeColorInChart) {
 		log.info("Creating list of replicates...");
-		JPanel jpanel = new JPanel();
+		final JPanel jpanel = new JPanel();
 		// jpanel.setLayout(new BoxLayout(jpanel, BoxLayout.PAGE_AXIS));
 		jpanel.setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 0;
 		c.gridy = 0;
 		idSetsJCheckBoxes.clear();
 		idSetsColors.clear();
-		List<String> colors = getColors();
+		final List<String> colors = getColors();
 		int colorIndex = 1; // starts with 1, cause the 0 in not a color
 		int numExperiment = 1;
-		for (Experiment experiment : frame.experimentList.getExperiments()) {
+		for (final Experiment experiment : frame.experimentList.getExperiments()) {
 			final String experimentName = experiment.getName();
 			boolean selected = false;
 			if (numExperiment <= numSelected || selectAll)
 				selected = true;
-			JCheckBox checkBox = new JCheckBox(experiment.getName(), selected);
+			final JCheckBox checkBox = new JCheckBox(experiment.getName(), selected);
 			checkBox.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -1553,8 +1548,8 @@ public class AdditionalOptionsPanelFactory {
 
 			if (addColorChooser) {
 				c.gridx = 1;
-				Color initialColor = getColor(colors.get(colorIndex++ % colors.size()));
-				JLabelColor colorChooser = new JLabelColor("<html>&nbsp;&nbsp;&nbsp;</html>",
+				final Color initialColor = getColor(colors.get(colorIndex++ % colors.size()));
+				final JLabelColor colorChooser = new JLabelColor("<html>&nbsp;&nbsp;&nbsp;</html>",
 						new JColorChooser(initialColor), idSetsColors, null, experimentName,
 						methodToChangeColorInChart);
 				colorChooser.addMouseListener(new MouseListener() {
@@ -1610,10 +1605,10 @@ public class AdditionalOptionsPanelFactory {
 	public JPanel getReplicatesCheckboxes(boolean separateExperiments, boolean selectAll, int numSelected,
 			boolean addColorChooser, DoSomethingToChangeColorInChart methodToChangeColorInChart) {
 		log.info("Creating list of replicates...");
-		JPanel jpanel = new JPanel();
+		final JPanel jpanel = new JPanel();
 		// jpanel.setLayout(new BoxLayout(jpanel, BoxLayout.PAGE_AXIS));
 		jpanel.setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 0;
 		c.gridy = 0;
@@ -1621,10 +1616,10 @@ public class AdditionalOptionsPanelFactory {
 		idSetsJCheckBoxes.clear();
 		idSetsColors.clear();
 		int numReplicates = 1;
-		List<String> colors = getColors();
+		final List<String> colors = getColors();
 		int colorIndex = 1;
-		for (Experiment experiment : frame.experimentList.getExperiments()) {
-			JLabel labelExperiment = new JLabel(experiment.getName() + ":");
+		for (final Experiment experiment : frame.experimentList.getExperiments()) {
+			final JLabel labelExperiment = new JLabel(experiment.getName() + ":");
 
 			c.gridwidth = 2;
 			if (c.gridy > 0) {
@@ -1637,13 +1632,13 @@ public class AdditionalOptionsPanelFactory {
 				numReplicates = 1;
 				colorIndex = 1;
 			}
-			for (Object idSet : experiment.getNextLevelIdentificationSetList()) {
-				Replicate replicate = (Replicate) idSet;
+			for (final Object idSet : experiment.getNextLevelIdentificationSetList()) {
+				final Replicate replicate = (Replicate) idSet;
 				boolean selected = false;
 				if (numReplicates <= numSelected || selectAll)
 					selected = true;
 
-				JCheckBox checkBox = new JCheckBox(replicate.getName(), selected);
+				final JCheckBox checkBox = new JCheckBox(replicate.getName(), selected);
 				checkBox.addActionListener(new java.awt.event.ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -1657,9 +1652,9 @@ public class AdditionalOptionsPanelFactory {
 				jpanel.add(checkBox, c);
 				if (addColorChooser) {
 					c.gridx = 1;
-					Color initialColor = getColor(colors.get(colorIndex++ % colors.size()));
-					String vennDataName = separateExperiments ? experiment.getName() : null;
-					JLabelColor colorChooser = new JLabelColor("<html>&nbsp;&nbsp;&nbsp;</html>",
+					final Color initialColor = getColor(colors.get(colorIndex++ % colors.size()));
+					final String vennDataName = separateExperiments ? experiment.getName() : null;
+					final JLabelColor colorChooser = new JLabelColor("<html>&nbsp;&nbsp;&nbsp;</html>",
 							new JColorChooser(initialColor), idSetsColors, vennDataName, replicate.getFullName(),
 							methodToChangeColorInChart);
 					colorChooser.addMouseListener(new MouseListener() {
@@ -1705,13 +1700,13 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	protected void openColorChooser(JColorChooser colorChooser) {
-		JDialog d = new JDialog(frame);
+		final JDialog d = new JDialog(frame);
 		d.add(colorChooser);
 		d.pack();
-		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		Dimension screenSize = toolkit.getScreenSize();
-		int x = (screenSize.width - d.getWidth()) / 2;
-		int y = (screenSize.height - d.getHeight()) / 2;
+		final Toolkit toolkit = Toolkit.getDefaultToolkit();
+		final Dimension screenSize = toolkit.getScreenSize();
+		final int x = (screenSize.width - d.getWidth()) / 2;
+		final int y = (screenSize.height - d.getHeight()) / 2;
 		d.setLocation(x, y);
 		d.setVisible(true);
 	}
@@ -1721,16 +1716,16 @@ public class AdditionalOptionsPanelFactory {
 			// added because sometimes the jList was not ready to get the
 			// selected values in "getSelectedModifications"
 			Thread.sleep(100);
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 
 		}
 		if (jListModifications != null) {
 
 			final List<String> selectedValues = jListModifications.getSelectedValuesList();
 			if (selectedValues != null && !selectedValues.isEmpty()) {
-				String[] ret = new String[selectedValues.size()];
+				final String[] ret = new String[selectedValues.size()];
 				int i = 0;
-				for (String object : selectedValues) {
+				for (final String object : selectedValues) {
 					ret[i] = object;
 					i++;
 				}
@@ -1746,7 +1741,7 @@ public class AdditionalOptionsPanelFactory {
 			// added because sometimes the jList was not ready to get the
 			// selected values in "getSelectedPeptides"
 			Thread.sleep(100);
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 
 		}
 		if (jListPeptides != null) {
@@ -1781,7 +1776,7 @@ public class AdditionalOptionsPanelFactory {
 
 	public boolean getMOverZ() {
 		if (jComboBoxMOverZ != null) {
-			String selection = (String) jComboBoxMOverZ.getSelectedItem();
+			final String selection = (String) jComboBoxMOverZ.getSelectedItem();
 			if (selection.equals(MOVERZ)) {
 				return true;
 			} else if (selection.equals(M)) {
@@ -1841,7 +1836,7 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public void updatePeptideSequenceList() {
-		boolean distiguishModificatedPeptides = frame.distinguishModifiedPeptides();
+		final boolean distiguishModificatedPeptides = frame.distinguishModifiedPeptides();
 		if (jListPeptides != null) {
 			int size = jListPeptides.jListPeptides.getModel().getSize();
 			log.info("Updating peptide list of " + size + " elements");
@@ -1851,11 +1846,11 @@ public class AdditionalOptionsPanelFactory {
 			log.info("Now has " + size + " elements");
 			jlabelPeptideListHeader.setText(size + " peptide sequences:");
 			if (selectedValues != null && !selectedValues.isEmpty()) {
-				List<Integer> selectedIndexes = new ArrayList<Integer>();
-				for (Object object : selectedValues) {
-					String sequence = (String) object;
+				final TIntArrayList selectedIndexes = new TIntArrayList();
+				for (final Object object : selectedValues) {
+					final String sequence = (String) object;
 					for (int i = 0; i < size; i++) {
-						String listSequence = jListPeptides.jListPeptides.getModel().getElementAt(i);
+						final String listSequence = jListPeptides.jListPeptides.getModel().getElementAt(i);
 						if (sequence.equals(listSequence))
 							selectedIndexes.add(i);
 
@@ -1863,8 +1858,7 @@ public class AdditionalOptionsPanelFactory {
 
 				}
 				if (!selectedIndexes.isEmpty()) {
-					final int[] array = DatasetFactory.toArray(selectedIndexes);
-					jListPeptides.jListPeptides.setSelectedIndices(array);
+					jListPeptides.jListPeptides.setSelectedIndices(selectedIndexes.toArray());
 				}
 			}
 		}
@@ -1880,19 +1874,18 @@ public class AdditionalOptionsPanelFactory {
 			log.info("Now has " + size + " elements");
 			jLabelModificationListHeader.setText(size + " PTMs:");
 			if (selectedValues != null && selectedValues.length > 0) {
-				List<Integer> selectedIndexes = new ArrayList<Integer>();
-				for (Object object : selectedValues) {
-					String modif = (String) object;
+				final TIntArrayList selectedIndexes = new TIntArrayList();
+				for (final Object object : selectedValues) {
+					final String modif = (String) object;
 					for (int i = 0; i < size; i++) {
-						String modification = (String) jListModifications.getModel().getElementAt(i);
+						final String modification = (String) jListModifications.getModel().getElementAt(i);
 						if (modif.equals(modification))
 							selectedIndexes.add(i);
 					}
 
 				}
 				if (!selectedIndexes.isEmpty()) {
-					final int[] array = DatasetFactory.toArray(selectedIndexes);
-					jListModifications.setSelectedIndices(array);
+					jListModifications.setSelectedIndices(selectedIndexes.toArray());
 				}
 			}
 		}
@@ -1961,8 +1954,8 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public JPanel getLabelledModificationsPanel() {
-		JPanel jPanel = new JPanel();
-		JLabel jlabel = new JLabel(
+		final JPanel jPanel = new JPanel();
+		final JLabel jlabel = new JLabel(
 				"<html>Select two modifications from the following<br> comboboxes in order to show the number<br>of peptides that have been detected<br>containing the two variants:</html>");
 		if (jComboBoxModificationA == null) {
 			jComboBoxModificationA = new JComboBox();
@@ -1979,7 +1972,7 @@ public class AdditionalOptionsPanelFactory {
 		final String[] modifications = getModifications();
 		jComboBoxModificationA.removeAllItems();
 		jComboBoxModificationA.addItem(NO_MODIFICATION);
-		for (String modif : modifications) {
+		for (final String modif : modifications) {
 			jComboBoxModificationA.addItem(modif);
 		}
 		jComboBoxModificationA.setSelectedIndex(0); // select
@@ -1998,7 +1991,7 @@ public class AdditionalOptionsPanelFactory {
 		}
 		jComboBoxModificationB.removeAllItems();
 		jComboBoxModificationB.addItem(NO_MODIFICATION);
-		for (String modif : modifications) {
+		for (final String modif : modifications) {
 			jComboBoxModificationB.addItem(modif);
 		}
 		jComboBoxModificationB.setSelectedIndex(0); // select
@@ -2134,7 +2127,7 @@ public class AdditionalOptionsPanelFactory {
 
 	protected void enableShowAsAverageOfNextLevels(boolean b) {
 		if (jCheckBoxShowAverage != null) {
-			this.jCheckBoxShowAverage.setEnabled(b);
+			jCheckBoxShowAverage.setEnabled(b);
 		}
 
 	}
@@ -2180,10 +2173,10 @@ public class AdditionalOptionsPanelFactory {
 			getJLabelIntersectionsText().setToolTipText(getJLabelIntersectionsText().getText());
 		}
 
-		Container parent = getJLabelIntersectionsText().getParent();
+		final Container parent = getJLabelIntersectionsText().getParent();
 		if (parent != null) {
 			parent.repaint();
-			Container parent2 = parent.getParent();
+			final Container parent2 = parent.getParent();
 			if (parent2 != null) {
 				parent2.repaint();
 			}
@@ -2192,9 +2185,9 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public List<String> getGroupToShow() {
-		List<String> ret = new ArrayList<String>();
+		final List<String> ret = new ArrayList<String>();
 		if (assignedGroups != null) {
-			for (JCheckBox jcheckBox : assignedGroups) {
+			for (final JCheckBox jcheckBox : assignedGroups) {
 				if (jcheckBox.isSelected())
 					ret.add(jcheckBox.getText());
 			}
@@ -2404,11 +2397,11 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public JPanel getProteinOrGeneSelector() {
-		String string = "Show just the number of genes, the number of proteins or both";
-		JLabel jLabel = new JLabel("Proteins/Genes:");
+		final String string = "Show just the number of genes, the number of proteins or both";
+		final JLabel jLabel = new JLabel("Proteins/Genes:");
 		jLabel.setToolTipText(string);
-		JPanel jPanel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel jPanel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridy = 0;
 		jPanel.add(jLabel, c);
@@ -2432,11 +2425,11 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public JPanel getPeptideOrPSMSelector() {
-		String string = "Show just the number of peptides, the number of PSMs or both";
-		JLabel jLabel = new JLabel("Peptides/PSMs:");
+		final String string = "Show just the number of peptides, the number of PSMs or both";
+		final JLabel jLabel = new JLabel("Peptides/PSMs:");
 		jLabel.setToolTipText(string);
-		JPanel jPanel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final JPanel jPanel = new JPanel(new GridBagLayout());
+		final GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridy = 0;
 		jPanel.add(jLabel, c);
@@ -2459,7 +2452,7 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public JPanel getJcheckBoxOneProteinPerGroup() {
-		JPanel jPanel = new JPanel();
+		final JPanel jPanel = new JPanel();
 		jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.PAGE_AXIS));
 
 		if (jradioButtonFirstProteinPerGroup == null || jradioButtonAllProteinsPerGroup == null
@@ -2474,7 +2467,7 @@ public class AdditionalOptionsPanelFactory {
 					frame.registerNewValue(evt.getSource());
 				}
 			});
-			this.getControlList().add(jradioButtonAllProteinsPerGroup);
+			getControlList().add(jradioButtonAllProteinsPerGroup);
 			jradioButtonFirstProteinPerGroup = new JRadioButton("share the protein with more evidence");
 			jradioButtonFirstProteinPerGroup.addItemListener(new java.awt.event.ItemListener() {
 				@Override
@@ -2486,7 +2479,7 @@ public class AdditionalOptionsPanelFactory {
 
 				}
 			});
-			this.getControlList().add(jradioButtonFirstProteinPerGroup);
+			getControlList().add(jradioButtonFirstProteinPerGroup);
 			jradioButtonBestProteinPerGroup = new JRadioButton("share the best protein per group");
 			jradioButtonBestProteinPerGroup.addItemListener(new java.awt.event.ItemListener() {
 				@Override
@@ -2498,7 +2491,7 @@ public class AdditionalOptionsPanelFactory {
 
 				}
 			});
-			this.getControlList().add(jradioButtonBestProteinPerGroup);
+			getControlList().add(jradioButtonBestProteinPerGroup);
 			jradioButtonShareOneProtein = new JRadioButton("share any protein");
 			jradioButtonShareOneProtein.addItemListener(new java.awt.event.ItemListener() {
 				@Override
@@ -2511,7 +2504,7 @@ public class AdditionalOptionsPanelFactory {
 				}
 			});
 			getControlList().add(jradioButtonShareOneProtein);
-			ButtonGroup group = new ButtonGroup();
+			final ButtonGroup group = new ButtonGroup();
 			group.add(jradioButtonAllProteinsPerGroup);
 			group.add(jradioButtonBestProteinPerGroup);
 			group.add(jradioButtonFirstProteinPerGroup);
@@ -2580,7 +2573,7 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public JPanel getShowAsSpiderPlotCheckBox() {
-		JPanel jPanel = new JPanel();
+		final JPanel jPanel = new JPanel();
 		jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.PAGE_AXIS));
 
 		if (jcheckBoxShowSpiderPlot == null) {
@@ -2647,9 +2640,9 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public JPanel getFDRCheckBoxesPanel() {
-		JPanel panel = new JPanel();
+		final JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final GridBagConstraints c = new GridBagConstraints();
 
 		if (jCheckBoxShowProteinFDR == null) {
 			jCheckBoxShowProteinFDR = new JCheckBox("show FDR at protein level");
@@ -2757,7 +2750,7 @@ public class AdditionalOptionsPanelFactory {
 		if (jTextFieldMaxNumberWords != null) {
 			try {
 				return Integer.valueOf(jTextFieldMaxNumberWords.getText());
-			} catch (NumberFormatException e) {
+			} catch (final NumberFormatException e) {
 
 			}
 		}
@@ -2783,7 +2776,7 @@ public class AdditionalOptionsPanelFactory {
 		if (jTextFieldMinWordLength != null) {
 			try {
 				return Integer.valueOf(jTextFieldMinWordLength.getText());
-			} catch (NumberFormatException e) {
+			} catch (final NumberFormatException e) {
 
 			}
 		}
@@ -2795,9 +2788,9 @@ public class AdditionalOptionsPanelFactory {
 			jTextAreaSkipWords = new JTextArea(10, 20);
 			final List<String> defaultSkippedWords = WordCramChart.getDefaultSkippedWords();
 			SorterUtil.sortStringByLength(defaultSkippedWords, false);
-			StringBuilder sb = new StringBuilder();
-			int minWordLength = getMinWordLength();
-			for (String string : defaultSkippedWords) {
+			final StringBuilder sb = new StringBuilder();
+			final int minWordLength = getMinWordLength();
+			for (final String string : defaultSkippedWords) {
 				if (string.length() >= minWordLength)
 					sb.append(string + "\n");
 			}
@@ -2809,12 +2802,12 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public List<String> getSkipWords() {
-		List<String> list = new ArrayList<String>();
+		final List<String> list = new ArrayList<String>();
 		if (jTextAreaSkipWords != null) {
 			final String text = jTextAreaSkipWords.getText();
 			if (text.contains("\n")) {
 				final String[] split = text.split("\n");
-				for (String string : split) {
+				for (final String string : split) {
 					list.add(string);
 				}
 			}
@@ -2980,9 +2973,9 @@ public class AdditionalOptionsPanelFactory {
 			c.gridx = 0;
 			c.gridy = 0;
 
-			JLabel label = new JLabel("Cleavage aminoacids:");
+			final JLabel label = new JLabel("Cleavage aminoacids:");
 			jTextboxCleavage = new JTextField("KR", 10);
-			String tooltip = "<html>Enter the aminacid in which the enzyme you used is cleaving.<br>"
+			final String tooltip = "<html>Enter the aminacid in which the enzyme you used is cleaving.<br>"
 					+ "Example: KR for trypsin.</html>";
 			jTextboxCleavage.setToolTipText(tooltip);
 			getControlList().add(jTextboxCleavage);

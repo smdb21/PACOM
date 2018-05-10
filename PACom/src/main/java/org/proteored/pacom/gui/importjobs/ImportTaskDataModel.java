@@ -2,9 +2,7 @@ package org.proteored.pacom.gui.importjobs;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.JComboBox;
 import javax.swing.JProgressBar;
@@ -18,19 +16,21 @@ import org.proteored.pacom.gui.tasks.MiapeExtractionTask;
 import org.proteored.pacom.utils.MiapeExtractionRunParameters;
 import org.proteored.pacom.utils.MiapeExtractionRunParametersImpl;
 
+import gnu.trove.map.hash.TIntObjectHashMap;
+
 public class ImportTaskDataModel extends AbstractTableModel {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2012588394900131630L;
-	private List<MiapeExtractionTask> rows;
-	private Map<Integer, MiapeExtractionTask> importTasksByID;
+	private final List<MiapeExtractionTask> rows;
+	private final TIntObjectHashMap<MiapeExtractionTask> importTasksByID;
 	private final static Logger log = Logger.getLogger(ImportTaskDataModel.class);
 
 	public ImportTaskDataModel() {
 		rows = new ArrayList<MiapeExtractionTask>();
-		importTasksByID = new HashMap<Integer, MiapeExtractionTask>();
+		importTasksByID = new TIntObjectHashMap<MiapeExtractionTask>();
 	}
 
 	@Override
@@ -53,10 +53,10 @@ public class ImportTaskDataModel extends AbstractTableModel {
 		if (rows.isEmpty()) {
 			return null;
 		}
-		MiapeExtractionTask miapeExtractionTask = rows.get(rowIndex);
+		final MiapeExtractionTask miapeExtractionTask = rows.get(rowIndex);
 		Object value = "-";
-		MiapeExtractionRunParameters parameters = miapeExtractionTask.getParameters();
-		InputFileType inputFileType = parameters.getInputFileType();
+		final MiapeExtractionRunParameters parameters = miapeExtractionTask.getParameters();
+		final InputFileType inputFileType = parameters.getInputFileType();
 		switch (ImportTaskColumns.values()[columnIndex]) {
 		case FILE:
 			if (parameters.getInputFile() != null) {
@@ -111,7 +111,7 @@ public class ImportTaskDataModel extends AbstractTableModel {
 	 */
 	@Override
 	public Class getColumnClass(int c) {
-		ImportTaskColumns importTaskColumn = ImportTaskColumns.values()[c];
+		final ImportTaskColumns importTaskColumn = ImportTaskColumns.values()[c];
 		switch (importTaskColumn) {
 		case FILETYPE:
 		case ASSOCIATEDMSFILETYPE:
@@ -136,7 +136,7 @@ public class ImportTaskDataModel extends AbstractTableModel {
 	public boolean isCellEditable(int row, int col) {
 		// Note that the data/cell address is constant,
 		// no matter where the cell appears onscreen.
-		ImportTaskColumns importTaskColumn = ImportTaskColumns.values()[col];
+		final ImportTaskColumns importTaskColumn = ImportTaskColumns.values()[col];
 		switch (importTaskColumn) {
 		case FILE:
 		case JOBID:
@@ -160,18 +160,19 @@ public class ImportTaskDataModel extends AbstractTableModel {
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		if (rows.size() > rowIndex) {
-			MiapeExtractionTask importTask = rows.get(rowIndex);
-			ImportTaskColumns column = ImportTaskColumns.values()[columnIndex];
+			final MiapeExtractionTask importTask = rows.get(rowIndex);
+			final ImportTaskColumns column = ImportTaskColumns.values()[columnIndex];
 			switch (column) {
 			case PROGRESS:
 				importTask.setTaskProgress((int) aValue);
 				break;
 			case FILETYPE:
 				if (aValue instanceof InputFileType) {
-					MiapeExtractionRunParameters parameters = importTask.getParameters();
+					final MiapeExtractionRunParameters parameters = importTask.getParameters();
 					if (parameters instanceof MiapeExtractionRunParametersImpl) {
 						InputFileType inputFileType = (InputFileType) aValue;
-						AssociatedMSInputFileType associatedMSInputFileType = parameters.getAssociatedMSFileType();
+						final AssociatedMSInputFileType associatedMSInputFileType = parameters
+								.getAssociatedMSFileType();
 						inputFileType = inputFileType.getCorrespondingInputFileType(associatedMSInputFileType);
 						((MiapeExtractionRunParametersImpl) parameters).setInputFileType(inputFileType);
 						if (!inputFileType.isHasAssociatedMS()) {
@@ -185,9 +186,9 @@ public class ImportTaskDataModel extends AbstractTableModel {
 				break;
 			case ASSOCIATEDMSFILETYPE:
 				if (aValue instanceof AssociatedMSInputFileType) {
-					MiapeExtractionRunParameters parameters = importTask.getParameters();
+					final MiapeExtractionRunParameters parameters = importTask.getParameters();
 					if (parameters instanceof MiapeExtractionRunParametersImpl) {
-						AssociatedMSInputFileType associatedMSInputType = (AssociatedMSInputFileType) aValue;
+						final AssociatedMSInputFileType associatedMSInputType = (AssociatedMSInputFileType) aValue;
 						((MiapeExtractionRunParametersImpl) parameters).setAssociatedMSFileType(associatedMSInputType);
 						// update file type depending on this value
 						updateFileTypeByAssociatedMSFileType(associatedMSInputType,
@@ -198,7 +199,7 @@ public class ImportTaskDataModel extends AbstractTableModel {
 				break;
 			case FILE:
 				if (aValue instanceof File) {
-					MiapeExtractionRunParameters parameters = importTask.getParameters();
+					final MiapeExtractionRunParameters parameters = importTask.getParameters();
 					if (parameters instanceof MiapeExtractionRunParametersImpl) {
 						((MiapeExtractionRunParametersImpl) parameters).setInputFile((File) aValue);
 
@@ -207,7 +208,7 @@ public class ImportTaskDataModel extends AbstractTableModel {
 				break;
 			case ASSOCIATEDMSFILE:
 				if (aValue instanceof File) {
-					MiapeExtractionRunParameters parameters = importTask.getParameters();
+					final MiapeExtractionRunParameters parameters = importTask.getParameters();
 					if (parameters instanceof MiapeExtractionRunParametersImpl) {
 						((MiapeExtractionRunParametersImpl) parameters).setAssociatedMSFile((File) aValue);
 
@@ -216,7 +217,7 @@ public class ImportTaskDataModel extends AbstractTableModel {
 				break;
 			case PROJECT:
 				if (aValue instanceof String) {
-					MiapeExtractionRunParameters parameters = importTask.getParameters();
+					final MiapeExtractionRunParameters parameters = importTask.getParameters();
 					if (parameters instanceof MiapeExtractionRunParametersImpl) {
 						((MiapeExtractionRunParametersImpl) parameters).setProjectName((String) aValue);
 
@@ -225,7 +226,7 @@ public class ImportTaskDataModel extends AbstractTableModel {
 				break;
 			case METADATA_TEMPLATE:
 				if (aValue instanceof String) {
-					MiapeExtractionRunParameters parameters = importTask.getParameters();
+					final MiapeExtractionRunParameters parameters = importTask.getParameters();
 					if (parameters instanceof MiapeExtractionRunParametersImpl) {
 						((MiapeExtractionRunParametersImpl) parameters).setTemplateName((String) aValue);
 					}
@@ -233,7 +234,7 @@ public class ImportTaskDataModel extends AbstractTableModel {
 				break;
 			case SEPARATOR:
 				if (aValue instanceof TableTextFileSeparator) {
-					MiapeExtractionRunParameters parameters = importTask.getParameters();
+					final MiapeExtractionRunParameters parameters = importTask.getParameters();
 					if (parameters instanceof MiapeExtractionRunParametersImpl) {
 						((MiapeExtractionRunParametersImpl) parameters).setSeparator((TableTextFileSeparator) aValue);
 					}
@@ -256,8 +257,9 @@ public class ImportTaskDataModel extends AbstractTableModel {
 	private void updateFileTypeByAssociatedMSFileType(AssociatedMSInputFileType associatedMSInputFileType,
 			MiapeExtractionRunParametersImpl parameters) {
 		if (associatedMSInputFileType != null) {
-			InputFileType inputFileType = parameters.getInputFileType();
-			InputFileType newInputFileType = inputFileType.getCorrespondingInputFileType(associatedMSInputFileType);
+			final InputFileType inputFileType = parameters.getInputFileType();
+			final InputFileType newInputFileType = inputFileType
+					.getCorrespondingInputFileType(associatedMSInputFileType);
 			parameters.setInputFileType(newInputFileType);
 		}
 	}
@@ -280,11 +282,11 @@ public class ImportTaskDataModel extends AbstractTableModel {
 	}
 
 	public List<MiapeExtractionTask> getImportTasks() {
-		return this.rows;
+		return rows;
 	}
 
 	public MiapeExtractionTask getTaskByID(int jobID) {
-		for (MiapeExtractionTask miapeExtractionTask : rows) {
+		for (final MiapeExtractionTask miapeExtractionTask : rows) {
 			if (miapeExtractionTask.getRunIdentifier() == jobID) {
 				return miapeExtractionTask;
 			}
@@ -303,30 +305,30 @@ public class ImportTaskDataModel extends AbstractTableModel {
 	 * @return
 	 */
 	public int[] removeRows(int[] rowIndexes) {
-		List<MiapeExtractionTask> toDelete = new ArrayList<MiapeExtractionTask>();
-		int[] ret = new int[rowIndexes.length];
+		final List<MiapeExtractionTask> toDelete = new ArrayList<MiapeExtractionTask>();
+		final int[] ret = new int[rowIndexes.length];
 		for (int i = 0; i < rowIndexes.length; i++) {
 			ret[i] = rows.get(rowIndexes[i]).getRunIdentifier();
 			toDelete.add(rows.get(rowIndexes[i]));
 		}
-		for (MiapeExtractionTask task : toDelete) {
+		for (final MiapeExtractionTask task : toDelete) {
 			rows.remove(task);
 		}
-		int firstRow = rowIndexes[0];
-		int lastRow = rowIndexes[rowIndexes.length - 1];
+		final int firstRow = rowIndexes[0];
+		final int lastRow = rowIndexes[rowIndexes.length - 1];
 
 		fireTableRowsDeleted(firstRow, lastRow);
 		return ret;
 	}
 
 	public void replaceImportTask(MiapeExtractionTask task, MiapeExtractionTask newTask) {
-		int index = this.rows.indexOf(task);
-		this.rows.set(index, newTask);
+		final int index = rows.indexOf(task);
+		rows.set(index, newTask);
 		fireTableRowsUpdated(index, index);
 	}
 
 	public void fireTableRowsUpdated(MiapeExtractionTask task) {
-		int indexOf = indexOf(task);
+		final int indexOf = indexOf(task);
 		if (indexOf >= 0) {
 			fireTableRowsUpdated(indexOf, indexOf);
 		}

@@ -2,8 +2,6 @@ package org.proteored.pacom.gui.importjobs;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
@@ -13,9 +11,11 @@ import javax.swing.table.TableCellRenderer;
 import org.apache.log4j.Logger;
 import org.proteored.pacom.gui.tasks.MiapeExtractionTask;
 
+import gnu.trove.map.hash.TIntObjectHashMap;
+
 public class ProgressCellRender implements TableCellRenderer {
 	private static final Logger log = Logger.getLogger(ProgressCellRender.class);
-	private final Map<Integer, JProgressBar> bars = new HashMap<Integer, JProgressBar>();
+	private final TIntObjectHashMap<JProgressBar> bars = new TIntObjectHashMap<JProgressBar>();
 	private Color defaultColor;
 
 	@Override
@@ -34,8 +34,9 @@ public class ProgressCellRender implements TableCellRenderer {
 		if (table instanceof ImportTasksTable) {
 			if (value != null && value instanceof Integer) {
 				progressBar.setValue((int) value);
-				MiapeExtractionTask task = ((ImportTasksTable) table).getImportTaskTableModel().getTaskByRowIndex(row);
-				StateValue taskState = task.getState();
+				final MiapeExtractionTask task = ((ImportTasksTable) table).getImportTaskTableModel()
+						.getTaskByRowIndex(row);
+				final StateValue taskState = task.getState();
 				if (taskState == StateValue.PENDING) {
 					// not started yet
 					progressBar.setString("");

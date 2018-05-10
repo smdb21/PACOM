@@ -6,15 +6,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Vector;
 
 import javax.swing.table.AbstractTableModel;
 
 import org.proteored.pacom.analysis.util.FileManager;
 
+import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
 public class TMIAPEProjectModelTable extends AbstractTableModel {
@@ -55,25 +53,22 @@ public class TMIAPEProjectModelTable extends AbstractTableModel {
 
 	public void InicializeTable(TIntObjectHashMap<String> miapeProjects) {
 		int projectNum = 0;
-		List<Integer> sortedIds = new ArrayList<Integer>();
-		for (int key : miapeProjects.keys()) {
-			sortedIds.add(key);
-		}
+		final TIntArrayList sortedIds = new TIntArrayList(miapeProjects.keys());
 
-		Collections.sort(sortedIds);
+		sortedIds.sort();
 		for (int i = sortedIds.size() - 1; i >= 0; i--) {
-			Integer projectID = sortedIds.get(i);
+			final int projectID = sortedIds.get(i);
 
 			setValueAt(projectID, projectNum, 0);
 			setValueAt(miapeProjects.get(projectID), projectNum, 1);
 
-			Path folder = new File(FileManager.getMiapeLocalDataPath(miapeProjects.get(projectID))).toPath();
+			final Path folder = new File(FileManager.getMiapeLocalDataPath(miapeProjects.get(projectID))).toPath();
 			BasicFileAttributes attr;
 			try {
 				attr = Files.readAttributes(folder, BasicFileAttributes.class);
-				Date date = new Date(attr.creationTime().toMillis());
+				final Date date = new Date(attr.creationTime().toMillis());
 				setValueAt(date, projectNum, 2);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				e.printStackTrace();
 				setValueAt("-", projectNum, 2);
 			}
