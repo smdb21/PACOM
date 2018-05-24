@@ -42,7 +42,7 @@ This tool has been enterely designed and implemented by [Salvador Martinez-Barto
 - J. Alberto Medina (software development support and beta tester).
 - Gorka Prieto ([@akrogp](https://github.com/akrogp)) (PAnalyzer grouping algorithm developer).
 - Rosana Navajas (beta tester and manuscript contributor).
-- Carmen Gonzalez (beta tester and manucript contributor).
+- Carmen Gonzalez (beta tester and manuscript contributor).
 - Carolina Fernandez Costa (beta tester and manuscript contributor).
 - Emilio Salazar-Donate ([@emiliosalazardonate](https://github.com/emiliosalazardonate)) (First developer contributing to this project in its very early phase).
 - Juan Pablo Albar (main supporter of this project. All success of this project is dedicated to him).
