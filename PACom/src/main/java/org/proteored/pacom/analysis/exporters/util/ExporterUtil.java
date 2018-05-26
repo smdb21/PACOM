@@ -112,7 +112,7 @@ public class ExporterUtil {
 			throw new IllegalMiapeArgumentException("peptide occurrence should be different to null");
 
 		final StringBuilder sb = new StringBuilder();
-		String scoreName = "";
+		final String scoreName = "";
 		for (final String column : columns) {
 			try {
 				if (column.equals(ExportedColumns.NUMBER.toString())) {
@@ -197,12 +197,10 @@ public class ExporterUtil {
 					ret.add(getNumPeptides(peptideOccurrence));
 				} else if (column.equals(ExportedColumns.PROTEIN_SCORE.toString())) {
 					// This line should not be used
-					scoreName = proteinScoreNames.get(0);
-					ret.add(getProteinScore(peptideOccurrence, scoreName, idSet));
+					ret.add(getProteinScore(peptideOccurrence, idSet));
 				} else if (column.equals(ExportedColumns.PEPTIDE_SCORE.toString())) {
 					// This line should not be used
-					scoreName = peptideScoreNames.get(0);
-					ret.add(getPeptideScore(peptideOccurrence, scoreName));
+					ret.add(getPeptideScore(peptideOccurrence));
 				} else if (column.equals(ExportedColumns.SEQUENCE.toString())) {
 					ret.add(cleanString(peptideOccurrence.getFirstOccurrence().getSequence()));
 				} else if (column.equals(ExportedColumns.EXPERIMENT.toString())) {
@@ -467,7 +465,7 @@ public class ExporterUtil {
 		return cleanString(sbExperimentNames.toString());
 	}
 
-	private String getPeptideScore(PeptideOccurrence peptideOccurrence, String scoreName) {
+	private String getPeptideScore(PeptideOccurrence peptideOccurrence) {
 
 		final Float score = peptideOccurrence.getBestPeptideScore();
 
@@ -475,7 +473,7 @@ public class ExporterUtil {
 
 	}
 
-	private String getProteinScore(PeptideOccurrence peptideOccurrence, String scoreName, IdentificationSet idSet) {
+	private String getProteinScore(PeptideOccurrence peptideOccurrence, IdentificationSet idSet) {
 
 		try {
 
