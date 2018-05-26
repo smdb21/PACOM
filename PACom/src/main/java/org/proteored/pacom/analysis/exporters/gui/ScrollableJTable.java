@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -20,6 +21,9 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import org.apache.log4j.Logger;
+import org.proteored.pacom.analysis.exporters.util.ExportedColumns;
+import org.proteored.pacom.analysis.exporters.util.ExporterUtil;
+import org.proteored.pacom.utils.HttpUtilities;
 
 import gnu.trove.list.array.TIntArrayList;
 
@@ -36,6 +40,13 @@ public class ScrollableJTable extends JPanel {
 	private TableRowSorter<TableModel> sorter = null;
 
 	private Comparator comp;
+	private static final String UNIPROT_ONE_PROTEIN_QUERY_URL = "http://www.uniprot.org/uniprot/?sort=score&query=";
+	private static final String NCBI_ONE_PROTEIN_QUERY_URL = "http://www.ncbi.nlm.nih.gov/protein/";
+	private static final String ENSEMBL_HOMO_SAPIENS_QUERY = "http://www.ensembl.org/Multi/Search/Results?db=core;idx=;species=all;q=";
+
+	private enum AccType {
+		UNIPROT, GI, ENSG, ENSP
+	};
 
 	public ScrollableJTable(JTable jtable, int wide) {
 		if (jtable != null) {
@@ -108,25 +119,23 @@ public class ScrollableJTable extends JPanel {
 						final int column = target.getSelectedColumn();
 						log.info("Row=" + row + " Column=" + column);
 						if (e.getClickCount() == 2) {
-							// int proteinACCIndex = -1;
-							// int ensgIDIndex = -1;
-							// try {
-							// proteinACCIndex = target.getColumnModel()
-							// .getColumnIndex(ExportedColumns.PROTEIN_ACC.toString());
-							// } catch (IllegalArgumentException ex) {
-							// }
-							// try {
-							// ensgIDIndex = target.getColumnModel()
-							// .getColumnIndex(ExportedColumns.ENSG_ID.toString());
-							// } catch (IllegalArgumentException ex) {
-							// }
-							// if (column == proteinACCIndex || column ==
-							// ensgIDIndex) {
-							// String value = target.getModel().getValueAt(row,
-							// column).toString();
-							// openBrowser(value);
-							//
-							// }
+							int proteinACCIndex = -1;
+							int ensgIDIndex = -1;
+							try {
+								proteinACCIndex = target.getColumnModel()
+										.getColumnIndex(ExportedColumns.PROTEIN_ACC.toString());
+							} catch (final IllegalArgumentException ex) {
+							}
+							try {
+								ensgIDIndex = target.getColumnModel()
+										.getColumnIndex(ExportedColumns.ENSG_ID.toString());
+							} catch (final IllegalArgumentException ex) {
+							}
+							if (column == proteinACCIndex || column == ensgIDIndex) {
+								final String value = target.getModel().getValueAt(row, column).toString();
+								openBrowser(value);
+
+							}
 						}
 					} catch (final IllegalArgumentException ex) {
 						ex.printStackTrace();
@@ -270,5 +279,96 @@ public class ScrollableJTable extends JPanel {
 
 	public JTable getTable() {
 		return table;
+	}
+
+	protected void openBrowser(String proteinACC) {
+		if (proteinACC.contains(ExporterUtil.VALUE_SEPARATOR)) {
+			final String[] split = proteinACC.split(ExporterUtil.VALUE_SEPARATOR);
+
+			int numValid = 0;
+			for (final String string : split) {
+				if (getACCType(string) != null) {
+					numValid++;
+				}
+			}
+			if (numValid > 0) {
+				final int selectedOption = JOptionPane.showConfirmDialog(this,
+						"<html>The cell contains " + numValid + " different accessions.<br>"
+								+ "Click YES to go to UniprotKB in " + split.length + " different browser windows.<br>"
+								+ "If you want just to open the first accession, that is, '" + split[0]
+								+ "', click on NO.</html>",
+						"GO TO UNIPROTKB. More than one accession in the cell", JOptionPane.YES_NO_CANCEL_OPTION);
+
+				if (selectedOption == JOptionPane.YES_OPTION) {
+					for (final String singleProteinACC : split) {
+						final String urlText = getURL(singleProteinACC);
+						if (!"".equals(urlText))
+							HttpUtilities.openURL(urlText);
+					}
+				} else if (selectedOption == JOptionPane.NO_OPTION) {
+					final String urlText = getURL(split[0]);
+					if (!"".equals(urlText))
+						HttpUtilities.openURL(urlText);
+				}
+			}
+		} else {
+			final int selectedOption = JOptionPane.showConfirmDialog(this, "<html>Click YES to go to UniprotKB.</html>",
+					"GO TO UNIPROTKB", JOptionPane.YES_NO_OPTION);
+
+			if (selectedOption == JOptionPane.YES_OPTION) {
+				final String urlText = getURL(proteinACC);
+				if (!"".equals(urlText))
+					HttpUtilities.openURL(urlText);
+			}
+		}
+	}
+
+	private String getURL(String singleProteinACC) {
+		String urlText = "";
+		String acc = singleProteinACC;
+		final AccType acc_type = getACCType(singleProteinACC);
+		if (acc_type != null) {
+			switch (acc_type) {
+			case ENSG:
+				urlText = ENSEMBL_HOMO_SAPIENS_QUERY;
+				break;
+			case ENSP:
+				urlText = ENSEMBL_HOMO_SAPIENS_QUERY;
+				break;
+			case GI:
+				urlText = NCBI_ONE_PROTEIN_QUERY_URL;
+				break;
+			case UNIPROT:
+				if (singleProteinACC.contains("|")) {
+					final String[] split = singleProteinACC.split("\\|");
+					if (split.length > 1)
+						acc = split[1];
+				}
+				urlText = UNIPROT_ONE_PROTEIN_QUERY_URL;
+				break;
+			}
+			urlText += acc;
+			return urlText;
+		}
+		return null;
+	}
+
+	private AccType getACCType(String proteinACC) {
+		if (proteinACC.startsWith("gi|")) {
+			return AccType.GI;
+		} else if (proteinACC.length() == 6 || proteinACC.length() == 8) {
+			return AccType.UNIPROT;
+		} else if (proteinACC.startsWith("ENSP")) {
+			return AccType.ENSP;
+		} else if (proteinACC.startsWith("ENSG")) {
+			return AccType.ENSG;
+		} else if (proteinACC.contains("|")) {
+			final String[] split = proteinACC.split("\\|");
+			if (split.length > 1)
+				return AccType.UNIPROT;
+		} else {
+			return AccType.UNIPROT;
+		}
+		return null;
 	}
 }
