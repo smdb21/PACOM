@@ -63,9 +63,9 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 	public static final String RT = "RT";
 
 	public static String getHeaderNames() {
-		StringBuilder sb = new StringBuilder();
-		List<String> headerNames = getHeaderNamesList();
-		for (String headerName : headerNames) {
+		final StringBuilder sb = new StringBuilder();
+		final List<String> headerNames = getHeaderNamesList();
+		for (final String headerName : headerNames) {
 			if (!"".equals(sb.toString())) {
 				sb.append(", ");
 			}
@@ -75,7 +75,7 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 	}
 
 	private static List<String> getHeaderNamesList() {
-		List<String> headerNames = new ArrayList<String>();
+		final List<String> headerNames = new ArrayList<String>();
 		headerNames.add(CHARGE);
 		headerNames.add(MZ);
 		headerNames.add(SEQ);
@@ -124,15 +124,15 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 	@Override
 	protected Void doInBackground() throws Exception {
 		try {
-			TObjectIntHashMap<String> indexesByHeaders = new TObjectIntHashMap<String>();
-			TObjectIntHashMap<String> indexesByScoreNames = new TObjectIntHashMap<String>();
+			final TObjectIntHashMap<String> indexesByHeaders = new TObjectIntHashMap<String>();
+			final TObjectIntHashMap<String> indexesByScoreNames = new TObjectIntHashMap<String>();
 
 			firePropertyChange(PARSER_STARTS, null, null);
-			BufferedReader dis = new BufferedReader(new FileReader(file));
+			final BufferedReader dis = new BufferedReader(new FileReader(file));
 			String line = "";
 			log.info("Parsing file " + file.getAbsolutePath());
-			Map<String, IdentifiedProtein> proteins = new THashMap<String, IdentifiedProtein>();
-			Map<String, IdentifiedPeptide> peptides = new THashMap<String, IdentifiedPeptide>();
+			final Map<String, IdentifiedProtein> proteins = new THashMap<String, IdentifiedProtein>();
+			final Map<String, IdentifiedPeptide> peptides = new THashMap<String, IdentifiedPeptide>();
 			String previousProteinACC = null;
 			// String scoreName = null;
 			int numLine = 0;
@@ -154,19 +154,19 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 					if (indexesByHeaders.isEmpty()) {
 						parseHeader(split, indexesByHeaders, indexesByScoreNames);
 						if (!indexesByHeaders.containsKey(ACC)) {
-							String message = "ACC column for protein accessions is missing in input file '"
+							final String message = "ACC column for protein accessions is missing in input file '"
 									+ file.getAbsolutePath() + "'";
 							firePropertyChange(PARSER_ERROR, null, message);
 							throw new IllegalArgumentException(message);
 						}
 						if (!indexesByHeaders.containsKey(SEQ)) {
-							String message = "SEQ column for peptide sequences is missing in input file '"
+							final String message = "SEQ column for peptide sequences is missing in input file '"
 									+ file.getAbsolutePath() + "'";
 							firePropertyChange(PARSER_ERROR, null, message);
 							throw new IllegalArgumentException(message);
 						}
 					} else {
-						int accIndex = indexesByHeaders.get(ACC);
+						final int accIndex = indexesByHeaders.get(ACC);
 						String preliminarProteinAcc = split[accIndex].trim();
 						if ("".equals(preliminarProteinAcc)) {
 							preliminarProteinAcc = previousProteinACC;
@@ -177,9 +177,9 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 						previousProteinACC = preliminarProteinAcc;
 
 						// PEPTIDE SEQUENCE
-						int seqIndex = indexesByHeaders.get(SEQ);
-						String rawSeq = split[seqIndex].trim();
-						String seq = FastaParser.cleanSequence(rawSeq);
+						final int seqIndex = indexesByHeaders.get(SEQ);
+						final String rawSeq = split[seqIndex].trim();
+						final String seq = FastaParser.cleanSequence(rawSeq);
 						// seq = parseSequence(seq);
 
 						// PSMID
@@ -193,11 +193,11 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 							peptide = new IdentifiedPeptideImplFromTSV(seq);
 							peptides.put(psmID, peptide);
 							if (FastaParser.somethingExtrangeInSequence(rawSeq)) {
-								TIntDoubleHashMap pTMsByPosition = FastaParser.getPTMsFromSequence(rawSeq);
-								for (int position : pTMsByPosition.keys()) {
-									String aa = String.valueOf(peptide.getSequence().charAt(position - 1));
-									double deltaMass = pTMsByPosition.get(position);
-									PeptideModificationBuilder ptmBuilder = MiapeMSIDocumentFactory
+								final TIntDoubleHashMap pTMsByPosition = FastaParser.getPTMsFromSequence(rawSeq);
+								for (final int position : pTMsByPosition.keys()) {
+									final String aa = String.valueOf(peptide.getSequence().charAt(position - 1));
+									final double deltaMass = pTMsByPosition.get(position);
+									final PeptideModificationBuilder ptmBuilder = MiapeMSIDocumentFactory
 											.createPeptideModificationBuilder(
 													getModificationNameFromResidueAndMass(aa, deltaMass))
 											.monoDelta(deltaMass).position(position).residues(aa);
@@ -214,7 +214,7 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 						if (indexesByHeaders.containsKey(CHARGE)) {
 							try {
 								charge = Integer.valueOf(split[indexesByHeaders.get(CHARGE)]);
-							} catch (NumberFormatException e) {
+							} catch (final NumberFormatException e) {
 								log.warn("Error parsing charge state from column " + (indexesByHeaders.get(CHARGE) + 1)
 										+ " in file '" + file.getAbsolutePath() + "'");
 								log.warn(e.getMessage());
@@ -227,7 +227,7 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 						if (indexesByHeaders.containsKey(MZ)) {
 							try {
 								mz = Double.valueOf(split[indexesByHeaders.get(MZ)]);
-							} catch (NumberFormatException e) {
+							} catch (final NumberFormatException e) {
 								log.warn("Error parsing precursor M/Z from column " + (indexesByHeaders.get(MZ) + 1)
 										+ " in file '" + file.getAbsolutePath() + "'");
 								log.warn(e.getMessage());
@@ -240,7 +240,7 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 						if (indexesByHeaders.containsKey(RT)) {
 							try {
 								rt = Double.valueOf(split[indexesByHeaders.get(RT)]);
-							} catch (NumberFormatException e) {
+							} catch (final NumberFormatException e) {
 								log.warn("Error parsing retention time rom column " + (indexesByHeaders.get(RT) + 1)
 										+ " in file '" + file.getAbsolutePath() + "'");
 								log.warn(e.getMessage());
@@ -249,15 +249,15 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 						peptide.setRetentionTime(rt);
 
 						// PEPTIDE SCORES
-						for (String scoreName : indexesByScoreNames.keySet()) {
-							String scoreString = split[indexesByScoreNames.get(scoreName)].trim();
+						for (final String scoreName : indexesByScoreNames.keySet()) {
+							final String scoreString = split[indexesByScoreNames.get(scoreName)].trim();
 							Double score = null;
 							try {
 								score = Double.valueOf(scoreString);
-								PeptideScore peptideScore = MiapeMSIDocumentFactory
+								final PeptideScore peptideScore = MiapeMSIDocumentFactory
 										.createPeptideScoreBuilder(scoreName, score.toString()).build();
 								peptide.addScore(peptideScore);
-							} catch (NumberFormatException e) {
+							} catch (final NumberFormatException e) {
 								log.warn("Error parsing score value for column "
 										+ (indexesByScoreNames.get(scoreName) + 1) + " in file '"
 										+ file.getAbsolutePath() + "'");
@@ -266,8 +266,8 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 						}
 
 						// if more than one accession is present, get the list
-						List<String> accessions = splitAccessions(preliminarProteinAcc);
-						for (String proteinAcc : accessions) {
+						final List<String> accessions = splitAccessions(preliminarProteinAcc);
+						for (final String proteinAcc : accessions) {
 
 							if (proteins.containsKey(proteinAcc)) {
 								final IdentifiedProteinImplFromTSV protein = (IdentifiedProteinImplFromTSV) proteins
@@ -277,8 +277,8 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 									peptide.addProtein(protein);
 								}
 							} else {
-								IdentifiedProteinImplFromTSV protein = new IdentifiedProteinImplFromTSV(proteinAcc,
-										null);
+								final IdentifiedProteinImplFromTSV protein = new IdentifiedProteinImplFromTSV(
+										proteinAcc, null);
 								if (peptide != null) {
 									protein.addPeptide(peptide);
 									peptide.addProtein(protein);
@@ -305,17 +305,17 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 					peptides.size() + " PSMs and " + proteins.size() + " proteins from file " + file.getAbsolutePath());
 			final MiapeMSIDocumentBuilder builder = MiapeMSIDocumentFactory.createMiapeDocumentMSIBuilder(null,
 					idSetName, null);
-			List<IdentifiedPeptide> peptideList = new ArrayList<IdentifiedPeptide>();
+			final List<IdentifiedPeptide> peptideList = new ArrayList<IdentifiedPeptide>();
 			peptideList.addAll(peptides.values());
 			builder.identifiedPeptides(peptideList);
-			Set<IdentifiedProteinSet> proteinSets = new THashSet<IdentifiedProteinSet>();
-			IdentifiedProteinSet proteinSet = MiapeMSIDocumentFactory.createIdentifiedProteinSetBuilder("Protein set")
-					.identifiedProteins(proteins).build();
+			final Set<IdentifiedProteinSet> proteinSets = new THashSet<IdentifiedProteinSet>();
+			final IdentifiedProteinSet proteinSet = MiapeMSIDocumentFactory
+					.createIdentifiedProteinSetBuilder("Protein set").identifiedProteins(proteins).build();
 			proteinSets.add(proteinSet);
 			builder.identifiedProteinSets(proteinSets);
 			log.info("MIAPE MSI builder created.");
 			firePropertyChange(PARSER_FINISHED, null, builder);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			firePropertyChange(PARSER_ERROR, null, e.getMessage());
 		}
@@ -328,7 +328,7 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 			try {
 				url = resource.getURL();
 				preferredModifications = PrideModController.parseSlimModCollection(url);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -338,15 +338,15 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 	private String getModificationNameFromResidueAndMass(String aa, double deltaMass) {
 		try {
 			// try first with the PRIDE mapping
-			SlimModCollection modificationMapping = getModificationMapping();
+			final SlimModCollection modificationMapping = getModificationMapping();
 
-			SlimModCollection slimMods = modificationMapping.getbyDelta(deltaMass, 0.03);
+			final SlimModCollection slimMods = modificationMapping.getbyDelta(deltaMass, 0.03);
 			if (slimMods != null && !slimMods.isEmpty()) {
 				return slimMods.get(0).getPsiModDesc();
 			}
 			// TODO add more modifications!
 			// read from a file?
-			ControlVocabularyManager cvManager = OntologyLoaderTask.getCvManager();
+			final ControlVocabularyManager cvManager = OntologyLoaderTask.getCvManager();
 			if (aa.equals("C") && compareWithError(deltaMass, 57.022)) {
 
 				final ControlVocabularyTerm cvTerm = cvManager.getCVTermByAccession(
@@ -368,14 +368,14 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 			final ControlVocabularyTerm pepModifDetailsTerm = PeptideModificationName.getPepModifDetailsTerm(cvManager);
 			if (pepModifDetailsTerm != null)
 				return pepModifDetailsTerm.getPreferredName();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 
 		}
 		return "peptide modification details";
 	}
 
 	private boolean compareWithError(double num1, double num2) {
-		double tolerance = 0.001;
+		final double tolerance = 0.001;
 		if (num1 > num2)
 			if (num1 - num2 < tolerance)
 				return true;
@@ -420,13 +420,13 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 				JOptionPane.WARNING_MESSAGE);
 		if (userSelection == JOptionPane.YES_OPTION) {
 			// convert peptides to Maps
-			Map<String, IdentifiedPeptide> peptideMap = new THashMap<String, IdentifiedPeptide>();
-			for (IdentifiedPeptide identifiedPeptide : peptides) {
+			final Map<String, IdentifiedPeptide> peptideMap = new THashMap<String, IdentifiedPeptide>();
+			for (final IdentifiedPeptide identifiedPeptide : peptides) {
 				peptideMap.put(identifiedPeptide.getSequence(), identifiedPeptide);
 			}
 			int userSelection2 = Integer.MIN_VALUE;
 			boolean loadNewFastaFile = true;
-			Enzyme trypsin = new Enzyme("Trypsin", "RK", "", "Cterm", 2);
+			final Enzyme trypsin = new Enzyme("Trypsin", "RK", "", "Cterm", 2);
 			if (IdentificationSetFromFileParserTask.fastaLoader != null) {
 				userSelection2 = JOptionPane.showConfirmDialog(null,
 						"<html>There is already a fasta loaded.<br>Do you want to continue with this data (yes) or do you wnat to load another fasta file (no)?</html>",
@@ -447,17 +447,17 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 					fastaLoader.load(fastaFile.getAbsolutePath());
 				}
 			}
-			Map<String, List<String>> peptideToProteinsMap = new THashMap<String, List<String>>();
+			final Map<String, List<String>> peptideToProteinsMap = new THashMap<String, List<String>>();
 			final long countNumberOfEntries = fastaLoader.countNumberOfEntries();
 			log.info("Readed " + countNumberOfEntries + " entries in the fasta file");
 			for (int i = 0; i < countNumberOfEntries; i++) {
 				final Protein nextProtein = fastaLoader.nextProtein();
 				if (nextProtein == null)
 					break;
-				String proteinACC = nextProtein.getHeader().getAccession();
+				final String proteinACC = nextProtein.getHeader().getAccession();
 
 				final Protein[] cleave = trypsin.cleave(nextProtein);
-				for (Protein protein : cleave) {
+				for (final Protein protein : cleave) {
 					final String seq = protein.getSequence().getSequence();
 					// skip sequence if not present in the input peptides
 					if (!peptideMap.containsKey(seq))
@@ -467,19 +467,19 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 						if (!proteinAccs.contains(proteinACC))
 							proteinAccs.add(proteinACC);
 					} else {
-						List<String> proteinAccs = new ArrayList<String>();
+						final List<String> proteinAccs = new ArrayList<String>();
 						proteinAccs.add(proteinACC);
 						peptideToProteinsMap.put(seq, proteinAccs);
 					}
 				}
 			}
 			log.info(peptideToProteinsMap.size() + " peptides mapped");
-			for (String peptideSeq : peptideToProteinsMap.keySet()) {
+			for (final String peptideSeq : peptideToProteinsMap.keySet()) {
 				if (peptideMap.containsKey(peptideSeq)) {
 					final IdentifiedPeptideImplFromTSV identifiedPeptide = (IdentifiedPeptideImplFromTSV) peptideMap
 							.get(peptideSeq);
 					final List<String> proteinAccs = peptideToProteinsMap.get(peptideSeq);
-					for (String proteinAcc : proteinAccs) {
+					for (final String proteinAcc : proteinAccs) {
 						if (proteinMap.containsKey(proteinAcc)) {
 							final IdentifiedProteinImplFromTSV identifiedProtein = (IdentifiedProteinImplFromTSV) proteinMap
 									.get(proteinAcc);
@@ -491,7 +491,7 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 							// Create the protein if the peptide has been mapped
 							// with it
 							log.info("Adding new protein: " + proteinAcc + " that supports peptide " + peptideSeq);
-							IdentifiedProteinImplFromTSV identifiedProtein = new IdentifiedProteinImplFromTSV(
+							final IdentifiedProteinImplFromTSV identifiedProtein = new IdentifiedProteinImplFromTSV(
 									proteinAcc);
 							identifiedPeptide.addProtein(identifiedProtein);
 							identifiedProtein.addPeptide(identifiedPeptide);
@@ -514,11 +514,11 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 	 */
 	private void checkRelationBetweenPeptidesAndProteins(Map<String, IdentifiedPeptide> peptides,
 			Map<String, IdentifiedProtein> proteins) {
-		for (String psmID : peptides.keySet()) {
-			IdentifiedPeptide identifiedPeptide = peptides.get(psmID);
+		for (final String psmID : peptides.keySet()) {
+			final IdentifiedPeptide identifiedPeptide = peptides.get(psmID);
 			if (identifiedPeptide.getIdentifiedProteins() == null
 					|| identifiedPeptide.getIdentifiedProteins().isEmpty()) {
-				String message = "Peptide " + identifiedPeptide.getSequence() + " with ID " + psmID
+				final String message = "Peptide " + identifiedPeptide.getSequence() + " with ID " + psmID
 						+ " has no linked to any protein";
 				log.warn(message);
 				firePropertyChange(PARSER_ERROR, null, message);
@@ -527,10 +527,10 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 			}
 
 		}
-		for (IdentifiedProtein identifiedProtein : proteins.values()) {
+		for (final IdentifiedProtein identifiedProtein : proteins.values()) {
 			if (identifiedProtein.getIdentifiedPeptides() == null
 					|| identifiedProtein.getIdentifiedPeptides().isEmpty()) {
-				String message = "Protein " + identifiedProtein.getAccession() + " has no linked to any peptide";
+				final String message = "Protein " + identifiedProtein.getAccession() + " has no linked to any peptide";
 				log.warn(message);
 				firePropertyChange(PARSER_ERROR, null, message);
 				throw new IllegalArgumentException(message);
@@ -597,12 +597,12 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 		List<String> ret = new ArrayList<String>();
 		if (proteinAcc == null)
 			return ret;
-		for (String separator2 : SEPARATORS) {
+		for (final String separator2 : SEPARATORS) {
 			if (!separator2.equals(separator)) {
 				if (proteinAcc.contains(separator2)) {
 
-					String[] split = proteinAcc.split(separator2);
-					for (String string : split) {
+					final String[] split = proteinAcc.split(separator2);
+					for (final String string : split) {
 						ret.add(string);
 					}
 					ret = convertUniprotIDToAcc(ret);
@@ -619,8 +619,8 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 
 		try {
 
-			List<String> ret = new ArrayList<String>();
-			for (String string : accs) {
+			final List<String> ret = new ArrayList<String>();
+			for (final String string : accs) {
 				final UniprotId2AccMapping instance = UniprotId2AccMapping.getInstance();
 				if (instance != null) {
 					final String accFromID = instance.getAccFromID(string);
@@ -633,7 +633,7 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 				}
 			}
 			return ret;
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -661,9 +661,9 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 			while (somethingExtrangeInSequence(seq)) {
 				if (seq.matches(".*\\[.*\\].*")) {
 					int indexOf = seq.indexOf("[");
-					String left = seq.substring(0, indexOf);
+					final String left = seq.substring(0, indexOf);
 					indexOf = seq.indexOf("]");
-					String rigth = seq.substring(indexOf + 1);
+					final String rigth = seq.substring(indexOf + 1);
 					seq = left + rigth;
 
 				}
@@ -681,7 +681,7 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 				}
 			}
 			return seq.toUpperCase();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return seq;
 		}
 	}
