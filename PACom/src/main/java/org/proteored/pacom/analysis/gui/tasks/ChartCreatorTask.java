@@ -17,6 +17,7 @@ import javax.swing.SwingWorker;
 
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset;
@@ -199,20 +200,20 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				}
 				return ret;
 			}
-		} catch (IllegalMiapeArgumentException e) {
+		} catch (final IllegalMiapeArgumentException e) {
 			e.printStackTrace();
 			String message = e.getMessage();
 			error = message;
 			log.warn(message);
-			JPanel jpanel = new JPanel();
+			final JPanel jpanel = new JPanel();
 			jpanel.setBackground(Color.white);
 			if (message.contains("\n")) {
 				message = "<html>" + message.replace("\n", "<br>") + "</html>";
 			}
-			JLabel comp = new JLabel(message);
+			final JLabel comp = new JLabel(message);
 			comp.setToolTipText(message);
-			Font font = comp.getFont();
-			Font newFont = font.deriveFont(14f);
+			final Font font = comp.getFont();
+			final Font newFont = font.deriveFont(14f);
 			comp.setFont(newFont);
 			jpanel.add(comp);
 			jpanel.setToolTipText(message);
@@ -221,12 +222,12 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		if (error == null) {
 			error = "Error generating chart.";
 		}
-		JPanel jpanel = new JPanel();
+		final JPanel jpanel = new JPanel();
 		jpanel.setBackground(Color.white);
-		JLabel comp = new JLabel(error);
+		final JLabel comp = new JLabel(error);
 		comp.setToolTipText(error);
-		Font font = comp.getFont();
-		Font newFont = font.deriveFont(14f);
+		final Font font = comp.getFont();
+		final Font newFont = font.deriveFont(14f);
 		comp.setFont(newFont);
 		jpanel.add(comp);
 		return jpanel;
@@ -241,34 +242,34 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		final List<String> sequences = optionsFactory.getSelectedPeptides();
 		if (sequences == null)
 			throw new IllegalMiapeArgumentException("Select a peptide to show the chart");
-		boolean showInMinutes = optionsFactory.showInMinutes();
+		final boolean showInMinutes = optionsFactory.showInMinutes();
 		String yAxisLabel = "RT (min)";
 		if (!showInMinutes)
 			yAxisLabel = "RT (sg)";
 
-		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
+		final PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
 
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 
 			xAxisLabel = "level 2";
 
-			CategoryDataset dataset = DatasetFactory.createSinglePeptideRTMonitoringCategoryDataSet(idSets, sequences,
-					showInMinutes);
-			BarChart chart = new BarChart(parent.getChartTitle(chartType), parent.getChartSubtitle(chartType, option),
-					xAxisLabel, yAxisLabel, dataset, plotOrientation);
-			chart.setNonIntegerItemLabels();
+			final CategoryDataset dataset = DatasetFactory.createSinglePeptideRTMonitoringCategoryDataSet(idSets,
+					sequences, showInMinutes);
+			final BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
+			chart.setNonIntegerItemLabels(StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING, "#.##");
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
 
 			xAxisLabel = "experiment list";
 
-			CategoryDataset dataset = DatasetFactory.createSinglePeptideRTMonitoringCategoryDataSet(idSets, sequences,
-					showInMinutes);
-			BarChart chart = new BarChart(parent.getChartTitle(chartType), parent.getChartSubtitle(chartType, option),
-					xAxisLabel, yAxisLabel, dataset, plotOrientation);
-			chart.setNonIntegerItemLabels();
+			final CategoryDataset dataset = DatasetFactory.createSinglePeptideRTMonitoringCategoryDataSet(idSets,
+					sequences, showInMinutes);
+			final BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
+			chart.setNonIntegerItemLabels(StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING, "#.##");
 
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
@@ -276,25 +277,25 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 			xAxisLabel = "experiment";
 
-			CategoryDataset dataset = DatasetFactory.createSinglePeptideRTMonitoringCategoryDataSet(idSets, sequences,
-					showInMinutes);
-			BarChart chart = new BarChart(parent.getChartTitle(chartType), parent.getChartSubtitle(chartType, option),
-					xAxisLabel, yAxisLabel, dataset, plotOrientation);
-			chart.setNonIntegerItemLabels();
+			final CategoryDataset dataset = DatasetFactory.createSinglePeptideRTMonitoringCategoryDataSet(idSets,
+					sequences, showInMinutes);
+			final BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
+			chart.setNonIntegerItemLabels(StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING, "#.##");
 
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, true);
 				xAxisLabel = experiment.getName();
 
-				CategoryDataset dataset = DatasetFactory.createSinglePeptideRTMonitoringCategoryDataSet(idSets,
+				final CategoryDataset dataset = DatasetFactory.createSinglePeptideRTMonitoringCategoryDataSet(idSets,
 						sequences, showInMinutes);
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
-				chart.setNonIntegerItemLabels();
+				chart.setNonIntegerItemLabels(StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING, "#.##");
 
 				chartList.add(chart.getChartPanel());
 			}
@@ -311,26 +312,26 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
 
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
-			List<List<String>> tableData = DatasetFactory.createInputParametersTableData(idSets);
-			JPanel panel = new TableData(tableData);
+			final List<List<String>> tableData = DatasetFactory.createInputParametersTableData(idSets);
+			final JPanel panel = new TableData(tableData);
 			return panel;
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			List<List<String>> tableData = DatasetFactory.createInputParametersTableData(idSets);
-			JPanel panel = new TableData(tableData);
+			final List<List<String>> tableData = DatasetFactory.createInputParametersTableData(idSets);
+			final JPanel panel = new TableData(tableData);
 			return panel;
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				try {
 					idSets = getIdentificationSets(experiment.getFullName(), null, false);
 
 					if (!idSets.isEmpty()) {
-						List<List<String>> tableData = DatasetFactory.createInputParametersTableData(idSets);
-						JPanel panel = new TableData(tableData);
+						final List<List<String>> tableData = DatasetFactory.createInputParametersTableData(idSets);
+						final JPanel panel = new TableData(tableData);
 						chartList.add(panel);
 					}
-				} catch (IllegalMiapeArgumentException e) {
-					JPanel jpanel = new JPanel();
+				} catch (final IllegalMiapeArgumentException e) {
+					final JPanel jpanel = new JPanel();
 					jpanel.add(new JLabel("<html>Error generating table for " + experiment.getName() + "<br>"
 							+ e.getMessage() + "</html>"));
 					chartList.add(jpanel);
@@ -341,8 +342,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			// this.jPanelChart.addGraphicPanel(chartList);
 			return chartList;
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			List<List<String>> tableData = DatasetFactory.createInputParametersTableData(idSets);
-			JPanel panel = new TableData(tableData);
+			final List<List<String>> tableData = DatasetFactory.createInputParametersTableData(idSets);
+			final JPanel panel = new TableData(tableData);
 			return panel;
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
@@ -357,26 +358,26 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
 
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
-			List<List<String>> tableData = DatasetFactory.createSpectrometersTableData(idSets);
-			JPanel panel = new TableData(tableData);
+			final List<List<String>> tableData = DatasetFactory.createSpectrometersTableData(idSets);
+			final JPanel panel = new TableData(tableData);
 			return panel;
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			List<List<String>> tableData = DatasetFactory.createSpectrometersTableData(idSets);
-			JPanel panel = new TableData(tableData);
+			final List<List<String>> tableData = DatasetFactory.createSpectrometersTableData(idSets);
+			final JPanel panel = new TableData(tableData);
 			return panel;
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				try {
 					idSets = getIdentificationSets(experiment.getFullName(), null, false);
 
 					if (!idSets.isEmpty()) {
-						List<List<String>> tableData = DatasetFactory.createSpectrometersTableData(idSets);
-						JPanel panel = new TableData(tableData);
+						final List<List<String>> tableData = DatasetFactory.createSpectrometersTableData(idSets);
+						final JPanel panel = new TableData(tableData);
 						chartList.add(panel);
 					}
-				} catch (IllegalMiapeArgumentException e) {
-					JPanel jpanel = new JPanel();
+				} catch (final IllegalMiapeArgumentException e) {
+					final JPanel jpanel = new JPanel();
 					jpanel.add(new JLabel("<html>Error generating table for " + experiment.getName() + "<br>"
 							+ e.getMessage() + "</html>"));
 					chartList.add(jpanel);
@@ -387,8 +388,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			// this.jPanelChart.addGraphicPanel(chartList);
 			return chartList;
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			List<List<String>> tableData = DatasetFactory.createSpectrometersTableData(idSets);
-			JPanel panel = new TableData(tableData);
+			final List<List<String>> tableData = DatasetFactory.createSpectrometersTableData(idSets);
+			final JPanel panel = new TableData(tableData);
 			return panel;
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
@@ -405,9 +406,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		String xAxisLabel = "RT (sg)";
 		String yAxisLabel = "RT (sg)";
 
-		boolean showRegressionLine = optionsFactory.showRegressionLine();
-		boolean showDiagonalLine = optionsFactory.showDiagonalLine();
-		boolean inMinutes = optionsFactory.showInMinutes();
+		final boolean showRegressionLine = optionsFactory.showRegressionLine();
+		final boolean showDiagonalLine = optionsFactory.showDiagonalLine();
+		final boolean inMinutes = optionsFactory.showInMinutes();
 		if (inMinutes) {
 			xAxisLabel = "RT (min)";
 			yAxisLabel = "RT (min)";
@@ -416,8 +417,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 
-			Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createRTXYDataSet(idSets, inMinutes);
-			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
+			final Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createRTXYDataSet(idSets, inMinutes);
+			final XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 			if (showRegressionLine)
 				chart.addRegressionLine(true);
@@ -427,8 +428,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
 
-			Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createRTXYDataSet(idSets, inMinutes);
-			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
+			final Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createRTXYDataSet(idSets, inMinutes);
+			final XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 			if (showRegressionLine)
 				chart.addRegressionLine(true);
@@ -437,15 +438,15 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				try {
 					idSets = getIdentificationSets(experiment.getFullName(), scoreComparisonJCheckBoxes, false);
 
 					if (!idSets.isEmpty()) {
-						Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createRTXYDataSet(idSets,
+						final Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createRTXYDataSet(idSets,
 								inMinutes);
-						XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
+						final XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 								parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 						if (showRegressionLine)
 							chart.addRegressionLine(true);
@@ -453,8 +454,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 							chart.addDiagonalLine();
 						chartList.add(chart.getChartPanel());
 					}
-				} catch (IllegalMiapeArgumentException e) {
-					JPanel jpanel = new JPanel();
+				} catch (final IllegalMiapeArgumentException e) {
+					final JPanel jpanel = new JPanel();
 					jpanel.add(new JLabel("<html>Error generating chart for " + experiment.getName() + "<br>"
 							+ e.getMessage() + "</html>"));
 					chartList.add(jpanel);
@@ -473,49 +474,49 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 	private Object showRetentionTimeDistributionChart() {
 		parent.setInformation1(parent.getCurrentChartType());
-		int bins = optionsFactory.getHistogramBins();
-		HistogramType histogramType = optionsFactory.getHistogramType();
+		final int bins = optionsFactory.getHistogramBins();
+		final HistogramType histogramType = optionsFactory.getHistogramType();
 		String xAxisLabel;
 		xAxisLabel = "RT (sg)";
-		String frequencyType = "PSMs";
-		boolean showParent = optionsFactory.isTotalSerieShown();
-		boolean inMinutes = optionsFactory.showInMinutes();
+		final String frequencyType = "PSMs";
+		final boolean showParent = optionsFactory.isTotalSerieShown();
+		final boolean inMinutes = optionsFactory.showInMinutes();
 		final Map<String, JCheckBox> idSetsJCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
 		if (inMinutes)
 			xAxisLabel = "RT (min)";
 		List<IdentificationSet> idSets = getIdentificationSets(null, idSetsJCheckBoxes, showParent);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
-			HistogramDataset dataset = DatasetFactory.createPeptideRTHistogramDataSet(idSets, bins, histogramType,
+			final HistogramDataset dataset = DatasetFactory.createPeptideRTHistogramDataSet(idSets, bins, histogramType,
 					inMinutes);
 
-			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
+			final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			HistogramDataset dataset = DatasetFactory.createPeptideRTHistogramDataSet(idSets, bins, histogramType,
+			final HistogramDataset dataset = DatasetFactory.createPeptideRTHistogramDataSet(idSets, bins, histogramType,
 					inMinutes);
-			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
+			final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			HistogramDataset dataset = DatasetFactory.createPeptideRTHistogramDataSet(idSets, bins, histogramType,
+			final HistogramDataset dataset = DatasetFactory.createPeptideRTHistogramDataSet(idSets, bins, histogramType,
 					inMinutes);
-			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
+			final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), idSetsJCheckBoxes, showParent);
-				HistogramDataset dataset = DatasetFactory.createPeptideRTHistogramDataSet(idSets, bins, histogramType,
-						inMinutes);
-				HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType), experiment.getName(),
+				final HistogramDataset dataset = DatasetFactory.createPeptideRTHistogramDataSet(idSets, bins,
+						histogramType, inMinutes);
+				final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType), experiment.getName(),
 						dataset, xAxisLabel, frequencyType);
 				// chart.setXRangeValues(0, 100);
 				chartList.add(chart.getChartPanel());
@@ -528,22 +529,22 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 	private Object showWordCramChart() {
 		parent.setInformation1(parent.getCurrentChartType());
-		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
-		int maxNumWords = optionsFactory.getMaxNumberWords();
+		final List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
+		final int maxNumWords = optionsFactory.getMaxNumberWords();
 		final JLabel label = optionsFactory.getJLabelSelectedWord();
 		final int minWordLength = optionsFactory.getMinWordLength();
 		// final JLabel label2 = optionsFactory.getJLabelSelectedProteins();
 
-		List<String> skipWords = optionsFactory.getSkipWords();
+		final List<String> skipWords = optionsFactory.getSkipWords();
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST)) {
-			WordCramChart chart = new WordCramChart(idSets.get(0), skipWords, minWordLength, parent);
+			final WordCramChart chart = new WordCramChart(idSets.get(0), skipWords, minWordLength, parent);
 			chart.selectedWordLabel(label).selectedProteinsLabel(parent.getTextAreaStatus())
 					.font(optionsFactory.getFont()).maximumNumberOfWords(maxNumWords);
 			return chart;
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<Panel> chartList = new ArrayList<Panel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
-				WordCramChart chart = new WordCramChart(experiment, skipWords, minWordLength, parent);
+			final List<Panel> chartList = new ArrayList<Panel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
+				final WordCramChart chart = new WordCramChart(experiment, skipWords, minWordLength, parent);
 				chart.selectedWordLabel(label).selectedProteinsLabel(parent.getTextAreaStatus())
 						.font(optionsFactory.getFont()).maximumNumberOfWords(maxNumWords);
 				chartList.add(chart);
@@ -556,13 +557,13 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 	private Object showPeptidePerProteinMassDistributionChart() {
 		parent.setInformation1(parent.getCurrentChartType());
-		int bins = optionsFactory.getHistogramBins();
-		HistogramType histogramType = optionsFactory.getHistogramType();
-		boolean totalSerieShown = optionsFactory.isTotalSerieShown();
+		final int bins = optionsFactory.getHistogramBins();
+		final HistogramType histogramType = optionsFactory.getHistogramType();
+		final boolean totalSerieShown = optionsFactory.isTotalSerieShown();
 		String xAxisLabel;
-		String frequencyType = "peptides";
+		final String frequencyType = "peptides";
 		xAxisLabel = "log2 (nº pept per protein / protein MW (Da))";
-		boolean retrieveProteinSeqs = true;
+		final boolean retrieveProteinSeqs = true;
 		final int selectedOption = JOptionPane.showConfirmDialog(parent,
 				"<html>In order to build this chart, the program will retrieve the protein sequence from the Internet,<br>which can take several minutes, depending on the number of proteins.<br>Are you sure you want to continue?</html>",
 				"Warning", JOptionPane.YES_NO_OPTION);
@@ -575,37 +576,37 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, totalSerieShown);
 
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
-			HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
+			final HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
 					histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
-			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
+			final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
+			final HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
 					histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
 
-			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
+			final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
+			final HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
 					histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
-			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
+			final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, true);
-				HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
-						histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
-				HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType), experiment.getName(),
+				final HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets,
+						bins, histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
+				final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType), experiment.getName(),
 						dataset, xAxisLabel, frequencyType);
 				// chart.setXRangeValues(0, 100);
 				chartList.add(chart.getChartPanel());
@@ -621,15 +622,15 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			throw new UnsupportedOperationException();
 		// TODO is not finished
 		parent.setInformation1(parent.getCurrentChartType());
-		int bins = optionsFactory.getHistogramBins();
-		HistogramType histogramType = optionsFactory.getHistogramType();
-		boolean totalSerieShown = optionsFactory.isTotalSerieShown();
-		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
-		String xAxisLabel = "log2 (nº pept per protein / protein MW (Da))";
-		String yAxisLabel = "Avg number of peptides";
-		String frequencyType = "peptides";
+		final int bins = optionsFactory.getHistogramBins();
+		final HistogramType histogramType = optionsFactory.getHistogramType();
+		final boolean totalSerieShown = optionsFactory.isTotalSerieShown();
+		final PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
+		final String xAxisLabel = "log2 (nº pept per protein / protein MW (Da))";
+		final String yAxisLabel = "Avg number of peptides";
+		final String frequencyType = "peptides";
 
-		boolean retrieveProteinSeqs = true;
+		final boolean retrieveProteinSeqs = true;
 		final int selectedOption = JOptionPane.showConfirmDialog(parent,
 				"<html>In order to build this chart, the program will retrieve the protein sequence from the Internet,<br>which can take several minutes, depending on the number of proteins.<br>Are you sure you want to continue?</html>",
 				"Warning", JOptionPane.YES_NO_OPTION);
@@ -641,38 +642,38 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, totalSerieShown);
 
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
-			CategoryDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassHistogram(idSets, bins,
+			final CategoryDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassHistogram(idSets, bins,
 					histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
-			BarChart chart = new BarChart(parent.getChartTitle(chartType), parent.getChartSubtitle(chartType, option),
-					xAxisLabel, yAxisLabel, dataset, plotOrientation);
+			final BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
+			final HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
 					histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
 
-			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
+			final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
+			final HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
 					histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
-			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
+			final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, true);
-				HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets, bins,
-						histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
-				HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType), experiment.getName(),
+				final HistogramDataset dataset = DatasetFactory.createNumPeptidesPerProteinMassDistribution(idSets,
+						bins, histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
+				final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType), experiment.getName(),
 						dataset, xAxisLabel, frequencyType);
 				// chart.setXRangeValues(0, 100);
 				chartList.add(chart.getChartPanel());
@@ -685,66 +686,66 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 	private Object showPeptidePresencyHeatMapChart() {
 		parent.setInformation1(parent.getCurrentChartType());
-		String xAxisLabel;
+		final String xAxisLabel;
 		final List<String> sequences = optionsFactory.getUserPeptideList();
 		if (sequences == null)
 			throw new IllegalMiapeArgumentException("Insert at least one peptide sequence to show the chart");
-		String yAxisLabel = "peptides sequences";
+		final String yAxisLabel = "peptides sequences";
 
-		Boolean distinguishModPeptides = parent.distinguishModifiedPeptides();
-		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
+		final Boolean distinguishModPeptides = parent.distinguishModifiedPeptides();
+		final PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
 
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
-		double colorScale = optionsFactory.getColorScale();
-		boolean binary = optionsFactory.isHeatMapBinary();
+		final double colorScale = optionsFactory.getColorScale();
+		final boolean binary = optionsFactory.isHeatMapBinary();
 		final Color highColor = optionsFactory.getHighColorScale();
 		final Color lowColor = optionsFactory.getLowColorScale();
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
-			List<String> columnList = getIdSetNames(idSets);
+			final List<String> columnList = getIdSetNames(idSets);
 
-			double[][] dataset = DatasetFactory.createPeptidePresencyHeapMapDataSet(idSets, sequences,
+			final double[][] dataset = DatasetFactory.createPeptidePresencyHeapMapDataSet(idSets, sequences,
 					parent.distinguishModifiedPeptides(), binary);
 
-			HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, sequences, columnList,
+			final HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, sequences, columnList,
 					colorScale);
 			chart.setHighValueColor(highColor);
 			chart.setLowValueColor(lowColor);
 
 			return chart.getjPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			List<String> columnList = getIdSetNames(idSets);
+			final List<String> columnList = getIdSetNames(idSets);
 
-			double[][] dataset = DatasetFactory.createPeptidePresencyHeapMapDataSet(idSets, sequences,
+			final double[][] dataset = DatasetFactory.createPeptidePresencyHeapMapDataSet(idSets, sequences,
 					parent.distinguishModifiedPeptides(), binary);
 
-			HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, sequences, columnList,
+			final HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, sequences, columnList,
 					colorScale);
 			chart.setHighValueColor(highColor);
 			chart.setLowValueColor(lowColor);
 
 			return chart.getjPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			List<String> columnList = getIdSetNames(idSets);
+			final List<String> columnList = getIdSetNames(idSets);
 
-			double[][] dataset = DatasetFactory.createPeptidePresencyHeapMapDataSet(idSets, sequences,
+			final double[][] dataset = DatasetFactory.createPeptidePresencyHeapMapDataSet(idSets, sequences,
 					parent.distinguishModifiedPeptides(), binary);
 
-			HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, sequences, columnList,
+			final HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, sequences, columnList,
 					colorScale);
 			chart.setHighValueColor(highColor);
 			chart.setLowValueColor(lowColor);
 
 			return chart.getjPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, false);
-				List<String> columnList = getIdSetNames(idSets);
-				double[][] dataset = DatasetFactory.createPeptidePresencyHeapMapDataSet(idSets, sequences,
+				final List<String> columnList = getIdSetNames(idSets);
+				final double[][] dataset = DatasetFactory.createPeptidePresencyHeapMapDataSet(idSets, sequences,
 						parent.distinguishModifiedPeptides(), binary);
 
-				HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, sequences, columnList,
-						colorScale);
+				final HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, sequences,
+						columnList, colorScale);
 				chart.setHighValueColor(highColor);
 				chart.setLowValueColor(lowColor);
 
@@ -759,8 +760,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	}
 
 	private List<String> getIdSetNames(List<IdentificationSet> idSets) {
-		List<String> ret = new ArrayList<String>();
-		for (IdentificationSet idSet : idSets) {
+		final List<String> ret = new ArrayList<String>();
+		for (final IdentificationSet idSet : idSets) {
 			ret.add(idSet.getName());
 		}
 		return ret;
@@ -768,7 +769,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 	private Object showExclusiveIdentificationNumberChart(IdentificationItemEnum plotItem) {
 		parent.setInformation1(parent.getCurrentChartType().getName() + " / " + plotItem);
-		String xAxisLabel = "";
+		final String xAxisLabel = "";
 		String yAxisLabel = "";
 		String yAxisLabelAccumulative = "";
 		if (IdentificationItemEnum.PROTEIN.equals(plotItem)) {
@@ -778,12 +779,12 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			yAxisLabel = "# peptides";
 			yAxisLabelAccumulative = "Accumulative # peptides";
 		}
-		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
+		final PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
 
-		boolean showAccumulativeTrend = optionsFactory.isAccumulativeTrendSelected();
+		final boolean showAccumulativeTrend = optionsFactory.isAccumulativeTrendSelected();
 		final Map<String, JCheckBox> checkBoxControls = optionsFactory.getIdSetsJCheckBoxes();
-		ProteinGroupComparisonType proteinGroupComparisonType = optionsFactory.getProteinGroupComparisonType();
-		boolean distModPeptides = parent.distinguishModifiedPeptides();
+		final ProteinGroupComparisonType proteinGroupComparisonType = optionsFactory.getProteinGroupComparisonType();
+		final boolean distModPeptides = parent.distinguishModifiedPeptides();
 		List<IdentificationSet> idSets = getIdentificationSets(null, checkBoxControls, false);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 			List<DefaultCategoryDataset> datasets = null;
@@ -795,12 +796,12 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 						proteinGroupComparisonType, showAccumulativeTrend);
 			}
 			if (showAccumulativeTrend) {
-				CombinedChart chart = new CombinedChart(parent.getChartTitle(chartType),
+				final CombinedChart chart = new CombinedChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, yAxisLabelAccumulative,
 						datasets.get(0), datasets.get(1));
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, datasets.get(0),
 						plotOrientation);
 				return chart.getChartPanel();
@@ -816,12 +817,12 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 						proteinGroupComparisonType, showAccumulativeTrend);
 			}
 			if (showAccumulativeTrend) {
-				CombinedChart chart = new CombinedChart(parent.getChartTitle(chartType),
+				final CombinedChart chart = new CombinedChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, yAxisLabelAccumulative,
 						datasets.get(0), datasets.get(1));
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, datasets.get(0),
 						plotOrientation);
 				return chart.getChartPanel();
@@ -836,20 +837,20 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 						proteinGroupComparisonType, showAccumulativeTrend);
 			}
 			if (showAccumulativeTrend) {
-				CombinedChart chart = new CombinedChart(parent.getChartTitle(chartType),
+				final CombinedChart chart = new CombinedChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, yAxisLabelAccumulative,
 						datasets.get(0), datasets.get(1));
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, datasets.get(0),
 						plotOrientation);
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
+			final List<JPanel> chartList = new ArrayList<JPanel>();
 
-			for (Experiment experiment : experimentList.getExperiments()) {
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), checkBoxControls, false);
 				List<DefaultCategoryDataset> datasets = null;
 				if (IdentificationItemEnum.PEPTIDE == plotItem) {
@@ -860,13 +861,13 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 							proteinGroupComparisonType, showAccumulativeTrend);
 				}
 				if (showAccumulativeTrend) {
-					CombinedChart chart = new CombinedChart(
+					final CombinedChart chart = new CombinedChart(
 							parent.getChartTitle(chartType) + ": " + experiment.getName(),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, yAxisLabelAccumulative,
 							datasets.get(0), datasets.get(1));
 					chartList.add(chart.getChartPanel());
 				} else {
-					BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, datasets.get(0),
 							plotOrientation);
 					chartList.add(chart.getChartPanel());
@@ -882,15 +883,15 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 	private List<IdentificationSet> getIdentificationSets(String experimentName,
 			Map<String, JCheckBox> idSetsCheckBoxes, boolean addParentLevelIdSet) {
-		List<IdentificationSet> idSets = new ArrayList<IdentificationSet>();
+		final List<IdentificationSet> idSets = new ArrayList<IdentificationSet>();
 		if (ChartManagerFrame.ONE_SERIES_PER_REPLICATE.equals(option)) {
 			final List<Experiment> experiments = experimentList.getExperiments();
-			for (Experiment experiment : experiments) {
-				for (Replicate replicate : experiment.getNextLevelIdentificationSetList()) {
+			for (final Experiment experiment : experiments) {
+				for (final Replicate replicate : experiment.getNextLevelIdentificationSetList()) {
 
 					// String repName = experiment.getName() + " / " +
 					// replicate.getName();
-					String repName = replicate.getFullName();
+					final String repName = replicate.getFullName();
 					if (idSetsCheckBoxes != null) {
 						if (idSetsCheckBoxes.containsKey(repName) && idSetsCheckBoxes.get(repName).isSelected())
 							idSets.add(replicate);
@@ -905,12 +906,12 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			// }
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
 			final List<Experiment> experiments = experimentList.getExperiments();
-			for (Experiment experiment : experiments) {
-				String expName = experiment.getFullName();
+			for (final Experiment experiment : experiments) {
+				final String expName = experiment.getFullName();
 				if (expName.equals(experimentName)) {
-					for (Replicate replicate : experiment.getNextLevelIdentificationSetList()) {
+					for (final Replicate replicate : experiment.getNextLevelIdentificationSetList()) {
 
-						String repName = replicate.getFullName();
+						final String repName = replicate.getFullName();
 						if (idSetsCheckBoxes != null) {
 							if (idSetsCheckBoxes.containsKey(repName)
 
@@ -927,9 +928,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			}
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
 			final List<Experiment> experiments = experimentList.getExperiments();
-			for (Experiment identificationSet : experiments) {
-				Experiment experiment = identificationSet;
-				String expName = experiment.getFullName();
+			for (final Experiment identificationSet : experiments) {
+				final Experiment experiment = identificationSet;
+				final String expName = experiment.getFullName();
 				if (idSetsCheckBoxes != null) {
 					if (idSetsCheckBoxes.containsKey(expName) && idSetsCheckBoxes.get(expName).isSelected()) {
 						idSets.add(experiment);
@@ -960,7 +961,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		parent.setInformation1(parent.getCurrentChartType());
 		final String xAxisLabel = "Human chromosomes";
 
-		String proteinOrGene = optionsFactory.getProteinOrGene();
+		final String proteinOrGene = optionsFactory.getProteinOrGene();
 		String yAxisLabel;
 		if (AdditionalOptionsPanelFactory.PROTEIN.equals(proteinOrGene))
 			yAxisLabel = "# proteins";
@@ -969,47 +970,48 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		else
 			yAxisLabel = "# proteins and # genes";
 
-		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
+		final PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
 		final boolean takeGeneFromFirstProteinSelected = optionsFactory.isTakeGeneFromFirstProteinSelected();
 		final boolean pieChart = optionsFactory.showAsPieChart();
 
 		if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
 
 			if (!pieChart) {
-				CategoryDataset dataset = DatasetFactory.createAllHumanChromosomeMappingCategoryDataSet(experimentList,
-						proteinOrGene, true, takeGeneFromFirstProteinSelected, countNonConclusiveProteins);
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final CategoryDataset dataset = DatasetFactory.createAllHumanChromosomeMappingCategoryDataSet(
+						experimentList, proteinOrGene, true, takeGeneFromFirstProteinSelected,
+						countNonConclusiveProteins);
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 
 				return chart.getChartPanel();
 			} else {
-				PieDataset dataset = DatasetFactory.createAllHumanChromosomeMappingPieDataSet(experimentList,
+				final PieDataset dataset = DatasetFactory.createAllHumanChromosomeMappingPieDataSet(experimentList,
 						proteinOrGene, takeGeneFromFirstProteinSelected, countNonConclusiveProteins);
-				PieChart chart = new PieChart(parent.getChartTitle(chartType) + " - " + proteinOrGene,
+				final PieChart chart = new PieChart(parent.getChartTitle(chartType) + " - " + proteinOrGene,
 						parent.getChartSubtitle(chartType, option), dataset);
 				return chart.getChartPanel();
 			}
 
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 
 				if (!pieChart) {
 
-					CategoryDataset dataset = DatasetFactory.createAllHumanChromosomeMappingCategoryDataSet(experiment,
-							proteinOrGene, experimentList.getExperiments().size() == 1,
+					final CategoryDataset dataset = DatasetFactory.createAllHumanChromosomeMappingCategoryDataSet(
+							experiment, proteinOrGene, experimentList.getExperiments().size() == 1,
 							takeGeneFromFirstProteinSelected, countNonConclusiveProteins);
 
-					BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
 							plotOrientation);
 
 					chartList.add(chart.getChartPanel());
 
 				} else {
-					PieDataset dataset = DatasetFactory.createAllHumanChromosomeMappingPieDataSet(experiment,
+					final PieDataset dataset = DatasetFactory.createAllHumanChromosomeMappingPieDataSet(experiment,
 							proteinOrGene, takeGeneFromFirstProteinSelected, countNonConclusiveProteins);
-					PieChart chart = new PieChart(parent.getChartTitle(chartType) + " - " + proteinOrGene,
+					final PieChart chart = new PieChart(parent.getChartTitle(chartType) + " - " + proteinOrGene,
 							experiment.getName(), dataset);
 					chartList.add(chart.getChartPanel());
 				}
@@ -1027,7 +1029,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		parent.setInformation1(parent.getCurrentChartType());
 		final String xAxisLabel = "Human chromosomes";
 
-		String peptideOrPSM = optionsFactory.getPeptideOrPSM();
+		final String peptideOrPSM = optionsFactory.getPeptideOrPSM();
 		String yAxisLabel;
 		if (AdditionalOptionsPanelFactory.PSM.equals(peptideOrPSM))
 			yAxisLabel = "# PSM";
@@ -1036,46 +1038,47 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		else
 			yAxisLabel = "# peptides and # PSM";
 
-		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
+		final PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
 		final boolean distinguisModPep = parent.distinguishModifiedPeptides();
 		final boolean pieChart = optionsFactory.showAsPieChart();
 
 		if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
 
 			if (!pieChart) {
-				CategoryDataset dataset = DatasetFactory.createAllHumanChromosomePeptideMappingCategoryDataSet(
+				final CategoryDataset dataset = DatasetFactory.createAllHumanChromosomePeptideMappingCategoryDataSet(
 						experimentList, peptideOrPSM, true, distinguisModPep);
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 
 				return chart.getChartPanel();
 			} else {
-				PieDataset dataset = DatasetFactory.createAllHumanChromosomePeptideMappingPieDataSet(experimentList,
-						peptideOrPSM, distinguisModPep);
-				PieChart chart = new PieChart(parent.getChartTitle(chartType) + " - " + peptideOrPSM,
+				final PieDataset dataset = DatasetFactory.createAllHumanChromosomePeptideMappingPieDataSet(
+						experimentList, peptideOrPSM, distinguisModPep);
+				final PieChart chart = new PieChart(parent.getChartTitle(chartType) + " - " + peptideOrPSM,
 						parent.getChartSubtitle(chartType, option), dataset);
 				return chart.getChartPanel();
 			}
 
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 
 				if (!pieChart) {
 
-					CategoryDataset dataset = DatasetFactory.createAllHumanChromosomePeptideMappingCategoryDataSet(
-							experiment, peptideOrPSM, true, distinguisModPep);
+					final CategoryDataset dataset = DatasetFactory
+							.createAllHumanChromosomePeptideMappingCategoryDataSet(experiment, peptideOrPSM, true,
+									distinguisModPep);
 
-					BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
 							plotOrientation);
 
 					chartList.add(chart.getChartPanel());
 
 				} else {
-					PieDataset dataset = DatasetFactory.createAllHumanChromosomePeptideMappingPieDataSet(experiment,
-							peptideOrPSM, distinguisModPep);
-					PieChart chart = new PieChart(parent.getChartTitle(chartType) + " - " + peptideOrPSM,
+					final PieDataset dataset = DatasetFactory.createAllHumanChromosomePeptideMappingPieDataSet(
+							experiment, peptideOrPSM, distinguisModPep);
+					final PieChart chart = new PieChart(parent.getChartTitle(chartType) + " - " + peptideOrPSM,
 							experiment.getName(), dataset);
 					chartList.add(chart.getChartPanel());
 				}
@@ -1095,33 +1098,34 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 		String yAxisLabel = "# genes";
 
-		boolean showSpiderPlot = optionsFactory.isShowAsSpiderPlot();
-		boolean justPercentage = optionsFactory.getAsPercentage();
-		boolean showTotal = optionsFactory.isTotalSerieShown();
+		final boolean showSpiderPlot = optionsFactory.isShowAsSpiderPlot();
+		final boolean justPercentage = optionsFactory.getAsPercentage();
+		final boolean showTotal = optionsFactory.isTotalSerieShown();
 		if (justPercentage) {
 			yAxisLabel += " (%)";
 		}
 		final boolean takeGeneFromFirstProteinSelected = optionsFactory.isTakeGeneFromFirstProteinSelected();
-		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
+		final PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
 
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
 		if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
 
 			xAxisLabel = "experiment list";
 
-			CategoryDataset dataset = DatasetFactory.createAllHumanChromosomeGeneCoverageCategoryDataSet(idSets,
+			final CategoryDataset dataset = DatasetFactory.createAllHumanChromosomeGeneCoverageCategoryDataSet(idSets,
 					showSpiderPlot, justPercentage, showTotal, takeGeneFromFirstProteinSelected,
 					countNonConclusiveProteins);
 
 			if (showSpiderPlot) {
-				SpiderChart chart = new SpiderChart(parent.getChartTitle(chartType),
+				final SpiderChart chart = new SpiderChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), dataset);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				if (justPercentage)
-					chart.setNonIntegerItemLabels();
+					chart.setNonIntegerItemLabels(StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING + "%",
+							"#.##");
 				return chart.getChartPanel();
 			}
 
@@ -1129,18 +1133,19 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 			xAxisLabel = "experiment";
 
-			CategoryDataset dataset = DatasetFactory.createAllHumanChromosomeGeneCoverageCategoryDataSet(idSets,
+			final CategoryDataset dataset = DatasetFactory.createAllHumanChromosomeGeneCoverageCategoryDataSet(idSets,
 					showSpiderPlot, justPercentage, showTotal, takeGeneFromFirstProteinSelected,
 					countNonConclusiveProteins);
 			if (showSpiderPlot) {
-				SpiderChart chart = new SpiderChart(parent.getChartTitle(chartType),
+				final SpiderChart chart = new SpiderChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), dataset);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				if (justPercentage)
-					chart.setNonIntegerItemLabels();
+					chart.setNonIntegerItemLabels(StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING + "%",
+							"#.##");
 				return chart.getChartPanel();
 			}
 
@@ -1148,40 +1153,42 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 			xAxisLabel = "level 2";
 
-			CategoryDataset dataset = DatasetFactory.createAllHumanChromosomeGeneCoverageCategoryDataSet(idSets,
+			final CategoryDataset dataset = DatasetFactory.createAllHumanChromosomeGeneCoverageCategoryDataSet(idSets,
 					showSpiderPlot, justPercentage, showTotal, takeGeneFromFirstProteinSelected,
 					countNonConclusiveProteins);
 			if (showSpiderPlot) {
-				SpiderChart chart = new SpiderChart(parent.getChartTitle(chartType),
+				final SpiderChart chart = new SpiderChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), dataset);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				if (justPercentage)
-					chart.setNonIntegerItemLabels();
+					chart.setNonIntegerItemLabels(StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING + "%",
+							"#.##");
 				return chart.getChartPanel();
 			}
 
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getFullName(), null, false);
 				xAxisLabel = experiment.getName();
-				CategoryDataset dataset = DatasetFactory.createAllHumanChromosomeGeneCoverageCategoryDataSet(idSets,
-						showSpiderPlot, justPercentage, showTotal, takeGeneFromFirstProteinSelected,
+				final CategoryDataset dataset = DatasetFactory.createAllHumanChromosomeGeneCoverageCategoryDataSet(
+						idSets, showSpiderPlot, justPercentage, showTotal, takeGeneFromFirstProteinSelected,
 						countNonConclusiveProteins);
 
 				if (showSpiderPlot) {
-					SpiderChart chart = new SpiderChart(parent.getChartTitle(chartType),
+					final SpiderChart chart = new SpiderChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), dataset);
 					chartList.add(chart.getChartPanel());
 				} else {
-					BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
 							plotOrientation);
 					if (justPercentage)
-						chart.setNonIntegerItemLabels();
+						chart.setNonIntegerItemLabels(
+								StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING + "%", "#.##");
 					chartList.add(chart.getChartPanel());
 				}
 
@@ -1197,11 +1204,11 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		parent.setInformation1(parent.getCurrentChartType());
 
 		String xAxisLabel = "";
-		boolean showPSMs = optionsFactory.showPSMs();
-		boolean showPeptides = optionsFactory.showPeptides();
-		boolean showPeptidesPlusCharge = optionsFactory.showPeptidesPlusCharge();
-		boolean showProteins = optionsFactory.showProteins();
-		boolean distinguishModificatedPeptides = parent.distinguishModifiedPeptides();
+		final boolean showPSMs = optionsFactory.showPSMs();
+		final boolean showPeptides = optionsFactory.showPeptides();
+		final boolean showPeptidesPlusCharge = optionsFactory.showPeptidesPlusCharge();
+		final boolean showProteins = optionsFactory.showProteins();
+		final boolean distinguishModificatedPeptides = parent.distinguishModifiedPeptides();
 		String yAxisLabel = "";
 
 		parent.addCustomizationControls();
@@ -1235,40 +1242,44 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, optionsFactory.isTotalSerieShown());
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 			xAxisLabel = "level 2";
-			CategoryDataset dataset = DatasetFactory.createPSM_PEP_PROT_DataSet(idSets, showPSMs, showPeptides,
+			final CategoryDataset dataset = DatasetFactory.createPSM_PEP_PROT_DataSet(idSets, showPSMs, showPeptides,
 					showPeptidesPlusCharge, showProteins, distinguishModificatedPeptides, countNonConclusiveProteins);
-			LineCategoryChart chart = new LineCategoryChart(yAxisLabel, parent.getChartSubtitle(chartType, option),
-					xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL);
+			final LineCategoryChart chart = new LineCategoryChart(yAxisLabel,
+					parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
+					PlotOrientation.VERTICAL);
 
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			CategoryDataset dataset = DatasetFactory.createPSM_PEP_PROT_DataSet(idSets, showPSMs, showPeptides,
+			final CategoryDataset dataset = DatasetFactory.createPSM_PEP_PROT_DataSet(idSets, showPSMs, showPeptides,
 					showPeptidesPlusCharge, showProteins, distinguishModificatedPeptides, countNonConclusiveProteins);
-			LineCategoryChart chart = new LineCategoryChart(yAxisLabel, parent.getChartSubtitle(chartType, option),
-					xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL);
+			final LineCategoryChart chart = new LineCategoryChart(yAxisLabel,
+					parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
+					PlotOrientation.VERTICAL);
 			xAxisLabel = "Experiment";
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			CategoryDataset dataset = DatasetFactory.createPSM_PEP_PROT_DataSet(idSets, showPSMs, showPeptides,
+			final CategoryDataset dataset = DatasetFactory.createPSM_PEP_PROT_DataSet(idSets, showPSMs, showPeptides,
 					showPeptidesPlusCharge, showProteins, distinguishModificatedPeptides, countNonConclusiveProteins);
-			LineCategoryChart chart = new LineCategoryChart(yAxisLabel, parent.getChartSubtitle(chartType, option),
-					xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL);
+			final LineCategoryChart chart = new LineCategoryChart(yAxisLabel,
+					parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
+					PlotOrientation.VERTICAL);
 			xAxisLabel = "Experiment";
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
 			xAxisLabel = "level 2";
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, optionsFactory.isTotalSerieShown());
 
-				CategoryDataset dataset = DatasetFactory.createPSM_PEP_PROT_DataSet(idSets, showPSMs, showPeptides,
-						showPeptidesPlusCharge, showProteins, distinguishModificatedPeptides,
+				final CategoryDataset dataset = DatasetFactory.createPSM_PEP_PROT_DataSet(idSets, showPSMs,
+						showPeptides, showPeptidesPlusCharge, showProteins, distinguishModificatedPeptides,
 						countNonConclusiveProteins);
-				LineCategoryChart chart = new LineCategoryChart(yAxisLabel, parent.getChartSubtitle(chartType, option),
-						xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL);
+				final LineCategoryChart chart = new LineCategoryChart(yAxisLabel,
+						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
+						PlotOrientation.VERTICAL);
 				chartList.add(chart.getChartPanel());
 			}
 
@@ -1281,14 +1292,14 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	private Object showDeltaMzScatterChart() {
 		parent.setInformation1(parent.getCurrentChartType());
 
-		String xAxisLabel = "m/z";
-		String yAxisLabel = "Delta(m/z)";
-		boolean showRegressionLine = optionsFactory.showRegressionLine();
+		final String xAxisLabel = "m/z";
+		final String yAxisLabel = "Delta(m/z)";
+		final boolean showRegressionLine = optionsFactory.showRegressionLine();
 		final Map<String, JCheckBox> experimentJCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
 		List<IdentificationSet> idSets = getIdentificationSets(null, experimentJCheckBoxes, false);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
-			Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createDeltaMzOverMzXYDataSet(idSets);
-			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
+			final Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createDeltaMzOverMzXYDataSet(idSets);
+			final XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 			chart.setTinnySeriesShape();
 			chart.setAutomaticScales();
@@ -1297,8 +1308,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			chart.addHorizontalLine(0);
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createDeltaMzOverMzXYDataSet(idSets);
-			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
+			final Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createDeltaMzOverMzXYDataSet(idSets);
+			final XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 			chart.setTinnySeriesShape();
 			chart.setAutomaticScales();
@@ -1308,8 +1319,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createDeltaMzOverMzXYDataSet(idSets);
-			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
+			final Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createDeltaMzOverMzXYDataSet(idSets);
+			final XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 			chart.setTinnySeriesShape();
 			chart.setAutomaticScales();
@@ -1319,13 +1330,13 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				try {
 					idSets = getIdentificationSets(experiment.getName(), experimentJCheckBoxes, false);
-					Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory
+					final Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory
 							.createDeltaMzOverMzXYDataSet(idSets);
-					XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
+					final XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 					chart.setTinnySeriesShape();
 					chart.setAutomaticScales();
@@ -1333,8 +1344,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 						chart.addRegressionLine(true);
 					chart.addHorizontalLine(0);
 					chartList.add(chart.getChartPanel());
-				} catch (IllegalMiapeArgumentException e) {
-					JPanel jpanel = new JPanel();
+				} catch (final IllegalMiapeArgumentException e) {
+					final JPanel jpanel = new JPanel();
 					jpanel.add(new JLabel("<html>Error generating chart for " + experiment.getName() + "<br>"
 							+ e.getMessage() + "</html>"));
 					chartList.add(jpanel);
@@ -1357,7 +1368,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	protected void done() {
 		try {
 			if (!isCancelled()) {
-				Object object = get();
+				final Object object = get();
 				if (object != null && error == null)
 					firePropertyChange(CHART_GENERATED, null, object);
 				if (error != null)
@@ -1368,10 +1379,10 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				firePropertyChange(CHART_CANCELED, null, null);
 			}
 			return;
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			log.warn(e.getMessage());
 			e.printStackTrace();
-		} catch (ExecutionException e) {
+		} catch (final ExecutionException e) {
 			log.warn(e.getMessage());
 			e.printStackTrace();
 		}
@@ -1382,10 +1393,10 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	private Object showProteinSensitivitySpecificityChart() {
 		parent.setInformation1(parent.getCurrentChartType());
 		String xAxisLabel;
-		String yAxisLabel = "Percentage";
+		final String yAxisLabel = "Percentage";
 
-		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
-		Set<String> proteinsInSample = optionsFactory.getProteinsInSample();
+		final PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
+		final Set<String> proteinsInSample = optionsFactory.getProteinsInSample();
 		if (proteinsInSample == null || proteinsInSample.isEmpty())
 			throw new IllegalMiapeArgumentException(
 					"In order to show this chart, it is necessary to define the proteins in sample that will be the positives hits");
@@ -1395,13 +1406,13 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		// parent.setToolTipInformation3("here the explanation of the values");
 
 		xAxisLabel = "level 2";
-		boolean sensitivity = optionsFactory.isSensitivity();
+		final boolean sensitivity = optionsFactory.isSensitivity();
 
-		boolean accuracy = optionsFactory.isAccuracy();
-		boolean specificity = optionsFactory.isSpecificity();
-		boolean precision = optionsFactory.isPrecision();
-		boolean npv = optionsFactory.isNPV();
-		boolean fdr = optionsFactory.isFDR();
+		final boolean accuracy = optionsFactory.isAccuracy();
+		final boolean specificity = optionsFactory.isSpecificity();
+		final boolean precision = optionsFactory.isPrecision();
+		final boolean npv = optionsFactory.isNPV();
+		final boolean fdr = optionsFactory.isFDR();
 		// if (!parent.isFDRThresholdEnabled())
 		// throw new IllegalMiapeArgumentException(
 		// "<html>In order to show this chart, it is necessary to define an FDR
@@ -1411,12 +1422,13 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
 
 			xAxisLabel = "experiment";
-			CategoryDataset dataset = DatasetFactory.createProteinSensitivityCategoryDataSet(idSets, proteinsInSample,
-					countNonConclusiveProteins, sensitivity, accuracy, specificity, precision, npv, fdr);
-			BarChart chart = new BarChart(parent.getChartTitle(chartType), parent.getChartSubtitle(chartType, option),
-					xAxisLabel, yAxisLabel, dataset, plotOrientation);
-			chart.setNonIntegerItemLabels();
-			CategoryPlot plot = (CategoryPlot) chart.getChart().getPlot();
+			final CategoryDataset dataset = DatasetFactory.createProteinSensitivityCategoryDataSet(idSets,
+					proteinsInSample, countNonConclusiveProteins, sensitivity, accuracy, specificity, precision, npv,
+					fdr);
+			final BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
+			chart.setNonIntegerItemLabels(StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING, "#.##");
+			final CategoryPlot plot = (CategoryPlot) chart.getChart().getPlot();
 			// plot.getRangeAxis().setUpperBound(1.0);
 			plot.getRangeAxis().setUpperMargin(0.1);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
@@ -1424,12 +1436,13 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
 
 			xAxisLabel = "experiment list";
-			CategoryDataset dataset = DatasetFactory.createProteinSensitivityCategoryDataSet(idSets, proteinsInSample,
-					countNonConclusiveProteins, sensitivity, accuracy, specificity, precision, npv, fdr);
-			BarChart chart = new BarChart(parent.getChartTitle(chartType), parent.getChartSubtitle(chartType, option),
-					xAxisLabel, yAxisLabel, dataset, plotOrientation);
-			chart.setNonIntegerItemLabels();
-			CategoryPlot plot = (CategoryPlot) chart.getChart().getPlot();
+			final CategoryDataset dataset = DatasetFactory.createProteinSensitivityCategoryDataSet(idSets,
+					proteinsInSample, countNonConclusiveProteins, sensitivity, accuracy, specificity, precision, npv,
+					fdr);
+			final BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
+			chart.setNonIntegerItemLabels(StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING, "#.##");
+			final CategoryPlot plot = (CategoryPlot) chart.getChart().getPlot();
 			// plot.getRangeAxis().setUpperBound(1.0);
 			plot.getRangeAxis().setUpperMargin(0.1);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
@@ -1437,28 +1450,29 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		} else if (ChartManagerFrame.ONE_SERIES_PER_REPLICATE.equals(option)) {
 
 			xAxisLabel = "level 2";
-			CategoryDataset dataset = DatasetFactory.createProteinSensitivityCategoryDataSet(idSets, proteinsInSample,
-					countNonConclusiveProteins, sensitivity, accuracy, specificity, precision, npv, fdr);
-			BarChart chart = new BarChart(parent.getChartTitle(chartType), parent.getChartSubtitle(chartType, option),
-					xAxisLabel, yAxisLabel, dataset, plotOrientation);
-			chart.setNonIntegerItemLabels();
-			CategoryPlot plot = (CategoryPlot) chart.getChart().getPlot();
+			final CategoryDataset dataset = DatasetFactory.createProteinSensitivityCategoryDataSet(idSets,
+					proteinsInSample, countNonConclusiveProteins, sensitivity, accuracy, specificity, precision, npv,
+					fdr);
+			final BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
+			chart.setNonIntegerItemLabels(StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING, "#.##");
+			final CategoryPlot plot = (CategoryPlot) chart.getChart().getPlot();
 			// plot.getRangeAxis().setUpperBound(1.0);
 			plot.getRangeAxis().setUpperMargin(0.1);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, true);
 
-				CategoryDataset dataset = DatasetFactory.createProteinSensitivityCategoryDataSet(idSets,
+				final CategoryDataset dataset = DatasetFactory.createProteinSensitivityCategoryDataSet(idSets,
 						proteinsInSample, countNonConclusiveProteins, sensitivity, accuracy, specificity, precision,
 						npv, fdr);
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
-				chart.setNonIntegerItemLabels();
-				CategoryPlot plot = (CategoryPlot) chart.getChart().getPlot();
+				chart.setNonIntegerItemLabels(StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING, "#.##");
+				final CategoryPlot plot = (CategoryPlot) chart.getChart().getPlot();
 				// plot.getRangeAxis().setUpperBound(1.0);
 				plot.getRangeAxis().setUpperMargin(0.1);
 				chartList.add(chart.getChartPanel());
@@ -1471,50 +1485,50 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 	private Object showPeptideMassDistributionChart() {
 		parent.setInformation1(parent.getCurrentChartType());
-		int bins = optionsFactory.getHistogramBins();
-		boolean mOverZ = optionsFactory.getMOverZ();
-		boolean addZeroZeroValue = true;
-		HistogramType histogramType = optionsFactory.getHistogramType();
+		final int bins = optionsFactory.getHistogramBins();
+		final boolean mOverZ = optionsFactory.getMOverZ();
+		final boolean addZeroZeroValue = true;
+		final HistogramType histogramType = optionsFactory.getHistogramType();
 		String xAxisLabel;
 		if (mOverZ)
 			xAxisLabel = "m/z";
 		else
 			xAxisLabel = "Da";
-		String frequencyType = "PSMs";
+		final String frequencyType = "PSMs";
 
-		boolean showParent = optionsFactory.isTotalSerieShown();
+		final boolean showParent = optionsFactory.isTotalSerieShown();
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, showParent);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
-			HistogramDataset dataset = DatasetFactory.createPeptideMassHistogramDataSet(idSets, bins, histogramType,
-					mOverZ);
-			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
+			final HistogramDataset dataset = DatasetFactory.createPeptideMassHistogramDataSet(idSets, bins,
+					histogramType, mOverZ);
+			final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			HistogramDataset dataset = DatasetFactory.createPeptideMassHistogramDataSet(idSets, bins, histogramType,
-					mOverZ);
-			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
+			final HistogramDataset dataset = DatasetFactory.createPeptideMassHistogramDataSet(idSets, bins,
+					histogramType, mOverZ);
+			final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			HistogramDataset dataset = DatasetFactory.createPeptideMassHistogramDataSet(idSets, bins, histogramType,
-					mOverZ);
-			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
+			final HistogramDataset dataset = DatasetFactory.createPeptideMassHistogramDataSet(idSets, bins,
+					histogramType, mOverZ);
+			final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, true);
-				HistogramDataset dataset = DatasetFactory.createPeptideMassHistogramDataSet(idSets, bins, histogramType,
-						mOverZ);
-				HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType), experiment.getName(),
+				final HistogramDataset dataset = DatasetFactory.createPeptideMassHistogramDataSet(idSets, bins,
+						histogramType, mOverZ);
+				final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType), experiment.getName(),
 						dataset, xAxisLabel, frequencyType);
 				// chart.setXRangeValues(0, 100);
 				chartList.add(chart.getChartPanel());
@@ -1527,12 +1541,12 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 	private Object showPeptideLengthDistributionChart() {
 		parent.setInformation1(parent.getCurrentChartType());
-		String xAxisLabel = "Peptide length";
-		String yAxisLabel = "# PSMs";
-		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
-		boolean stacked = optionsFactory.showAsStackedChart();
-		boolean normalize = optionsFactory.getAsPercentage();
-		boolean showParent = optionsFactory.isTotalSerieShown();
+		final String xAxisLabel = "Peptide length";
+		final String yAxisLabel = "# PSMs";
+		final PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
+		final boolean stacked = optionsFactory.showAsStackedChart();
+		final boolean normalize = optionsFactory.getAsPercentage();
+		final boolean showParent = optionsFactory.isTotalSerieShown();
 		final int maximum = optionsFactory.getMaximumOccurrence();
 		final int minimum = optionsFactory.getMinimumOccurrence();
 		if (minimum > maximum)
@@ -1540,53 +1554,57 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, showParent);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
-			CategoryDataset dataset = DatasetFactory.createPeptideLengthHistogramDataSet(idSets, minimum, maximum);
+			final CategoryDataset dataset = DatasetFactory.createPeptideLengthHistogramDataSet(idSets, minimum,
+					maximum);
 			if (stacked) {
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						normalize);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			CategoryDataset dataset = DatasetFactory.createPeptideLengthHistogramDataSet(idSets, minimum, maximum);
+			final CategoryDataset dataset = DatasetFactory.createPeptideLengthHistogramDataSet(idSets, minimum,
+					maximum);
 			if (stacked) {
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						normalize);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			CategoryDataset dataset = DatasetFactory.createPeptideLengthHistogramDataSet(idSets, minimum, maximum);
+			final CategoryDataset dataset = DatasetFactory.createPeptideLengthHistogramDataSet(idSets, minimum,
+					maximum);
 			if (stacked) {
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						normalize);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, true);
-				CategoryDataset dataset = DatasetFactory.createPeptideLengthHistogramDataSet(idSets, minimum, maximum);
+				final CategoryDataset dataset = DatasetFactory.createPeptideLengthHistogramDataSet(idSets, minimum,
+						maximum);
 				if (stacked) {
-					StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+					final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
 							plotOrientation, normalize);
 					chartList.add(chart.getChartPanel());
 				} else {
-					BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
 							plotOrientation);
 					chartList.add(chart.getChartPanel());
@@ -1604,51 +1622,51 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		final List<String> sequences = optionsFactory.getSelectedPeptides();
 		if (sequences == null)
 			throw new IllegalMiapeArgumentException("Select a peptide to show the chart");
-		String yAxisLabel = "# peptides";
+		final String yAxisLabel = "# peptides";
 
-		Boolean distinguishModPeptides = parent.distinguishModifiedPeptides();
-		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
+		final Boolean distinguishModPeptides = parent.distinguishModifiedPeptides();
+		final PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
 
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 
 			xAxisLabel = "level 2";
 
-			CategoryDataset dataset = DatasetFactory.createPeptideMonitoringCategoryDataSet(idSets, sequences,
+			final CategoryDataset dataset = DatasetFactory.createPeptideMonitoringCategoryDataSet(idSets, sequences,
 					distinguishModPeptides);
-			BarChart chart = new BarChart(parent.getChartTitle(chartType), parent.getChartSubtitle(chartType, option),
-					xAxisLabel, yAxisLabel, dataset, plotOrientation);
+			final BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
 
 			xAxisLabel = "experiment list";
 
-			CategoryDataset dataset = DatasetFactory.createPeptideMonitoringCategoryDataSet(idSets, sequences,
+			final CategoryDataset dataset = DatasetFactory.createPeptideMonitoringCategoryDataSet(idSets, sequences,
 					distinguishModPeptides);
-			BarChart chart = new BarChart(parent.getChartTitle(chartType), parent.getChartSubtitle(chartType, option),
-					xAxisLabel, yAxisLabel, dataset, plotOrientation);
+			final BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
 
 			xAxisLabel = "experiment";
 
-			CategoryDataset dataset = DatasetFactory.createPeptideMonitoringCategoryDataSet(idSets, sequences,
+			final CategoryDataset dataset = DatasetFactory.createPeptideMonitoringCategoryDataSet(idSets, sequences,
 					distinguishModPeptides);
-			BarChart chart = new BarChart(parent.getChartTitle(chartType), parent.getChartSubtitle(chartType, option),
-					xAxisLabel, yAxisLabel, dataset, plotOrientation);
+			final BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, true);
 				xAxisLabel = experiment.getName();
 
-				CategoryDataset dataset = DatasetFactory.createPeptideMonitoringCategoryDataSet(idSets, sequences,
+				final CategoryDataset dataset = DatasetFactory.createPeptideMonitoringCategoryDataSet(idSets, sequences,
 						distinguishModPeptides);
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				chartList.add(chart.getChartPanel());
 			}
@@ -1665,72 +1683,72 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		final String[] modifications = optionsFactory.getSelectedModifications();
 		if (modifications == null || modifications.length == 0)
 			throw new IllegalMiapeArgumentException("Select at least one modification");
-		String yAxisLabel = "# different peptides containing: " + modifications[0];
+		final String yAxisLabel = "# different peptides containing: " + modifications[0];
 
-		int maximum = optionsFactory.getMaximumOccurrence();
-		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
+		final int maximum = optionsFactory.getMaximumOccurrence();
+		final PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
 		final boolean showAsStackedChartPanel = optionsFactory.showAsStackedChart();
 		final boolean asPercentage = optionsFactory.getAsPercentage();
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 			xAxisLabel = "level 2";
-			CategoryDataset dataset = DatasetFactory.createModificationDistributionCategoryDataSet(idSets,
+			final CategoryDataset dataset = DatasetFactory.createModificationDistributionCategoryDataSet(idSets,
 					modifications, maximum);
 			if (showAsStackedChartPanel) {
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				return chart.getChartPanel();
 			}
 
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
 			xAxisLabel = "experiment list";
-			CategoryDataset dataset = DatasetFactory.createModificationDistributionCategoryDataSet(idSets,
+			final CategoryDataset dataset = DatasetFactory.createModificationDistributionCategoryDataSet(idSets,
 					modifications, maximum);
 			if (showAsStackedChartPanel) {
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				return chart.getChartPanel();
 			}
 
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
 			xAxisLabel = "experiment";
-			CategoryDataset dataset = DatasetFactory.createModificationDistributionCategoryDataSet(idSets,
+			final CategoryDataset dataset = DatasetFactory.createModificationDistributionCategoryDataSet(idSets,
 					modifications, maximum);
 			if (showAsStackedChartPanel) {
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				return chart.getChartPanel();
 			}
 
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
 			xAxisLabel = "level 2";
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, true);
-				CategoryDataset dataset = DatasetFactory.createModificationDistributionCategoryDataSet(idSets,
+				final CategoryDataset dataset = DatasetFactory.createModificationDistributionCategoryDataSet(idSets,
 						modifications, maximum);
 				if (showAsStackedChartPanel) {
-					StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+					final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
 							plotOrientation, asPercentage);
 					chartList.add(chart.getChartPanel());
 				} else {
-					BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
 							plotOrientation);
 					chartList.add(chart.getChartPanel());
@@ -1748,66 +1766,66 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		parent.setInformation1(parent.getCurrentChartType());
 		String xAxisLabel;
 
-		String yAxisLabel = "# PSMs";
+		final String yAxisLabel = "# PSMs";
 		xAxisLabel = "# missedcleavages sites";
-		int maximum = optionsFactory.getMaximumOccurrence();
-		String cleavageAminoacids = optionsFactory.getCleavageAminoacids();
-		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
-		boolean stackedChart = optionsFactory.showAsStackedChart();
-		boolean asPercentage = optionsFactory.getAsPercentage();
+		final int maximum = optionsFactory.getMaximumOccurrence();
+		final String cleavageAminoacids = optionsFactory.getCleavageAminoacids();
+		final PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
+		final boolean stackedChart = optionsFactory.showAsStackedChart();
+		final boolean asPercentage = optionsFactory.getAsPercentage();
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, optionsFactory.isTotalSerieShown());
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
-			CategoryDataset dataset = DatasetFactory.createMissedCleavagesDistributionCategoryDataSet(idSets,
+			final CategoryDataset dataset = DatasetFactory.createMissedCleavagesDistributionCategoryDataSet(idSets,
 					cleavageAminoacids, maximum);
 			if (stackedChart) {
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			CategoryDataset dataset = DatasetFactory.createMissedCleavagesDistributionCategoryDataSet(idSets,
+			final CategoryDataset dataset = DatasetFactory.createMissedCleavagesDistributionCategoryDataSet(idSets,
 					cleavageAminoacids, maximum);
 			if (stackedChart) {
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			CategoryDataset dataset = DatasetFactory.createMissedCleavagesDistributionCategoryDataSet(idSets,
+			final CategoryDataset dataset = DatasetFactory.createMissedCleavagesDistributionCategoryDataSet(idSets,
 					cleavageAminoacids, maximum);
 			if (stackedChart) {
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, optionsFactory.isTotalSerieShown());
-				CategoryDataset dataset = DatasetFactory.createMissedCleavagesDistributionCategoryDataSet(idSets,
+				final CategoryDataset dataset = DatasetFactory.createMissedCleavagesDistributionCategoryDataSet(idSets,
 						cleavageAminoacids, maximum);
 				if (stackedChart) {
-					StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+					final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
 							plotOrientation, asPercentage);
 					chartList.add(chart.getChartPanel());
 				} else {
-					BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
 							plotOrientation);
 					chartList.add(chart.getChartPanel());
@@ -1825,60 +1843,61 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		parent.setInformation1(parent.getCurrentChartType());
 		String xAxisLabel;
 
-		String yAxisLabel = "# proteinGroups";
+		final String yAxisLabel = "# proteinGroups";
 		xAxisLabel = "Protein Group Type";
-		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
-		boolean stackedChart = optionsFactory.showAsStackedChart();
-		boolean asPercentage = optionsFactory.getAsPercentage();
+		final PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
+		final boolean stackedChart = optionsFactory.showAsStackedChart();
+		final boolean asPercentage = optionsFactory.getAsPercentage();
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, optionsFactory.isTotalSerieShown());
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
-			CategoryDataset dataset = DatasetFactory.createProteinGroupTypesDistributionCategoryDataSet(idSets);
+			final CategoryDataset dataset = DatasetFactory.createProteinGroupTypesDistributionCategoryDataSet(idSets);
 			if (stackedChart) {
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			CategoryDataset dataset = DatasetFactory.createProteinGroupTypesDistributionCategoryDataSet(idSets);
+			final CategoryDataset dataset = DatasetFactory.createProteinGroupTypesDistributionCategoryDataSet(idSets);
 			if (stackedChart) {
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			CategoryDataset dataset = DatasetFactory.createProteinGroupTypesDistributionCategoryDataSet(idSets);
+			final CategoryDataset dataset = DatasetFactory.createProteinGroupTypesDistributionCategoryDataSet(idSets);
 			if (stackedChart) {
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, optionsFactory.isTotalSerieShown());
-				CategoryDataset dataset = DatasetFactory.createProteinGroupTypesDistributionCategoryDataSet(idSets);
+				final CategoryDataset dataset = DatasetFactory
+						.createProteinGroupTypesDistributionCategoryDataSet(idSets);
 				if (stackedChart) {
-					StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+					final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
 							plotOrientation, asPercentage);
 					chartList.add(chart.getChartPanel());
 				} else {
-					BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
 							plotOrientation);
 					chartList.add(chart.getChartPanel());
@@ -1898,67 +1917,67 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		if (modifications == null)
 			return null;
 
-		String yAxisLabel = "# of modificated sites ";
-		String xAxisLabel = "PTM";
-		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
-		boolean stackedChart = optionsFactory.showAsStackedChart();
-		boolean asPercentage = optionsFactory.getAsPercentage();
+		final String yAxisLabel = "# of modificated sites ";
+		final String xAxisLabel = "PTM";
+		final PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
+		final boolean stackedChart = optionsFactory.showAsStackedChart();
+		final boolean asPercentage = optionsFactory.getAsPercentage();
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
-			CategoryDataset dataset = DatasetFactory.createNumberModificationSitesCategoryDataSet(idSets,
+			final CategoryDataset dataset = DatasetFactory.createNumberModificationSitesCategoryDataSet(idSets,
 					modifications);
 			if (stackedChart) {
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			CategoryDataset dataset = DatasetFactory.createNumberModificationSitesCategoryDataSet(idSets,
+			final CategoryDataset dataset = DatasetFactory.createNumberModificationSitesCategoryDataSet(idSets,
 					modifications);
 			if (stackedChart) {
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			CategoryDataset dataset = DatasetFactory.createNumberModificationSitesCategoryDataSet(idSets,
+			final CategoryDataset dataset = DatasetFactory.createNumberModificationSitesCategoryDataSet(idSets,
 					modifications);
 			if (stackedChart) {
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, false);
 
 				if (!stackedChart)
 					idSets.add(experiment);
-				CategoryDataset dataset = DatasetFactory.createNumberModificationSitesCategoryDataSet(idSets,
+				final CategoryDataset dataset = DatasetFactory.createNumberModificationSitesCategoryDataSet(idSets,
 						modifications);
 				if (stackedChart) {
-					StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+					final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
 							plotOrientation, asPercentage);
 					chartList.add(chart.getChartPanel());
 				} else {
-					BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
 							plotOrientation);
 					chartList.add(chart.getChartPanel());
@@ -1978,69 +1997,69 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		if (modifications == null || modifications.length == 0)
 			throw new IllegalMiapeArgumentException("Select at least one modification");
 
-		String yAxisLabel = "# of different peptides containing each PTM";
-		String xAxisLabel = "PTM";
-		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
-		boolean stackedChart = optionsFactory.showAsStackedChart();
-		boolean asPercentage = optionsFactory.getAsPercentage();
+		final String yAxisLabel = "# of different peptides containing each PTM";
+		final String xAxisLabel = "PTM";
+		final PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
+		final boolean stackedChart = optionsFactory.showAsStackedChart();
+		final boolean asPercentage = optionsFactory.getAsPercentage();
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
-			CategoryDataset dataset = DatasetFactory.createNumberModificatedPeptidesCategoryDataSet(idSets,
+			final CategoryDataset dataset = DatasetFactory.createNumberModificatedPeptidesCategoryDataSet(idSets,
 					modifications);
 			if (stackedChart) {
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				chart.setHorizontalXLabel();
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			CategoryDataset dataset = DatasetFactory.createNumberModificatedPeptidesCategoryDataSet(idSets,
+			final CategoryDataset dataset = DatasetFactory.createNumberModificatedPeptidesCategoryDataSet(idSets,
 					modifications);
 			if (stackedChart) {
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				chart.setHorizontalXLabel();
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			CategoryDataset dataset = DatasetFactory.createNumberModificatedPeptidesCategoryDataSet(idSets,
+			final CategoryDataset dataset = DatasetFactory.createNumberModificatedPeptidesCategoryDataSet(idSets,
 					modifications);
 			if (stackedChart) {
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				chart.setHorizontalXLabel();
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, false);
 				if (!stackedChart)
 					idSets.add(experiment);
-				CategoryDataset dataset = DatasetFactory.createNumberModificatedPeptidesCategoryDataSet(idSets,
+				final CategoryDataset dataset = DatasetFactory.createNumberModificatedPeptidesCategoryDataSet(idSets,
 						modifications);
 				if (stackedChart) {
-					StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+					final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
 							plotOrientation, asPercentage);
 					chartList.add(chart.getChartPanel());
 				} else {
-					BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
 							plotOrientation);
 					chart.setHorizontalXLabel();
@@ -2058,23 +2077,23 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		parent.setInformation1(parent.getCurrentChartType());
 
 		String xAxisLabel;
-		String yAxisLabel = "# PSMs";
+		final String yAxisLabel = "# PSMs";
 
-		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
-		boolean stackedChart = optionsFactory.showAsStackedChart();
-		boolean asPercentage = optionsFactory.getAsPercentage();
+		final PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
+		final boolean stackedChart = optionsFactory.showAsStackedChart();
+		final boolean asPercentage = optionsFactory.getAsPercentage();
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 			xAxisLabel = "level 2";
 
-			CategoryDataset dataset = DatasetFactory.createPeptideChargeHistogramDataSet(idSets);
+			final CategoryDataset dataset = DatasetFactory.createPeptideChargeHistogramDataSet(idSets);
 			if (stackedChart) {
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 				return chart.getChartPanel();
@@ -2082,14 +2101,14 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
 			xAxisLabel = "experiment list";
 
-			CategoryDataset dataset = DatasetFactory.createPeptideChargeHistogramDataSet(idSets);
+			final CategoryDataset dataset = DatasetFactory.createPeptideChargeHistogramDataSet(idSets);
 			if (stackedChart) {
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 				return chart.getChartPanel();
@@ -2097,32 +2116,32 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
 			xAxisLabel = "experiment";
 
-			CategoryDataset dataset = DatasetFactory.createPeptideChargeHistogramDataSet(idSets);
+			final CategoryDataset dataset = DatasetFactory.createPeptideChargeHistogramDataSet(idSets);
 			if (stackedChart) {
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
 				return chart.getChartPanel();
 			} else {
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, true);
 				xAxisLabel = experiment.getName();
 
-				CategoryDataset dataset = DatasetFactory.createPeptideChargeHistogramDataSet(idSets);
+				final CategoryDataset dataset = DatasetFactory.createPeptideChargeHistogramDataSet(idSets);
 				if (stackedChart) {
-					StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+					final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
 							plotOrientation, asPercentage);
 					chartList.add(chart.getChartPanel());
 				} else {
-					BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
 							plotOrientation);
 					chartList.add(chart.getChartPanel());
@@ -2145,9 +2164,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	private Object showPeptideOccurrenceHeatMapChart(boolean isPSMs) {
 		parent.setInformation1(parent.getCurrentChartType().getName() + " / " + IdentificationItemEnum.PEPTIDE);
 
-		double colorScale = optionsFactory.getColorScale();
-		int minThreshold = optionsFactory.getHeatMapThreshold();
-		List<String> peptideSequenceOrder = parent.getPeptideSequencesFromPeptideSequenceFilter();
+		final double colorScale = optionsFactory.getColorScale();
+		final int minThreshold = optionsFactory.getHeatMapThreshold();
+		final List<String> peptideSequenceOrder = parent.getPeptideSequencesFromPeptideSequenceFilter();
 
 		//
 		// double[][] dataset =
@@ -2169,8 +2188,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		// identification sets ("
 		// + idSets.size() + ")");
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
-			List<String> rowList = new ArrayList<String>();
-			List<String> columnList = new ArrayList<String>();
+			final List<String> rowList = new ArrayList<String>();
+			final List<String> columnList = new ArrayList<String>();
 			double[][] dataset = null;
 			if (isPSMs) {
 				dataset = DatasetFactory.createPSMsPerPeptidesHeapMapDataSet(experimentList, idSets, rowList,
@@ -2181,47 +2200,47 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			}
 			parent.addMinMaxHeatMapValues(dataset);
 
-			HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList, columnList,
+			final HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList, columnList,
 					colorScale);
 			chart.setHighValueColor(highColor);
 			chart.setLowValueColor(lowColor);
 			return chart.getjPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			List<String> rowList = new ArrayList<String>();
-			List<String> columnList = new ArrayList<String>();
+			final List<String> rowList = new ArrayList<String>();
+			final List<String> columnList = new ArrayList<String>();
 
-			double[][] dataset = DatasetFactory.createPeptideOccurrenceHeapMapDataSet(experimentList, idSets, rowList,
-					columnList, peptideSequenceOrder, parent.distinguishModifiedPeptides(), minThreshold);
+			final double[][] dataset = DatasetFactory.createPeptideOccurrenceHeapMapDataSet(experimentList, idSets,
+					rowList, columnList, peptideSequenceOrder, parent.distinguishModifiedPeptides(), minThreshold);
 			parent.addMinMaxHeatMapValues(dataset);
 
-			HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList, columnList,
+			final HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList, columnList,
 					colorScale);
 			chart.setHighValueColor(highColor);
 			chart.setLowValueColor(lowColor);
 			return chart.getjPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			List<String> rowList = new ArrayList<String>();
-			List<String> columnList = new ArrayList<String>();
+			final List<String> rowList = new ArrayList<String>();
+			final List<String> columnList = new ArrayList<String>();
 
-			double[][] dataset = DatasetFactory.createPeptideOccurrenceHeapMapDataSet(experimentList, idSets, rowList,
-					columnList, peptideSequenceOrder, parent.distinguishModifiedPeptides(), minThreshold);
+			final double[][] dataset = DatasetFactory.createPeptideOccurrenceHeapMapDataSet(experimentList, idSets,
+					rowList, columnList, peptideSequenceOrder, parent.distinguishModifiedPeptides(), minThreshold);
 			parent.addMinMaxHeatMapValues(dataset);
 
-			HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList, columnList,
+			final HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList, columnList,
 					colorScale);
 			chart.setHighValueColor(highColor);
 			chart.setLowValueColor(lowColor);
 			return chart.getjPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
-				List<String> rowList = new ArrayList<String>();
-				List<String> columnList = new ArrayList<String>();
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
+				final List<String> rowList = new ArrayList<String>();
+				final List<String> columnList = new ArrayList<String>();
 				idSets = getIdentificationSets(experiment.getName(), null, false);
-				double[][] dataset = DatasetFactory.createPeptideOccurrenceHeapMapDataSet(experiment, idSets, rowList,
-						columnList, peptideSequenceOrder, parent.distinguishModifiedPeptides(), minThreshold);
-				HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList, columnList,
-						colorScale);
+				final double[][] dataset = DatasetFactory.createPeptideOccurrenceHeapMapDataSet(experiment, idSets,
+						rowList, columnList, peptideSequenceOrder, parent.distinguishModifiedPeptides(), minThreshold);
+				final HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList,
+						columnList, colorScale);
 				chart.setHighValueColor(highColor);
 				chart.setLowValueColor(lowColor);
 				chartList.add(chart.getjPanel());
@@ -2243,9 +2262,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	private Object showProteinOccurrenceHeatMapChart() {
 		parent.setInformation1(parent.getCurrentChartType().getName() + " / " + IdentificationItemEnum.PROTEIN);
 
-		double colorScale = optionsFactory.getColorScale();
-		int minOccurrenceThreshold = optionsFactory.getHeatMapThreshold();
-		List<String> proteinACCOrder = parent.getProteinAccsFromACCFilter();
+		final double colorScale = optionsFactory.getColorScale();
+		final int minOccurrenceThreshold = optionsFactory.getHeatMapThreshold();
+		final List<String> proteinACCOrder = parent.getProteinAccsFromACCFilter();
 
 		//
 		// double[][] dataset =
@@ -2266,55 +2285,55 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 					"The occurrence threshold cannot be higher than the maximum number of identification sets ("
 							+ idSets.size() + ")");
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
-			List<String> rowList = new ArrayList<String>();
-			List<String> columnList = new ArrayList<String>();
+			final List<String> rowList = new ArrayList<String>();
+			final List<String> columnList = new ArrayList<String>();
 
-			double[][] dataset = DatasetFactory.createProteinOccurrenceHeapMapDataSet(experimentList, idSets, rowList,
-					columnList, proteinACCOrder, minOccurrenceThreshold, countNonConclusiveProteins);
+			final double[][] dataset = DatasetFactory.createProteinOccurrenceHeapMapDataSet(experimentList, idSets,
+					rowList, columnList, proteinACCOrder, minOccurrenceThreshold, countNonConclusiveProteins);
 			parent.addMinMaxHeatMapValues(dataset);
 
-			HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList, columnList,
+			final HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList, columnList,
 					colorScale);
 			chart.setHighValueColor(highColor);
 			chart.setLowValueColor(lowColor);
 			return chart.getjPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			List<String> rowList = new ArrayList<String>();
-			List<String> columnList = new ArrayList<String>();
+			final List<String> rowList = new ArrayList<String>();
+			final List<String> columnList = new ArrayList<String>();
 
-			double[][] dataset = DatasetFactory.createProteinOccurrenceHeapMapDataSet(experimentList, idSets, rowList,
-					columnList, proteinACCOrder, minOccurrenceThreshold, countNonConclusiveProteins);
+			final double[][] dataset = DatasetFactory.createProteinOccurrenceHeapMapDataSet(experimentList, idSets,
+					rowList, columnList, proteinACCOrder, minOccurrenceThreshold, countNonConclusiveProteins);
 			parent.addMinMaxHeatMapValues(dataset);
 
-			HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList, columnList,
+			final HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList, columnList,
 					colorScale);
 			chart.setHighValueColor(highColor);
 			chart.setLowValueColor(lowColor);
 			return chart.getjPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			List<String> rowList = new ArrayList<String>();
-			List<String> columnList = new ArrayList<String>();
+			final List<String> rowList = new ArrayList<String>();
+			final List<String> columnList = new ArrayList<String>();
 
-			double[][] dataset = DatasetFactory.createProteinOccurrenceHeapMapDataSet(experimentList, idSets, rowList,
-					columnList, proteinACCOrder, minOccurrenceThreshold, countNonConclusiveProteins);
+			final double[][] dataset = DatasetFactory.createProteinOccurrenceHeapMapDataSet(experimentList, idSets,
+					rowList, columnList, proteinACCOrder, minOccurrenceThreshold, countNonConclusiveProteins);
 			parent.addMinMaxHeatMapValues(dataset);
 
-			HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList, columnList,
+			final HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList, columnList,
 					colorScale);
 			chart.setHighValueColor(highColor);
 			chart.setLowValueColor(lowColor);
 			return chart.getjPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
-				List<String> rowList = new ArrayList<String>();
-				List<String> columnList = new ArrayList<String>();
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
+				final List<String> rowList = new ArrayList<String>();
+				final List<String> columnList = new ArrayList<String>();
 				idSets = getIdentificationSets(experiment.getName(), null, false);
-				double[][] dataset = DatasetFactory.createProteinOccurrenceHeapMapDataSet(experiment, idSets, rowList,
-						columnList, proteinACCOrder, minOccurrenceThreshold, countNonConclusiveProteins);
+				final double[][] dataset = DatasetFactory.createProteinOccurrenceHeapMapDataSet(experiment, idSets,
+						rowList, columnList, proteinACCOrder, minOccurrenceThreshold, countNonConclusiveProteins);
 
-				HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList, columnList,
-						colorScale);
+				final HeatMapChart chart = new HeatMapChart(parent.getChartTitle(chartType), dataset, rowList,
+						columnList, colorScale);
 				chart.setHighValueColor(highColor);
 				chart.setLowValueColor(lowColor);
 				chartList.add(chart.getjPanel());
@@ -2336,8 +2355,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	private Object showPeptidesPerProteinHeatMapChart(boolean isPSMs) {
 		parent.setInformation1(parent.getCurrentChartType());
 
-		double colorScale = optionsFactory.getColorScale();
-		int minThreshold = optionsFactory.getHeatMapThreshold();
+		final double colorScale = optionsFactory.getColorScale();
+		final int minThreshold = optionsFactory.getHeatMapThreshold();
 		//
 		// double[][] dataset =
 		// DatasetFactory.createHeapMapDataSet(experimentList, rowList,
@@ -2352,7 +2371,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		final Color highColor = optionsFactory.getHighColorScale();
 		final Color lowColor = optionsFactory.getLowColorScale();
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
-		List<String> proteinACCOrder = parent.getProteinAccsFromACCFilter();
+		final List<String> proteinACCOrder = parent.getProteinAccsFromACCFilter();
 		// if (minOccurrenceThreshold > idSets.size())
 		// throw new IllegalMiapeArgumentException(
 		// "The occurrence threshold cannot be higher than the maximum number of
@@ -2363,55 +2382,55 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			title = "PSMs per protein heatmap";
 		}
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
-			List<String> rowList = new ArrayList<String>();
-			List<String> columnList = new ArrayList<String>();
+			final List<String> rowList = new ArrayList<String>();
+			final List<String> columnList = new ArrayList<String>();
 
-			double[][] dataset = DatasetFactory.createPeptidesPerProteinHeapMapDataSet(experimentList, idSets, rowList,
-					columnList, proteinACCOrder, parent.distinguishModifiedPeptides(), minThreshold,
+			final double[][] dataset = DatasetFactory.createPeptidesPerProteinHeapMapDataSet(experimentList, idSets,
+					rowList, columnList, proteinACCOrder, parent.distinguishModifiedPeptides(), minThreshold,
 					countNonConclusiveProteins, isPSMs);
 			parent.addMinMaxHeatMapValues(dataset);
 
-			HeatMapChart chart = new HeatMapChart(title, dataset, rowList, columnList, colorScale);
+			final HeatMapChart chart = new HeatMapChart(title, dataset, rowList, columnList, colorScale);
 			chart.setHighValueColor(highColor);
 			chart.setLowValueColor(lowColor);
 			return chart.getjPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			List<String> rowList = new ArrayList<String>();
-			List<String> columnList = new ArrayList<String>();
+			final List<String> rowList = new ArrayList<String>();
+			final List<String> columnList = new ArrayList<String>();
 
-			double[][] dataset = DatasetFactory.createPeptidesPerProteinHeapMapDataSet(experimentList, idSets, rowList,
-					columnList, proteinACCOrder, parent.distinguishModifiedPeptides(), minThreshold,
+			final double[][] dataset = DatasetFactory.createPeptidesPerProteinHeapMapDataSet(experimentList, idSets,
+					rowList, columnList, proteinACCOrder, parent.distinguishModifiedPeptides(), minThreshold,
 					countNonConclusiveProteins, isPSMs);
 			parent.addMinMaxHeatMapValues(dataset);
 
-			HeatMapChart chart = new HeatMapChart(title, dataset, rowList, columnList, colorScale);
+			final HeatMapChart chart = new HeatMapChart(title, dataset, rowList, columnList, colorScale);
 			chart.setHighValueColor(highColor);
 			chart.setLowValueColor(lowColor);
 			return chart.getjPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			List<String> rowList = new ArrayList<String>();
-			List<String> columnList = new ArrayList<String>();
+			final List<String> rowList = new ArrayList<String>();
+			final List<String> columnList = new ArrayList<String>();
 
-			double[][] dataset = DatasetFactory.createPeptidesPerProteinHeapMapDataSet(experimentList, idSets, rowList,
-					columnList, proteinACCOrder, parent.distinguishModifiedPeptides(), minThreshold,
+			final double[][] dataset = DatasetFactory.createPeptidesPerProteinHeapMapDataSet(experimentList, idSets,
+					rowList, columnList, proteinACCOrder, parent.distinguishModifiedPeptides(), minThreshold,
 					countNonConclusiveProteins, isPSMs);
 			parent.addMinMaxHeatMapValues(dataset);
 
-			HeatMapChart chart = new HeatMapChart(title, dataset, rowList, columnList, colorScale);
+			final HeatMapChart chart = new HeatMapChart(title, dataset, rowList, columnList, colorScale);
 			chart.setHighValueColor(highColor);
 			chart.setLowValueColor(lowColor);
 			return chart.getjPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
-				List<String> rowList = new ArrayList<String>();
-				List<String> columnList = new ArrayList<String>();
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
+				final List<String> rowList = new ArrayList<String>();
+				final List<String> columnList = new ArrayList<String>();
 				idSets = getIdentificationSets(experiment.getName(), null, false);
-				double[][] dataset = DatasetFactory.createPeptidesPerProteinHeapMapDataSet(experiment, idSets, rowList,
-						columnList, proteinACCOrder, parent.distinguishModifiedPeptides(), minThreshold,
+				final double[][] dataset = DatasetFactory.createPeptidesPerProteinHeapMapDataSet(experiment, idSets,
+						rowList, columnList, proteinACCOrder, parent.distinguishModifiedPeptides(), minThreshold,
 						countNonConclusiveProteins, isPSMs);
 
-				HeatMapChart chart = new HeatMapChart(title, dataset, rowList, columnList, colorScale);
+				final HeatMapChart chart = new HeatMapChart(title, dataset, rowList, columnList, colorScale);
 				chart.setHighValueColor(highColor);
 				chart.setLowValueColor(lowColor);
 				chartList.add(chart.getjPanel());
@@ -2426,7 +2445,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	// }
 
 	private Object showOverlappingChart(IdentificationItemEnum plotItem) {
-		this.vennChartMap.clear();
+		vennChartMap.clear();
 		parent.setInformation1(parent.getCurrentChartType().getName() + " / " + plotItem);
 		IdentificationSet idSet1 = null;
 		String label1 = null;
@@ -2445,10 +2464,10 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		}
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 			final List<Experiment> experiments = experimentList.getExperiments();
-			for (Experiment experiment : experiments) {
-				for (Object identificationSet : experiment.getNextLevelIdentificationSetList()) {
-					Replicate replicate = (Replicate) identificationSet;
-					String repName = replicate.getFullName();
+			for (final Experiment experiment : experiments) {
+				for (final Object identificationSet : experiment.getNextLevelIdentificationSetList()) {
+					final Replicate replicate = (Replicate) identificationSet;
+					final String repName = replicate.getFullName();
 					if (checkBoxControls.containsKey(repName) && checkBoxControls.get(repName).isSelected()) {
 						if (idSet1 == null) {
 							idSet1 = replicate;
@@ -2472,19 +2491,20 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			if (idSet1 == null || idSet2 == null) {
 				throw new IllegalMiapeArgumentException("Please, select at least 2 datasets to show the diagram");
 			}
-			VennChart chart = new VennChart(parent.getChartTitle(chartType), idSet1, label1, idSet2, label2, idSet3,
-					label3, plotItem, parent.distinguishModifiedPeptides(), proteinSelection, color1, color2, color3);
+			final VennChart chart = new VennChart(parent.getChartTitle(chartType), idSet1, label1, idSet2, label2,
+					idSet3, label3, plotItem, parent.distinguishModifiedPeptides(), proteinSelection, color1, color2,
+					color3);
 
-			this.vennChartMap.put(null, chart);
-			String intersectionsText = chart.getIntersectionsText(null);
+			vennChartMap.put(null, chart);
+			final String intersectionsText = chart.getIntersectionsText(null);
 			optionsFactory.setIntersectionText(intersectionsText);
 			return chart.getChartPanel();
 
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
 			final List<Experiment> experiments = experimentList.getExperiments();
 
-			for (Experiment experiment : experiments) {
-				String expName = experiment.getFullName();
+			for (final Experiment experiment : experiments) {
+				final String expName = experiment.getFullName();
 				if (checkBoxControls.containsKey(expName) && checkBoxControls.get(expName).isSelected()) {
 					if (idSet1 == null) {
 						idSet1 = experiment;
@@ -2507,9 +2527,10 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			if (idSet1 == null || idSet2 == null) {
 				throw new IllegalMiapeArgumentException("Please, select at least 2 datasets to show the diagram");
 			}
-			VennChart chart = new VennChart(parent.getChartTitle(chartType), idSet1, label1, idSet2, label2, idSet3,
-					label3, plotItem, parent.distinguishModifiedPeptides(), proteinSelection, color1, color2, color3);
-			this.vennChartMap.put(null, chart);
+			final VennChart chart = new VennChart(parent.getChartTitle(chartType), idSet1, label1, idSet2, label2,
+					idSet3, label3, plotItem, parent.distinguishModifiedPeptides(), proteinSelection, color1, color2,
+					color3);
+			vennChartMap.put(null, chart);
 			optionsFactory.setIntersectionText(chart.getIntersectionsText(null));
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
@@ -2519,19 +2540,19 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 						"Please, select a different comparison level to be able to select at least 2 datasets");
 			}
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
+			final List<JPanel> chartList = new ArrayList<JPanel>();
 			String intersectionText = "";
-			for (Experiment experiment : experimentList.getExperiments()) {
-				int numReplicates = 1;
+			for (final Experiment experiment : experimentList.getExperiments()) {
+				final int numReplicates = 1;
 				idSet1 = null;
 				label1 = null;
 				idSet2 = null;
 				label2 = null;
 				idSet3 = null;
 				label3 = null;
-				for (Replicate replicate : experiment.getNextLevelIdentificationSetList()) {
+				for (final Replicate replicate : experiment.getNextLevelIdentificationSetList()) {
 
-					String repName = replicate.getFullName();
+					final String repName = replicate.getFullName();
 					if (checkBoxControls.containsKey(repName) && checkBoxControls.get(repName).isSelected()) {
 						if (idSet1 == null) {
 							idSet1 = replicate;
@@ -2552,17 +2573,18 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 					}
 				}
 				if (idSet1 == null || idSet2 == null) {
-					JLabel label = new JLabel("Please, select at least 2 datasets to show the Venn diagram for '"
+					final JLabel label = new JLabel("Please, select at least 2 datasets to show the Venn diagram for '"
 							+ experiment.getName() + "'");
-					JPanel panel = new JPanel();
+					final JPanel panel = new JPanel();
 					panel.add(label);
 					chartList.add(panel);
 					continue;
 				}
-				VennChart chart = new VennChart(parent.getChartTitle(chartType) + " (" + experiment.getName() + ")",
-						idSet1, label1, idSet2, label2, idSet3, label3, plotItem, parent.distinguishModifiedPeptides(),
-						proteinSelection, color1, color2, color3);
-				this.vennChartMap.put(experiment.getName(), chart);
+				final VennChart chart = new VennChart(
+						parent.getChartTitle(chartType) + " (" + experiment.getName() + ")", idSet1, label1, idSet2,
+						label2, idSet3, label3, plotItem, parent.distinguishModifiedPeptides(), proteinSelection,
+						color1, color2, color3);
+				vennChartMap.put(experiment.getName(), chart);
 
 				intersectionText += chart.getIntersectionsText(experiment.getName());
 				chartList.add(chart.getChartPanel());
@@ -2580,8 +2602,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		String xAxisLabel;
 		String yAxisLabel = "";
 
-		String scoreName = null;
-		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
+		final String scoreName = null;
+		final PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
 
 		final boolean stackedChart = optionsFactory.showAsStackedChart();
 		final boolean asPercentage = optionsFactory.getAsPercentage();
@@ -2636,7 +2658,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 							parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 							countNonConclusiveProteins);
 				}
-				PieChart chart = new PieChart(chartTitle, parent.getChartSubtitle(chartType, option), dataset);
+				final PieChart chart = new PieChart(chartTitle, parent.getChartSubtitle(chartType, option), dataset);
 				return chart.getChartPanel();
 			} else if (stackedChart) {
 				CategoryDataset dataset = null;
@@ -2648,8 +2670,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 							parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 							countNonConclusiveProteins);
 				}
-				StackedBarChart chart = new StackedBarChart(chartTitle, parent.getChartSubtitle(chartType, option),
-						xAxisLabel, yAxisLabel, dataset, plotOrientation, asPercentage);
+				final StackedBarChart chart = new StackedBarChart(chartTitle,
+						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
+						asPercentage);
 				if (!totalVersusDifferentSelected) {
 					chart.setIntegerItemLabels();
 				}
@@ -2676,10 +2699,11 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 								countNonConclusiveProteins);
 					}
 				}
-				BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option), xAxisLabel,
+				final BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option), xAxisLabel,
 						yAxisLabel, dataset, plotOrientation);
 				if (totalVersusDifferentSelected) {
-					chart.setNonIntegerItemLabels();
+					chart.setNonIntegerItemLabels(StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING,
+							"#.##");
 				}
 				// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 				return chart.getChartPanel();
@@ -2688,7 +2712,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 			// System.out.println("sd");
 			if (average) {
-				if (plotItem.equals(plotItem.PEPTIDE)) {
+				if (plotItem.equals(IdentificationItemEnum.PEPTIDE)) {
 					yAxisLabel = "average " + yAxisLabel;
 				} else {
 					yAxisLabel = "average " + yAxisLabel;
@@ -2705,7 +2729,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 							parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 							countNonConclusiveProteins);
 				}
-				PieChart chart = new PieChart(chartTitle, parent.getChartSubtitle(chartType, option), dataset);
+				final PieChart chart = new PieChart(chartTitle, parent.getChartSubtitle(chartType, option), dataset);
 				return chart.getChartPanel();
 			} else if (stackedChart) {
 				CategoryDataset dataset = null;
@@ -2717,8 +2741,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 							parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 							countNonConclusiveProteins);
 				}
-				StackedBarChart chart = new StackedBarChart(chartTitle, parent.getChartSubtitle(chartType, option),
-						xAxisLabel, yAxisLabel, dataset, plotOrientation, asPercentage);
+				final StackedBarChart chart = new StackedBarChart(chartTitle,
+						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
+						asPercentage);
 				if (!totalVersusDifferentSelected) {
 					chart.setIntegerItemLabels();
 				}
@@ -2745,10 +2770,11 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 								countNonConclusiveProteins);
 					}
 				}
-				BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option), xAxisLabel,
+				final BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option), xAxisLabel,
 						yAxisLabel, dataset, plotOrientation);
 				if (totalVersusDifferentSelected) {
-					chart.setNonIntegerItemLabels();
+					chart.setNonIntegerItemLabels(StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING,
+							"#.##");
 				}
 				// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 				return chart.getChartPanel();
@@ -2760,7 +2786,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			}
 			// System.out.println("sd");
 			if (average) {
-				if (plotItem.equals(plotItem.PEPTIDE)) {
+				if (plotItem.equals(IdentificationItemEnum.PEPTIDE)) {
 					yAxisLabel = "average " + yAxisLabel;
 				} else {
 					yAxisLabel = "average " + yAxisLabel;
@@ -2777,7 +2803,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 							parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 							countNonConclusiveProteins);
 				}
-				PieChart chart = new PieChart(chartTitle, parent.getChartSubtitle(chartType, option), dataset);
+				final PieChart chart = new PieChart(chartTitle, parent.getChartSubtitle(chartType, option), dataset);
 				return chart.getChartPanel();
 			} else if (stackedChart) {
 				CategoryDataset dataset = null;
@@ -2789,8 +2815,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 							parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 							countNonConclusiveProteins);
 				}
-				StackedBarChart chart = new StackedBarChart(chartTitle, parent.getChartSubtitle(chartType, option),
-						xAxisLabel, yAxisLabel, dataset, plotOrientation, asPercentage);
+				final StackedBarChart chart = new StackedBarChart(chartTitle,
+						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
+						asPercentage);
 				if (!totalVersusDifferentSelected) {
 					chart.setIntegerItemLabels();
 				}
@@ -2817,17 +2844,18 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 								countNonConclusiveProteins);
 					}
 				}
-				BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option), xAxisLabel,
+				final BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option), xAxisLabel,
 						yAxisLabel, dataset, plotOrientation);
 				if (totalVersusDifferentSelected) {
-					chart.setNonIntegerItemLabels();
+					chart.setNonIntegerItemLabels(StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING,
+							"#.##");
 				}
 				// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, false);
 				if (!pieChart && !stackedChart && idSets.size() > 1 && !occurrenceFilterEnabled && isTotalSerieShown) {
 					idSets.add(experiment);
@@ -2844,7 +2872,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 								parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 								countNonConclusiveProteins);
 					}
-					PieChart chart = new PieChart(chartTitle, parent.getChartSubtitle(chartType, option), dataset);
+					final PieChart chart = new PieChart(chartTitle, parent.getChartSubtitle(chartType, option),
+							dataset);
 
 					chartList.add(chart.getChartPanel());
 				} else if (stackedChart) {
@@ -2857,8 +2886,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 								parent.distinguishModifiedPeptides(), average, differentIdentificationsShown,
 								countNonConclusiveProteins);
 					}
-					StackedBarChart chart = new StackedBarChart(chartTitle, parent.getChartSubtitle(chartType, option),
-							xAxisLabel, yAxisLabel, dataset, plotOrientation, asPercentage);
+					final StackedBarChart chart = new StackedBarChart(chartTitle,
+							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
+							plotOrientation, asPercentage);
 					if (!totalVersusDifferentSelected) {
 						chart.setIntegerItemLabels();
 					}
@@ -2886,10 +2916,11 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 									countNonConclusiveProteins);
 						}
 					}
-					BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option), xAxisLabel,
-							yAxisLabel, dataset, plotOrientation);
+					final BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option),
+							xAxisLabel, yAxisLabel, dataset, plotOrientation);
 					if (totalVersusDifferentSelected) {
-						chart.setNonIntegerItemLabels();
+						chart.setNonIntegerItemLabels(StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING,
+								"#.##");
 					}
 					chartList.add(chart.getChartPanel());
 				}
@@ -2907,8 +2938,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		String xAxisLabel;
 		String yAxisLabel = "";
 
-		String scoreName = null;
-		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
+		final String scoreName = null;
+		final PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
 
 		final boolean stackedChart = optionsFactory.showAsStackedChart();
 		final boolean asPercentage = optionsFactory.getAsPercentage();
@@ -2936,14 +2967,14 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				dataset = DatasetFactory.createNumberSingleHitProteinsPieDataSet(idSets,
 
 						differentIdentificationsShown, countNonConclusiveProteins);
-				PieChart chart = new PieChart(parent.getChartTitle(chartType),
+				final PieChart chart = new PieChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), dataset);
 				return chart.getChartPanel();
 			} else if (stackedChart) {
 				CategoryDataset dataset = null;
 				dataset = DatasetFactory.createNumberSingleHitProteinsCategoryDataSet(idSets,
 						differentIdentificationsShown, countNonConclusiveProteins);
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
 				chart.setIntegerItemLabels();
@@ -2953,7 +2984,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 				dataset = DatasetFactory.createNumberSingleHitProteinsCategoryDataSet(idSets,
 						differentIdentificationsShown, countNonConclusiveProteins);
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				return chart.getChartPanel();
 			}
@@ -2968,7 +2999,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				PieDataset dataset = null;
 				dataset = DatasetFactory.createNumberSingleHitProteinsPieDataSet(idSets, differentIdentificationsShown,
 						countNonConclusiveProteins);
-				PieChart chart = new PieChart(parent.getChartTitle(chartType),
+				final PieChart chart = new PieChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), dataset);
 				return chart.getChartPanel();
 			} else if (stackedChart) {
@@ -2976,7 +3007,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 				dataset = DatasetFactory.createNumberSingleHitProteinsCategoryDataSet(idSets,
 						differentIdentificationsShown, countNonConclusiveProteins);
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
 				chart.setIntegerItemLabels();
@@ -2987,7 +3018,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 				dataset = DatasetFactory.createNumberSingleHitProteinsCategoryDataSet(idSets,
 						differentIdentificationsShown, countNonConclusiveProteins);
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 
 				return chart.getChartPanel();
@@ -3003,7 +3034,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				PieDataset dataset = null;
 				dataset = DatasetFactory.createNumberSingleHitProteinsPieDataSet(idSets, differentIdentificationsShown,
 						countNonConclusiveProteins);
-				PieChart chart = new PieChart(parent.getChartTitle(chartType),
+				final PieChart chart = new PieChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), dataset);
 				return chart.getChartPanel();
 			} else if (stackedChart) {
@@ -3011,7 +3042,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 				dataset = DatasetFactory.createNumberSingleHitProteinsCategoryDataSet(idSets,
 						differentIdentificationsShown, countNonConclusiveProteins);
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
 				chart.setIntegerItemLabels();
@@ -3022,22 +3053,22 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 				dataset = DatasetFactory.createNumberSingleHitProteinsCategoryDataSet(idSets,
 						differentIdentificationsShown, countNonConclusiveProteins);
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, false);
 				if (!pieChart && !stackedChart && idSets.size() > 1 && !occurrenceFilterEnabled && isTotalSerieShown)
 					idSets.add(experiment);
 				xAxisLabel = experiment.getName();
 				if (pieChart) {
-					PieDataset dataset = DatasetFactory.createNumberSingleHitProteinsPieDataSet(idSets,
+					final PieDataset dataset = DatasetFactory.createNumberSingleHitProteinsPieDataSet(idSets,
 							differentIdentificationsShown, countNonConclusiveProteins);
-					PieChart chart = new PieChart(parent.getChartTitle(chartType),
+					final PieChart chart = new PieChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), dataset);
 
 					chartList.add(chart.getChartPanel());
@@ -3045,7 +3076,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 					CategoryDataset dataset = null;
 					dataset = DatasetFactory.createNumberSingleHitProteinsCategoryDataSet(idSets,
 							differentIdentificationsShown, countNonConclusiveProteins);
-					StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+					final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
 							plotOrientation, asPercentage);
 
@@ -3058,7 +3089,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 					dataset = DatasetFactory.createNumberSingleHitProteinsCategoryDataSet(idSets,
 							differentIdentificationsShown, countNonConclusiveProteins);
 
-					BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
 							plotOrientation);
 
@@ -3077,8 +3108,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		String xAxisLabel;
 		String yAxisLabel = "";
 
-		String scoreName = null;
-		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
+		final String scoreName = null;
+		final PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
 
 		final boolean stackedChart = optionsFactory.showAsStackedChart();
 		final boolean asPercentage = optionsFactory.getAsPercentage();
@@ -3108,8 +3139,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				CategoryDataset dataset = null;
 				dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
 						showPSMsorPeptides, countNonConclusiveProteins);
-				StackedBarChart chart = new StackedBarChart(chartTitle, parent.getChartSubtitle(chartType, option),
-						xAxisLabel, yAxisLabel, dataset, plotOrientation, asPercentage);
+				final StackedBarChart chart = new StackedBarChart(chartTitle,
+						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
+						asPercentage);
 				chart.setIntegerItemLabels();
 				return chart.getChartPanel();
 			} else {
@@ -3117,7 +3149,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 				dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
 						showPSMsorPeptides, countNonConclusiveProteins);
-				BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option), xAxisLabel,
+				final BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option), xAxisLabel,
 						yAxisLabel, dataset, plotOrientation);
 				return chart.getChartPanel();
 			}
@@ -3133,8 +3165,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 				dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
 						showPSMsorPeptides, countNonConclusiveProteins);
-				StackedBarChart chart = new StackedBarChart(chartTitle, parent.getChartSubtitle(chartType, option),
-						xAxisLabel, yAxisLabel, dataset, plotOrientation, asPercentage);
+				final StackedBarChart chart = new StackedBarChart(chartTitle,
+						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
+						asPercentage);
 				chart.setIntegerItemLabels();
 				return chart.getChartPanel();
 			} else {
@@ -3143,7 +3176,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 				dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
 						showPSMsorPeptides, countNonConclusiveProteins);
-				BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option), xAxisLabel,
+				final BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option), xAxisLabel,
 						yAxisLabel, dataset, plotOrientation);
 
 				return chart.getChartPanel();
@@ -3160,8 +3193,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 				dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
 						showPSMsorPeptides, countNonConclusiveProteins);
-				StackedBarChart chart = new StackedBarChart(chartTitle, parent.getChartSubtitle(chartType, option),
-						xAxisLabel, yAxisLabel, dataset, plotOrientation, asPercentage);
+				final StackedBarChart chart = new StackedBarChart(chartTitle,
+						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
+						asPercentage);
 				chart.setIntegerItemLabels();
 				return chart.getChartPanel();
 			} else {
@@ -3170,14 +3204,14 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 				dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
 						showPSMsorPeptides, countNonConclusiveProteins);
-				BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option), xAxisLabel,
+				final BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option), xAxisLabel,
 						yAxisLabel, dataset, plotOrientation);
 
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, false);
 				if (!stackedChart && idSets.size() > 1 && !occurrenceFilterEnabled && isTotalSerieShown)
 					idSets.add(experiment);
@@ -3186,8 +3220,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 					CategoryDataset dataset = null;
 					dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
 							showPSMsorPeptides, countNonConclusiveProteins);
-					StackedBarChart chart = new StackedBarChart(chartTitle, parent.getChartSubtitle(chartType, option),
-							xAxisLabel, yAxisLabel, dataset, plotOrientation, asPercentage);
+					final StackedBarChart chart = new StackedBarChart(chartTitle,
+							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
+							plotOrientation, asPercentage);
 
 					chart.setIntegerItemLabels();
 
@@ -3198,8 +3233,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 					dataset = DatasetFactory.createPeptideNumberInProteinsCategoryDataSet(idSets, maximum,
 							showPSMsorPeptides, countNonConclusiveProteins);
 
-					BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option), xAxisLabel,
-							yAxisLabel, dataset, plotOrientation);
+					final BarChart chart = new BarChart(chartTitle, parent.getChartSubtitle(chartType, option),
+							xAxisLabel, yAxisLabel, dataset, plotOrientation);
 
 					chartList.add(chart.getChartPanel());
 				}
@@ -3214,10 +3249,10 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	private Object showProteinCoverageHistogramChart() {
 		parent.setInformation1(parent.getCurrentChartType());
 		String xAxisLabel;
-		String yAxisLabel = "Average Protein Coverage";
+		final String yAxisLabel = "Average Protein Coverage";
 
-		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
-		boolean retrieveProteinSeqs = true;
+		final PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
+		final boolean retrieveProteinSeqs = true;
 		final int selectedOption = JOptionPane.showConfirmDialog(parent,
 				"<html>In order to calculate protein coverage, the program will retrieve the protein sequence from the Internet,<br>which can take several minutes, depending on the number of proteins.<br>Are you sure you want to continue?</html>",
 				"Warning", JOptionPane.YES_NO_OPTION);
@@ -3233,40 +3268,40 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 			xAxisLabel = "level 2";
 
-			CategoryDataset dataset = DatasetFactory.createAverageProteinCoverageStatisticalCategoryDataSet(idSets,
-					retrieveProteinSeqs, countNonConclusiveProteins);
-			BarChart chart = new BarChart(parent.getChartTitle(chartType), parent.getChartSubtitle(chartType, option),
-					xAxisLabel, yAxisLabel, dataset, plotOrientation);
+			final CategoryDataset dataset = DatasetFactory.createAverageProteinCoverageStatisticalCategoryDataSet(
+					idSets, retrieveProteinSeqs, countNonConclusiveProteins);
+			final BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
 
 			xAxisLabel = "experiment";
 
-			CategoryDataset dataset = DatasetFactory.createAverageProteinCoverageStatisticalCategoryDataSet(idSets,
-					retrieveProteinSeqs, countNonConclusiveProteins);
-			BarChart chart = new BarChart(parent.getChartTitle(chartType), parent.getChartSubtitle(chartType, option),
-					xAxisLabel, yAxisLabel, dataset, plotOrientation);
+			final CategoryDataset dataset = DatasetFactory.createAverageProteinCoverageStatisticalCategoryDataSet(
+					idSets, retrieveProteinSeqs, countNonConclusiveProteins);
+			final BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
 
 			xAxisLabel = "experiment list";
 
-			CategoryDataset dataset = DatasetFactory.createAverageProteinCoverageStatisticalCategoryDataSet(idSets,
-					retrieveProteinSeqs, countNonConclusiveProteins);
-			BarChart chart = new BarChart(parent.getChartTitle(chartType), parent.getChartSubtitle(chartType, option),
-					xAxisLabel, yAxisLabel, dataset, plotOrientation);
+			final CategoryDataset dataset = DatasetFactory.createAverageProteinCoverageStatisticalCategoryDataSet(
+					idSets, retrieveProteinSeqs, countNonConclusiveProteins);
+			final BarChart chart = new BarChart(parent.getChartTitle(chartType),
+					parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, true);
 				xAxisLabel = experiment.getName();
-				CategoryDataset dataset = DatasetFactory.createAverageProteinCoverageStatisticalCategoryDataSet(idSets,
-						retrieveProteinSeqs, countNonConclusiveProteins);
-				BarChart chart = new BarChart(parent.getChartTitle(chartType),
+				final CategoryDataset dataset = DatasetFactory.createAverageProteinCoverageStatisticalCategoryDataSet(
+						idSets, retrieveProteinSeqs, countNonConclusiveProteins);
+				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
 				chartList.add(chart.getChartPanel());
 			}
@@ -3279,14 +3314,14 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 	private Object showProteinCoverageDistributionChart() {
 		parent.setInformation1(parent.getCurrentChartType());
-		int bins = optionsFactory.getHistogramBins();
-		boolean addZeroZeroValue = true;
-		HistogramType histogramType = optionsFactory.getHistogramType();
+		final int bins = optionsFactory.getHistogramBins();
+		final boolean addZeroZeroValue = true;
+		final HistogramType histogramType = optionsFactory.getHistogramType();
 
-		String xAxisLabel = "Protein coverage (%)";
-		String frequencyType = "proteins";
+		final String xAxisLabel = "Protein coverage (%)";
+		final String frequencyType = "proteins";
 
-		boolean retrieveProteinSeqs = true;
+		final boolean retrieveProteinSeqs = true;
 		final int selectedOption = JOptionPane.showConfirmDialog(parent,
 				"<html>In order to calculate protein coverage, the program will retrieve the protein sequence from the Internet,<br>which can take several minutes, depending on the number of proteins.<br>Are you sure you want to continue?</html>",
 				"Warning", JOptionPane.YES_NO_OPTION);
@@ -3298,38 +3333,38 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
-			HistogramDataset dataset = DatasetFactory.createProteinCoverageHistogramDataSet(idSets, bins, histogramType,
-					retrieveProteinSeqs, countNonConclusiveProteins);
-			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
+			final HistogramDataset dataset = DatasetFactory.createProteinCoverageHistogramDataSet(idSets, bins,
+					histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
+			final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
 
-			HistogramDataset dataset = DatasetFactory.createProteinCoverageHistogramDataSet(idSets, bins, histogramType,
-					retrieveProteinSeqs, countNonConclusiveProteins);
-			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
+			final HistogramDataset dataset = DatasetFactory.createProteinCoverageHistogramDataSet(idSets, bins,
+					histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
+			final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
 
-			HistogramDataset dataset = DatasetFactory.createProteinCoverageHistogramDataSet(idSets, bins, histogramType,
-					retrieveProteinSeqs, countNonConclusiveProteins);
-			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
+			final HistogramDataset dataset = DatasetFactory.createProteinCoverageHistogramDataSet(idSets, bins,
+					histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
+			final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getFullName(), null, true);
-				HistogramDataset dataset = DatasetFactory.createProteinCoverageHistogramDataSet(idSets, bins,
+				final HistogramDataset dataset = DatasetFactory.createProteinCoverageHistogramDataSet(idSets, bins,
 						histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
-				HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType), experiment.getName(),
+				final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType), experiment.getName(),
 						dataset, xAxisLabel, frequencyType);
 				// chart.setXRangeValues(0, 100);
 				chartList.add(chart.getChartPanel());
@@ -3344,14 +3379,14 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		parent.setInformation1(parent.getCurrentChartType().getName() + " / " + plotItem);
 		String xAxisLabel;
 		String yAxisLabel = "";
-		boolean asPercentage = optionsFactory.getAsPercentage();
-		PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
+		final boolean asPercentage = optionsFactory.getAsPercentage();
+		final PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
 		if (plotItem.equals(IdentificationItemEnum.PEPTIDE))
 			yAxisLabel = "# peptides";
 		else
 			yAxisLabel = "# proteins";
-		int maximum = optionsFactory.getMaximumOccurrence();
-		boolean overReplicates = optionsFactory.getOverReplicates();
+		final int maximum = optionsFactory.getMaximumOccurrence();
+		final boolean overReplicates = optionsFactory.getOverReplicates();
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
 		if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
 
@@ -3363,7 +3398,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			else
 				dataset = DatasetFactory.createRepeatabilityOverReplicatesCategoryDataSet(idSets, plotItem,
 						parent.distinguishModifiedPeptides(), maximum, countNonConclusiveProteins);
-			StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+			final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 					asPercentage);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
@@ -3378,7 +3413,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			else
 				dataset = DatasetFactory.createRepeatabilityOverReplicatesCategoryDataSet(idSets, plotItem,
 						parent.distinguishModifiedPeptides(), maximum, countNonConclusiveProteins);
-			StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+			final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 					asPercentage);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
@@ -3394,14 +3429,14 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			else
 				dataset = DatasetFactory.createRepeatabilityOverReplicatesCategoryDataSet(idSets, plotItem,
 						parent.distinguishModifiedPeptides(), maximum, countNonConclusiveProteins);
-			StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+			final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 					asPercentage);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getFullName(), null, true);
 				xAxisLabel = "experiment";
 
@@ -3412,7 +3447,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				else
 					dataset = DatasetFactory.createRepeatabilityOverReplicatesCategoryDataSet(idSets, plotItem,
 							parent.distinguishModifiedPeptides(), maximum, countNonConclusiveProteins);
-				StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
+				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
 						asPercentage);
 				chartList.add(chart.getChartPanel());
@@ -3427,7 +3462,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	private Object showScoreComparisonScatterChart(IdentificationItemEnum plotItem) {
 		parent.setInformation1(parent.getCurrentChartType().getName() + " / " + plotItem);
 		String scoreName = null;
-		boolean distinguish = parent.distinguishModifiedPeptides();
+		final boolean distinguish = parent.distinguishModifiedPeptides();
 		if (plotItem.equals(IdentificationItemEnum.PEPTIDE)) {
 			scoreName = optionsFactory.getPeptideScoreName();
 
@@ -3438,15 +3473,15 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 		String xAxisLabel = scoreName;
 		String yAxisLabel = scoreName;
-		boolean applyLog = optionsFactory.isApplyLog();
+		final boolean applyLog = optionsFactory.isApplyLog();
 		if (applyLog) {
 			xAxisLabel = "log10(" + xAxisLabel + ")";
 			yAxisLabel = "log10(" + yAxisLabel + ")";
 		}
-		boolean showRegressionLine = optionsFactory.showRegressionLine();
-		boolean showDiagonalLine = optionsFactory.showDiagonalLine();
+		final boolean showRegressionLine = optionsFactory.showRegressionLine();
+		final boolean showDiagonalLine = optionsFactory.showDiagonalLine();
 
-		boolean separateDecoyHits = optionsFactory.isSeparatedDecoyHits();
+		final boolean separateDecoyHits = optionsFactory.isSeparatedDecoyHits();
 		List<IdentificationSet> idSets = getIdentificationSets(null, scoreComparisonJCheckBoxes, false);
 		if (idSets.size() == 2) {
 			xAxisLabel = xAxisLabel + " (" + idSets.get(0).getFullName() + ")";
@@ -3454,9 +3489,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		}
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 
-			Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createScoreXYDataSet(idSets, scoreName,
-					plotItem, distinguish, applyLog, separateDecoyHits, countNonConclusiveProteins);
-			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
+			final Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createScoreXYDataSet(idSets,
+					scoreName, plotItem, distinguish, applyLog, separateDecoyHits, countNonConclusiveProteins);
+			final XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 			if (showRegressionLine)
 				chart.addRegressionLine(true);
@@ -3466,9 +3501,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
 
-			Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createScoreXYDataSet(idSets, scoreName,
-					plotItem, distinguish, applyLog, separateDecoyHits, countNonConclusiveProteins);
-			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
+			final Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createScoreXYDataSet(idSets,
+					scoreName, plotItem, distinguish, applyLog, separateDecoyHits, countNonConclusiveProteins);
+			final XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 			if (showRegressionLine)
 				chart.addRegressionLine(true);
@@ -3477,16 +3512,16 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				try {
 					idSets = getIdentificationSets(experiment.getFullName(), scoreComparisonJCheckBoxes, false);
 
 					if (!idSets.isEmpty()) {
-						Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createScoreXYDataSet(idSets,
-								scoreName, plotItem, distinguish, applyLog, separateDecoyHits,
+						final Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createScoreXYDataSet(
+								idSets, scoreName, plotItem, distinguish, applyLog, separateDecoyHits,
 								countNonConclusiveProteins);
-						XYPointChart chart = new XYPointChart(
+						final XYPointChart chart = new XYPointChart(
 								parent.getChartTitle(chartType) + ": " + experiment.getName(),
 								parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 						if (showRegressionLine)
@@ -3495,8 +3530,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 							chart.addDiagonalLine();
 						chartList.add(chart.getChartPanel());
 					}
-				} catch (IllegalMiapeArgumentException e) {
-					JPanel jpanel = new JPanel();
+				} catch (final IllegalMiapeArgumentException e) {
+					final JPanel jpanel = new JPanel();
 					jpanel.add(new JLabel("<html>Error generating chart for " + experiment.getName() + "<br>"
 							+ e.getMessage() + "</html>"));
 					chartList.add(jpanel);
@@ -3526,12 +3561,12 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				throw new IllegalMiapeArgumentException("There is not a protein score available");
 		}
 
-		int bins = optionsFactory.getHistogramBins();
-		boolean addTotal = optionsFactory.isTotalSerieShown();
-		boolean addZeroZeroValue = false;
-		HistogramType histogramType = optionsFactory.getHistogramType();
-		boolean applyLog = optionsFactory.isApplyLog();
-		boolean separateDecoyHits = optionsFactory.isSeparatedDecoyHits();
+		final int bins = optionsFactory.getHistogramBins();
+		final boolean addTotal = optionsFactory.isTotalSerieShown();
+		final boolean addZeroZeroValue = false;
+		final HistogramType histogramType = optionsFactory.getHistogramType();
+		final boolean applyLog = optionsFactory.isApplyLog();
+		final boolean separateDecoyHits = optionsFactory.isSeparatedDecoyHits();
 		String xAxisLabel = scoreName;
 		if (applyLog) {
 			xAxisLabel = "log10(" + xAxisLabel + ")";
@@ -3554,36 +3589,36 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, addTotal);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 
-			HistogramDataset dataset = DatasetFactory.createScoreHistogramDataSet(idSets, scoreName, plotItem, bins,
-					addZeroZeroValue, histogramType, applyLog, separateDecoyHits, countNonConclusiveProteins);
-			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
+			final HistogramDataset dataset = DatasetFactory.createScoreHistogramDataSet(idSets, scoreName, plotItem,
+					bins, addZeroZeroValue, histogramType, applyLog, separateDecoyHits, countNonConclusiveProteins);
+			final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
 
-			HistogramDataset dataset = DatasetFactory.createScoreHistogramDataSet(idSets, scoreName, plotItem, bins,
-					addZeroZeroValue, histogramType, applyLog, separateDecoyHits, countNonConclusiveProteins);
-			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
+			final HistogramDataset dataset = DatasetFactory.createScoreHistogramDataSet(idSets, scoreName, plotItem,
+					bins, addZeroZeroValue, histogramType, applyLog, separateDecoyHits, countNonConclusiveProteins);
+			final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
 
-			HistogramDataset dataset = DatasetFactory.createScoreHistogramDataSet(idSets, scoreName, plotItem, bins,
-					addZeroZeroValue, histogramType, applyLog, separateDecoyHits, countNonConclusiveProteins);
-			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
+			final HistogramDataset dataset = DatasetFactory.createScoreHistogramDataSet(idSets, scoreName, plotItem,
+					bins, addZeroZeroValue, histogramType, applyLog, separateDecoyHits, countNonConclusiveProteins);
+			final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 
 				idSets = getIdentificationSets(experiment.getName(), null, addTotal);
-				HistogramDataset dataset = DatasetFactory.createScoreHistogramDataSet(idSets, scoreName, plotItem, bins,
-						addZeroZeroValue, histogramType, applyLog, separateDecoyHits, countNonConclusiveProteins);
-				HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType), experiment.getName(),
+				final HistogramDataset dataset = DatasetFactory.createScoreHistogramDataSet(idSets, scoreName, plotItem,
+						bins, addZeroZeroValue, histogramType, applyLog, separateDecoyHits, countNonConclusiveProteins);
+				final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType), experiment.getName(),
 						dataset, xAxisLabel, frequencyType);
 				chartList.add(chart.getChartPanel());
 			}
@@ -3596,9 +3631,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	private Object showFDRChart() {
 		parent.setInformation1(parent.getCurrentChartType());
 		String yAxisLabel = null;
-		boolean showProteinLevel = optionsFactory.showProteinFDRLevel();
-		boolean showPeptideLevel = optionsFactory.showPeptideFDRLevel();
-		boolean showPSMLevel = optionsFactory.showPSMFDRLevel();
+		final boolean showProteinLevel = optionsFactory.showProteinFDRLevel();
+		final boolean showPeptideLevel = optionsFactory.showPeptideFDRLevel();
+		final boolean showPSMLevel = optionsFactory.showPSMFDRLevel();
 
 		if (showProteinLevel && !showPeptideLevel && !showPSMLevel) {
 			yAxisLabel = "# proteins";
@@ -3609,44 +3644,44 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		} else {
 			yAxisLabel = "# (Proteins/Peptides/PSMs)";
 		}
-		String xAxisLabel = "FDR (%)";
+		final String xAxisLabel = "FDR (%)";
 		final boolean isTotalSerieShown = optionsFactory.isTotalSerieShown();
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, isTotalSerieShown);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 
-			XYDataset dataset = DatasetFactory.createFDRDataSet(idSets, showProteinLevel, showPeptideLevel,
+			final XYDataset dataset = DatasetFactory.createFDRDataSet(idSets, showProteinLevel, showPeptideLevel,
 					showPSMLevel, countNonConclusiveProteins);
-			XYLineChart chart = new XYLineChart(parent.getChartTitle(chartType),
+			final XYLineChart chart = new XYLineChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
 
-			XYDataset dataset = DatasetFactory.createFDRDataSet(idSets, showProteinLevel, showPeptideLevel,
+			final XYDataset dataset = DatasetFactory.createFDRDataSet(idSets, showProteinLevel, showPeptideLevel,
 					showPSMLevel, countNonConclusiveProteins);
-			XYLineChart chart = new XYLineChart(parent.getChartTitle(chartType),
+			final XYLineChart chart = new XYLineChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
 
-			XYDataset dataset = DatasetFactory.createFDRDataSet(idSets, showProteinLevel, showPeptideLevel,
+			final XYDataset dataset = DatasetFactory.createFDRDataSet(idSets, showProteinLevel, showPeptideLevel,
 					showPSMLevel, countNonConclusiveProteins);
-			XYLineChart chart = new XYLineChart(parent.getChartTitle(chartType),
+			final XYLineChart chart = new XYLineChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, isTotalSerieShown);
 				if (isTotalSerieShown)
 					idSets.add(experiment);
-				XYDataset dataset = DatasetFactory.createFDRDataSet(idSets, showProteinLevel, showPeptideLevel,
+				final XYDataset dataset = DatasetFactory.createFDRDataSet(idSets, showProteinLevel, showPeptideLevel,
 						showPSMLevel, countNonConclusiveProteins);
-				XYLineChart chart = new XYLineChart(parent.getChartTitle(chartType),
+				final XYLineChart chart = new XYLineChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel);
 				chartList.add(chart.getChartPanel());
 			}
@@ -3661,10 +3696,10 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		parent.setInformation1(parent.getCurrentChartType());
 		String yAxisLabel = "FDR (%)";
 
-		boolean showPSMs = optionsFactory.showPSMs();
-		boolean showPeptides = optionsFactory.showPeptides();
-		boolean showProteins = optionsFactory.showProteins();
-		boolean showScoreVsFDR = optionsFactory.showScoreVsFDR();
+		final boolean showPSMs = optionsFactory.showPSMs();
+		final boolean showPeptides = optionsFactory.showPeptides();
+		final boolean showProteins = optionsFactory.showProteins();
+		final boolean showScoreVsFDR = optionsFactory.showScoreVsFDR();
 		if (!showPSMs && !showPeptides && !showProteins && !showScoreVsFDR)
 			throw new IllegalMiapeArgumentException(
 					"Select PSM, Peptides, Proteins or Score vs FDR to generate the chart");
@@ -3672,38 +3707,38 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			yAxisLabel = "# proteins";
 
 		List<IdentificationSet> idSets = getIdentificationSets(null, optionsFactory.getIdSetsJCheckBoxes(), false);
-		java.util.Set<String> scoreNames = new THashSet<String>();
-		for (IdentificationSet identificationSet : idSets) {
-			FDRFilter fdrFilter = identificationSet.getFDRFilter();
+		final java.util.Set<String> scoreNames = new THashSet<String>();
+		for (final IdentificationSet identificationSet : idSets) {
+			final FDRFilter fdrFilter = identificationSet.getFDRFilter();
 			if (fdrFilter != null)
 				if (!scoreNames.contains(fdrFilter.getSortingParameters().getScoreName()))
 					scoreNames.add(fdrFilter.getSortingParameters().getScoreName());
 		}
 		String scoreNamesString = "";
-		for (String string : scoreNames) {
+		for (final String string : scoreNames) {
 			if (!"".equals(scoreNamesString))
 				scoreNamesString = scoreNamesString + ", ";
 			scoreNamesString = scoreNamesString + string;
 		}
-		String xAxisLabel = "Peptide score (" + scoreNamesString + ")";
+		final String xAxisLabel = "Peptide score (" + scoreNamesString + ")";
 
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 
 			XYLineChart chart = null;
 			try {
-				XYDataset dataset = DatasetFactory.createFDRvsScoreDataSet(idSets, showPSMs, showPeptides, showProteins,
-						countNonConclusiveProteins);
+				final XYDataset dataset = DatasetFactory.createFDRvsScoreDataSet(idSets, showPSMs, showPeptides,
+						showProteins, countNonConclusiveProteins);
 
 				chart = new XYLineChart(parent.getChartTitle(chartType), parent.getChartSubtitle(chartType, option),
 						dataset, xAxisLabel, yAxisLabel);
-			} catch (IllegalMiapeArgumentException e) {
+			} catch (final IllegalMiapeArgumentException e) {
 
 			}
 			if (showScoreVsFDR) {
 				XYDataset dataset2 = null;
 				try {
 					dataset2 = DatasetFactory.createScoreVsNumProteinsDataSet(idSets, countNonConclusiveProteins);
-				} catch (IllegalMiapeArgumentException e) {
+				} catch (final IllegalMiapeArgumentException e) {
 
 				}
 				if (chart != null)
@@ -3719,19 +3754,19 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 			XYLineChart chart = null;
 			try {
-				XYDataset dataset = DatasetFactory.createFDRvsScoreDataSet(idSets, showPSMs, showPeptides, showProteins,
-						countNonConclusiveProteins);
+				final XYDataset dataset = DatasetFactory.createFDRvsScoreDataSet(idSets, showPSMs, showPeptides,
+						showProteins, countNonConclusiveProteins);
 
 				chart = new XYLineChart(parent.getChartTitle(chartType), parent.getChartSubtitle(chartType, option),
 						dataset, xAxisLabel, yAxisLabel);
-			} catch (IllegalMiapeArgumentException e) {
+			} catch (final IllegalMiapeArgumentException e) {
 
 			}
 			if (showScoreVsFDR) {
 				XYDataset dataset2 = null;
 				try {
 					dataset2 = DatasetFactory.createScoreVsNumProteinsDataSet(idSets, countNonConclusiveProteins);
-				} catch (IllegalMiapeArgumentException e) {
+				} catch (final IllegalMiapeArgumentException e) {
 
 				}
 				if (chart != null)
@@ -3747,20 +3782,20 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			XYLineChart chart = null;
 			try {
 
-				XYDataset dataset = DatasetFactory.createFDRvsScoreDataSet(idSets, showPSMs, showPeptides, showProteins,
-						countNonConclusiveProteins);
+				final XYDataset dataset = DatasetFactory.createFDRvsScoreDataSet(idSets, showPSMs, showPeptides,
+						showProteins, countNonConclusiveProteins);
 
 				chart = new XYLineChart(parent.getChartTitle(chartType), parent.getChartSubtitle(chartType, option),
 						dataset, xAxisLabel, yAxisLabel);
 
-			} catch (IllegalMiapeArgumentException e) {
+			} catch (final IllegalMiapeArgumentException e) {
 
 			}
 			if (showScoreVsFDR) {
 				XYDataset dataset2 = null;
 				try {
 					dataset2 = DatasetFactory.createScoreVsNumProteinsDataSet(idSets, countNonConclusiveProteins);
-				} catch (IllegalMiapeArgumentException e) {
+				} catch (final IllegalMiapeArgumentException e) {
 
 				}
 				if (chart != null)
@@ -3772,8 +3807,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			}
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), optionsFactory.getIdSetsJCheckBoxes(), false);
 				XYLineChart chart = null;
 
@@ -3781,16 +3816,16 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				// xAxisLabel = xAxisLabel + ": "
 				// + fdrFilter.getSortingParameters().getScoreName();
 				try {
-					XYDataset dataset = DatasetFactory.createFDRvsScoreDataSet(idSets, showPSMs, showPeptides,
+					final XYDataset dataset = DatasetFactory.createFDRvsScoreDataSet(idSets, showPSMs, showPeptides,
 							showProteins, countNonConclusiveProteins);
 
 					chart = new XYLineChart(parent.getChartTitle(chartType), parent.getChartSubtitle(chartType, option),
 							dataset, xAxisLabel, yAxisLabel);
-				} catch (IllegalMiapeArgumentException e) {
+				} catch (final IllegalMiapeArgumentException e) {
 
 				}
 				if (showScoreVsFDR) {
-					XYDataset dataset2 = DatasetFactory.createScoreVsNumProteinsDataSet(idSets,
+					final XYDataset dataset2 = DatasetFactory.createScoreVsNumProteinsDataSet(idSets,
 							countNonConclusiveProteins);
 					if (chart != null)
 						chart.addNewAxis(dataset2, "num proteins");
@@ -3809,56 +3844,56 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 	private Object showPeptideCountingHistogramChart() {
 		parent.setInformation1(parent.getCurrentChartType());
-		int bins = optionsFactory.getHistogramBins();
-		HistogramType histogramType = optionsFactory.getHistogramType();
-		String xAxisLabel = "protein SPC ratio (log10)";
-		String frequencyType = "ratios";
-		Map<String, JCheckBox> idSetsCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
-		ProteinGroupComparisonType proteinGroupComparisonType = optionsFactory.getProteinGroupComparisonType();
-		boolean distinguish = parent.distinguishModifiedPeptides();
+		final int bins = optionsFactory.getHistogramBins();
+		final HistogramType histogramType = optionsFactory.getHistogramType();
+		final String xAxisLabel = "protein SPC ratio (log10)";
+		final String frequencyType = "ratios";
+		final Map<String, JCheckBox> idSetsCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
+		final ProteinGroupComparisonType proteinGroupComparisonType = optionsFactory.getProteinGroupComparisonType();
+		final boolean distinguish = parent.distinguishModifiedPeptides();
 		List<IdentificationSet> idSets = getIdentificationSets(null, idSetsCheckBoxes, false);
 		if (idSets.size() != 2)
 			throw new IllegalMiapeArgumentException("Select two datasets");
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 
-			HistogramDataset dataset = DatasetFactory.createPeptideCountingHistogramDataSet(idSets.get(0),
+			final HistogramDataset dataset = DatasetFactory.createPeptideCountingHistogramDataSet(idSets.get(0),
 					idSets.get(1), proteinGroupComparisonType, histogramType, distinguish, countNonConclusiveProteins,
 					bins);
-			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
+			final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, true, frequencyType);
 			chart.centerRangeAxisOnZero();
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			HistogramDataset dataset = DatasetFactory.createPeptideCountingHistogramDataSet(idSets.get(0),
+			final HistogramDataset dataset = DatasetFactory.createPeptideCountingHistogramDataSet(idSets.get(0),
 					idSets.get(1), proteinGroupComparisonType, histogramType, distinguish, countNonConclusiveProteins,
 					bins);
 
-			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
+			final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, true, frequencyType);
 			chart.centerRangeAxisOnZero();
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			HistogramDataset dataset = DatasetFactory.createPeptideCountingHistogramDataSet(idSets.get(0),
+			final HistogramDataset dataset = DatasetFactory.createPeptideCountingHistogramDataSet(idSets.get(0),
 					idSets.get(1), proteinGroupComparisonType, histogramType, distinguish, countNonConclusiveProteins,
 					bins);
-			HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
+			final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, true, frequencyType);
 			chart.centerRangeAxisOnZero();
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, true);
-				HistogramDataset dataset = DatasetFactory.createPeptideCountingHistogramDataSet(idSets.get(0),
+				final HistogramDataset dataset = DatasetFactory.createPeptideCountingHistogramDataSet(idSets.get(0),
 						idSets.get(1), proteinGroupComparisonType, histogramType, distinguish,
 						countNonConclusiveProteins, bins);
-				HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
+				final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, true, frequencyType);
 				chart.centerRangeAxisOnZero();
 				// chart.setXRangeValues(0, 100);
@@ -3872,52 +3907,56 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 	private Object showPeptideCountingVsScoreScatterChart() {
 		parent.setInformation1(parent.getCurrentChartType());
-		int bins = optionsFactory.getHistogramBins();
-		String selectedScoreName = optionsFactory.getPeptideScoreName();
-		String xAxisLabel = "protein SPC ratio (log10)";
-		String yAxisLabel = selectedScoreName;
-		Map<String, JCheckBox> idSetsCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
-		ProteinGroupComparisonType proteinGroupComparisonType = optionsFactory.getProteinGroupComparisonType();
-		boolean distinguish = parent.distinguishModifiedPeptides();
+		final int bins = optionsFactory.getHistogramBins();
+		final String selectedScoreName = optionsFactory.getPeptideScoreName();
+		final String xAxisLabel = "protein SPC ratio (log10)";
+		final String yAxisLabel = selectedScoreName;
+		final Map<String, JCheckBox> idSetsCheckBoxes = optionsFactory.getIdSetsJCheckBoxes();
+		final ProteinGroupComparisonType proteinGroupComparisonType = optionsFactory.getProteinGroupComparisonType();
+		final boolean distinguish = parent.distinguishModifiedPeptides();
 		List<IdentificationSet> idSets = getIdentificationSets(null, idSetsCheckBoxes, false);
 		if (idSets.size() != 2)
 			throw new IllegalMiapeArgumentException("Select two datasets");
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 
-			Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createPeptideCountingVsScoreXYDataSet(
-					idSets.get(0), idSets.get(1), proteinGroupComparisonType, distinguish, selectedScoreName);
-			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
+			final Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory
+					.createPeptideCountingVsScoreXYDataSet(idSets.get(0), idSets.get(1), proteinGroupComparisonType,
+							distinguish, selectedScoreName);
+			final XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel, false);
 			chart.centerRangeAxisOnZero();
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createPeptideCountingVsScoreXYDataSet(
-					idSets.get(0), idSets.get(1), proteinGroupComparisonType, distinguish, selectedScoreName);
+			final Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory
+					.createPeptideCountingVsScoreXYDataSet(idSets.get(0), idSets.get(1), proteinGroupComparisonType,
+							distinguish, selectedScoreName);
 
-			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
+			final XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel, false);
 			chart.centerRangeAxisOnZero();
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createPeptideCountingVsScoreXYDataSet(
-					idSets.get(0), idSets.get(1), proteinGroupComparisonType, distinguish, selectedScoreName);
-			XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
+			final Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory
+					.createPeptideCountingVsScoreXYDataSet(idSets.get(0), idSets.get(1), proteinGroupComparisonType,
+							distinguish, selectedScoreName);
+			final XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel, false);
 			chart.centerRangeAxisOnZero();
 			// chart.setXRangeValues(0, 100);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
-			List<JPanel> chartList = new ArrayList<JPanel>();
-			for (Experiment experiment : experimentList.getExperiments()) {
+			final List<JPanel> chartList = new ArrayList<JPanel>();
+			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, true);
-				Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory.createPeptideCountingVsScoreXYDataSet(
-						idSets.get(0), idSets.get(1), proteinGroupComparisonType, distinguish, selectedScoreName);
-				XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
+				final Pair<XYDataset, MyXYItemLabelGenerator> dataset = DatasetFactory
+						.createPeptideCountingVsScoreXYDataSet(idSets.get(0), idSets.get(1), proteinGroupComparisonType,
+								distinguish, selectedScoreName);
+				final XYPointChart chart = new XYPointChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, yAxisLabel, false);
 				chart.centerRangeAxisOnZero();
 				// chart.setXRangeValues(0, 100);
@@ -3939,7 +3978,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	 * 
 	 */
 	public VennData getVennData(String experimentName) {
-		return this.vennChartMap.get(experimentName).getVennData();
+		return vennChartMap.get(experimentName).getVennData();
 	}
 
 	/**
@@ -3948,13 +3987,13 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	 * 
 	 */
 	public VennChart getVennChart(String experimentName) {
-		return this.vennChartMap.get(experimentName);
+		return vennChartMap.get(experimentName);
 	}
 
 	/**
 	 * @return
 	 */
 	public String getChartType() {
-		return this.chartType + " (" + this.option + ")";
+		return chartType + " (" + option + ")";
 	}
 }
