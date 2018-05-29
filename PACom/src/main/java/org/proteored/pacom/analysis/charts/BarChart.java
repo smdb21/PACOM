@@ -2,6 +2,7 @@ package org.proteored.pacom.analysis.charts;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import org.jfree.chart.ChartFactory;
@@ -47,16 +48,16 @@ public class BarChart {
 	public BarChart(String chartTitle, String subtitle, String xAxisLabel, String yAxisLabel, CategoryDataset dataset,
 			PlotOrientation plotOrientation) {
 
-		this.title = chartTitle;
+		title = chartTitle;
 		this.subtitle = new TextTitle(subtitle);
-		this.categoryAxisLabel = xAxisLabel;
-		this.valueAxisLabel = yAxisLabel;
+		categoryAxisLabel = xAxisLabel;
+		valueAxisLabel = yAxisLabel;
 
 		chart = createChart(dataset, plotOrientation);
 
 		// set horizontal x label if just one series
-		if (dataset.getColumnCount() == 1 || !this.xLabelsExcedLimit())
-			this.setHorizontalXLabel();
+		if (dataset.getColumnCount() == 1 || !xLabelsExcedLimit())
+			setHorizontalXLabel();
 
 		chartPanel = new ChartPanel(chart);
 
@@ -65,8 +66,8 @@ public class BarChart {
 
 		final Dimension dimension = new Dimension(ChartProperties.DEFAULT_CHART_WIDTH,
 				ChartProperties.DEFAULT_CHART_HEIGHT);
-		this.chartPanel.setPreferredSize(dimension);
-		this.chartPanel.setSize(dimension);
+		chartPanel.setPreferredSize(dimension);
+		chartPanel.setSize(dimension);
 
 	}
 
@@ -78,30 +79,30 @@ public class BarChart {
 	}
 
 	public JFreeChart getChart() {
-		return this.chart;
+		return chart;
 	}
 
 	private JFreeChart createChart(CategoryDataset dataset, PlotOrientation plotOrientation) {
 
-		JFreeChart chart = ChartFactory.createBarChart(title, categoryAxisLabel, valueAxisLabel, dataset,
+		final JFreeChart chart = ChartFactory.createBarChart(title, categoryAxisLabel, valueAxisLabel, dataset,
 				plotOrientation, true, true, false);
-		chart.addSubtitle(this.subtitle);
+		chart.addSubtitle(subtitle);
 		// Backgroung color
 		chart.setBackgroundPaint(Color.white);
 		// get plot
-		CategoryPlot plot = (CategoryPlot) chart.getPlot();
+		final CategoryPlot plot = (CategoryPlot) chart.getPlot();
 		// // Colors
 		plot.setBackgroundPaint(Color.white);
 		plot.setRangeGridlinePaint(Color.lightGray);
 
 		// set the range axis to display integers only...
-		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+		final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
 		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 		rangeAxis.setAutoRange(true);
 		rangeAxis.setLowerMargin(0.0);
 		rangeAxis.setUpperMargin(0.1);
 
-		CategoryAxis domainAxis = plot.getDomainAxis();
+		final CategoryAxis domainAxis = plot.getDomainAxis();
 		domainAxis.setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 6.0));
 
 		BarRenderer renderer = null;
@@ -137,30 +138,31 @@ public class BarChart {
 		return chart;
 	}
 
-	public void setNonIntegerItemLabels() {
-		if (this.chart != null) {
-			CategoryPlot plot = (CategoryPlot) this.chart.getPlot();
-			CategoryItemRenderer renderer = plot.getRenderer();
-			renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+	public void setNonIntegerItemLabels(String labelFormat, String decimalFormatPattern) {
+		if (chart != null) {
+			final CategoryPlot plot = (CategoryPlot) chart.getPlot();
+			final CategoryItemRenderer renderer = plot.getRenderer();
+			renderer.setDefaultItemLabelGenerator(
+					new StandardCategoryItemLabelGenerator(labelFormat, new DecimalFormat(decimalFormatPattern)));
 			renderer.setDefaultItemLabelsVisible(true);
 		}
 	}
 
 	public void setHorizontalXLabel() {
 		if (chart != null) {
-			CategoryPlot plot = (CategoryPlot) chart.getPlot();
-			CategoryAxis domainAxis = plot.getDomainAxis();
+			final CategoryPlot plot = (CategoryPlot) chart.getPlot();
+			final CategoryAxis domainAxis = plot.getDomainAxis();
 			domainAxis.setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(0));
 		}
 	}
 
 	public boolean xLabelsExcedLimit() {
-		if (this.chart != null) {
-			CategoryDataset dataset = this.chart.getCategoryPlot().getDataset();
+		if (chart != null) {
+			final CategoryDataset dataset = chart.getCategoryPlot().getDataset();
 
 			int totalLength = 0;
-			for (Object key : dataset.getColumnKeys()) {
-				String name = (String) key;
+			for (final Object key : dataset.getColumnKeys()) {
+				final String name = (String) key;
 				totalLength += name.length();
 			}
 			if (totalLength > 50)
