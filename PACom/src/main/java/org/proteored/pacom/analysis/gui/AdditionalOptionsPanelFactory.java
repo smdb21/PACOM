@@ -3002,6 +3002,9 @@ public class AdditionalOptionsPanelFactory {
 	}
 
 	public String getCleavageAminoacids() {
+		if (jTextboxCleavage == null) {
+			getCleavagePanel();
+		}
 		return jTextboxCleavage.getText();
 	}
 }
