@@ -78,6 +78,7 @@ import org.proteored.pacom.utils.MiapeExtractionRunParametersImpl;
 
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.set.hash.THashSet;
 
 /**
  *
@@ -928,7 +929,32 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 	private void selectFilesAndGuessTypes() {
 
 		selectedInputFiles = selectFiles(true);
-		guessInputDataTypes(selectedInputFiles);
+		// check invalid names
+		selectedInputFiles = checkInvalidInputFileNames(selectedInputFiles);
+		if (selectedInputFiles.length > 0) {
+			guessInputDataTypes(selectedInputFiles);
+		}
+	}
+
+	private static String invalidCharacters = "#";
+
+	private File[] checkInvalidInputFileNames(File[] selectedInputFiles2) {
+		final THashSet<File> ret = new THashSet<File>();
+		// the table, and that happens when associated task is not null
+		for (final File file : selectedInputFiles2) {
+			final String fileName = FilenameUtils.getBaseName(file.getAbsolutePath());
+			for (int index = 0; index < invalidCharacters.length(); index++) {
+				final String invalidChar = invalidCharacters.substring(index, index + 1);
+				if (fileName.contains(invalidChar)) {
+					appendStatus("ERROR: Input file '" + fileName
+							+ "' contains an invalid character in its name. Please rename it before selecting it for import.");
+				} else {
+					ret.add(file);
+				}
+			}
+		}
+		return ret.toArray(new File[0]);
+
 	}
 
 	private void guessInputDataTypes(File file, MiapeExtractionTask associatedTask) {
