@@ -43,23 +43,23 @@ public class LineCategoryChart {
 	public LineCategoryChart(String chartTitle, String subtitle, String xAxisLabel, String yAxisLabel,
 			CategoryDataset dataset, PlotOrientation plotOrientation) {
 
-		this.title = chartTitle;
+		title = chartTitle;
 		this.subtitle = new TextTitle(subtitle);
-		this.categoryAxisLabel = xAxisLabel;
-		this.valueAxisLabel = yAxisLabel;
+		categoryAxisLabel = xAxisLabel;
+		valueAxisLabel = yAxisLabel;
 
 		chart = createChart(dataset, plotOrientation);
 		// set horizontal x label if just one series
-		if (dataset.getColumnCount() == 1 || !this.xLabelsExcedLimit())
-			this.setHorizontalXLabel();
+		if (dataset.getColumnCount() == 1 || !xLabelsExcedLimit())
+			setHorizontalXLabel();
 		chartPanel = new ChartPanel(chart);
 		chartPanel.setFillZoomRectangle(true);
 		chartPanel.setMouseWheelEnabled(true);
 
 		final Dimension dimension = new Dimension(ChartProperties.DEFAULT_CHART_WIDTH,
 				ChartProperties.DEFAULT_CHART_HEIGHT);
-		this.chartPanel.setPreferredSize(dimension);
-		this.chartPanel.setSize(dimension);
+		chartPanel.setPreferredSize(dimension);
+		chartPanel.setSize(dimension);
 
 	}
 
@@ -71,33 +71,33 @@ public class LineCategoryChart {
 	}
 
 	public JFreeChart getChart() {
-		return this.chart;
+		return chart;
 	}
 
 	private JFreeChart createChart(CategoryDataset dataset, PlotOrientation plotOrientation) {
 
-		JFreeChart chart = ChartFactory.createLineChart(title, categoryAxisLabel, valueAxisLabel, dataset,
+		final JFreeChart chart = ChartFactory.createLineChart(title, categoryAxisLabel, valueAxisLabel, dataset,
 				plotOrientation, true, true, false);
-		chart.addSubtitle(this.subtitle);
+		chart.addSubtitle(subtitle);
 		// Backgroung color
 		// chart.setBackgroundPaint(new Color(229, 229, 229));
 		// get plot
-		CategoryPlot plot = (CategoryPlot) chart.getPlot();
+		final CategoryPlot plot = (CategoryPlot) chart.getPlot();
 		// // Colors
 		plot.setBackgroundPaint(Color.white);
 		plot.setRangeGridlinePaint(Color.lightGray);
 
 		// set the range axis to display integers only...
-		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+		final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
 		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 		rangeAxis.setAutoRange(true);
 		rangeAxis.setLowerMargin(0.0);
 		rangeAxis.setUpperMargin(0.05);
 
-		CategoryAxis domainAxis = plot.getDomainAxis();
+		final CategoryAxis domainAxis = plot.getDomainAxis();
 		domainAxis.setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 6));
 		domainAxis.setCategoryLabelPositionOffset(10);
-		LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
+		final LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
 
 		// renderer.setDrawBarOutline(true);
 		renderer.setDefaultShapesVisible(true);
@@ -116,25 +116,25 @@ public class LineCategoryChart {
 	}
 
 	public void setNonIntegerItemLabels() {
-		CategoryPlot plot = (CategoryPlot) this.chart.getPlot();
-		CategoryItemRenderer renderer = plot.getRenderer();
+		final CategoryPlot plot = (CategoryPlot) chart.getPlot();
+		final CategoryItemRenderer renderer = plot.getRenderer();
 		renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
 		renderer.setDefaultItemLabelsVisible(true);
 	}
 
 	public void setHorizontalXLabel() {
-		CategoryPlot plot = (CategoryPlot) chart.getPlot();
-		CategoryAxis domainAxis = plot.getDomainAxis();
+		final CategoryPlot plot = (CategoryPlot) chart.getPlot();
+		final CategoryAxis domainAxis = plot.getDomainAxis();
 		domainAxis.setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(0));
 	}
 
 	public boolean xLabelsExcedLimit() {
-		if (this.chart != null) {
-			CategoryDataset dataset = this.chart.getCategoryPlot().getDataset();
+		if (chart != null) {
+			final CategoryDataset dataset = chart.getCategoryPlot().getDataset();
 
 			int totalLength = 0;
-			for (Object key : dataset.getColumnKeys()) {
-				String name = (String) key;
+			for (final Object key : dataset.getColumnKeys()) {
+				final String name = (String) key;
 				totalLength += name.length();
 			}
 			if (totalLength > 50)

@@ -1,16 +1,20 @@
 package org.proteored.pacom.analysis.charts;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.text.NumberFormat;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.labels.StandardCategoryToolTipGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.CombinedDomainCategoryPlot;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
+import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.CategoryDataset;
 
@@ -28,11 +32,11 @@ public class CombinedChart {
 		CategoryDataset lineDataset = null;
 		CategoryDataset barDataset = null;
 
-		this.title = chartTitle;
+		title = chartTitle;
 		this.subtitle = new TextTitle(subtitle);
-		this.categoryAxisLabel = xAxisLabel;
-		this.barValueAxisLabel = yBarAxisLabel;
-		this.lineValueAxisLabel = yLineAxisLabel;
+		categoryAxisLabel = xAxisLabel;
+		barValueAxisLabel = yBarAxisLabel;
+		lineValueAxisLabel = yLineAxisLabel;
 		// if
 		// (chartType.equals(ChartType.PROTEIN_OCURRENCE_OVER_EXPERIMENTS_BAR_CHART))
 		// {
@@ -56,60 +60,82 @@ public class CombinedChart {
 
 	private JFreeChart createChart(CategoryDataset barDataset, CategoryDataset lineDataset) {
 		// Bar chart
-		CategoryDataset dataset1 = lineDataset;
+		final CategoryDataset dataset1 = lineDataset;
 		CategoryDataset dataset2 = barDataset;
 		if (true) {
 
-			NumberAxis rangeAxis1 = new NumberAxis(lineValueAxisLabel);
+			final NumberAxis rangeAxis1 = new NumberAxis(lineValueAxisLabel);
 			rangeAxis1.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-			LineAndShapeRenderer renderer1 = new LineAndShapeRenderer();
+			final LineAndShapeRenderer renderer1 = new LineAndShapeRenderer();
+			renderer1.setDefaultShapesVisible(true);
+			renderer1.setDefaultSeriesVisible(true);
+			renderer1.setDefaultItemLabelsVisible(true);
 			renderer1.setDefaultToolTipGenerator(new StandardCategoryToolTipGenerator());
-			CategoryPlot subplot1 = new CategoryPlot(dataset1, null, rangeAxis1, renderer1);
+			renderer1.setItemMargin(0.01);
+			final StandardCategoryItemLabelGenerator generator = new StandardCategoryItemLabelGenerator(
+					StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING, NumberFormat.getIntegerInstance());
+			renderer1.setDefaultItemLabelGenerator(generator);
+			renderer1.setDefaultItemLabelsVisible(true);
+			final CategoryPlot subplot1 = new CategoryPlot(dataset1, null, rangeAxis1, renderer1);
 			subplot1.setDomainGridlinesVisible(true);
 
-			NumberAxis rangeAxis2 = new NumberAxis(barValueAxisLabel);
+			final NumberAxis rangeAxis2 = new NumberAxis(barValueAxisLabel);
 			rangeAxis2.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-			BarRenderer renderer2 = new BarRenderer();
+			final BarRenderer renderer2 = new BarRenderer();
 			renderer2.setDefaultToolTipGenerator(new StandardCategoryToolTipGenerator());
-			CategoryPlot subplot2 = new CategoryPlot(dataset2, null, rangeAxis2, renderer2);
+			renderer2.setItemMargin(0.01);
+			renderer2.setBarPainter(new StandardBarPainter());
+			renderer2.setDrawBarOutline(true);
+			renderer2.setDefaultOutlinePaint(Color.black);
+			renderer2.setDefaultSeriesVisible(true);
+			renderer2.setDefaultItemLabelsVisible(true);
+			renderer2.setShadowVisible(false);
+			// No space between bar of the same category
+			renderer2.setItemMargin(0.4);
+			renderer2.setMaximumBarWidth(0.1);
+			final StandardCategoryItemLabelGenerator generator2 = new StandardCategoryItemLabelGenerator(
+					StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING, NumberFormat.getIntegerInstance());
+			renderer2.setDefaultItemLabelGenerator(generator2);
+			renderer2.setDefaultItemLabelsVisible(true);
+			final CategoryPlot subplot2 = new CategoryPlot(dataset2, null, rangeAxis2, renderer2);
 			subplot2.setDomainGridlinesVisible(true);
 
-			CategoryAxis domainAxis = new CategoryAxis(this.categoryAxisLabel);
-			CombinedDomainCategoryPlot combinedPlot = new CombinedDomainCategoryPlot(domainAxis);
+			final CategoryAxis domainAxis = new CategoryAxis(categoryAxisLabel);
+			final CombinedDomainCategoryPlot combinedPlot = new CombinedDomainCategoryPlot(domainAxis);
 			combinedPlot.add(subplot1, 2);
 			combinedPlot.add(subplot2, 1);
-			JFreeChart chart = new JFreeChart(title, combinedPlot);
-			chart.addSubtitle(this.subtitle);
+			final JFreeChart chart = new JFreeChart(title, combinedPlot);
+			chart.addSubtitle(subtitle);
 			return chart;
 		} else {
-			NumberAxis rangeAxis1 = new NumberAxis(lineValueAxisLabel);
+			final NumberAxis rangeAxis1 = new NumberAxis(lineValueAxisLabel);
 			rangeAxis1.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
 			// LineAndShapeRenderer renderer1 = new LineAndShapeRenderer();
 			// renderer1.setBaseToolTipGenerator(new
 			// StandardCategoryToolTipGenerator());
-			BarRenderer renderer1 = new BarRenderer();
+			final BarRenderer renderer1 = new BarRenderer();
 			renderer1.setDefaultToolTipGenerator(new StandardCategoryToolTipGenerator());
 
-			CategoryPlot subplot1 = new CategoryPlot(dataset1, null, rangeAxis1, renderer1);
+			final CategoryPlot subplot1 = new CategoryPlot(dataset1, null, rangeAxis1, renderer1);
 			subplot1.setDomainGridlinesVisible(true);
 
 			// Line Chart
 			dataset2 = barDataset;
-			NumberAxis rangeAxis2 = new NumberAxis(barValueAxisLabel);
+			final NumberAxis rangeAxis2 = new NumberAxis(barValueAxisLabel);
 			rangeAxis2.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-			BarRenderer renderer2 = new BarRenderer();
+			final BarRenderer renderer2 = new BarRenderer();
 			renderer2.setDefaultToolTipGenerator(new StandardCategoryToolTipGenerator());
-			CategoryPlot subplot2 = new CategoryPlot(dataset2, null, rangeAxis2, renderer2);
+			final CategoryPlot subplot2 = new CategoryPlot(dataset2, null, rangeAxis2, renderer2);
 			subplot2.setDomainGridlinesVisible(true);
 
-			CategoryAxis domainAxis = new CategoryAxis(categoryAxisLabel);
-			CombinedDomainCategoryPlot combinedPlot = new CombinedDomainCategoryPlot(domainAxis);
+			final CategoryAxis domainAxis = new CategoryAxis(categoryAxisLabel);
+			final CombinedDomainCategoryPlot combinedPlot = new CombinedDomainCategoryPlot(domainAxis);
 			combinedPlot.add(subplot1, 1);
 			combinedPlot.add(subplot2, 1);
 
-			JFreeChart chart = new JFreeChart(title, combinedPlot);
-			chart.addSubtitle(this.subtitle);
+			final JFreeChart chart = new JFreeChart(title, combinedPlot);
+			chart.addSubtitle(subtitle);
 			return chart;
 		}
 	}
