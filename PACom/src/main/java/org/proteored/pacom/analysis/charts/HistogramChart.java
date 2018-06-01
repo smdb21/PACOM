@@ -1,5 +1,6 @@
 package org.proteored.pacom.analysis.charts;
 
+import java.awt.Color;
 import java.awt.Dimension;
 
 import org.jfree.chart.ChartPanel;
@@ -22,7 +23,7 @@ import org.jfree.data.xy.IntervalXYDataset;
 
 public class HistogramChart {
 	private final JFreeChart chart;
-	private ChartPanel chartPanel;
+	private final ChartPanel chartPanel;
 
 	public HistogramChart(String chartTitle, String subtitle, HistogramDataset dataset, String xAxisLabel,
 			String frequencyType) {
@@ -47,17 +48,25 @@ public class HistogramChart {
 		else if (type.equals(HistogramType.SCALE_AREA_TO_1))
 			yAxisLabel = "normalized frequency of " + frequencyType;
 
-		this.chart = HistogramChart.createHistogram(chartTitle, subtitle, xAxisLabel, yAxisLabel, dataset,
+		chart = HistogramChart.createHistogram(chartTitle, subtitle, xAxisLabel, yAxisLabel, dataset,
 				PlotOrientation.VERTICAL, true, true, false, showAsBarChart);
 
-		this.chartPanel = new ChartPanel(chart);
-		this.chartPanel.setFillZoomRectangle(true);
-		this.chartPanel.setMouseWheelEnabled(true);
+		chartPanel = new ChartPanel(chart);
+		chartPanel.setFillZoomRectangle(true);
+		chartPanel.setMouseWheelEnabled(true);
 
 		final Dimension dimension = new Dimension(ChartProperties.DEFAULT_CHART_WIDTH,
 				ChartProperties.DEFAULT_CHART_HEIGHT);
-		this.chartPanel.setPreferredSize(dimension);
-		this.chartPanel.setSize(dimension);
+		chartPanel.setPreferredSize(dimension);
+		chartPanel.setSize(dimension);
+
+		// Backgroung color
+		chart.setBackgroundPaint(Color.white);
+		// get plot
+		final XYPlot plot = (XYPlot) chart.getPlot();
+		// // Colors
+		plot.setBackgroundPaint(Color.white);
+		plot.setRangeGridlinePaint(Color.lightGray);
 
 	}
 
@@ -74,9 +83,9 @@ public class HistogramChart {
 		if (orientation == null) {
 			throw new IllegalArgumentException("Null 'orientation' argument.");
 		}
-		NumberAxis xAxis = new NumberAxis(xAxisLabel);
+		final NumberAxis xAxis = new NumberAxis(xAxisLabel);
 		xAxis.setAutoRangeIncludesZero(true);
-		NumberAxis yAxis = new NumberAxis(yAxisLabel);
+		final NumberAxis yAxis = new NumberAxis(yAxisLabel);
 		yAxis.setAutoRange(true);
 
 		XYItemRenderer renderer = null;
@@ -94,30 +103,30 @@ public class HistogramChart {
 			renderer.setURLGenerator(new StandardXYURLGenerator());
 		}
 
-		XYPlot plot = new XYPlot(dataset, xAxis, yAxis, renderer);
+		final XYPlot plot = new XYPlot(dataset, xAxis, yAxis, renderer);
 		plot.setOrientation(orientation);
 		plot.setDomainZeroBaselineVisible(true);
 		plot.setRangeZeroBaselineVisible(true);
-		JFreeChart chart = new JFreeChart(title, JFreeChart.DEFAULT_TITLE_FONT, plot, legend);
+		final JFreeChart chart = new JFreeChart(title, JFreeChart.DEFAULT_TITLE_FONT, plot, legend);
 		chart.addSubtitle(new TextTitle(subtitle));
 		// currentTheme.apply(chart);
 		return chart;
 	}
 
 	public void setXRangeValues(double i, double j) {
-		this.chart.getXYPlot().getRangeAxis().setRange(i, j);
+		chart.getXYPlot().getRangeAxis().setRange(i, j);
 
 	}
 
 	public void centerRangeAxisOnZero() {
-		final XYPlot plot = this.chart.getXYPlot();
+		final XYPlot plot = chart.getXYPlot();
 		// Center by zero
 		final ValueAxis domainAxis = plot.getDomainAxis();
 		final Range dataRangeX = plot.getDataRange(domainAxis);
 		if (dataRangeX == null)
 			return;
-		double min = dataRangeX.getLowerBound();
-		double max = dataRangeX.getUpperBound();
+		final double min = dataRangeX.getLowerBound();
+		final double max = dataRangeX.getUpperBound();
 		double tmp = 0;
 		if (0 - min > max)
 			tmp = min;

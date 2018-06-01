@@ -1,5 +1,6 @@
 package org.proteored.pacom.analysis.charts;
 
+import java.awt.Color;
 import java.awt.Dimension;
 
 import org.jfree.chart.ChartPanel;
@@ -39,7 +40,7 @@ public class SpiderChart {
 	 */
 	public SpiderChart(String chartTitle, String subtitle, CategoryDataset dataset) {
 
-		this.title = chartTitle;
+		title = chartTitle;
 		this.subtitle = new TextTitle(subtitle);
 
 		chart = createChart(dataset);
@@ -55,8 +56,8 @@ public class SpiderChart {
 
 		final Dimension dimension = new Dimension(ChartProperties.DEFAULT_CHART_WIDTH,
 				ChartProperties.DEFAULT_CHART_HEIGHT);
-		this.chartPanel.setPreferredSize(dimension);
-		this.chartPanel.setSize(dimension);
+		chartPanel.setPreferredSize(dimension);
+		chartPanel.setSize(dimension);
 
 	}
 
@@ -68,31 +69,35 @@ public class SpiderChart {
 	}
 
 	public JFreeChart getChart() {
-		return this.chart;
+		return chart;
 	}
 
 	private JFreeChart createChart(CategoryDataset dataset) {
-		SpiderWebPlot spiderwebplot = new SpiderWebPlot(dataset);
+		final SpiderWebPlot spiderwebplot = new SpiderWebPlot(dataset);
 		spiderwebplot.setStartAngle(54D);
 		spiderwebplot.setInteriorGap(0.40000000000000002D);
 		spiderwebplot.setToolTipGenerator(new StandardCategoryToolTipGenerator());
-		JFreeChart jFreeChart = new JFreeChart(this.title, TextTitle.DEFAULT_FONT, spiderwebplot, true);
-		LegendTitle legendtitle = new LegendTitle(spiderwebplot);
+		final JFreeChart jFreeChart = new JFreeChart(title, TextTitle.DEFAULT_FONT, spiderwebplot, true);
+		final LegendTitle legendtitle = new LegendTitle(spiderwebplot);
 		legendtitle.setPosition(RectangleEdge.BOTTOM);
-		jFreeChart.addSubtitle(this.subtitle);
+		jFreeChart.addSubtitle(subtitle);
 
-		StandardCategoryItemLabelGenerator standardCategoryItemLabelGenerator = new StandardCategoryItemLabelGenerator();
+		final StandardCategoryItemLabelGenerator standardCategoryItemLabelGenerator = new StandardCategoryItemLabelGenerator();
 		spiderwebplot.setLabelGenerator(standardCategoryItemLabelGenerator);
 
 		// spiderwebplot.setItemLabelsVisible(true);
+		// Backgroung color
+		jFreeChart.setBackgroundPaint(Color.white);
 
+		// // Colors
+		spiderwebplot.setBackgroundPaint(Color.white);
 		return jFreeChart;
 	}
 
 	public void setNonIntegerItemLabels() {
-		if (this.chart != null) {
-			CategoryPlot plot = (CategoryPlot) this.chart.getPlot();
-			CategoryItemRenderer renderer = plot.getRenderer();
+		if (chart != null) {
+			final CategoryPlot plot = (CategoryPlot) chart.getPlot();
+			final CategoryItemRenderer renderer = plot.getRenderer();
 			renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
 			renderer.setDefaultItemLabelsVisible(true);
 		}
@@ -100,19 +105,19 @@ public class SpiderChart {
 
 	public void setHorizontalXLabel() {
 		if (chart != null) {
-			CategoryPlot plot = (CategoryPlot) chart.getPlot();
-			CategoryAxis domainAxis = plot.getDomainAxis();
+			final CategoryPlot plot = (CategoryPlot) chart.getPlot();
+			final CategoryAxis domainAxis = plot.getDomainAxis();
 			domainAxis.setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(0));
 		}
 	}
 
 	public boolean xLabelsExcedLimit() {
-		if (this.chart != null) {
-			CategoryDataset dataset = this.chart.getCategoryPlot().getDataset();
+		if (chart != null) {
+			final CategoryDataset dataset = chart.getCategoryPlot().getDataset();
 
 			int totalLength = 0;
-			for (Object key : dataset.getColumnKeys()) {
-				String name = (String) key;
+			for (final Object key : dataset.getColumnKeys()) {
+				final String name = (String) key;
 				totalLength += name.length();
 			}
 			if (totalLength > 50)
