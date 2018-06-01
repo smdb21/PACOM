@@ -518,8 +518,6 @@ public class DatasetFactory {
 		try {
 
 			for (final IdentificationSet idSet : idSets) {
-				final String experimentName = idSet.getFullName();
-				final double coverage = 0;
 				final double[] proteinCoverages = getProteinCoverages(idSet, retrieveProteinSeq,
 						countNonConclusiveProteins);
 				if (proteinCoverages != null) {
@@ -1939,12 +1937,11 @@ public class DatasetFactory {
 	private static double[] getProteinCoverages(IdentificationSet idSet, boolean retrieveProteinSeq,
 			Boolean countNonConclusiveProteins) {
 
-		double[] ret = null;
+		final TDoubleArrayList ret = new TDoubleArrayList();
 		retrieveUniprotProteins(idSet);
 		final Collection<ProteinGroupOccurrence> proteinOccurrences = idSet.getProteinGroupOccurrenceList().values();
 		if (proteinOccurrences != null && !proteinOccurrences.isEmpty()) {
 
-			ret = new double[idSet.getNumDifferentProteinGroups(countNonConclusiveProteins)];
 			int i = 0;
 			for (final ProteinGroupOccurrence proteinGroupOccurrence : proteinOccurrences) {
 				if (proteinGroupOccurrence.getEvidence() == ProteinEvidence.NONCONCLUSIVE
@@ -1954,7 +1951,7 @@ public class DatasetFactory {
 					final Float meanProteinCoverage = proteinGroupOccurrence.getMeanProteinCoverage(retrieveProteinSeq,
 							FileManager.getUniprotProteinLocalRetriever());
 					if (meanProteinCoverage != null) {
-						ret[i] = 100 * meanProteinCoverage;
+						ret.add(100 * meanProteinCoverage);
 					}
 				} catch (final Exception ex) {
 					// do nothing
@@ -1963,7 +1960,7 @@ public class DatasetFactory {
 
 			}
 		}
-		return ret;
+		return ret.toArray();
 	}
 
 	/**
