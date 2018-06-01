@@ -66,6 +66,7 @@ public class CombinedChart {
 
 			final NumberAxis rangeAxis1 = new NumberAxis(lineValueAxisLabel);
 			rangeAxis1.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+			rangeAxis1.setUpperMargin(0.2);
 			final LineAndShapeRenderer renderer1 = new LineAndShapeRenderer();
 			renderer1.setDefaultShapesVisible(true);
 			renderer1.setDefaultSeriesVisible(true);
@@ -81,6 +82,7 @@ public class CombinedChart {
 
 			final NumberAxis rangeAxis2 = new NumberAxis(barValueAxisLabel);
 			rangeAxis2.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+			rangeAxis2.setUpperMargin(0.2);
 			final BarRenderer renderer2 = new BarRenderer();
 			renderer2.setDefaultToolTipGenerator(new StandardCategoryToolTipGenerator());
 			renderer2.setItemMargin(0.01);
@@ -99,13 +101,19 @@ public class CombinedChart {
 			renderer2.setDefaultItemLabelsVisible(true);
 			final CategoryPlot subplot2 = new CategoryPlot(dataset2, null, rangeAxis2, renderer2);
 			subplot2.setDomainGridlinesVisible(true);
+			subplot2.setBackgroundPaint(Color.white);
+			subplot2.setRangeGridlinePaint(Color.lightGray);
 
 			final CategoryAxis domainAxis = new CategoryAxis(categoryAxisLabel);
 			final CombinedDomainCategoryPlot combinedPlot = new CombinedDomainCategoryPlot(domainAxis);
 			combinedPlot.add(subplot1, 2);
 			combinedPlot.add(subplot2, 1);
+			combinedPlot.setGap(2);
+			combinedPlot.setBackgroundPaint(Color.white);
+			combinedPlot.setRangeGridlinePaint(Color.lightGray);
 			final JFreeChart chart = new JFreeChart(title, combinedPlot);
 			chart.addSubtitle(subtitle);
+			chart.setBackgroundPaint(Color.white);
 			return chart;
 		} else {
 			final NumberAxis rangeAxis1 = new NumberAxis(lineValueAxisLabel);

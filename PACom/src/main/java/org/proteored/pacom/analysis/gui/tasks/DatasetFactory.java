@@ -3473,7 +3473,7 @@ public class DatasetFactory {
 		final DefaultCategoryDataset accumulativeDataSet = new DefaultCategoryDataset();
 
 		try {
-			final Map<String, Set<String>> MapKeys = getHashMapKeysForPeptides(idSets, distModPeptides);
+			final Map<String, Set<String>> peptidesPerDataset = getHashMapKeysForPeptides(idSets, distModPeptides);
 
 			VennData globalVenn = null;
 			Collection<Object> union = null;
@@ -3481,12 +3481,12 @@ public class DatasetFactory {
 			for (int i = 0; i < idSets.size(); i++) {
 				final IdentificationSet idSet = idSets.get(i);
 				final String idSetName = idSet.getFullName();
-				final Set<String> keys = MapKeys.get(idSetName);
+				final Set<String> keys = peptidesPerDataset.get(idSetName);
 
 				if (accumulativeTrend) {
 					globalVenn = new VennDataForPeptides(keys, union, null);
 					union = globalVenn.getUnion12();
-					final int num = union.size();
+					final int num = globalVenn.getUnion12Size();
 					accumulativeDataSet.addValue(num, "Accumulative # peptides", idSetName);
 				}
 
@@ -3503,7 +3503,7 @@ public class DatasetFactory {
 					moreThanOne = true;
 					final String idSetName2 = idSet2.getFullName();
 					log.info("Comparing " + idSet.getFullName() + " with " + idSetName2);
-					final Set<String> keys2 = MapKeys.get(idSet2.getFullName());
+					final Set<String> keys2 = peptidesPerDataset.get(idSet2.getFullName());
 					VennData venn = null;
 					if (unique == null) {
 						venn = new VennDataForPeptides(keys, keys2, null);
@@ -3563,7 +3563,7 @@ public class DatasetFactory {
 				if (accumulativeTrend) {
 					globalVenn = new VennDataForProteins(keys, union, null, proteinGroupComparisonType);
 					union = globalVenn.getUnion12();
-					final int num = union.size();
+					final int num = globalVenn.getUnion12Size();
 
 					accumulativeDataSet.addValue(num, "Accumulative # proteins", idSetName);
 				}
@@ -3608,6 +3608,14 @@ public class DatasetFactory {
 		return datasets;
 	}
 
+	/**
+	 * returns a map in which the key is the full name of the idSet and the
+	 * value a set of peptide sequences
+	 * 
+	 * @param idSets
+	 * @param distModPeptides
+	 * @return
+	 */
 	private static Map<String, Set<String>> getHashMapKeysForPeptides(List<IdentificationSet> idSets,
 			Boolean distModPeptides) {
 		final Map<String, Set<String>> ret = new THashMap<String, Set<String>>();
