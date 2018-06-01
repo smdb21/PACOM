@@ -134,7 +134,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 			while (!canceled) {
 				try {
 					Thread.sleep(1000);
-				} catch (InterruptedException e) {
+				} catch (final InterruptedException e) {
 				}
 				log.info("Waiting for integrityChecker closing");
 				canceled = integrityChecker.cancel(true);
@@ -146,7 +146,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 			while (!canceled) {
 				try {
 					Thread.sleep(1000);
-				} catch (InterruptedException e) {
+				} catch (final InterruptedException e) {
 				}
 				log.info("Waiting for projectComboLoaderTask closing");
 				canceled = projectComboLoaderTask.cancel(true);
@@ -192,8 +192,8 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 
 		// set custom tree editor
 
-		MyDefaultTreeCellEditor<MyProjectTreeNode> editor = new MyDefaultTreeCellEditor<MyProjectTreeNode>(jTreeProject,
-				(DefaultTreeCellRenderer) jTreeProject.getCellRenderer());
+		final MyDefaultTreeCellEditor<MyProjectTreeNode> editor = new MyDefaultTreeCellEditor<MyProjectTreeNode>(
+				jTreeProject, (DefaultTreeCellRenderer) jTreeProject.getCellRenderer());
 		// editor.addCellEditorListener(new CellEditorListener() {
 		//
 		// @Override
@@ -211,22 +211,20 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		jTreeProject.setCellEditor(editor);
 		try {
 			getContentPane().setLayout(new BorderLayout(0, 0));
-			JPanel northPanel = new JPanel();
+			final JPanel northPanel = new JPanel();
 			northPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 2));
 			northPanel.add(jPanel7);
-			GroupLayout gl_jPanel7 = new GroupLayout(jPanel7);
-			gl_jPanel7
-					.setHorizontalGroup(gl_jPanel7.createParallelGroup(Alignment.LEADING)
-							.addGroup(gl_jPanel7.createSequentialGroup().addGap(5)
-									.addComponent(jComboBox1, GroupLayout.PREFERRED_SIZE, 248,
-											GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(ComponentPlacement.RELATED).addComponent(jButtonLoadSavedProject)
-									.addGap(5).addComponent(jButtonRemoveSavedProject)));
-			gl_jPanel7.setVerticalGroup(gl_jPanel7.createParallelGroup(Alignment.LEADING)
-					.addGroup(gl_jPanel7.createSequentialGroup()
-							.addGroup(gl_jPanel7.createParallelGroup(Alignment.LEADING)
-									.addGroup(gl_jPanel7.createSequentialGroup().addGap(5)
-											.addComponent(jButtonLoadSavedProject))
+			final GroupLayout gl_jPanel7 = new GroupLayout(jPanel7);
+			gl_jPanel7.setHorizontalGroup(gl_jPanel7.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_jPanel7.createSequentialGroup().addGap(5)
+							.addComponent(jComboBox1, GroupLayout.PREFERRED_SIZE, 248, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED).addComponent(jButtonLoadSavedProject).addGap(5)
+							.addComponent(jButtonRemoveSavedProject)));
+			gl_jPanel7.setVerticalGroup(gl_jPanel7.createParallelGroup(Alignment.LEADING).addGroup(gl_jPanel7
+					.createSequentialGroup()
+					.addGroup(gl_jPanel7.createParallelGroup(Alignment.LEADING)
+							.addGroup(
+									gl_jPanel7.createSequentialGroup().addGap(5).addComponent(jButtonLoadSavedProject))
 							.addGroup(gl_jPanel7.createSequentialGroup().addGap(5)
 									.addComponent(jButtonRemoveSavedProject))
 							.addGroup(gl_jPanel7.createSequentialGroup().addGap(7).addComponent(jComboBox1,
@@ -248,7 +246,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 			jPanel2.add(panel, BorderLayout.SOUTH);
 			jPanel2.add(jScrollPane2);
 			// getContentPane().add(jPanel7);
-			JPanel eastPanel = new JPanel();
+			final JPanel eastPanel = new JPanel();
 			eastPanel.setPreferredSize(new Dimension(440, 390));
 			eastPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 			eastPanel.setAlignmentY(Component.TOP_ALIGNMENT);
@@ -258,11 +256,11 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 			jPanel3.add(panel_1, BorderLayout.NORTH);
 			jPanel3.add(panel_2, BorderLayout.SOUTH);
 
-			JPanel panelOptions = new JPanel();
+			final JPanel panelOptions = new JPanel();
 			panelOptions.setAlignmentX(Component.LEFT_ALIGNMENT);
 			panelOptions.setLayout(new BorderLayout(0, 0));
 			panelOptions.add(jPanel8, BorderLayout.NORTH);
-			FlowLayout fl_jPanel8 = new FlowLayout(FlowLayout.LEFT, 5, 5);
+			final FlowLayout fl_jPanel8 = new FlowLayout(FlowLayout.LEFT, 5, 5);
 			jPanel8.setLayout(fl_jPanel8);
 
 			panel_5 = new JPanel();
@@ -297,7 +295,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 			jPanel9.setLayout(new BorderLayout(0, 0));
 
 			panel_4 = new JPanel();
-			FlowLayout flowLayout_1 = (FlowLayout) panel_4.getLayout();
+			final FlowLayout flowLayout_1 = (FlowLayout) panel_4.getLayout();
 			flowLayout_1.setAlignment(FlowLayout.LEFT);
 			jPanel9.add(panel_4, BorderLayout.NORTH);
 			jComboBoxCuratedExperiments = new javax.swing.JComboBox<String>();
@@ -317,7 +315,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 			});
 
 			panel_3 = new JPanel();
-			FlowLayout flowLayout = (FlowLayout) panel_3.getLayout();
+			final FlowLayout flowLayout = (FlowLayout) panel_3.getLayout();
 			flowLayout.setAlignment(FlowLayout.LEFT);
 			jPanel9.add(panel_3, BorderLayout.SOUTH);
 			jButtonAddCuratedExperiment = new javax.swing.JButton();
@@ -372,16 +370,16 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 			// Initialize project tree
 			initializeProjectTree(DEFAULT_PROJECT_NAME, DEFAULT_EXPERIMENT_NAME);
 			correctlyInitialized = true;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			log.warn(e.getMessage());
 			appendStatus(e.getMessage());
 		}
 
-		AppVersion version = MainFrame.getVersion();
+		final AppVersion version = MainFrame.getVersion();
 		if (version != null) {
-			String suffix = " (v" + version.toString() + ")";
-			this.setTitle(getTitle() + suffix);
+			final String suffix = " (v" + version.toString() + ")";
+			setTitle(getTitle() + suffix);
 		}
 
 		pack();
@@ -414,8 +412,8 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 	}
 
 	public void cleanTrees() {
-		DefaultMutableTreeNode nodoRaiz = new DefaultMutableTreeNode("No projects found");
-		DefaultTreeModel modeloArbol = new DefaultTreeModel(nodoRaiz);
+		final DefaultMutableTreeNode nodoRaiz = new DefaultMutableTreeNode("No projects found");
+		final DefaultTreeModel modeloArbol = new DefaultTreeModel(nodoRaiz);
 		jTreeProject.setModel(modeloArbol);
 		jTreeLocalMIAPEMSIs.setModel(modeloArbol);
 	}
@@ -518,19 +516,17 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 
 		jPanel10.setToolTipText("Input datasets in remote repository");
 
-		javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+		final javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
 		jPanel10.setLayout(jPanel10Layout);
 		jPanel10Layout.setHorizontalGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(jPanel10Layout.createSequentialGroup().addContainerGap()
 						.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
 						.addContainerGap()));
-		jPanel10Layout
-				.setVerticalGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
-								jPanel10Layout.createSequentialGroup()
-										.addContainerGap().addComponent(jScrollPane1,
-												javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
-										.addContainerGap()));
+		jPanel10Layout.setVerticalGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+						jPanel10Layout.createSequentialGroup().addContainerGap()
+								.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
+								.addContainerGap()));
 
 		jTreeLocalMIAPEMSIs.setAutoscrolls(true);
 		jTreeLocalMIAPEMSIs.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -553,7 +549,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 			}
 		});
 
-		javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
+		final javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
 		jPanel11.setLayout(jPanel11Layout);
 		jPanel11Layout.setHorizontalGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(jPanel11Layout.createSequentialGroup().addContainerGap()
@@ -584,7 +580,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		jScrollPane2.setViewportView(jTreeProject);
 
 		panel = new JPanel();
-		FlowLayout flowLayout_1 = (FlowLayout) panel.getLayout();
+		final FlowLayout flowLayout_1 = (FlowLayout) panel.getLayout();
 		flowLayout_1.setAlignment(FlowLayout.LEFT);
 
 		jButtonClearProject2 = new JButton("Clear project tree");
@@ -621,7 +617,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		jTextAreaStatus.setEditable(false);
 		jScrollPane3.setViewportView(jTextAreaStatus);
 
-		javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+		final javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
 		jPanel4.setLayout(jPanel4Layout);
 		jPanel4Layout
 				.setHorizontalGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -693,7 +689,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 						TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 
 		panel_1 = new JPanel();
-		FlowLayout flowLayout = (FlowLayout) panel_1.getLayout();
+		final FlowLayout flowLayout = (FlowLayout) panel_1.getLayout();
 		flowLayout.setAlignment(FlowLayout.LEFT);
 
 		panel_2 = new JPanel();
@@ -818,14 +814,14 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		// GEN-END:initComponents
 
 	protected void goToImport() {
-		this.setVisible(false);
-		this.parent.startDataImport();
+		setVisible(false);
+		parent.startDataImport();
 	}
 
 	private void jTreeLocalMIAPEMSIsMouseClicked(java.awt.event.MouseEvent evt) {
 		try {
 			localMiapeTreeClicked(evt);
-		} catch (IllegalMiapeArgumentException e) {
+		} catch (final IllegalMiapeArgumentException e) {
 			appendStatus("Error: " + e.getMessage());
 		}
 	}
@@ -835,19 +831,19 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		if (evt.getClickCount() == 2) {
 			if (jTreeLocalMIAPEMSIs.isOnlyOneNodeSelected(MIAPE_LEVEL)) {
 				// get MIAPE ID
-				String miapeID = jTreeLocalMIAPEMSIs.getStringFromSelection(LOCAL_MIAPE_ID_REGEXP);
+				final String miapeID = jTreeLocalMIAPEMSIs.getStringFromSelection(LOCAL_MIAPE_ID_REGEXP);
 				// get MIAPE Name
 				String miapeName = jTreeLocalMIAPEMSIs.getStringFromSelection(LOCAL_MIAPE_UNIQUE_NAME_REGEXP);
 				if ("".equals(miapeName)) {
 					miapeName = null;// "Dataset_" + miapeID;
 				}
 				// get local project name
-				String projectName = jTreeLocalMIAPEMSIs
+				final String projectName = jTreeLocalMIAPEMSIs
 						.getStringFromParentOfSelection(MIAPE_LOCAL_PROJECT_NAME_REGEXP);
 				// start retrieving
 				final Integer msi_id = Integer.valueOf(miapeID);
 
-				Integer ms_id = getAssociatedLocalMIAPEMSId(msi_id, projectName, miapeName);
+				final Integer ms_id = getAssociatedLocalMIAPEMSId(msi_id, projectName, miapeName);
 				// if a replicate is selected
 				if (jTreeProject.isOnlyOneNodeSelected(REPLICATE_LEVEL)
 						|| jTreeProject.isOnlyOneNodeSelected(MIAPE_REPLICATE_LEVEL)) {
@@ -858,26 +854,26 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 					}
 					// check if the experiment node is curated. If so, throw
 					// exception
-					MyProjectTreeNode experimentNode = (MyProjectTreeNode) replicateNode.getParent();
-					CPExperiment experiment = (CPExperiment) experimentNode.getUserObject();
+					final MyProjectTreeNode experimentNode = (MyProjectTreeNode) replicateNode.getParent();
+					final CPExperiment experiment = (CPExperiment) experimentNode.getUserObject();
 					if (experiment.isCurated()) {
 						throw new IllegalMiapeArgumentException(
 								"A non curated dataset cannot be added to a curated experiment");
 					}
-					CPReplicate cpReplicate = (CPReplicate) replicateNode.getUserObject();
+					final CPReplicate cpReplicate = (CPReplicate) replicateNode.getUserObject();
 					// String miapeNodeName = getMIAPENodeNameFromTemplate();
 
-					String miapeNodeName = FilenameUtils
+					final String miapeNodeName = FilenameUtils
 							.getBaseName(FileManager.getMiapeMSILocalFileName(Integer.valueOf(miapeID), miapeName));
 
-					CPMSI cpMsi = new CPMSI();
+					final CPMSI cpMsi = new CPMSI();
 					cpMsi.setId(msi_id);
 					cpMsi.setName(miapeNodeName);
 					cpMsi.setLocal(true);
 					cpMsi.setLocalProjectName(projectName);
 					if (ms_id != null) {
 						cpMsi.setMiapeMsIdRef(ms_id);
-						CPMS cpMS = new CPMS();
+						final CPMS cpMS = new CPMS();
 						cpMS.setId(ms_id);
 						cpMS.setName(FilenameUtils.getBaseName(FileManager.getMiapeMSLocalFileName(ms_id)));
 						cpMS.setLocalProjectName(projectName);
@@ -904,27 +900,27 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 					saved = false;
 					// }
 				} else if (jTreeProject.isOnlyOneNodeSelected(EXPERIMENT_LEVEL)) {
-					MyProjectTreeNode experimentNode = jTreeProject.getSelectedNode();
-					CPExperiment cpExp = (CPExperiment) experimentNode.getUserObject();
+					final MyProjectTreeNode experimentNode = jTreeProject.getSelectedNode();
+					final CPExperiment cpExp = (CPExperiment) experimentNode.getUserObject();
 					if (cpExp.isCurated()) {
 						throw new IllegalMiapeArgumentException(
 								"A non curated dataset cannot be added to a curated experiment");
 					}
 					// add replicate node
-					String defaultReplicateName = getMIAPENodeNameFromTemplate();
-					CPReplicate cpRep = new CPReplicate();
+					final String defaultReplicateName = getMIAPENodeNameFromTemplate();
+					final CPReplicate cpRep = new CPReplicate();
 					cpRep.setName(defaultReplicateName);
 
 					cpExp.getCPReplicate().add(cpRep);
 					final MyProjectTreeNode replicateNode = jTreeProject.addNewNode(cpRep, experimentNode);
 					// add miape node
-					CPMSI cpMsi = new CPMSI();
+					final CPMSI cpMsi = new CPMSI();
 					cpMsi.setId(msi_id);
 					cpMsi.setLocal(true);
 					cpMsi.setLocalProjectName(projectName);
 					if (ms_id != null) {
 						cpMsi.setMiapeMsIdRef(ms_id);
-						CPMS cpMS = new CPMS();
+						final CPMS cpMS = new CPMS();
 						cpMS.setId(ms_id);
 						cpMS.setName(FilenameUtils.getBaseName(FileManager.getMiapeMSLocalFileName(ms_id)));
 						cpMS.setLocalProjectName(projectName);
@@ -940,7 +936,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 					}
 					cpMsi.setName(FilenameUtils
 							.getBaseName(FileManager.getMiapeMSILocalFileName(Integer.valueOf(miapeID), miapeName)));
-					CPMSIList cpMsiList = new CPMSIList();
+					final CPMSIList cpMsiList = new CPMSIList();
 					cpMsiList.getCPMSI().add(cpMsi);
 					cpRep.setCPMSIList(cpMsiList);
 					final MyProjectTreeNode newNode = jTreeProject.addNewNode(cpMsi, replicateNode);
@@ -950,29 +946,29 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 					saved = false;
 				} else {
 					// add experiment node, level 1 node
-					MyProjectTreeNode experimentNode = addExperiment("experiment");
+					final MyProjectTreeNode experimentNode = addExperiment("experiment");
 
 					if (experimentNode != null) {
-						CPExperiment cpExp = (CPExperiment) experimentNode.getUserObject();
+						final CPExperiment cpExp = (CPExperiment) experimentNode.getUserObject();
 						if (cpExp.isCurated()) {
 							throw new IllegalMiapeArgumentException(
 									"A non curated dataset cannot be added to a curated experiment");
 						}
 						// add replicate node
-						String defaultReplicateName = getMIAPENodeNameFromTemplate();
-						CPReplicate cpRep = new CPReplicate();
+						final String defaultReplicateName = getMIAPENodeNameFromTemplate();
+						final CPReplicate cpRep = new CPReplicate();
 						cpRep.setName(defaultReplicateName);
 
 						cpExp.getCPReplicate().add(cpRep);
 						final MyProjectTreeNode replicateNode = jTreeProject.addNewNode(cpRep, experimentNode);
 						// add miape node
-						CPMSI cpMsi = new CPMSI();
+						final CPMSI cpMsi = new CPMSI();
 						cpMsi.setId(msi_id);
 						cpMsi.setLocal(true);
 						cpMsi.setLocalProjectName(projectName);
 						if (ms_id != null) {
 							cpMsi.setMiapeMsIdRef(ms_id);
-							CPMS cpMS = new CPMS();
+							final CPMS cpMS = new CPMS();
 							cpMS.setId(ms_id);
 							cpMS.setName(FilenameUtils.getBaseName(FileManager.getMiapeMSLocalFileName(ms_id)));
 							cpMS.setLocalProjectName(projectName);
@@ -988,7 +984,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 						}
 						cpMsi.setName(FilenameUtils.getBaseName(
 								FileManager.getMiapeMSILocalFileName(Integer.valueOf(miapeID), miapeName)));
-						CPMSIList cpMsiList = new CPMSIList();
+						final CPMSIList cpMsiList = new CPMSIList();
 						cpMsiList.getCPMSI().add(cpMsi);
 						cpRep.setCPMSIList(cpMsiList);
 						final MyProjectTreeNode newNode = jTreeProject.addNewNode(cpMsi, replicateNode);
@@ -1010,16 +1006,16 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 				if (numMIAPEsInMIAPEProject > 0) {
 
 					// IF the node 0 is selected in the comparison project
-					String localProjectName = jTreeLocalMIAPEMSIs
+					final String localProjectName = jTreeLocalMIAPEMSIs
 							.getStringFromSelection(MIAPE_LOCAL_PROJECT_NAME_REGEXP);
 					final int selectedOption = JOptionPane.showConfirmDialog(this,
 							"<html>Do you want to add all datasets in the dataset folder to a new level 1 node called '"
 									+ localProjectName + "' in the Comparison Project Tree?</html>",
 							"Add datasets to Comparison Project Tree", JOptionPane.YES_NO_CANCEL_OPTION);
 					if (selectedOption == JOptionPane.YES_OPTION) {
-						MyProjectTreeNode projectNode = jTreeProject.getRootNode();
-						CPExperimentList cpExpList = (CPExperimentList) projectNode.getUserObject();
-						CPExperiment cpExp = new CPExperiment();
+						final MyProjectTreeNode projectNode = jTreeProject.getRootNode();
+						final CPExperimentList cpExpList = (CPExperimentList) projectNode.getUserObject();
+						final CPExperiment cpExp = new CPExperiment();
 						cpExp.setName(localProjectName);
 						cpExp.setCurated(false);
 						// Add a new experiment node
@@ -1030,33 +1026,33 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 						final Enumeration<DefaultMutableTreeNode> children = jTreeLocalMIAPEMSIs.getSelectedNode()
 								.children();
 						while (children.hasMoreElements()) {
-							DefaultMutableTreeNode miapeMSIChild = children.nextElement();
-							String msi_id = AbstractExtendedJTree.getString(LOCAL_MIAPE_ID_REGEXP,
+							final DefaultMutableTreeNode miapeMSIChild = children.nextElement();
+							final String msi_id = AbstractExtendedJTree.getString(LOCAL_MIAPE_ID_REGEXP,
 									(String) miapeMSIChild.getUserObject());
-							String miapeName = AbstractExtendedJTree.getString(LOCAL_MIAPE_UNIQUE_NAME_REGEXP,
+							final String miapeName = AbstractExtendedJTree.getString(LOCAL_MIAPE_UNIQUE_NAME_REGEXP,
 									(String) miapeMSIChild.getUserObject());
-							Integer ms_id = getAssociatedLocalMIAPEMSId(Integer.valueOf(msi_id), localProjectName,
+							final Integer ms_id = getAssociatedLocalMIAPEMSId(Integer.valueOf(msi_id), localProjectName,
 									miapeName);
 							// start retrieving
 							// startMIAPEMSIRetrieving(Integer.valueOf(miapeID));
 							// add replicate node
-							String replicateName = getMIAPENodeNameFromTemplate();
-							CPReplicate cpRep = new CPReplicate();
+							final String replicateName = getMIAPENodeNameFromTemplate();
+							final CPReplicate cpRep = new CPReplicate();
 							cpRep.setName(replicateName);
 
 							cpExp.getCPReplicate().add(cpRep);
-							MyProjectTreeNode replicateNode = jTreeProject.addNewNode(cpRep, experimentNode);
+							final MyProjectTreeNode replicateNode = jTreeProject.addNewNode(cpRep, experimentNode);
 							// add miape node
-							String miapeNodeName = FilenameUtils.getBaseName(
+							final String miapeNodeName = FilenameUtils.getBaseName(
 									FileManager.getMiapeMSILocalFileName(Integer.valueOf(msi_id), miapeName));
-							CPMSI cpMsi = new CPMSI();
+							final CPMSI cpMsi = new CPMSI();
 							cpMsi.setId(Integer.valueOf(msi_id));
 							cpMsi.setName(miapeNodeName);
 							cpMsi.setLocal(true);
 							cpMsi.setLocalProjectName(localProjectName);
 							if (ms_id != null) {
 								cpMsi.setMiapeMsIdRef(ms_id);
-								CPMS cpMS = new CPMS();
+								final CPMS cpMS = new CPMS();
 								cpMS.setId(ms_id);
 								cpMS.setName(FilenameUtils.getBaseName(FileManager.getMiapeMSLocalFileName(ms_id)));
 								cpMS.setLocalProjectName(localProjectName);
@@ -1071,7 +1067,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 								cpMsList.getCPMS().add(cpMS);
 
 							}
-							CPMSIList cpMsiList = new CPMSIList();
+							final CPMSIList cpMsiList = new CPMSIList();
 							cpMsiList.getCPMSI().add(cpMsi);
 							cpRep.setCPMSIList(cpMsiList);
 							final MyProjectTreeNode newNode = jTreeProject.addNewNode(cpMsi, replicateNode);
@@ -1099,45 +1095,25 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		final File msiFile = new File(
 				FileManager.getMiapeLocalDataPath(projectName) + FileManager.getMiapeMSILocalFileName(id, miapeName));
 		if (msiFile.exists()) {
-			MiapeHeader miapeMSIHeader;
-			// try {
-			// final MIAPEMSIXmlFile miapemsiXmlFile = new
-			// MIAPEMSIXmlFile(msiFile);
-			// miapemsiXmlFile.setCvUtil(OntologyLoaderTask.getCvManager());
-			// MiapeMSIDocument miapeDocument =
-			// miapemsiXmlFile.toDocument();
-			// miapeMSIHeader = new MiapeHeader(miapeDocument);
 
-			// final MIAPEMSIXmlFile miapemsiXmlFile = new
-			// MIAPEMSIXmlFile(msiFile);
-			// miapemsiXmlFile.setCvUtil(OntologyLoaderTask.getCvManager());
-			// MiapeMSIDocument miapeDocument =
-			// miapemsiXmlFile.toDocument();
-			miapeMSIHeader = new MiapeHeader(msiFile, false);
-			log.debug("referenced MS dataset: " + miapeMSIHeader.getMiapeRef());
-			if (miapeMSIHeader.getMiapeRef() != -1)
-				return miapeMSIHeader.getMiapeRef();
-			// }
-			// catch (MiapeDatabaseException e) {
-			// e.printStackTrace();
-			// } catch (MiapeSecurityException e) {
-			// e.printStackTrace();
-			// } catch (IOException e) {
-			// e.printStackTrace();
-			// }
+			final int associatedMiapeMSRef = new MiapeHeader(msiFile, false).getMiapeRef();
+
+			if (associatedMiapeMSRef != -1) {
+				return associatedMiapeMSRef;
+			}
 
 		}
 		return null;
 	}
 
 	private void jButtonRemoveSavedProjectMouseClicked(java.awt.event.MouseEvent evt) {
-		String projectName = (String) jComboBox1.getSelectedItem();
+		final String projectName = (String) jComboBox1.getSelectedItem();
 		if (projectName != null && !"".equals(projectName)) {
-			int option = JOptionPane.showConfirmDialog(this,
+			final int option = JOptionPane.showConfirmDialog(this,
 					"<html>The comparison project will be deleted.<br>Are you sure?</html>",
 					"Delete comparison project", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 			if (option == JOptionPane.YES_OPTION) {
-				boolean deleted = FileManager.removeProjectXMLFile(projectName);
+				final boolean deleted = FileManager.removeProjectXMLFile(projectName);
 				if (deleted) {
 					appendStatus("Comparison project '" + projectName + "' deleted");
 					loadProjectCombo();
@@ -1167,14 +1143,14 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 	}
 
 	private void removeCuratedExperiment(String curatedExperimentName) {
-		int selectedOption = JOptionPane.showConfirmDialog(this,
+		final int selectedOption = JOptionPane.showConfirmDialog(this,
 				"<html>Curated experiment '" + curatedExperimentName
 						+ "' will be removed from the disk.<br>Do you really want to continue?</html>",
 				"Add datasets to comparison project", JOptionPane.YES_NO_CANCEL_OPTION);
 		if (selectedOption == JOptionPane.YES_OPTION) {
 			log.info("Removing curated experiment files ... " + curatedExperimentName);
 			jButtonRemoveCuratedExperiment.setEnabled(false);
-			boolean removed = FileManager.removeCuratedExperimentFiles(curatedExperimentName);
+			final boolean removed = FileManager.removeCuratedExperimentFiles(curatedExperimentName);
 			if (removed)
 				appendStatus("Curated experiment '" + curatedExperimentName + "' removed succesfully");
 			else
@@ -1197,7 +1173,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		if (selectedItem != null && !NO_CURATED_EXPERIMENTS_AVAILABLE.equals(selectedItem)
 				&& !"".equals(selectedItem)) {
 			final String curatedExperimentXMLFilePath = FileManager.getCuratedExperimentXMLFilePath(selectedItem);
-			File curatedExpFile = new File(curatedExperimentXMLFilePath);
+			final File curatedExpFile = new File(curatedExperimentXMLFilePath);
 			if (curatedExpFile.exists()) {
 				addExperimentToProjectTree(curatedExpFile);
 			} else {
@@ -1215,10 +1191,10 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		saved = false;
 		// SAVE project file
 		try {
-			boolean saved = save(true);
+			final boolean saved = save(true);
 			if (!saved)
 				return;
-		} catch (IllegalMiapeArgumentException e) {
+		} catch (final IllegalMiapeArgumentException e) {
 			appendStatus(e.getMessage());
 
 		}
@@ -1230,12 +1206,12 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 
 		// SAVE project file
 		try {
-			boolean saved = save(true);
+			final boolean saved = save(true);
 			if (!saved) {
 				return;
 			}
 
-		} catch (IllegalMiapeArgumentException e) {
+		} catch (final IllegalMiapeArgumentException e) {
 			appendStatus(e.getMessage());
 			return;
 		}
@@ -1262,13 +1238,13 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 
 			} else if (jTreeProject.isOnlyOneNodeSelected(REPLICATE_LEVEL)) {
 				final CPReplicate cpRep = (CPReplicate) jTreeProject.getSelectedNode().getUserObject();
-				CPExperiment cpExp = (CPExperiment) ((MyProjectTreeNode) jTreeProject.getSelectedNode().getParent())
-						.getUserObject();
+				final CPExperiment cpExp = (CPExperiment) ((MyProjectTreeNode) jTreeProject.getSelectedNode()
+						.getParent()).getUserObject();
 				cpExp.getCPReplicate().remove(cpRep);
 
 			} else if (jTreeProject.isOnlyOneNodeSelected(MIAPE_REPLICATE_LEVEL)) {
 				final CPMSI cpMSI = (CPMSI) jTreeProject.getSelectedNode().getUserObject();
-				CPReplicate cpRep = (CPReplicate) ((MyProjectTreeNode) jTreeProject.getSelectedNode().getParent())
+				final CPReplicate cpRep = (CPReplicate) ((MyProjectTreeNode) jTreeProject.getSelectedNode().getParent())
 						.getUserObject();
 				cpRep.getCPMSIList().getCPMSI().remove(cpMSI);
 
@@ -1292,11 +1268,11 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 	}
 
 	private void jButtonLoadSavedProjectMouseClicked(java.awt.event.MouseEvent evt) {
-		String projectName = (String) jComboBox1.getSelectedItem();
+		final String projectName = (String) jComboBox1.getSelectedItem();
 		if (projectName != null && !"".equals(projectName)) {
 
-			String projectXMLFilePath = FileManager.getProjectXMLFilePath(projectName);
-			File projectFile = new File(projectXMLFilePath);
+			final String projectXMLFilePath = FileManager.getProjectXMLFilePath(projectName);
+			final File projectFile = new File(projectXMLFilePath);
 			if (!projectFile.exists()) {
 
 				appendStatus("Project '" + projectName + "' has not found in the projects folder");
@@ -1309,7 +1285,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 				initializeProjectTree(projectFile);
 				log.info("Project configuration file readed");
 				appendStatus("Project loaded");
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				e.printStackTrace();
 				log.warn(e.getMessage());
 				appendStatus("Some error occurred when loading project '" + projectName + "': " + e.getMessage());
@@ -1331,8 +1307,8 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 	}
 
 	private String getMIAPENodeNameFromTemplate() {
-		String prefix = jTextFieldLabelNameTemplate.getText();
-		String sufix = jTextFieldLabelNumberTemplate.getText();
+		final String prefix = jTextFieldLabelNameTemplate.getText();
+		final String sufix = jTextFieldLabelNumberTemplate.getText();
 
 		String miapeNodeName = "";
 		if (!"".equals(prefix) || !"".equals(sufix)) {
@@ -1348,14 +1324,14 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 			Integer num = Integer.valueOf(jTextFieldLabelNumberTemplate.getText());
 			num++;
 			jTextFieldLabelNumberTemplate.setText(String.valueOf(num));
-		} catch (NumberFormatException e) {
+		} catch (final NumberFormatException e) {
 			// do nothing
 		}
 	}
 
 	private boolean save(boolean checkTree) throws IllegalMiapeArgumentException {
 		// create object tree from project tree
-		CPExperimentList cpExpList = getCPExperimentListFromTree();
+		final CPExperimentList cpExpList = getCPExperimentListFromTree();
 		if (saved) {
 			log.info("The tree is already saved. Showing chart manager");
 
@@ -1363,10 +1339,10 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 				// Save again the file because when getCPExpListFromTree is
 				// called, some miapeMS node are added
 				FileManager.saveProjectFile(cpExpList);
-			} catch (JAXBException e) {
+			} catch (final JAXBException e) {
 				throw new IllegalMiapeArgumentException(e.getMessage());
 			}
-			String expListName = cpExpList.getName();
+			final String expListName = cpExpList.getName();
 			currentCgfFile = FileManager.getProjectFile(expListName);
 			showChartManager();
 
@@ -1403,7 +1379,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 			currentCgfFile = FileManager.saveProjectFile(cpExpList);
 
 			loadProjectCombo();
-		} catch (JAXBException e) {
+		} catch (final JAXBException e) {
 			appendStatus("Error saving project file: " + e.getMessage());
 			log.warn(e.getMessage());
 			e.printStackTrace();
@@ -1424,10 +1400,10 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 			final CPExperimentList cpExperimentList = (CPExperimentList) userObject;
 			final List<CPExperiment> cpExps = cpExperimentList.getCPExperiment();
 			if (cpExps != null)
-				for (CPExperiment cpExp : cpExps) {
+				for (final CPExperiment cpExp : cpExps) {
 					final List<CPReplicate> cpReps = cpExp.getCPReplicate();
 					if (cpReps != null)
-						for (CPReplicate cpRep : cpReps) {
+						for (final CPReplicate cpRep : cpReps) {
 							CPMSList cpMsList = cpRep.getCPMSList();
 							// if there is not MIAPE MS list, is because there
 							// is not local and the referenced miape ms
@@ -1436,11 +1412,11 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 								final CPMSIList cpmsiList = cpRep.getCPMSIList();
 								cpMsList = new CPMSList();
 								if (cpmsiList != null) {
-									for (CPMSI cpMSI : cpmsiList.getCPMSI()) {
+									for (final CPMSI cpMSI : cpmsiList.getCPMSI()) {
 										if (((cpMSI.isLocal() != null && !cpMSI.isLocal())
 												|| cpMSI.isLocal() == null)) {
-											CPMS cpMS = new CPMS();
-											Integer miapeMsIdRef = cpMSI.getMiapeMsIdRef();
+											final CPMS cpMS = new CPMS();
+											final Integer miapeMsIdRef = cpMSI.getMiapeMsIdRef();
 											if (miapeMsIdRef != null) {
 												cpMS.setId(miapeMsIdRef);
 												cpMS.setName(FilenameUtils.getBaseName(
@@ -1481,7 +1457,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 	private void jButtonAddReplicateActionPerformed(java.awt.event.ActionEvent evt) {
 		try {
 			addReplicate();
-		} catch (IllegalMiapeArgumentException e) {
+		} catch (final IllegalMiapeArgumentException e) {
 			appendStatus("Error: " + e.getMessage());
 		}
 
@@ -1494,8 +1470,8 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 			if (model != null) {
 				if (jTreeProject.isOnlyOneNodeSelected(EXPERIMENT_LEVEL)) {
 					// get selected experiment node
-					MyProjectTreeNode experimentTreeNode = jTreeProject.getSelectedNode();
-					CPExperiment cpExp = (CPExperiment) experimentTreeNode.getUserObject();
+					final MyProjectTreeNode experimentTreeNode = jTreeProject.getSelectedNode();
+					final CPExperiment cpExp = (CPExperiment) experimentTreeNode.getUserObject();
 					if (cpExp.isCurated())
 						throw new IllegalMiapeArgumentException(
 								"A non curated dataset cannot be added to a curated experiment ");
@@ -1505,10 +1481,11 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 					// add the replicate node on the experiment node
 					final MyProjectTreeNode replicateTreeNode = jTreeProject.addNewNode(cpRep, experimentTreeNode);
 					if (jTreeLocalMIAPEMSIs.isOnlyOneNodeSelected(MIAPE_LEVEL)) {
-						int miapeID = Integer.valueOf(jTreeLocalMIAPEMSIs.getStringFromSelection(MIAPE_ID_REGEXP));
+						final int miapeID = Integer
+								.valueOf(jTreeLocalMIAPEMSIs.getStringFromSelection(MIAPE_ID_REGEXP));
 
-						String miapeName = (String) jTreeLocalMIAPEMSIs.getSelectedNode().getUserObject();
-						CPMSI cpMSI = new CPMSI();
+						final String miapeName = (String) jTreeLocalMIAPEMSIs.getSelectedNode().getUserObject();
+						final CPMSI cpMSI = new CPMSI();
 						cpMSI.setName(miapeName);
 						cpMSI.setId(miapeID);
 						if (cpRep.getCPMSIList() == null) {
@@ -1519,7 +1496,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 						// add the miape node on the replicate node
 						final MyProjectTreeNode newNode = jTreeProject.addNewNode(cpMSI
 
-						, replicateTreeNode);
+								, replicateTreeNode);
 						jTreeProject.selectNode(newNode);
 
 						saved = false;
@@ -1529,21 +1506,21 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 					}
 
 				} else if (jTreeProject.isOnlyOneNodeSelected(REPLICATE_LEVEL)) {
-					int miapeID = Integer.valueOf(jTreeLocalMIAPEMSIs.getStringFromSelection(MIAPE_ID_REGEXP));
+					final int miapeID = Integer.valueOf(jTreeLocalMIAPEMSIs.getStringFromSelection(MIAPE_ID_REGEXP));
 
 					// get selected experiment node
-					MyProjectTreeNode replicateTreeNode = jTreeProject.getSelectedNode();
-					CPReplicate cpRep = (CPReplicate) replicateTreeNode.getUserObject();
+					final MyProjectTreeNode replicateTreeNode = jTreeProject.getSelectedNode();
+					final CPReplicate cpRep = (CPReplicate) replicateTreeNode.getUserObject();
 
 					// add the miape node on the replicate node
-					String miapeNodeName = (String) jTreeLocalMIAPEMSIs.getSelectedNode().getUserObject();
-					CPMSI cpMSI = new CPMSI();
+					final String miapeNodeName = (String) jTreeLocalMIAPEMSIs.getSelectedNode().getUserObject();
+					final CPMSI cpMSI = new CPMSI();
 					cpMSI.setName(miapeNodeName);
 					cpMSI.setId(miapeID);
 					cpRep.getCPMSIList().getCPMSI().add(cpMSI);
 
 					final MyProjectTreeNode newNode = jTreeProject.addNewNode(cpMSI
-							// getMIAPENodeName(String.valueOf(miapeID))
+					// getMIAPENodeName(String.valueOf(miapeID))
 							, replicateTreeNode);
 					jTreeProject.scrollToNode(replicateTreeNode);
 					jTreeProject.expandNode(replicateTreeNode);
@@ -1563,7 +1540,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 	private void jButtonAddExperimentActionPerformed(java.awt.event.ActionEvent evt) {
 		try {
 			addExperiment(jTextExperimentName.getText());
-		} catch (IllegalMiapeArgumentException e) {
+		} catch (final IllegalMiapeArgumentException e) {
 			appendStatus("Error: " + e.getMessage());
 		}
 
@@ -1572,12 +1549,12 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 	private MyProjectTreeNode addExperiment(String experimentName) {
 
 		if (!"".equals(experimentName)) {
-			CPExperiment cpExp = new CPExperiment();
+			final CPExperiment cpExp = new CPExperiment();
 			cpExp.setName(experimentName);
 			cpExp.setCurated(false);
 			final DefaultTreeModel model = (DefaultTreeModel) jTreeProject.getModel();
 			if (model != null) {
-				MyProjectTreeNode parentNode = (MyProjectTreeNode) model.getRoot();
+				final MyProjectTreeNode parentNode = (MyProjectTreeNode) model.getRoot();
 				final CPExperimentList cpExpList = (CPExperimentList) parentNode.getUserObject();
 				cpExpList.getCPExperiment().add(cpExp);
 				final MyProjectTreeNode newNode = jTreeProject.addNewNode(cpExp, parentNode);
@@ -1593,13 +1570,13 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 	}
 
 	private void initializeProjectTree(String projectName, String experimentName) {
-		CPExperimentList cpExpList = new CPExperimentList();
+		final CPExperimentList cpExpList = new CPExperimentList();
 		cpExpList.setName(projectName);
-		MyProjectTreeNode nodoRaizMSI = new MyProjectTreeNode(cpExpList);
-		DefaultTreeModel modeloArbolMSI = new DefaultTreeModel(nodoRaizMSI);
+		final MyProjectTreeNode nodoRaizMSI = new MyProjectTreeNode(cpExpList);
+		final DefaultTreeModel modeloArbolMSI = new DefaultTreeModel(nodoRaizMSI);
 		jTreeProject.setModel(modeloArbolMSI);
 
-		CPExperiment cpExp = new CPExperiment();
+		final CPExperiment cpExp = new CPExperiment();
 		cpExp.setName(experimentName);
 		cpExpList.getCPExperiment().add(cpExp);
 		final MyProjectTreeNode experimentNode = jTreeProject.addNewNode(cpExp, nodoRaizMSI);
@@ -1613,30 +1590,30 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 			cpExperimentList = ComparisonProjectFileUtil.getExperimentListFromComparisonProjectFile(projectFile);
 
 			// String projectName = cpExperimentList.getName();
-			MyProjectTreeNode nodoRaizMSI = new MyProjectTreeNode(cpExperimentList);
-			DefaultTreeModel modeloArbolMSI = new DefaultTreeModel(nodoRaizMSI);
+			final MyProjectTreeNode nodoRaizMSI = new MyProjectTreeNode(cpExperimentList);
+			final DefaultTreeModel modeloArbolMSI = new DefaultTreeModel(nodoRaizMSI);
 			jTreeProject.setModel(modeloArbolMSI);
 			final Iterator<CPExperiment> cpExpIterator = cpExperimentList.getCPExperiment().iterator();
 			while (cpExpIterator.hasNext()) {
-				CPExperiment cpExperiment = cpExpIterator.next();
-				boolean curated = cpExperiment.isCurated();
+				final CPExperiment cpExperiment = cpExpIterator.next();
+				final boolean curated = cpExperiment.isCurated();
 				final MyProjectTreeNode experimentNode = jTreeProject.addNewNode(cpExperiment, nodoRaizMSI);
 				boolean hasOneReplicate = false;
 				final Iterator<CPReplicate> cpRepIterator = cpExperiment.getCPReplicate().iterator();
 				while (cpRepIterator.hasNext()) {
-					CPReplicate cpReplicate = cpRepIterator.next();
+					final CPReplicate cpReplicate = cpRepIterator.next();
 					final MyProjectTreeNode replicateNode = jTreeProject.addNewNode(cpReplicate, experimentNode);
 
 					if (cpReplicate.getCPMSIList() != null) {
-						for (CPMSI cpMsi : cpReplicate.getCPMSIList().getCPMSI()) {
+						for (final CPMSI cpMsi : cpReplicate.getCPMSIList().getCPMSI()) {
 
 							// LOCAL MIAPE
 							boolean addNode = true;
 							if (curated) {
-								File file = new File(
+								final File file = new File(
 										FileManager.getMiapeMSICuratedXMLFilePathFromMiapeInformation(cpMsi));
 								if (!file.exists()) {
-									String notificacion = "Warning:  '" + cpMsi.getName()
+									final String notificacion = "Warning:  '" + cpMsi.getName()
 											+ ".xml' file doesn't exist at folder '"
 											+ FileManager.getCuratedExperimentFolderPath(cpMsi.getLocalProjectName())
 											+ "'";
@@ -1646,11 +1623,11 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 								}
 
 							} else {
-								File file = new File(
+								final File file = new File(
 										FileManager.getMiapeMSIXMLFileLocalPathFromMiapeInformation(cpMsi));
 								if (!file.exists()) {
 									addNode = false;
-									String notificacion = "Warning:  '" + cpMsi.getName()
+									final String notificacion = "Warning:  '" + cpMsi.getName()
 											+ ".xml' file doesn't exist at folder '"
 											+ FileManager.getMiapeLocalDataPath(cpMsi.getLocalProjectName()) + "'";
 									log.warn(notificacion);
@@ -1679,7 +1656,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 			jTreeProject.selectNode(nodoRaizMSI);
 			jTreeProject.expandNode(nodoRaizMSI);
 			saved = true;
-		} catch (JAXBException e) {
+		} catch (final JAXBException e) {
 			log.warn(e.getMessage());
 			throw new MiapeDataInconsistencyException(
 					"Error loading " + projectFile.getAbsolutePath() + " config file: " + e.getMessage());
@@ -1689,17 +1666,24 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 	private void addExperimentToProjectTree(File projectFile) {
 		try {
 			final MyProjectTreeNode experimentListNode = jTreeProject.getRootNode();
-			CPExperiment CPExperiment = ComparisonProjectFileUtil.getExperimentFromComparisonProjectFile(projectFile);
+			final CPExperiment CPExperiment = ComparisonProjectFileUtil
+					.getExperimentFromComparisonProjectFile(projectFile);
 			CPExperiment.setCurated(true);
-			CPExperimentList cpExperimentList = (CPExperimentList) experimentListNode.getUserObject();
+			final CPExperimentList cpExperimentList = (CPExperimentList) experimentListNode.getUserObject();
 			cpExperimentList.getCPExperiment().add(CPExperiment);
 
 			final MyProjectTreeNode experimentNode = jTreeProject.addNewNode(CPExperiment, experimentListNode);
-			for (CPReplicate cpReplicate : CPExperiment.getCPReplicate()) {
+			for (final CPReplicate cpReplicate : CPExperiment.getCPReplicate()) {
 
 				final MyProjectTreeNode replicateNode = jTreeProject.addNewNode(cpReplicate, experimentNode);
 				if (cpReplicate.getCPMSIList() != null) {
-					for (CPMSI cpMsi : cpReplicate.getCPMSIList().getCPMSI()) {
+					for (final CPMSI cpMsi : cpReplicate.getCPMSIList().getCPMSI()) {
+						if (cpMsi.getLocalProjectName() == null) {
+							cpMsi.setLocalProjectName(CPExperiment.getName());
+						}
+						if (cpMsi.getName().contains("MIAPE_MSI")) {
+							cpMsi.setName(FileManager.getMiapeMSILocalFileName(cpMsi.getId(), null));
+						}
 						// final MyProjectTreeNode miapeNode =
 						jTreeProject.addNewNode(cpMsi, replicateNode);
 						// cpMsi.setName(FilenameUtils.getName(
@@ -1712,7 +1696,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 			jTreeProject.selectNode(experimentNode);
 			jTreeProject.expandNode(experimentNode);
 			saved = true;
-		} catch (JAXBException e) {
+		} catch (final JAXBException e) {
 			log.warn(e.getMessage());
 			throw new MiapeDataInconsistencyException(
 					"Error loading " + projectFile.getAbsolutePath() + " config file: " + e.getMessage());
@@ -1730,7 +1714,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 				// Create the miape_api webservice proxy
 				// Get properties from resource file
 
-				Miape2ExperimentListDialog dialog = new Miape2ExperimentListDialog(null);
+				final Miape2ExperimentListDialog dialog = new Miape2ExperimentListDialog(null);
 				dialog.addWindowListener(new java.awt.event.WindowAdapter() {
 					@Override
 					public void windowClosing(java.awt.event.WindowEvent e) {
@@ -1807,7 +1791,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 	@Override
 	public synchronized void propertyChange(PropertyChangeEvent evt) {
 		if ("progress".equals(evt.getPropertyName())) {
-			int progress = (Integer) evt.getNewValue();
+			final int progress = (Integer) evt.getNewValue();
 			jProgressBar.setValue(progress);
 			jProgressBar.setString(progress + "%");
 			jProgressBar.setStringPainted(true);
@@ -1825,10 +1809,10 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 		// }
 		// }
 		else if ("notificacion".equals(evt.getPropertyName())) {
-			String notificacion = evt.getNewValue().toString();
+			final String notificacion = evt.getNewValue().toString();
 			appendStatus(notificacion);
 		} else if (MiapeTreeIntegrityCheckerTask.INTEGRITY_OK.equals(evt.getPropertyName())) {
-			this.enableStateKeeper.setToPreviousState(this);
+			enableStateKeeper.setToPreviousState(this);
 			jProgressBar.setIndeterminate(false);
 
 			try {
@@ -1836,43 +1820,44 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 				if (finishPressed) {
 					showChartManager();
 				}
-			} catch (IllegalMiapeArgumentException e) {
+			} catch (final IllegalMiapeArgumentException e) {
 				setStatus(e.getMessage());
 				return;
 			}
 		} else if (MiapeTreeIntegrityCheckerTask.INTEGRITY_START.equals(evt.getPropertyName())) {
-			this.enableStateKeeper.keepEnableStates(this);
-			this.enableStateKeeper.disable(this);
+			enableStateKeeper.keepEnableStates(this);
+			enableStateKeeper.disable(this);
 			jProgressBar.setIndeterminate(true);
 
 		} else if (MiapeTreeIntegrityCheckerTask.INTEGRITY_ERROR.equals(evt.getPropertyName())) {
 			jProgressBar.setIndeterminate(false);
-			this.enableStateKeeper.setToPreviousState(this);
-			String message = (String) evt.getNewValue();
+			enableStateKeeper.setToPreviousState(this);
+			final String message = (String) evt.getNewValue();
 			JOptionPane.showMessageDialog(this, message, "Error in comparison project", JOptionPane.OK_OPTION);
 			appendStatus("Save canceled");
 		} else if (LocalDataTreeLoaderTask.LOCAL_TREE_LOADER_FINISHED.equals(evt.getPropertyName())) {
-			this.enableStateKeeper.setToPreviousState(this);
-			Integer numLoaded = (Integer) evt.getNewValue();
-			this.jLabelMIAPEMSINumber.setText(numLoaded.toString());
+			enableStateKeeper.setToPreviousState(this);
+			final Integer numLoaded = (Integer) evt.getNewValue();
+			jLabelMIAPEMSINumber.setText(numLoaded.toString());
 			appendStatus(numLoaded + " datasets loaded.");
 		} else if (LocalDataTreeLoaderTask.LOCAL_TREE_LOADER_ERROR.equals(evt.getPropertyName())) {
-			this.enableStateKeeper.setToPreviousState(this);
+			enableStateKeeper.setToPreviousState(this);
 			appendStatus("Error loading local datasets: " + evt.getNewValue());
 		} else if (LocalDataTreeLoaderTask.LOCAL_TREE_LOADER_STARTS.equals(evt.getPropertyName())) {
-			this.enableStateKeeper.keepEnableStates(this);
-			this.enableStateKeeper.disable(this);
+			enableStateKeeper.keepEnableStates(this);
+			enableStateKeeper.disable(this);
 		}
 		pack();
 	}
 
 	public void showChartManager() {
-		boolean showChartManager = true;
+		final boolean showChartManager = true;
 
 		if (showChartManager) {
 			setVisible(false);
-			boolean resetErrorLoadingData = true;
-			ChartManagerFrame chartManager = ChartManagerFrame.getInstance(this, currentCgfFile, resetErrorLoadingData);
+			final boolean resetErrorLoadingData = true;
+			final ChartManagerFrame chartManager = ChartManagerFrame.getInstance(this, currentCgfFile,
+					resetErrorLoadingData);
 			chartManager.setVisible(true);
 		}
 	}
@@ -1908,7 +1893,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 
 	@Override
 	public List<String> getHelpMessages() {
-		String[] ret = {
+		final String[] ret = {
 
 				"Comparison Project Manager", //
 				"From here you can:", //
