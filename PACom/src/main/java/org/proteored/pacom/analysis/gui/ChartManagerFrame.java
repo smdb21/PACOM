@@ -2526,8 +2526,18 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	private void addProteinCoverageHistogramBarControls() {
 		jPanelAddOptions.removeAll();
 
-		jPanelAddOptions.setLayout(new BorderLayout());
-		jPanelAddOptions.add(optionsFactory.getPlotOrientationPanel(), BorderLayout.NORTH);
+		jPanelAddOptions.setLayout(new GridBagLayout());
+
+		final GridBagConstraints c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.WEST;
+		// c.fill = GridBagConstraints.HORIZONTAL;
+		c.insets = new Insets(10, 0, 0, 0);
+		c.gridx = 0;
+		c.gridy = 0;
+		jPanelAddOptions.add(optionsFactory.getPlotOrientationPanel(), c);
+		c.gridx = 0;
+		c.gridy++;
+		jPanelAddOptions.add(optionsFactory.getShowTotalSerieCheckBox(false), c);
 	}
 
 	private void addMissedCleavageDistributionControls(String options) {
@@ -4209,7 +4219,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 						"Chart creation in progress. Skiping this call... by thread " + Thread.currentThread().getId());
 				return;
 			}
-			log.info("lock acquired by thread " + Thread.currentThread().getId());
+			log.debug("lock acquired by thread " + Thread.currentThread().getId());
 			creatingChartLock = true;
 			enableStateKeeper.keepEnableStates(this);
 			enableStateKeeper.disable(this);
