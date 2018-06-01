@@ -3263,7 +3263,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		}
 		parent.setProteinSequencesRetrieved(true);
 
-		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
+		List<IdentificationSet> idSets = getIdentificationSets(null, null, optionsFactory.isTotalSerieShown());
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 
 			xAxisLabel = "level 2";
@@ -3272,6 +3272,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 					idSets, retrieveProteinSeqs, countNonConclusiveProteins);
 			final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
+			chart.setNonIntegerItemLabels(StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING, "#.#");
+
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
@@ -3282,6 +3284,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 					idSets, retrieveProteinSeqs, countNonConclusiveProteins);
 			final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
+			chart.setNonIntegerItemLabels(StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING, "#.#");
+
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
@@ -3292,6 +3296,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 					idSets, retrieveProteinSeqs, countNonConclusiveProteins);
 			final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
+			chart.setNonIntegerItemLabels(StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING, "#.#");
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
 			return chart.getChartPanel();
 		} else if (ChartManagerFrame.ONE_CHART_PER_EXPERIMENT.equals(option)) {
@@ -3303,6 +3308,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 						idSets, retrieveProteinSeqs, countNonConclusiveProteins);
 				final BarChart chart = new BarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation);
+				chart.setNonIntegerItemLabels(StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING, "#.#");
+
 				chartList.add(chart.getChartPanel());
 			}
 
@@ -3330,8 +3337,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			throw new IllegalMiapeArgumentException(
 					"In order to calculate protein coverage, the program will retrieve the protein sequence from the Internet");
 		parent.setProteinSequencesRetrieved(true);
-
-		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
+		List<IdentificationSet> idSets = getIdentificationSets(null, null, optionsFactory.isTotalSerieShown());
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 			final HistogramDataset dataset = DatasetFactory.createProteinCoverageHistogramDataSet(idSets, bins,
 					histogramType, retrieveProteinSeqs, countNonConclusiveProteins);
