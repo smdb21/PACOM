@@ -3,7 +3,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.proteored</groupId>
    <artifactId>pacom</artifactId>
-   <version>1.79</version>
+   <version>1.80</version>
    <distributionManagement>
       <repository>
          <id>internal</id>
