@@ -85,8 +85,7 @@ import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
  * <strong>Consider an example:</strong> <blockquote>
  * 
  * <pre>
- * double[][] zValues = new double[][] { { 1.2, 1.3, 1.5 }, { 1.0, 1.1, 1.6 },
- * 		{ 0.7, 0.9, 1.3 } };
+ * double[][] zValues = new double[][] { { 1.2, 1.3, 1.5 }, { 1.0, 1.1, 1.6 }, { 0.7, 0.9, 1.3 } };
  * 
  * double xOffset = 1.0;
  * double yOffset = 0.0;
@@ -124,7 +123,8 @@ import org.proteored.miapeapi.exceptions.IllegalMiapeArgumentException;
  * application.</li>
  * <li><strong>saveToFile(File)</strong> - The chart will be saved to the file
  * system at the file location specified as a parameter. The image format that
- * the image will be saved in is derived from the extension of the file name.</li>
+ * the image will be saved in is derived from the extension of the file
+ * name.</li>
  * </ul>
  * 
  * <strong>Note:</strong> The chart image will not actually be created until
@@ -250,45 +250,45 @@ public class HeatChart {
 	 */
 	public HeatChart(double[][] zValues, double low, double high) {
 		this.zValues = zValues;
-		this.lowValue = low;
-		this.highValue = high;
+		lowValue = low;
+		highValue = high;
 
 		// Default x/y-value settings.
 		setXValues(0, 1);
 		setYValues(0, 1);
 
 		// Default chart settings.
-		this.cellSize = new Dimension(20, 20);
-		this.margin = 20;
-		this.backgroundColour = Color.WHITE;
+		cellSize = new Dimension(20, 20);
+		margin = 20;
+		backgroundColour = Color.WHITE;
 
 		// Default title settings.
-		this.title = null;
-		this.titleFont = new Font("Sans-Serif", Font.BOLD, 16);
-		this.titleColour = Color.BLACK;
+		title = null;
+		titleFont = new Font("Sans-Serif", Font.BOLD, 16);
+		titleColour = Color.BLACK;
 
 		// Default axis settings.
-		this.xAxisLabel = null;
-		this.yAxisLabel = null;
-		this.axisThickness = 2;
-		this.axisColour = Color.BLACK;
-		this.axisLabelsFont = new Font("Sans-Serif", Font.PLAIN, 12);
-		this.axisLabelColour = Color.BLACK;
-		this.axisValuesColour = Color.BLACK;
-		this.axisValuesFont = new Font("Sans-Serif", Font.PLAIN, 10);
-		this.xAxisValuesFrequency = 1;
-		this.xAxisValuesHeight = 0;
-		this.xValuesHorizontal = false;
-		this.showXAxisValues = true;
-		this.showYAxisValues = true;
-		this.yAxisValuesFrequency = 1;
-		this.yAxisValuesHeight = 0;
-		this.yValuesHorizontal = true;
+		xAxisLabel = null;
+		yAxisLabel = null;
+		axisThickness = 2;
+		axisColour = Color.BLACK;
+		axisLabelsFont = new Font("Sans-Serif", Font.PLAIN, 12);
+		axisLabelColour = Color.BLACK;
+		axisValuesColour = Color.BLACK;
+		axisValuesFont = new Font("Sans-Serif", Font.PLAIN, 10);
+		xAxisValuesFrequency = 1;
+		xAxisValuesHeight = 0;
+		xValuesHorizontal = false;
+		showXAxisValues = true;
+		showYAxisValues = true;
+		yAxisValuesFrequency = 1;
+		yAxisValuesHeight = 0;
+		yValuesHorizontal = true;
 
 		// Default heatmap settings.
-		this.highValueColour = Color.BLACK;
-		this.lowValueColour = Color.WHITE;
-		this.colourScale = SCALE_LINEAR;
+		highValueColour = Color.BLACK;
+		lowValueColour = Color.WHITE;
+		colourScale = SCALE_LINEAR;
 
 		updateColourDistance();
 		measureComponents();
@@ -405,8 +405,8 @@ public class HeatChart {
 	 */
 	public void setZValues(double[][] zValues, double low, double high) {
 		this.zValues = zValues;
-		this.lowValue = low;
-		this.highValue = high;
+		lowValue = low;
+		highValue = high;
 	}
 
 	/**
@@ -1061,7 +1061,7 @@ public class HeatChart {
 	 *            is every column and 2 is every other column.
 	 */
 	public void setXAxisValuesFrequency(int axisValuesFrequency) {
-		this.xAxisValuesFrequency = axisValuesFrequency;
+		xAxisValuesFrequency = axisValuesFrequency;
 	}
 
 	/**
@@ -1269,12 +1269,12 @@ public class HeatChart {
 	 * green and blue. So the maximum colour distance is 255 + 255 + 255.
 	 */
 	private void updateColourDistance() {
-		int r1 = lowValueColour.getRed();
-		int g1 = lowValueColour.getGreen();
-		int b1 = lowValueColour.getBlue();
-		int r2 = highValueColour.getRed();
-		int g2 = highValueColour.getGreen();
-		int b2 = highValueColour.getBlue();
+		final int r1 = lowValueColour.getRed();
+		final int g1 = lowValueColour.getGreen();
+		final int b1 = lowValueColour.getBlue();
+		final int r2 = highValueColour.getRed();
+		final int g2 = highValueColour.getGreen();
+		final int b2 = highValueColour.getBlue();
 
 		colourValueDistance = Math.abs(r1 - r2);
 		colourValueDistance += Math.abs(g1 - g2);
@@ -1310,44 +1310,42 @@ public class HeatChart {
 	 *             write location may be incorrect.
 	 */
 	public void saveToFile(File outputFile) throws IOException {
-		String filename = outputFile.getName();
+		final String filename = outputFile.getName();
 
-		int extPoint = filename.lastIndexOf('.');
+		final int extPoint = filename.lastIndexOf('.');
 
 		if (extPoint < 0) {
 			throw new IOException("Illegal filename, no extension used.");
 		}
 
 		// Determine the extension of the filename.
-		String ext = filename.substring(extPoint + 1);
+		final String ext = filename.substring(extPoint + 1);
 
 		// Handle jpg without transparency.
 		if (ext.toLowerCase().equals("jpg") || ext.toLowerCase().equals("jpeg")) {
-			BufferedImage chart = (BufferedImage) getChartImage(false);
+			final BufferedImage chart = (BufferedImage) getChartImage(false);
 
 			// Save our graphic.
 			saveGraphicJpeg(chart, outputFile, 1.0f);
 		} else {
-			BufferedImage chart = (BufferedImage) getChartImage(true);
+			final BufferedImage chart = (BufferedImage) getChartImage(true);
 
 			ImageIO.write(chart, ext, outputFile);
 		}
 	}
 
-	private void saveGraphicJpeg(BufferedImage chart, File outputFile,
-			float quality) throws IOException {
+	private void saveGraphicJpeg(BufferedImage chart, File outputFile, float quality) throws IOException {
 		// Setup correct compression for jpeg.
-		Iterator<ImageWriter> iter = ImageIO
-				.getImageWritersByFormatName("jpeg");
-		ImageWriter writer = (ImageWriter) iter.next();
-		ImageWriteParam iwp = writer.getDefaultWriteParam();
+		final Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("jpeg");
+		final ImageWriter writer = iter.next();
+		final ImageWriteParam iwp = writer.getDefaultWriteParam();
 		iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
 		iwp.setCompressionQuality(quality);
 
 		// Output the image.
-		FileImageOutputStream output = new FileImageOutputStream(outputFile);
+		final FileImageOutputStream output = new FileImageOutputStream(outputFile);
 		writer.setOutput(output);
-		IIOImage image = new IIOImage(chart, null, null);
+		final IIOImage image = new IIOImage(chart, null, null);
 		writer.write(null, image, iwp);
 		writer.dispose();
 
@@ -1376,19 +1374,16 @@ public class HeatChart {
 
 		// Determine image type based upon whether require alpha or not.
 		// Using BufferedImage.TYPE_INT_ARGB seems to break on jpg.
-		int imageType = (alpha ? BufferedImage.TYPE_4BYTE_ABGR
-				: BufferedImage.TYPE_3BYTE_BGR);
+		final int imageType = (alpha ? BufferedImage.TYPE_4BYTE_ABGR : BufferedImage.TYPE_3BYTE_BGR);
 
 		try {
 			// Create our chart image which we will eventually draw everything
 			// on.
-			BufferedImage chartImage = new BufferedImage(chartSize.width,
-					chartSize.height, imageType);
-			Graphics2D chartGraphics = chartImage.createGraphics();
+			final BufferedImage chartImage = new BufferedImage(chartSize.width, chartSize.height, imageType);
+			final Graphics2D chartGraphics = chartImage.createGraphics();
 
 			// Use anti-aliasing where ever possible.
-			chartGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_ON);
+			chartGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 			// Set the background.
 			chartGraphics.setColor(backgroundColour);
@@ -1412,9 +1407,12 @@ public class HeatChart {
 			drawYValues(chartGraphics);
 
 			return chartImage;
-		} catch (OutOfMemoryError e) {
+		} catch (final OutOfMemoryError e) {
 			throw new IllegalMiapeArgumentException(
-					"Out of memory. Try to increase the number on the text box: 'Do not paint rows with less than (occurrence)'");
+					"Out of memory error.\nToo many rows in the image.\nTry to increase the number on the text box: 'Do not paint rows with less than (occurrence)'");
+		} catch (final NegativeArraySizeException e) {
+			throw new IllegalMiapeArgumentException(
+					"Too many rows in the image.\nTry to increase the number on the text box: 'Do not paint rows with less than (occurrence)'");
 		}
 	}
 
@@ -1443,16 +1441,14 @@ public class HeatChart {
 		// sensible values or throw illegal state exception.
 
 		// TODO Put this somewhere so it only gets created once.
-		BufferedImage chartImage = new BufferedImage(1, 1,
-				BufferedImage.TYPE_INT_ARGB);
-		Graphics2D tempGraphics = chartImage.createGraphics();
+		final BufferedImage chartImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+		final Graphics2D tempGraphics = chartImage.createGraphics();
 
 		// Calculate title dimensions.
 		if (title != null) {
 			tempGraphics.setFont(titleFont);
-			FontMetrics metrics = tempGraphics.getFontMetrics();
-			titleSize = new Dimension(metrics.stringWidth(title),
-					metrics.getHeight());
+			final FontMetrics metrics = tempGraphics.getFontMetrics();
+			titleSize = new Dimension(metrics.stringWidth(title), metrics.getHeight());
 			titleAscent = metrics.getAscent();
 		} else {
 			titleSize = new Dimension(0, 0);
@@ -1461,9 +1457,8 @@ public class HeatChart {
 		// Calculate x-axis label dimensions.
 		if (xAxisLabel != null) {
 			tempGraphics.setFont(axisLabelsFont);
-			FontMetrics metrics = tempGraphics.getFontMetrics();
-			xAxisLabelSize = new Dimension(metrics.stringWidth(xAxisLabel),
-					metrics.getHeight());
+			final FontMetrics metrics = tempGraphics.getFontMetrics();
+			xAxisLabelSize = new Dimension(metrics.stringWidth(xAxisLabel), metrics.getHeight());
 			xAxisLabelDescent = metrics.getDescent();
 		} else {
 			xAxisLabelSize = new Dimension(0, 0);
@@ -1472,9 +1467,8 @@ public class HeatChart {
 		// Calculate y-axis label dimensions.
 		if (yAxisLabel != null) {
 			tempGraphics.setFont(axisLabelsFont);
-			FontMetrics metrics = tempGraphics.getFontMetrics();
-			yAxisLabelSize = new Dimension(metrics.stringWidth(yAxisLabel),
-					metrics.getHeight());
+			final FontMetrics metrics = tempGraphics.getFontMetrics();
+			yAxisLabelSize = new Dimension(metrics.stringWidth(yAxisLabel), metrics.getHeight());
 			yAxisLabelAscent = metrics.getAscent();
 		} else {
 			yAxisLabelSize = new Dimension(0, 0);
@@ -1483,11 +1477,11 @@ public class HeatChart {
 		// Calculate x-axis value dimensions.
 		if (showXAxisValues) {
 			tempGraphics.setFont(axisValuesFont);
-			FontMetrics metrics = tempGraphics.getFontMetrics();
+			final FontMetrics metrics = tempGraphics.getFontMetrics();
 			xAxisValuesHeight = metrics.getHeight();
 			xAxisValuesWidthMax = 0;
-			for (Object o : xValues) {
-				int w = metrics.stringWidth(o.toString());
+			for (final Object o : xValues) {
+				final int w = metrics.stringWidth(o.toString());
 				if (w > xAxisValuesWidthMax) {
 					xAxisValuesWidthMax = w;
 				}
@@ -1499,12 +1493,12 @@ public class HeatChart {
 		// Calculate y-axis value dimensions.
 		if (showYAxisValues) {
 			tempGraphics.setFont(axisValuesFont);
-			FontMetrics metrics = tempGraphics.getFontMetrics();
+			final FontMetrics metrics = tempGraphics.getFontMetrics();
 			yAxisValuesHeight = metrics.getHeight();
 			yAxisValuesAscent = metrics.getAscent();
 			yAxisValuesWidthMax = 0;
-			for (Object o : yValues) {
-				int w = metrics.stringWidth(o.toString());
+			for (final Object o : yValues) {
+				final int w = metrics.stringWidth(o.toString());
 				if (w > yAxisValuesWidthMax) {
 					yAxisValuesWidthMax = w;
 				}
@@ -1514,8 +1508,8 @@ public class HeatChart {
 		}
 
 		// Calculate heatmap dimensions.
-		int heatMapWidth = (zValues[0].length * cellSize.width);
-		int heatMapHeight = (zValues.length * cellSize.height);
+		final int heatMapWidth = (zValues[0].length * cellSize.width);
+		final int heatMapHeight = (zValues.length * cellSize.height);
 		heatMapSize = new Dimension(heatMapWidth, heatMapHeight);
 
 		int yValuesHorizontalSize = 0;
@@ -1533,10 +1527,10 @@ public class HeatChart {
 		}
 
 		// Calculate chart dimensions.
-		int chartWidth = heatMapWidth + (2 * margin) + yAxisLabelSize.height
-				+ yValuesHorizontalSize + axisThickness;
-		int chartHeight = heatMapHeight + (2 * margin) + xAxisLabelSize.height
-				+ xValuesVerticalSize + titleSize.height + axisThickness;
+		final int chartWidth = heatMapWidth + (2 * margin) + yAxisLabelSize.height + yValuesHorizontalSize
+				+ axisThickness;
+		final int chartHeight = heatMapHeight + (2 * margin) + xAxisLabelSize.height + xValuesVerticalSize
+				+ titleSize.height + axisThickness;
 		chartSize = new Dimension(chartWidth, chartHeight);
 	}
 
@@ -1568,8 +1562,8 @@ public class HeatChart {
 		if (title != null) {
 			// Strings are drawn from the baseline position of the leftmost
 			// char.
-			int yTitle = (margin / 2) + titleAscent;
-			int xTitle = (chartSize.width / 2) - (titleSize.width / 2);
+			final int yTitle = (margin / 2) + titleAscent;
+			final int xTitle = (chartSize.width / 2) - (titleSize.width / 2);
 
 			chartGraphics.setFont(titleFont);
 			chartGraphics.setColor(titleColour);
@@ -1583,33 +1577,30 @@ public class HeatChart {
 	 */
 	private void drawHeatMap(Graphics2D chartGraphics, double[][] data) {
 		// Calculate the available size for the heatmap.
-		int noYCells = data.length;
-		int noXCells = data[0].length;
+		final int noYCells = data.length;
+		final int noXCells = data[0].length;
 
 		// double dataMin = min(data);
 		// double dataMax = max(data);
 
-		BufferedImage heatMapImage = new BufferedImage(heatMapSize.width,
-				heatMapSize.height, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D heatMapGraphics = heatMapImage.createGraphics();
+		final BufferedImage heatMapImage = new BufferedImage(heatMapSize.width, heatMapSize.height,
+				BufferedImage.TYPE_INT_ARGB);
+		final Graphics2D heatMapGraphics = heatMapImage.createGraphics();
 
 		for (int x = 0; x < noXCells; x++) {
 			for (int y = 0; y < noYCells; y++) {
 				// Set colour depending on zValues.
-				heatMapGraphics.setColor(getCellColour(data[y][x], lowValue,
-						highValue));
+				heatMapGraphics.setColor(getCellColour(data[y][x], lowValue, highValue));
 
-				int cellX = x * cellSize.width;
-				int cellY = y * cellSize.height;
+				final int cellX = x * cellSize.width;
+				final int cellY = y * cellSize.height;
 
-				heatMapGraphics.fillRect(cellX, cellY, cellSize.width,
-						cellSize.height);
+				heatMapGraphics.fillRect(cellX, cellY, cellSize.width, cellSize.height);
 			}
 		}
 
 		// Draw the heat map onto the chart.
-		chartGraphics.drawImage(heatMapImage, heatMapTL.x, heatMapTL.y,
-				heatMapSize.width, heatMapSize.height, null);
+		chartGraphics.drawImage(heatMapImage, heatMapTL.x, heatMapTL.y, heatMapSize.width, heatMapSize.height, null);
 	}
 
 	/*
@@ -1619,16 +1610,14 @@ public class HeatChart {
 		if (xAxisLabel != null) {
 			// Strings are drawn from the baseline position of the leftmost
 			// char.
-			int yPosXAxisLabel = chartSize.height - (margin / 2)
-					- xAxisLabelDescent;
+			final int yPosXAxisLabel = chartSize.height - (margin / 2) - xAxisLabelDescent;
 			// TODO This will need to be updated if the y-axis values/label can
 			// be moved to the right.
-			int xPosXAxisLabel = heatMapC.x - (xAxisLabelSize.width / 2);
+			final int xPosXAxisLabel = heatMapC.x - (xAxisLabelSize.width / 2);
 
 			chartGraphics.setFont(axisLabelsFont);
 			chartGraphics.setColor(axisLabelColour);
-			chartGraphics
-					.drawString(xAxisLabel, xPosXAxisLabel, yPosXAxisLabel);
+			chartGraphics.drawString(xAxisLabel, xPosXAxisLabel, yPosXAxisLabel);
 		}
 	}
 
@@ -1639,23 +1628,20 @@ public class HeatChart {
 		if (yAxisLabel != null) {
 			// Strings are drawn from the baseline position of the leftmost
 			// char.
-			int yPosYAxisLabel = heatMapC.y + (yAxisLabelSize.width / 2);
-			int xPosYAxisLabel = (margin / 2) + yAxisLabelAscent;
+			final int yPosYAxisLabel = heatMapC.y + (yAxisLabelSize.width / 2);
+			final int xPosYAxisLabel = (margin / 2) + yAxisLabelAscent;
 
 			chartGraphics.setFont(axisLabelsFont);
 			chartGraphics.setColor(axisLabelColour);
 
 			// Create 270 degree rotated transform.
-			AffineTransform transform = chartGraphics.getTransform();
-			AffineTransform originalTransform = (AffineTransform) transform
-					.clone();
-			transform.rotate(Math.toRadians(270), xPosYAxisLabel,
-					yPosYAxisLabel);
+			final AffineTransform transform = chartGraphics.getTransform();
+			final AffineTransform originalTransform = (AffineTransform) transform.clone();
+			transform.rotate(Math.toRadians(270), xPosYAxisLabel, yPosYAxisLabel);
 			chartGraphics.setTransform(transform);
 
 			// Draw string.
-			chartGraphics
-					.drawString(yAxisLabel, xPosYAxisLabel, yPosYAxisLabel);
+			chartGraphics.drawString(yAxisLabel, xPosYAxisLabel, yPosYAxisLabel);
 
 			// Revert to original transform before rotation.
 			chartGraphics.setTransform(originalTransform);
@@ -1700,30 +1686,28 @@ public class HeatChart {
 				continue;
 			}
 
-			String xValueStr = xValues[i].toString();
+			final String xValueStr = xValues[i].toString();
 
 			chartGraphics.setFont(axisValuesFont);
-			FontMetrics metrics = chartGraphics.getFontMetrics();
+			final FontMetrics metrics = chartGraphics.getFontMetrics();
 
-			int valueWidth = metrics.stringWidth(xValueStr);
+			final int valueWidth = metrics.stringWidth(xValueStr);
 
 			if (xValuesHorizontal) {
 				// Draw the value with whatever font is now set.
-				int valueXPos = (i * cellSize.width)
-						+ ((cellSize.width / 2) - (valueWidth / 2));
+				int valueXPos = (i * cellSize.width) + ((cellSize.width / 2) - (valueWidth / 2));
 				valueXPos += heatMapTL.x;
-				int valueYPos = heatMapBR.y + metrics.getAscent() + 1;
+				final int valueYPos = heatMapBR.y + metrics.getAscent() + 1;
 
 				chartGraphics.drawString(xValueStr, valueXPos, valueYPos);
 			} else {
-				int valueXPos = heatMapTL.x + (i * cellSize.width)
+				final int valueXPos = heatMapTL.x + (i * cellSize.width)
 						+ ((cellSize.width / 2) + (xAxisValuesHeight / 2));
-				int valueYPos = heatMapBR.y + axisThickness + valueWidth;
+				final int valueYPos = heatMapBR.y + axisThickness + valueWidth;
 
 				// Create 270 degree rotated transform.
-				AffineTransform transform = chartGraphics.getTransform();
-				AffineTransform originalTransform = (AffineTransform) transform
-						.clone();
+				final AffineTransform transform = chartGraphics.getTransform();
+				final AffineTransform originalTransform = (AffineTransform) transform.clone();
 				transform.rotate(Math.toRadians(270), valueXPos, valueYPos);
 				chartGraphics.setTransform(transform);
 
@@ -1751,31 +1735,27 @@ public class HeatChart {
 				continue;
 			}
 
-			String yValueStr = yValues[i].toString();
+			final String yValueStr = yValues[i].toString();
 
 			chartGraphics.setFont(axisValuesFont);
-			FontMetrics metrics = chartGraphics.getFontMetrics();
+			final FontMetrics metrics = chartGraphics.getFontMetrics();
 
-			int valueWidth = metrics.stringWidth(yValueStr);
+			final int valueWidth = metrics.stringWidth(yValueStr);
 
 			if (yValuesHorizontal) {
 				// Draw the value with whatever font is now set.
-				int valueXPos = margin + yAxisLabelSize.height
-						+ (yAxisValuesWidthMax - valueWidth);
-				int valueYPos = heatMapTL.y + (i * cellSize.height)
-						+ (cellSize.height / 2) + (yAxisValuesAscent / 2);
+				final int valueXPos = margin + yAxisLabelSize.height + (yAxisValuesWidthMax - valueWidth);
+				final int valueYPos = heatMapTL.y + (i * cellSize.height) + (cellSize.height / 2)
+						+ (yAxisValuesAscent / 2);
 
 				chartGraphics.drawString(yValueStr, valueXPos, valueYPos);
 			} else {
-				int valueXPos = margin + yAxisLabelSize.height
-						+ yAxisValuesAscent;
-				int valueYPos = heatMapTL.y + (i * cellSize.height)
-						+ (cellSize.height / 2) + (valueWidth / 2);
+				final int valueXPos = margin + yAxisLabelSize.height + yAxisValuesAscent;
+				final int valueYPos = heatMapTL.y + (i * cellSize.height) + (cellSize.height / 2) + (valueWidth / 2);
 
 				// Create 270 degree rotated transform.
-				AffineTransform transform = chartGraphics.getTransform();
-				AffineTransform originalTransform = (AffineTransform) transform
-						.clone();
+				final AffineTransform transform = chartGraphics.getTransform();
+				final AffineTransform originalTransform = (AffineTransform) transform.clone();
 				transform.rotate(Math.toRadians(270), valueXPos, valueYPos);
 				chartGraphics.setTransform(transform);
 
@@ -1793,14 +1773,14 @@ public class HeatChart {
 	 * values.
 	 */
 	private Color getCellColour(double data, double min, double max) {
-		double range = max - min;
-		double position = data - min;
+		final double range = max - min;
+		final double position = data - min;
 
 		// What proportion of the way through the possible values is that.
-		double percentPosition = position / range;
+		final double percentPosition = position / range;
 
 		// Which colour group does that put us in.
-		int colourPosition = getColourPosition(percentPosition);
+		final int colourPosition = getColourPosition(percentPosition);
 
 		int r = lowValueColour.getRed();
 		int g = lowValueColour.getGreen();
@@ -1808,12 +1788,11 @@ public class HeatChart {
 
 		// Make n shifts of the colour, where n is the colourPosition.
 		for (int i = 0; i < colourPosition; i++) {
-			int rDistance = r - highValueColour.getRed();
-			int gDistance = g - highValueColour.getGreen();
-			int bDistance = b - highValueColour.getBlue();
+			final int rDistance = r - highValueColour.getRed();
+			final int gDistance = g - highValueColour.getGreen();
+			final int bDistance = b - highValueColour.getBlue();
 
-			if ((Math.abs(rDistance) >= Math.abs(gDistance))
-					&& (Math.abs(rDistance) >= Math.abs(bDistance))) {
+			if ((Math.abs(rDistance) >= Math.abs(gDistance)) && (Math.abs(rDistance) >= Math.abs(bDistance))) {
 				// Red must be the largest.
 				r = changeColourValue(r, rDistance);
 			} else if (Math.abs(gDistance) >= Math.abs(bDistance)) {
@@ -1834,8 +1813,7 @@ public class HeatChart {
 	 * depending on the colour scale used: LINEAR, LOGARITHMIC, EXPONENTIAL.
 	 */
 	private int getColourPosition(double percentPosition) {
-		return (int) Math.round(colourValueDistance
-				* Math.pow(percentPosition, colourScale));
+		return (int) Math.round(colourValueDistance * Math.pow(percentPosition, colourScale));
 	}
 
 	private int changeColourValue(int colourValue, int colourDistance) {
