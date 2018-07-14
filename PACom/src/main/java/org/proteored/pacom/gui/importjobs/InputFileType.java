@@ -11,6 +11,7 @@ public enum InputFileType {
 	XTANDEM("X!Tandem output file"), //
 	PEPXML("pepXML"), //
 	TABLETEXT("table text file"), //
+	PROTEINPILOT("ProteinPilot peptide summary file"), //
 	MZIDENTMLPLUSMGF("mzIdentML", true), //
 	MZIDENTMLPLUSMZML("mzIdentML", true), //
 	DTASELECTPLUSMGF("DTASelect output file", true), //
@@ -37,7 +38,7 @@ public enum InputFileType {
 		if (name == null) {
 			return null;
 		}
-		for (InputFileType value : values()) {
+		for (final InputFileType value : values()) {
 			if (value.getPrimaryFileDescription().equals(name)) {
 				return value;
 			}
@@ -46,8 +47,8 @@ public enum InputFileType {
 	}
 
 	public static List<InputFileType> primaryFileTypesNames() {
-		List<InputFileType> ret = new ArrayList<InputFileType>();
-		for (InputFileType value : values()) {
+		final List<InputFileType> ret = new ArrayList<InputFileType>();
+		for (final InputFileType value : values()) {
 			if (!value.hasAssociatedMS) {
 				ret.add(value);
 			}
@@ -114,7 +115,7 @@ public enum InputFileType {
 
 	@Override
 	public String toString() {
-		return this.primaryFileDescription;
+		return primaryFileDescription;
 	}
 
 	public boolean isHasAssociatedMS() {
@@ -122,7 +123,7 @@ public enum InputFileType {
 	}
 
 	public static InputFileType[] valuesWithBlank() {
-		InputFileType[] ret = new InputFileType[values().length + 1];
+		final InputFileType[] ret = new InputFileType[values().length + 1];
 		ret[0] = null;
 		for (int i = 0; i < values().length; i++) {
 			ret[i - 1] = values()[i];

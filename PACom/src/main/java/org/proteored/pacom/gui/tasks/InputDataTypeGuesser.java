@@ -47,6 +47,9 @@ public class InputDataTypeGuesser extends SwingWorker<Void, Void> {
 
 	private InputFileType guessInputDataType(File file) {
 		final List<String> fiveFirstLines = FileUtils.readFirstLines(file, 5l);
+		if (contains(fiveFirstLines, "N\tUnused\tTotal\t")) {
+			return InputFileType.PROTEINPILOT;
+		}
 		// PEP XML
 		if (contains(fiveFirstLines, "<msms_pipeline_analysis ")) {
 			return InputFileType.PEPXML;
@@ -80,7 +83,7 @@ public class InputDataTypeGuesser extends SwingWorker<Void, Void> {
 			log.debug("It is not a DTASelect file " + e.getMessage());
 		}
 
-		return null;
+		return InputFileType.TABLETEXT;
 	}
 
 	private boolean contains(List<String> fiveFirstLines, String toFind) {

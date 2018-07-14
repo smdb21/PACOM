@@ -177,13 +177,13 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 
 			MiapeExtractionParametersUtil.setNameToMetadataMiapeMS((MiapeMSDocumentImpl) miapeMSMetadata, this);
 			// merge with a MIAPE_MS containing only the project
-			MiapeDate today = new MiapeDate(new Date());
-			MiapeMSDocument miapeMSJustWithProject = (MiapeMSDocument) MiapeMSDocumentFactory
+			final MiapeDate today = new MiapeDate(new Date());
+			final MiapeMSDocument miapeMSJustWithProject = (MiapeMSDocument) MiapeMSDocumentFactory
 					.createMiapeMSDocumentBuilder(MiapeDocumentFactory.createProjectBuilder(getProjectName())
 							.date(new MiapeDate(new Date())).build(), miapeMSMetadata.getName(), null)
 					.date(today).modificationDate(new Date()).build();
-			MiapeMSDocument ret = MiapeMSMerger.getInstance(OntologyLoaderTask.getCvManager()).merge(miapeMSMetadata,
-					miapeMSJustWithProject);
+			final MiapeMSDocument ret = MiapeMSMerger.getInstance(OntologyLoaderTask.getCvManager())
+					.merge(miapeMSMetadata, miapeMSJustWithProject);
 			setMiapeMSMetadata(ret);
 
 		}
@@ -341,7 +341,12 @@ public class MiapeExtractionRunParametersImpl implements MiapeExtractionRunParam
 	}
 
 	public void setAssociatedMSFile(File file) {
-		this.associatedMSFile = file;
+		associatedMSFile = file;
+	}
+
+	@Override
+	public boolean isProteinPilotSelected() {
+		return InputFileType.PROTEINPILOT == inputFileType;
 	}
 
 }

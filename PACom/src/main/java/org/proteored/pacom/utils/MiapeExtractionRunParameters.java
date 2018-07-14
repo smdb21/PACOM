@@ -67,4 +67,6 @@ public interface MiapeExtractionRunParameters {
 
 	public AssociatedMSInputFileType getAssociatedMSFileType();
 
+	public boolean isProteinPilotSelected();
+
 }
