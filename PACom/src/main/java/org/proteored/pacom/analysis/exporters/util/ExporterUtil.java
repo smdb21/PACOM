@@ -35,6 +35,7 @@ import edu.scripps.yates.annotations.uniprot.UniprotProteinLocalRetriever;
 import edu.scripps.yates.annotations.uniprot.xml.Entry;
 import edu.scripps.yates.annotations.util.UniprotEntryUtil;
 import edu.scripps.yates.utilities.fasta.FastaParser;
+import edu.scripps.yates.utilities.util.Pair;
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.set.hash.THashSet;
 
@@ -811,10 +812,10 @@ public class ExporterUtil {
 					final Map<String, Entry> annotatedProtein = upr.getAnnotatedProtein(null, uniprotACC);
 					if (annotatedProtein.containsKey(uniprotACC)) {
 						final Entry entry = annotatedProtein.get(uniprotACC);
-						final List<String> geneNameList = UniprotEntryUtil.getGeneName(entry, true, true);
+						final List<Pair<String, String>> geneNameList = UniprotEntryUtil.getGeneName(entry, true, true);
 						if (!geneNameList.isEmpty()) {
-							if (!geneNames.contains(geneNameList.get(0))) {
-								geneNames.add(geneNameList.get(0));
+							if (!geneNames.contains(geneNameList.get(0).getFirstelement())) {
+								geneNames.add(geneNameList.get(0).getFirstelement());
 							}
 						}
 					}
