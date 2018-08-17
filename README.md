@@ -5,6 +5,9 @@
 We are continuosly trying to improve the software, adding new features and fixing bugs. New versions are automatically uploaded to out server.  
 Download the latest versions from **[here](http://sealion.scripps.edu/PACom/)**.
 
+## Files supported:
+The updated list of input files supported by PACOM can be found at the corresponding [**wiki page**](https://github.com/smdb21/PACOM/wiki/How-to-import-datasets#2-select-the-input-data-files-to-import).  
+  
 ## System requirements
  - **Java Runtime Environment (JRE) version: 1.8** (Download it from [ http://www.oracle.com/technetwork/java/javase/downloads/index.html](http://www.oracle.com/technetwork/java/javase/downloads/index.html))  
  - **Physical Memory (RAM):** As a Java standalone software, you can specify the maximum amount of memory on which it is going to run. It depends on the file (*.bat for Windows and *.sh for Linux and MAC OS) that you use for running it. However, depending on whether the Java Runtime Environment (JRE) you have works on 32 bits or 64 bits (only available for 64 bits OS), you will be able to use more or less amount of memory. For JRE 32 bits version (x86) the maximum amount of memory is only close to 1.4Gb (which is not much).
@@ -16,7 +19,7 @@ As an example, 9 experiments containing a total number of 126 fractions (that is
 ## Instalation guide
 There is no need to install anything. Just download it from the link above, decompress the package (.zip or .tar.gz) and run one of the *START_\** files (depending on the amount of memory you want to use).
   
-For a more detailed description of these instructions, go to the corresponding wiki page **[here](https://github.com/smdb21/PACOM/wiki/How-to-start#installation)**
+For a more detailed description of these instructions, go to the corresponding [**wiki page**](https://github.com/smdb21/PACOM/wiki/How-to-start#installation)
 
 ## Demo
 If you want to quickly try PACOM, open it, select one of the example comparison projects (**Inspect examples**) such as *PME6_Reanalysis" and click on the orange button at the right.
