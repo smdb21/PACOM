@@ -4413,7 +4413,6 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 			appendStatus("Project data imported succesfully");
 			log.info("Project data imported succesfully");
 			updateOptionComboBox();
-			addCustomizationControls();
 			// apply sorting parameters (this has to be after the customization
 			// controls)
 			updateControlStates();
