@@ -590,8 +590,25 @@ public class ExporterUtil {
 
 		for (final ExtendedIdentifiedProtein protein : peptideOccurrence.getProteinList()) {
 
-			if (!descriptions.contains(protein.getDescription()))
-				descriptions.add(protein.getDescription());
+			String description = protein.getDescription();
+			if (description == null || "".equals(description)) {
+				if (retrieveFromUniprot) {
+					final String uniprotACC = FastaParser.getUniProtACC(protein.getAccession());
+					if (uniprotACC != null) {
+						if (retrieveFromUniprot) {
+							final Map<String, Entry> annotatedProtein = FileManager.getUniprotProteinLocalRetriever()
+									.getAnnotatedProtein(null, uniprotACC);
+							if (annotatedProtein.containsKey(uniprotACC)) {
+								final Entry entry = annotatedProtein.get(uniprotACC);
+								description = UniprotEntryUtil.getProteinDescription(entry);
+							}
+						}
+					}
+				}
+			}
+			if (!descriptions.contains(description)) {
+				descriptions.add(description);
+			}
 
 		}
 		for (final String description : descriptions) {
@@ -864,7 +881,7 @@ public class ExporterUtil {
 	private String getChromosomeName(PeptideOccurrence peptideOccurrence) {
 		final List<String> accs = new ArrayList<String>();
 		for (final ExtendedIdentifiedPeptide pep : peptideOccurrence.getItemList()) {
-			for (final IdentifiedProtein protein : pep.getIdentifiedProteins()) {
+			for (final ExtendedIdentifiedProtein protein : pep.getProteins()) {
 				if (!accs.contains(protein.getAccession()))
 					accs.add(protein.getAccession());
 			}
