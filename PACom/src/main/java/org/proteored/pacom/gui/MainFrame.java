@@ -53,6 +53,8 @@ import org.proteored.pacom.utils.AppVersion;
 import org.proteored.pacom.utils.ExampleProject;
 import org.proteored.pacom.utils.PropertiesReader;
 
+import com.compomics.util.general.MassCalc;
+
 import edu.scripps.yates.utilities.dates.DatesUtil;
 import umich.ms.fileio.filetypes.pepxml.jaxb.standard.MsmsRunSummary;
 
@@ -124,11 +126,11 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 			try {
 				version = getVersion();
 				if (version != null) {
-					String suffix = " (v" + version.toString() + ")";
+					final String suffix = " (v" + version.toString() + ")";
 					if (!getTitle().endsWith(suffix))
 						setTitle(getTitle() + suffix);
 				}
-			} catch (Exception e1) {
+			} catch (final Exception e1) {
 			}
 
 			// load ontologies
@@ -143,7 +145,7 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 			// show help
 			showAttachedHelpDialog();
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			String message = "";
 			if (e.getMessage() != null
@@ -158,46 +160,55 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 	}
 
 	private void loadOtherResources() {
-		Runnable background = new Runnable() {
+		final Runnable background = new Runnable() {
 
 			@Override
 			public void run() {
-				long t1 = System.currentTimeMillis();
+				final long t1 = System.currentTimeMillis();
 				try {
+					// this is done because when first creating this object, it
+					// will load the masses tables from resource files. If this
+					// is not done first, and it is done by various threads at
+					// the same time, it happens that it could fail to load the
+					// whole set of masses first and then, get an error trying
+					// to calculate sequence masses
+					log.info("Loading aminoacid masses...");
+					final MassCalc massCalc = new MassCalc(MassCalc.MONOAA);
+					log.info("Aminoacid masses loaded.");
 					try {
 						JAXBContext.newInstance(MsmsRunSummary.class);
-					} catch (JAXBException e) {
+					} catch (final JAXBException e) {
 						e.printStackTrace();
 					}
 				} finally {
-					long t2 = System.currentTimeMillis();
+					final long t2 = System.currentTimeMillis();
 					log.info("Other resources loaded in  " + DatesUtil.getDescriptiveTimeFromMillisecs(t2 - t1));
 				}
 			}
 		};
-		Thread backgroundThread = new Thread(background);
+		final Thread backgroundThread = new Thread(background);
 		backgroundThread.start();
 	}
 
 	private void loadExampleProjectsInCombo() {
 		final String[] abbreviations = ExampleProject.getAbbreviations();
-		for (String abbreviation : abbreviations) {
+		for (final String abbreviation : abbreviations) {
 			jComboBoxExampleProjects.addItem(abbreviation);
 		}
 	}
 
 	private void loadOntologies() {
 		// OntologyLoaderTask.getCvManager();
-		OntologyLoaderWaiter ontologyLoaderWaiter = new OntologyLoaderWaiter();
+		final OntologyLoaderWaiter ontologyLoaderWaiter = new OntologyLoaderWaiter();
 		ontologyLoaderWaiter.addPropertyChangeListener(this);
 		ontologyLoaderWaiter.execute();
 	}
 
 	private void writeErrorMessage(String message) {
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append("<html>Error initializating the tool: <b>" + message
 				+ "</b><br/>Try to restart and if the problem persist, contact to 'salvador@scripps.edu'</html>");
-				// this.jLabelInit.setText(sb.toString());
+		// this.jLabelInit.setText(sb.toString());
 
 		// cancel tasks
 		if (ontologyLoader != null)
@@ -216,10 +227,10 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 			while (true) {
 				try {
 					Thread.sleep(1000);
-				} catch (InterruptedException e) {
+				} catch (final InterruptedException e) {
 
 				}
-				boolean canceled = ontologyLoader.cancel(true);
+				final boolean canceled = ontologyLoader.cancel(true);
 				if (canceled || ontologyLoader.getState() != StateValue.STARTED)
 					break;
 			}
@@ -357,51 +368,51 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 		jMenuBar1.add(jMenuHelp);
 
 		setJMenuBar(jMenuBar1);
-		GridBagLayout gbl_jPanel1 = new GridBagLayout();
+		final GridBagLayout gbl_jPanel1 = new GridBagLayout();
 		gbl_jPanel1.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0 };
 		gbl_jPanel1.rowHeights = new int[] { 30, 0, 10, 0, 0 };
 		gbl_jPanel1.columnWidths = new int[] { 0, 10, 30, 0, 30, 161, 0 };
 		gbl_jPanel1.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
 		jPanel1.setLayout(gbl_jPanel1);
 
-		JLabel lblExamples = new JLabel("Inspect examples");
+		final JLabel lblExamples = new JLabel("Inspect examples");
 		lblExamples.setVerticalAlignment(SwingConstants.TOP);
 		lblExamples.setHorizontalAlignment(SwingConstants.LEFT);
 		lblExamples.setFont(new Font("Dialog", Font.PLAIN, 18));
-		GridBagConstraints gbc_lblExamples = new GridBagConstraints();
+		final GridBagConstraints gbc_lblExamples = new GridBagConstraints();
 		gbc_lblExamples.insets = new Insets(10, 10, 10, 10);
 		gbc_lblExamples.gridx = 5;
 		gbc_lblExamples.gridy = 1;
 		jPanel1.add(lblExamples, gbc_lblExamples);
-		JLabel jLabelInit = new javax.swing.JLabel("Import data");
+		final JLabel jLabelInit = new javax.swing.JLabel("Import data");
 		jLabelInit.setHorizontalAlignment(SwingConstants.LEFT);
 		jLabelInit.setFont(new Font("Dialog", Font.PLAIN, 18));
 		jLabelInit.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-		GridBagConstraints c = new GridBagConstraints();
+		final GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.FIRST_LINE_START;
 		c.insets = new Insets(10, 10, 10, 10);
 		c.gridx = 1;
 		c.gridy = 1;
 		c.gridwidth = 1;
 		jPanel1.add(jLabelInit, c);
-		JLabel jLabelInit3 = new javax.swing.JLabel("Inspect data");
+		final JLabel jLabelInit3 = new javax.swing.JLabel("Inspect data");
 		jLabelInit3.setHorizontalAlignment(SwingConstants.CENTER);
 		jLabelInit3.setFont(new Font("Dialog", Font.PLAIN, 18));
 		jLabelInit3.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-		GridBagConstraints c3 = new GridBagConstraints();
+		final GridBagConstraints c3 = new GridBagConstraints();
 		c3.insets = new Insets(10, 10, 10, 10);
 		c3.gridx = 3;
 		c3.gridy = 1;
 		c3.gridwidth = 1;
 		jPanel1.add(jLabelInit3, c3);
-		GridBagConstraints c4 = new GridBagConstraints();
+		final GridBagConstraints c4 = new GridBagConstraints();
 		c4.gridheight = 2;
 		c4.fill = GridBagConstraints.HORIZONTAL;
 		c4.insets = new Insets(10, 10, 10, 10);
 		c4.gridx = 1;
 		c4.gridy = 3;
 		c4.gridwidth = 1;
-		JButton loadButton = new JButton();
+		final JButton loadButton = new JButton();
 		loadButton.setIcon(ImageManager.getImageIcon(ImageManager.LOAD_LOGO_128));
 		loadButton.setPressedIcon(ImageManager.getImageIcon(ImageManager.LOAD_LOGO_128_CLICKED));
 		loadButton.setRolloverIcon(ImageManager.getImageIcon(ImageManager.LOAD_LOGO_128_HOVER));
@@ -420,14 +431,14 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 		loadButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		jPanel1.add(loadButton, c4);
 		//
-		GridBagConstraints c6 = new GridBagConstraints();
+		final GridBagConstraints c6 = new GridBagConstraints();
 		c6.gridheight = 2;
 		c6.fill = GridBagConstraints.HORIZONTAL;
 		c6.insets = new Insets(10, 10, 10, 10);
 		c6.gridx = 3;
 		c6.gridy = 3;
 		c6.gridwidth = 1;
-		JButton inspectButton = new JButton();
+		final JButton inspectButton = new JButton();
 		inspectButton.setIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_128));
 		inspectButton.setPressedIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_128_CLICKED));
 		inspectButton.setRolloverIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_128_HOVER));
@@ -461,7 +472,7 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 		});
 		getContentPane().setLayout(new BorderLayout(0, 5));
 		jComboBoxExampleProjects.setToolTipText("Select one of the available example datasets");
-		GridBagConstraints gbc_jComboBoxExampleProjects = new GridBagConstraints();
+		final GridBagConstraints gbc_jComboBoxExampleProjects = new GridBagConstraints();
 		gbc_jComboBoxExampleProjects.insets = new Insets(0, 0, 5, 5);
 		gbc_jComboBoxExampleProjects.gridx = 5;
 		gbc_jComboBoxExampleProjects.gridy = 3;
@@ -475,7 +486,7 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 		jButtonExample1.setFocusable(false);
 		jButtonExample1.setContentAreaFilled(false);
 		jButtonExample1.setBorder(BorderFactory.createEmptyBorder());
-		GridBagConstraints gbc_jButtonExample1 = new GridBagConstraints();
+		final GridBagConstraints gbc_jButtonExample1 = new GridBagConstraints();
 		gbc_jButtonExample1.insets = new Insets(0, 0, 5, 5);
 		gbc_jButtonExample1.gridy = 4;
 		gbc_jButtonExample1.gridx = 5;
@@ -483,7 +494,7 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 		getContentPane().add(jPanel1, BorderLayout.CENTER);
 
 		panel = new JPanel();
-		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
+		final FlowLayout flowLayout = (FlowLayout) panel.getLayout();
 		flowLayout.setAlignment(FlowLayout.RIGHT);
 		getContentPane().add(panel, BorderLayout.SOUTH);
 
@@ -491,13 +502,13 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 		panel.add(jButtonShowHelp);
 
 		pack();
-		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-		java.awt.Dimension dialogSize = getSize();
+		final java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+		final java.awt.Dimension dialogSize = getSize();
 		setLocation((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2);
 	}// </editor-fold>
 
 	protected void exampleProjectSelected() {
-		String exampleProject = jComboBoxExampleProjects.getSelectedItem().toString();
+		final String exampleProject = jComboBoxExampleProjects.getSelectedItem().toString();
 		if ("".equals(exampleProject)) {
 			jButtonExample1.setIcon(ImageManager.getImageIcon(ImageManager.PACOM_LOGO_64_CLICKED));
 			jButtonExample1.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -509,15 +520,15 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 	}
 
 	protected void jButtonExampleClicked() {
-		String exampleProject = jComboBoxExampleProjects.getSelectedItem().toString();
+		final String exampleProject = jComboBoxExampleProjects.getSelectedItem().toString();
 		if (!"".equals(exampleProject)) {
 			loadExample(ExampleProject.getByAbbreviation(exampleProject).getName());
 		}
 	}
 
 	private void loadExample(String projectName) {
-		String projectXMLFilePath = FileManager.getProjectXMLFilePath(projectName);
-		File projectFile = new File(projectXMLFilePath);
+		final String projectXMLFilePath = FileManager.getProjectXMLFilePath(projectName);
+		final File projectFile = new File(projectXMLFilePath);
 		if (!projectFile.exists()) {
 			// appendStatus("Project '" + projectName + "' has not found in the
 			// projects folder");
@@ -530,8 +541,8 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 			Miape2ExperimentListDialog.getInstance(this).setCurrentCgfFile(projectFile);
 			Miape2ExperimentListDialog.getInstance(this).showChartManager();
 			log.info("Project configuration file readed");
-			this.setVisible(false);
-		} catch (Exception e) {
+			setVisible(false);
+		} catch (final Exception e) {
 			e.printStackTrace();
 			log.warn(e.getMessage());
 			return;
@@ -540,7 +551,7 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 
 	public void startDataImport() {
 		setVisible(false);
-		MiapeExtractionFrame standard2MIAPEDialog = MiapeExtractionFrame.getInstance(this, true);
+		final MiapeExtractionFrame standard2MIAPEDialog = MiapeExtractionFrame.getInstance(this, true);
 		standard2MIAPEDialog.setVisible(true);
 
 	}
@@ -558,9 +569,9 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 		if (showConfirmDialog == JOptionPane.YES_OPTION) {
 			try {
 				openBrowser(URL_MIAPE_EXTRACTOR_BATCH_TUTORIAL);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 
-			} catch (URISyntaxException e) {
+			} catch (final URISyntaxException e) {
 
 			}
 		}
@@ -578,9 +589,9 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 		if (showConfirmDialog == JOptionPane.YES_OPTION) {
 			try {
 				openBrowser(URL_MIAPE_EXTRACTOR_TUTORIAL);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 
-			} catch (URISyntaxException e) {
+			} catch (final URISyntaxException e) {
 
 			}
 		}
@@ -608,8 +619,8 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 	}
 
 	public void openBrowser(String url) throws IOException, URISyntaxException {
-		java.awt.Desktop browser = java.awt.Desktop.getDesktop();
-		java.net.URI location = new java.net.URI(url);
+		final java.awt.Desktop browser = java.awt.Desktop.getDesktop();
+		final java.net.URI location = new java.net.URI(url);
 		browser.browse(location);
 	}
 
@@ -626,7 +637,7 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 
 	public static String getHash(String password, byte[] salt)
 			throws NoSuchAlgorithmException, UnsupportedEncodingException {
-		MessageDigest digest = MessageDigest.getInstance("SHA-256");
+		final MessageDigest digest = MessageDigest.getInstance("SHA-256");
 		digest.reset();
 
 		return digest.digest(password.getBytes()).toString();
@@ -644,7 +655,7 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 				try {
 					ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
 					new MainFrame().setVisible(true);
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -675,13 +686,13 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 	public static AppVersion getVersion() {
 		if (version == null) {
 			try {
-				String tmp = PropertiesReader.getProperties(APP_PROPERTIES).getProperty("assembly.dir");
+				final String tmp = PropertiesReader.getProperties(APP_PROPERTIES).getProperty("assembly.dir");
 				if (tmp.contains("v")) {
 					version = new AppVersion(tmp.split("v")[1]);
 				} else {
 					version = new AppVersion(tmp);
 				}
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -691,7 +702,7 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 
 	@Override
 	public List<String> getHelpMessages() {
-		String[] array = { "This is the main window in PACOM", //
+		final String[] array = { "This is the main window in PACOM", //
 				"From here you can: ", //
 
 				"- click on <b>Import data</b> to import one or more datasets into PACOM <i>(Alt+E)</i>,", //
@@ -719,14 +730,14 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 					+ "Please check your internet connection or institution firewall and run the software again.");
 
 		} else if (OntologyLoaderWaiter.ONTOLOGY_LOADED.equals(evt.getPropertyName())) {
-			Object newValue = evt.getNewValue();
+			final Object newValue = evt.getNewValue();
 			if (newValue instanceof ControlVocabularyManager) {
 				log.info("Ontologies loaded. Now loading metadata templates");
 				EventQueue.invokeLater(new Runnable() {
 
 					@Override
 					public void run() {
-						long t0 = System.currentTimeMillis();
+						final long t0 = System.currentTimeMillis();
 						log.info("Loading metadata templates");
 						FileManager.getMetadataTemplateList((ControlVocabularyManager) newValue);
 						log.info("Metadata templates loaded in "
