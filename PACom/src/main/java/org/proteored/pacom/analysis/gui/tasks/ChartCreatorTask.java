@@ -160,7 +160,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			} else if (ChartType.DELTA_MZ_OVER_MZ.equals(chartType)) {
 				ret = showDeltaMzScatterChart();
 			} else if (ChartType.PSM_PEP_PROT.equals(chartType)) {
-				ret = shotPSMPEPPROT_LineChart();
+				ret = showPSMPEPPROT_LineChart();
 			} else if (ChartType.FDR_VS_SCORE.equals(chartType)) {
 				ret = showFDRPlots();
 			} else if (ChartType.CHR_MAPPING.equals(chartType)) {
@@ -1200,7 +1200,9 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		return null;
 	}
 
-	private Object shotPSMPEPPROT_LineChart() {
+	private Object showPSMPEPPROT_LineChart() {
+		// because it is the default one, we add the customizationControls
+		parent.addCustomizationControls();
 		parent.setInformation1(parent.getCurrentChartType());
 
 		String xAxisLabel = "";
@@ -1210,8 +1212,6 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		final boolean showProteins = optionsFactory.showProteins();
 		final boolean distinguishModificatedPeptides = parent.distinguishModifiedPeptides();
 		String yAxisLabel = "";
-
-		parent.addCustomizationControls();
 
 		// if (parent.isFDRThresholdEnabled()) {
 		// showPSMs = false;
