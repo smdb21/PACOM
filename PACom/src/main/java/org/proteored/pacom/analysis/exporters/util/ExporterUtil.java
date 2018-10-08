@@ -754,14 +754,16 @@ public class ExporterUtil {
 							.getAnnotatedProtein(null, uniprotACC);
 					if (annotatedProtein.containsKey(uniprotACC)) {
 						final Entry entry = annotatedProtein.get(uniprotACC);
-						final String ensg_id = UniprotEntryUtil.getENSGID(entry);
-						if (ensg_id != null) {
-							if (!dicc.contains(ensg_id)) {
-								dicc.add(ensg_id);
-								if (!"".equals(ENSG_IDS.toString()))
-									ENSG_IDS.append(VALUE_SEPARATOR);
-								added = true;
-								ENSG_IDS.append(ensg_id);
+						final Set<String> ensg_ids = UniprotEntryUtil.getENSGIDs(entry);
+						if (ensg_ids != null) {
+							for (final String ensg_id : ensg_ids) {
+								if (!dicc.contains(ensg_id)) {
+									dicc.add(ensg_id);
+									if (!"".equals(ENSG_IDS.toString()))
+										ENSG_IDS.append(VALUE_SEPARATOR);
+									added = true;
+									ENSG_IDS.append(ensg_id);
+								}
 							}
 						}
 					}
