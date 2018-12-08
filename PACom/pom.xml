@@ -80,12 +80,12 @@
       <dependency>
          <groupId>edu.scripps.yates</groupId>
          <artifactId>utilities</artifactId>
-         <version>1.5-SNAPSHOT</version>
+         <version>1.6-SNAPSHOT</version>
       </dependency>
       <dependency>
       	<groupId>org.proteored.miape.api</groupId>
       	<artifactId>miape-api</artifactId>
-      	<version>1.9.7-SNAPSHOT</version>
+      	<version>1.9.8-SNAPSHOT</version>
       	<exclusions>
       		<exclusion>
       			<groupId>ch.qos.logback</groupId>
@@ -112,7 +112,7 @@
       <dependency>
       	<groupId>edu.scripps.yates</groupId>
       	<artifactId>pint.annotations</artifactId>
-      	<version>1.0.1-SNAPSHOT</version>
+      	<version>1.0.2-SNAPSHOT</version>
       	<exclusions>
       		<exclusion>
       			<groupId>ch.qos.logback</groupId>

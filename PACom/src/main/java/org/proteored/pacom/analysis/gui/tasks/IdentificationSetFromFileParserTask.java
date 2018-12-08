@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,8 +42,8 @@ import gnu.trove.map.hash.THashMap;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import gnu.trove.map.hash.TObjectIntHashMap;
 import gnu.trove.set.hash.THashSet;
-import uk.ac.ebi.pridemod.PrideModController;
-import uk.ac.ebi.pridemod.slimmod.model.SlimModCollection;
+import uk.ac.ebi.pride.utilities.pridemod.ModReader;
+import uk.ac.ebi.pride.utilities.pridemod.model.PTM;
 
 public class IdentificationSetFromFileParserTask extends SwingWorker<Void, String> {
 	private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("log4j.logger.org.proteored");
@@ -92,7 +91,6 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 	private final File file;
 	private final String separator;
 	private final String idSetName;
-	private SlimModCollection preferredModifications;
 	private static JFileChooser fileChooser;
 	private static FASTADBLoader fastaLoader;
 
@@ -322,27 +320,14 @@ public class IdentificationSetFromFileParserTask extends SwingWorker<Void, Strin
 		return null;
 	}
 
-	private SlimModCollection getModificationMapping() {
-		if (preferredModifications == null) {
-			URL url;
-			try {
-				url = resource.getURL();
-				preferredModifications = PrideModController.parseSlimModCollection(url);
-			} catch (final IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return preferredModifications;
-	}
-
 	private String getModificationNameFromResidueAndMass(String aa, double deltaMass) {
 		try {
 			// try first with the PRIDE mapping
-			final SlimModCollection modificationMapping = getModificationMapping();
+			final ModReader modificationMapping = ModReader.getInstance();
 
-			final SlimModCollection slimMods = modificationMapping.getbyDelta(deltaMass, 0.03);
+			final List<PTM> slimMods = modificationMapping.getPTMListByMonoDeltaMass(deltaMass, 0.01);
 			if (slimMods != null && !slimMods.isEmpty()) {
-				return slimMods.get(0).getPsiModDesc();
+				return slimMods.get(0).getName();
 			}
 			// TODO add more modifications!
 			// read from a file?

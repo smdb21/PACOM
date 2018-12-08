@@ -1,8 +1,6 @@
 package org.proteored.pacom.analysis.exporters;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -33,9 +31,8 @@ import org.springframework.core.io.ClassPathResource;
 
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.set.hash.THashSet;
-import uk.ac.ebi.pridemod.PrideModController;
-import uk.ac.ebi.pridemod.slimmod.model.SlimModCollection;
-import uk.ac.ebi.pridemod.slimmod.model.SlimModification;
+import uk.ac.ebi.pride.utilities.pridemod.ModReader;
+import uk.ac.ebi.pride.utilities.pridemod.model.PTM;
 
 /**
  * This version of the proteomexchange file is according to specifications of
@@ -80,9 +77,7 @@ public class ProteomeXchangeFilev2 {
 	private Set<String> experimentTypes;
 	private Set<String> tissues;
 	private Set<String> diseases;
-	private static final String FILE_SEPARATOR = System.getProperty("file.separator");
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
-	private static SlimModCollection preferredModifications;
 
 	/**
 	 * Constructor with all parameters
@@ -426,14 +421,14 @@ public class ProteomeXchangeFilev2 {
 		if (modificationStrings != null && !modificationStrings.isEmpty()) {
 			final List<String> ret = new ArrayList<String>();
 			final ControlVocabularyManager cvManager = OntologyLoaderTask.getCvManager();
-			final SlimModCollection preferredModifications = getModificationMapping();
+			final ModReader preferredModifications = ModReader.getInstance();
 			for (final String modificationString : modificationStrings) {
 				String modification = "";
 				ControlVocabularyTerm cvTerm = null;
 				if (preferredModifications != null) {
-					final SlimModification mod = preferredModifications.getbyName(modificationString);
-					if (mod != null) {
-						final String idPsiMod = mod.getIdPsiMod();
+					final List<PTM> mods = preferredModifications.getPTMListByEqualName(modificationString);
+					if (mods != null) {
+						final String idPsiMod = mods.get(0).getAccession();
 						cvTerm = PeptideModificationName.getInstance(cvManager)
 								.getCVTermByAccession(new Accession(idPsiMod));
 					}
@@ -447,20 +442,20 @@ public class ProteomeXchangeFilev2 {
 					if (cvTerm.getCVRef().equals(UNIMODOntology.getCVLabel())) {
 						log.info("Converting " + cvTerm.getTermAccession() + " " + cvTerm.getPreferredName()
 								+ " to PSI-MOD");
-						for (final SlimModification slimModification : preferredModifications) {
-							if ((UNIMODOntology.getCVLabel() + ":" + slimModification.getIdUnimod())
-									.equalsIgnoreCase(cvTerm.getTermAccession().toString())) {
-								final ControlVocabularyTerm cvTerm2 = PeptideModificationName.getInstance(cvManager)
-										.getCVTermByAccession(new Accession(slimModification.getIdPsiMod()));
-								if (cvTerm2 != null) {
-									log.info(cvTerm.getTermAccession() + " " + cvTerm.getPreferredName()
-											+ " converter to " + cvTerm2.getTermAccession() + " "
-											+ cvTerm2.getPreferredName());
-									cvTerm = cvTerm2;
-									break;
-								}
+						final PTM ptm = preferredModifications
+								.getPTMbyAccession(cvTerm.getTermAccession().getAccession());
+						if ((UNIMODOntology.getCVLabel() + ":" + ptm.getAccession())
+								.equalsIgnoreCase(cvTerm.getTermAccession().toString())) {
+							final ControlVocabularyTerm cvTerm2 = PeptideModificationName.getInstance(cvManager)
+									.getCVTermByAccession(new Accession(ptm.getAccession()));
+							if (cvTerm2 != null) {
+								log.info(cvTerm.getTermAccession() + " " + cvTerm.getPreferredName() + " converter to "
+										+ cvTerm2.getTermAccession() + " " + cvTerm2.getPreferredName());
+								cvTerm = cvTerm2;
+								break;
 							}
 						}
+
 					}
 					modification = "[" + cvTerm.getCVRef() + "," + cvTerm.getTermAccession().toString() + ","
 							+ cvTerm.getPreferredName() + ",]";
@@ -476,19 +471,6 @@ public class ProteomeXchangeFilev2 {
 			ret.add(MTD + TAB + "modification" + TAB + "[PRIDE, PRIDE:0000398,No PTMs are included in the dataset,]");
 		}
 		return null;
-	}
-
-	private SlimModCollection getModificationMapping() {
-		if (preferredModifications == null) {
-			URL url;
-			try {
-				url = resource.getURL();
-				preferredModifications = PrideModController.parseSlimModCollection(url);
-			} catch (final IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return preferredModifications;
 	}
 
 	/**
