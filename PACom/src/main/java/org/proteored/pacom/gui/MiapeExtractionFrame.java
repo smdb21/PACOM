@@ -78,7 +78,6 @@ import org.proteored.pacom.utils.MiapeExtractionRunParametersImpl;
 
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
-import gnu.trove.set.hash.THashSet;
 
 /**
  *
@@ -641,11 +640,11 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 					// check if there is selected rows
 					if (attachedMSFiles.size() != selectedImportTasks.size()
 							&& attachedMSFiles.size() != importTasks.size()) {
-						JOptionPane.showConfirmDialog(this,
-								"You selected " + attachedMSFiles.size() + " MS files but there are "
-										+ importTasks.size() + " import task loaded in the table (and "
-										+ selectedImportTasks.size() + " of them selected)\n"
-										+ "Either associated them one by one or select the same number of MS files, so that they will be associated in the same order they were selected.",
+						JOptionPane.showConfirmDialog(this, "You selected " + attachedMSFiles.size()
+								+ " MS files but there are " + importTasks.size()
+								+ " import task loaded in the table (and " + selectedImportTasks.size()
+								+ " of them selected)\n"
+								+ "Either associated them one by one or select the same number of MS files, so that they will be associated in the same order they were selected.",
 								"Error", JOptionPane.OK_OPTION);
 					} else if (importTasks.size() == selectedImportTasks.size()) {
 						// add one by one in order
@@ -939,7 +938,7 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 	private static String invalidCharacters = "#";
 
 	private File[] checkInvalidInputFileNames(File[] selectedInputFiles2) {
-		final THashSet<File> ret = new THashSet<File>();
+		final List<File> ret = new ArrayList<File>();
 		// the table, and that happens when associated task is not null
 		for (final File file : selectedInputFiles2) {
 			final String fileName = FilenameUtils.getBaseName(file.getAbsolutePath());
@@ -1477,8 +1476,8 @@ public class MiapeExtractionFrame extends AbstractJFrameWithAttachedHelpDialog i
 	}
 
 	/**
-	 * Show a dialog with the option of opening a browser with the direct link
-	 * to the MIAPE documents
+	 * Show a dialog with the option of opening a browser with the direct link to
+	 * the MIAPE documents
 	 *
 	 * @param msURL
 	 * @param msiURL
