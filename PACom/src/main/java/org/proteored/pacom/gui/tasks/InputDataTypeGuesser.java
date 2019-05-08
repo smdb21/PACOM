@@ -110,11 +110,13 @@ public class InputDataTypeGuesser extends SwingWorker<Void, Void> {
 				firePropertyChange(INPUT_DATA_TYPE_GUESSED, file, this);
 
 				map.put(file, guessedInputDataType);
-				setProgress(i + 1);
+				final Double progress = (i + 1) * 100.0 / files.length;
+				setProgress(progress.intValue());
 			}
 			firePropertyChange(INPUT_DATA_TYPE_GUESSING_FINISHED, null, this);
 
 		} catch (final Exception e) {
+			e.printStackTrace();
 			firePropertyChange(INPUT_DATA_TYPE_GUESSING_ERROR, null, e);
 		}
 		return null;
