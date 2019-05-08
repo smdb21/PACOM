@@ -2,6 +2,7 @@ package org.proteored.pacom.analysis.charts;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
@@ -32,10 +33,8 @@ public class HeatMapChart {
 	 * 
 	 * @param title
 	 * @param dataset
-	 * @param rowList
-	 *            list of labels for the rows
-	 * @param columnList
-	 *            list of labels for the columns
+	 * @param rowList    list of labels for the rows
+	 * @param columnList list of labels for the columns
 	 */
 	public HeatMapChart(String title, double[][] dataset, List<String> rowList, List<String> columnList,
 			double colorScale) {
@@ -47,7 +46,6 @@ public class HeatMapChart {
 		this.chart = new HeatChart(dataset);
 		this.chart.setXValues(getColumnList());
 		this.chart.setYValues(getRowList());
-
 		if (chart != null) {
 			this.chart.setTitle(title);
 			this.chart.setChartMargin(2);
@@ -68,6 +66,10 @@ public class HeatMapChart {
 
 	}
 
+	public void setTitleFon(Font font) {
+		chart.setTitleFont(font);
+	}
+
 	public void setHighValueColor(Color color) {
 		if (this.chart != null)
 			this.chart.setHighValueColour(color);
@@ -81,11 +83,11 @@ public class HeatMapChart {
 	}
 
 	private void addPicture() {
-		Image image = this.chart.getChartImage();
+		final Image image = this.chart.getChartImage();
 		// printSize("chart", this.chart.getChartSize());
-		ImageIcon imageIcon = new ImageIcon(image);
+		final ImageIcon imageIcon = new ImageIcon(image);
 
-		JLabel label = new JLabel(imageIcon);
+		final JLabel label = new JLabel(imageIcon);
 		// printSize("label", label.getSize());
 		// Rule rule = new Rule(0, false);
 		// Set up the picture
@@ -134,7 +136,7 @@ public class HeatMapChart {
 			// width
 			if (chartSize.getWidth() > screenSize.getWidth()) {
 				// fit to the 90% of the screen width
-				Long t = Math.round(screenSize.getWidth() * percentage / numColumns);
+				final Long t = Math.round(screenSize.getWidth() * percentage / numColumns);
 				log.info("Resizing the chart to the screen width (" + screenSize.getWidth() + ")");
 				// chartSize.setSize(chartSize.getWidth(),
 				// screenSize.getHeight());
