@@ -591,21 +591,20 @@ public class ExporterUtil {
 		for (final ExtendedIdentifiedProtein protein : peptideOccurrence.getProteinList()) {
 
 			String description = protein.getDescription();
-			if (description == null || "".equals(description)) {
-				if (retrieveFromUniprot) {
-					final String uniprotACC = FastaParser.getUniProtACC(protein.getAccession());
-					if (uniprotACC != null) {
-						if (retrieveFromUniprot) {
-							final Map<String, Entry> annotatedProtein = FileManager.getUniprotProteinLocalRetriever()
-									.getAnnotatedProtein(null, uniprotACC);
-							if (annotatedProtein.containsKey(uniprotACC)) {
-								final Entry entry = annotatedProtein.get(uniprotACC);
-								description = UniprotEntryUtil.getProteinDescription(entry);
-							}
-						}
+//			if (description == null || "".equals(description)) {
+			if (retrieveFromUniprot) {
+				final String uniprotACC = FastaParser.getUniProtACC(protein.getAccession());
+				if (uniprotACC != null) {
+					final Map<String, Entry> annotatedProtein = FileManager.getUniprotProteinLocalRetriever()
+							.getAnnotatedProtein(null, uniprotACC);
+					if (annotatedProtein.containsKey(uniprotACC)) {
+						final Entry entry = annotatedProtein.get(uniprotACC);
+						description = UniprotEntryUtil.getProteinDescription(entry);
 					}
+
 				}
 			}
+//			}
 			if (!descriptions.contains(description)) {
 				descriptions.add(description);
 			}
@@ -628,21 +627,21 @@ public class ExporterUtil {
 		for (final ExtendedIdentifiedProtein protein : proteinOccurrence.getProteins()) {
 
 			String description = protein.getDescription();
-			if (description == null || "".equals(description)) {
-				if (retrieveFromUniprot) {
-					final String uniprotACC = FastaParser.getUniProtACC(protein.getAccession());
-					if (uniprotACC != null) {
-						if (retrieveFromUniprot) {
-							final Map<String, Entry> annotatedProtein = FileManager.getUniprotProteinLocalRetriever()
-									.getAnnotatedProtein(null, uniprotACC);
-							if (annotatedProtein.containsKey(uniprotACC)) {
-								final Entry entry = annotatedProtein.get(uniprotACC);
-								description = UniprotEntryUtil.getProteinDescription(entry);
-							}
-						}
+//			if (description == null || "".equals(description)) {
+			if (retrieveFromUniprot) {
+				final String uniprotACC = FastaParser.getUniProtACC(protein.getAccession());
+				if (uniprotACC != null) {
+
+					final Map<String, Entry> annotatedProtein = FileManager.getUniprotProteinLocalRetriever()
+							.getAnnotatedProtein(null, uniprotACC);
+					if (annotatedProtein.containsKey(uniprotACC)) {
+						final Entry entry = annotatedProtein.get(uniprotACC);
+						description = UniprotEntryUtil.getProteinDescription(entry);
 					}
+
 				}
 			}
+//			}
 			if (description != null && !"".equals(description) && !descriptions.contains(description)) {
 				descriptions.add(description);
 			}
@@ -1285,8 +1284,8 @@ public class ExporterUtil {
 	}
 
 	/**
-	 * Gets the {@link IdentificationSet} corresponding to the level of data
-	 * that is selected.
+	 * Gets the {@link IdentificationSet} corresponding to the level of data that is
+	 * selected.
 	 * 
 	 * @param idSets
 	 * @return
