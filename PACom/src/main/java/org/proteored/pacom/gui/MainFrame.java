@@ -259,7 +259,7 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 		jMenuItemMIAPEExtractionTutorial = new javax.swing.JMenuItem();
 		jMenuItemMIAPEExtractionBatchTutorial = new javax.swing.JMenuItem();
 
-		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		setTitle("PACOM - Proteomics Assay COMparator");
 
 		jMenu1.setText("Exit");
@@ -644,8 +644,7 @@ public class MainFrame extends AbstractJFrameWithAttachedHelpDialog implements P
 	}
 
 	/**
-	 * @param args
-	 *            the command line arguments
+	 * @param args the command line arguments
 	 */
 	public static void main(String args[]) {
 
