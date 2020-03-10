@@ -605,7 +605,7 @@ public class ExporterUtil {
 				}
 			}
 //			}
-			if (!descriptions.contains(description)) {
+			if (description != null && !"".equals(descriptions) && !descriptions.contains(description)) {
 				descriptions.add(description);
 			}
 
