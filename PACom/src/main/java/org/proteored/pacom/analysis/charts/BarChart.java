@@ -32,6 +32,7 @@ public class BarChart {
 	private final String categoryAxisLabel;
 	private final String valueAxisLabel;
 	private final Title subtitle;
+	private BarRenderer renderer;
 
 	/**
 	 * 
@@ -39,10 +40,9 @@ public class BarChart {
 	 * @param subtitle
 	 * @param xAxisLabel
 	 * @param yAxisLabel
-	 * @param dataset
-	 *            if it is an {@link StatisticalCategoryDataset}, the bar chart
-	 *            will show the error lines, but not in the case of being a
-	 *            {@link CategoryDataset}
+	 * @param dataset         if it is an {@link StatisticalCategoryDataset}, the
+	 *                        bar chart will show the error lines, but not in the
+	 *                        case of being a {@link CategoryDataset}
 	 * @param plotOrientation
 	 */
 	public BarChart(String chartTitle, String subtitle, String xAxisLabel, String yAxisLabel, CategoryDataset dataset,
@@ -105,7 +105,7 @@ public class BarChart {
 		final CategoryAxis domainAxis = plot.getDomainAxis();
 		domainAxis.setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 6.0));
 
-		BarRenderer renderer = null;
+		renderer = null;
 		if (dataset instanceof DefaultStatisticalCategoryDataset) {
 			// customize the renderer...
 			// renderer = (BarRenderer) plot.getRenderer();
@@ -136,6 +136,10 @@ public class BarChart {
 		renderer.setDefaultItemLabelsVisible(true);
 
 		return chart;
+	}
+
+	public BarRenderer getRenderer() {
+		return renderer;
 	}
 
 	public void setNonIntegerItemLabels(String labelFormat, String decimalFormatPattern) {
