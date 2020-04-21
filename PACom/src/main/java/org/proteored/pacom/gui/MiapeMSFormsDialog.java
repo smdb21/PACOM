@@ -34,7 +34,8 @@ import org.proteored.pacom.analysis.util.FileManager;
 import org.proteored.pacom.gui.importjobs.InputFileType;
 import org.proteored.pacom.gui.miapemsforms.MetadataLoader;
 import org.proteored.pacom.gui.tasks.MIAPEMSChecker;
-import org.proteored.pacom.utils.ComponentEnableStateKeeper;
+
+import edu.scripps.yates.utilities.swing.ComponentEnableStateKeeper;
 
 public class MiapeMSFormsDialog extends JDialog implements PropertyChangeListener {
 

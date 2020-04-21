@@ -17,9 +17,20 @@ import org.jfree.data.statistics.StatisticalCategoryDataset;
 
 public class PieChart {
 	private final JFreeChart chart;
-	private ChartPanel chartPanel;
+	private final ChartPanel chartPanel;
 	private final String title;
 	private final Title subtitle;
+
+	/**
+	 * Creates a PieChart but with with preferred size
+	 * 
+	 * @param chartTitle
+	 * @param subtitle
+	 * @param dataset
+	 */
+	public PieChart(String chartTitle, String subtitle, PieDataset dataset) {
+		this(chartTitle, subtitle, dataset, true);
+	}
 
 	/**
 	 * 
@@ -27,13 +38,14 @@ public class PieChart {
 	 * @param subtitle
 	 * @param xAxisLabel
 	 * @param yAxisLabel
-	 * @param dataset
-	 *            if it is an {@link StatisticalCategoryDataset}, the bar chart
-	 *            will show the error lines, but not in the case of being a
-	 *            {@link CategoryDataset}
+	 * @param dataset          if it is an {@link StatisticalCategoryDataset}, the
+	 *                         bar chart will show the error lines, but not in the
+	 *                         case of being a {@link CategoryDataset}
+	 * @param setPreferredSite sets the default chart size with determined by
+	 *                         ChartProperties.DEFAULT_CHART_WIDTH and HEIGHT
 	 * @param plotOrientation
 	 */
-	public PieChart(String chartTitle, String subtitle, PieDataset dataset) {
+	public PieChart(String chartTitle, String subtitle, PieDataset dataset, boolean setPreferredSite) {
 
 		this.title = chartTitle;
 		this.subtitle = new TextTitle(subtitle);
@@ -45,11 +57,12 @@ public class PieChart {
 		chartPanel.setFillZoomRectangle(true);
 		chartPanel.setMouseWheelEnabled(true);
 
-		final Dimension dimension = new Dimension(ChartProperties.DEFAULT_CHART_WIDTH,
-				ChartProperties.DEFAULT_CHART_HEIGHT);
-		this.chartPanel.setPreferredSize(dimension);
-		this.chartPanel.setSize(dimension);
-
+		if (setPreferredSite) {
+			final Dimension dimension = new Dimension(ChartProperties.DEFAULT_CHART_WIDTH,
+					ChartProperties.DEFAULT_CHART_HEIGHT);
+			this.chartPanel.setPreferredSize(dimension);
+			this.chartPanel.setSize(dimension);
+		}
 	}
 
 	/**
@@ -65,8 +78,8 @@ public class PieChart {
 
 	private JFreeChart createChart(PieDataset dataset) {
 
-		JFreeChart chart = ChartFactory.createPieChart(title, dataset, true, true, false);
-		PiePlot plot = (PiePlot) chart.getPlot();
+		final JFreeChart chart = ChartFactory.createPieChart(title, dataset, true, true, false);
+		final PiePlot plot = (PiePlot) chart.getPlot();
 		// // Colors
 		plot.setBackgroundPaint(Color.white);
 		chart.addSubtitle(this.subtitle);

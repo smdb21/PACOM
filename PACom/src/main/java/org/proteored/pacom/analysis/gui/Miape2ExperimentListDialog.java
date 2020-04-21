@@ -76,7 +76,8 @@ import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.gui.MainFrame;
 import org.proteored.pacom.gui.OpenHelpButton;
 import org.proteored.pacom.utils.AppVersion;
-import org.proteored.pacom.utils.ComponentEnableStateKeeper;
+
+import edu.scripps.yates.utilities.swing.ComponentEnableStateKeeper;
 
 /**
  *

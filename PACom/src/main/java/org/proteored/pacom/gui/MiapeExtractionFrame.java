@@ -71,11 +71,11 @@ import org.proteored.pacom.gui.tasks.MiapeExtractionTask;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 import org.proteored.pacom.gui.tasks.OntologyLoaderWaiter;
 import org.proteored.pacom.utils.AppVersion;
-import org.proteored.pacom.utils.ComponentEnableStateKeeper;
 import org.proteored.pacom.utils.MiapeExtractionBatchManager;
 import org.proteored.pacom.utils.MiapeExtractionResult;
 import org.proteored.pacom.utils.MiapeExtractionRunParametersImpl;
 
+import edu.scripps.yates.utilities.swing.ComponentEnableStateKeeper;
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 

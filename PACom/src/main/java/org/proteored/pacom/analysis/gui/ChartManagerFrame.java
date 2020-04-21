@@ -113,13 +113,13 @@ import org.proteored.pacom.gui.MainFrame;
 import org.proteored.pacom.gui.OpenHelpButton;
 import org.proteored.pacom.gui.tasks.OntologyLoaderTask;
 import org.proteored.pacom.utils.AppVersion;
-import org.proteored.pacom.utils.ComponentEnableStateKeeper;
 import org.proteored.pacom.utils.ExtensionFileFilter;
 import org.proteored.pacom.utils.PACOMSoftware;
 import org.proteored.pacom.utils.ToolTipUtil;
 
 import edu.scripps.yates.utilities.checksum.MD5Checksum;
 import edu.scripps.yates.utilities.dates.DatesUtil;
+import edu.scripps.yates.utilities.swing.ComponentEnableStateKeeper;
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.map.hash.TObjectIntHashMap;

@@ -35,8 +35,8 @@ import org.proteored.pacom.analysis.gui.TsvFileFilter;
 import org.proteored.pacom.analysis.util.DataLevel;
 import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.gui.MainFrame;
-import org.proteored.pacom.utils.ComponentEnableStateKeeper;
 
+import edu.scripps.yates.utilities.swing.ComponentEnableStateKeeper;
 import gnu.trove.set.hash.THashSet;
 
 /**

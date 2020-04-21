@@ -2,6 +2,7 @@ package org.proteored.pacom.analysis.charts;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Paint;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
@@ -174,4 +175,13 @@ public class BarChart {
 		}
 		return false;
 	}
+
+	public void setSeriesPaint(Paint[] paints) {
+		final CategoryPlot plot = (CategoryPlot) chart.getPlot();
+		for (int series = 0; series < paints.length; series++) {
+			Paint paint = paints[series];
+			plot.getRenderer().setSeriesPaint(series, paint);
+		}
+	}
+
 }

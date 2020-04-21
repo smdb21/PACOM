@@ -3,6 +3,8 @@ package org.proteored.pacom.analysis.charts;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Paint;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import org.jfree.chart.ChartFactory;
@@ -109,10 +111,22 @@ public class StackedBarChart {
 	}
 
 	public void setNonIntegerItemLabels() {
-		CategoryPlot plot = (CategoryPlot) this.chart.getPlot();
-		CategoryItemRenderer renderer = plot.getRenderer();
-		renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-		renderer.setDefaultItemLabelsVisible(true);
+		if (chart != null) {
+			CategoryPlot plot = (CategoryPlot) this.chart.getPlot();
+			CategoryItemRenderer renderer = plot.getRenderer();
+			renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+			renderer.setDefaultItemLabelsVisible(true);
+		}
+	}
+
+	public void setNonIntegerItemLabels(String labelFormat, String decimalFormatPattern) {
+		if (chart != null) {
+			final CategoryPlot plot = (CategoryPlot) chart.getPlot();
+			final CategoryItemRenderer renderer = plot.getRenderer();
+			renderer.setDefaultItemLabelGenerator(
+					new StandardCategoryItemLabelGenerator(labelFormat, new DecimalFormat(decimalFormatPattern)));
+			renderer.setDefaultItemLabelsVisible(true);
+		}
 	}
 
 	public void setIntegerItemLabels() {
@@ -127,5 +141,13 @@ public class StackedBarChart {
 		CategoryPlot plot = (CategoryPlot) chart.getPlot();
 		CategoryAxis domainAxis = plot.getDomainAxis();
 		domainAxis.setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(0));
+	}
+
+	public void setSeriesPaint(Paint[] paints) {
+		final CategoryPlot plot = (CategoryPlot) chart.getPlot();
+		for (int series = 0; series < paints.length; series++) {
+			Paint paint = paints[series];
+			plot.getRenderer().setSeriesPaint(series, paint);
+		}
 	}
 }

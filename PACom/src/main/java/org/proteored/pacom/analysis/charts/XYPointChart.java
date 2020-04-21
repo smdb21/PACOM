@@ -75,15 +75,17 @@ public class XYPointChart {
 			if (upperBound2 > upperBound1) {
 				rangeAxis.setUpperBound(upperBound2);
 			}
-		}
-		final double lowerBound1 = rangeAxis.getLowerBound();
-		final double lowerBound2 = domainAxis.getLowerBound();
-		if (lowerBound1 > lowerBound2)
-			rangeAxis.setLowerBound(lowerBound2);
-		if (lowerBound2 > lowerBound1)
-			domainAxis.setLowerBound(lowerBound1);
 
-		Shape shape = new Ellipse2D.Double(-1.0, -1.0, 2.0, 2.0);
+			final double lowerBound1 = rangeAxis.getLowerBound();
+			final double lowerBound2 = domainAxis.getLowerBound();
+			if (lowerBound1 > lowerBound2) {
+				rangeAxis.setLowerBound(lowerBound2);
+			}
+			if (lowerBound2 > lowerBound1) {
+				domainAxis.setLowerBound(lowerBound1);
+			}
+		}
+		final Shape shape = new Ellipse2D.Double(-1.0, -1.0, 2.0, 2.0);
 		for (int i = 0; i < plot.getSeriesCount(); i++) {
 			renderer.setSeriesShape(i, shape);
 		}
@@ -113,14 +115,14 @@ public class XYPointChart {
 	public void setTinnySeriesShape() {
 		final XYPlot plot = (XYPlot) this.chart.getPlot();
 		final XYItemRenderer renderer = plot.getRenderer();
-		Shape shape = new Ellipse2D.Double(-1, -1, 2, 2);
+		final Shape shape = new Ellipse2D.Double(-1, -1, 2, 2);
 		for (int i = 0; i < plot.getSeriesCount(); i++) {
 			renderer.setSeriesShape(i, shape);
 		}
 	}
 
 	public void setAutomaticScales() {
-		XYPlot plot = (XYPlot) this.chart.getPlot();
+		final XYPlot plot = (XYPlot) this.chart.getPlot();
 		plot.getRangeAxis().setAutoRange(true);
 		plot.getDomainAxis().setAutoRange(true);
 	}
@@ -134,18 +136,18 @@ public class XYPointChart {
 			final XYPlot plot = (XYPlot) this.chart.getPlot();
 			final ValueAxis rangeAxis = plot.getRangeAxis();
 			final ValueAxis domainAxis = plot.getDomainAxis();
-			List<XYDataset> lineDataSets = new ArrayList<XYDataset>();
-			List<Paint> colors = new ArrayList<Paint>();
+			final List<XYDataset> lineDataSets = new ArrayList<XYDataset>();
+			final List<Paint> colors = new ArrayList<Paint>();
 			for (int i = 0; i < plot.getDataset().getSeriesCount(); i++) {
 				// Regression line:
 				try {
-					double ad[] = Regression.getOLSRegression(plot.getDataset(), i);
+					final double ad[] = Regression.getOLSRegression(plot.getDataset(), i);
 
-					LineFunction2D linefunction2d = new LineFunction2D(ad[0], ad[1]);
-					double start = plot.getDataRange(domainAxis).getLowerBound();
-					double end = plot.getDataRange(domainAxis).getUpperBound();
-					int numSamples = plot.getDataset().getItemCount(i);
-					DecimalFormat df = new DecimalFormat("#.####");
+					final LineFunction2D linefunction2d = new LineFunction2D(ad[0], ad[1]);
+					final double start = plot.getDataRange(domainAxis).getLowerBound();
+					final double end = plot.getDataRange(domainAxis).getUpperBound();
+					final int numSamples = plot.getDataset().getItemCount(i);
+					final DecimalFormat df = new DecimalFormat("#.####");
 					// Calculate the error of the regression
 
 					// XYDataset xydataset =
@@ -156,31 +158,31 @@ public class XYPointChart {
 					// df.format(ad[0]) + "*x)");
 					String serieName = "regression";
 					if (showError) {
-						double error = calculateCorrelation(plot.getDataset(), i, linefunction2d);
+						final double error = calculateCorrelation(plot.getDataset(), i, linefunction2d);
 						serieName = "R^2=" + df.format(error);
 					}
 
-					XYDataset xydataset = DatasetUtils.sampleFunction2D(linefunction2d, start, end, numSamples,
+					final XYDataset xydataset = DatasetUtils.sampleFunction2D(linefunction2d, start, end, numSamples,
 							serieName);
 					lineDataSets.add(xydataset);
 					colors.add(plot.getRenderer().getItemPaint(i, 0));
-				} catch (IllegalArgumentException e) {
+				} catch (final IllegalArgumentException e) {
 
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					e.printStackTrace();
 				}
 			}
 			int i = plot.getDatasetCount();
 			int j = 0;
-			for (XYDataset xyDataset : lineDataSets) {
+			for (final XYDataset xyDataset : lineDataSets) {
 				i++;
 				plot.setDataset(i, xyDataset);
-				XYLineAndShapeRenderer xylineandshaperenderer1 = new XYLineAndShapeRenderer(true, false);
+				final XYLineAndShapeRenderer xylineandshaperenderer1 = new XYLineAndShapeRenderer(true, false);
 				xylineandshaperenderer1.setSeriesPaint(0, colors.get(j));
 				plot.setRenderer(i, xylineandshaperenderer1);
 				j++;
 			}
-		} catch (IllegalArgumentException e) {
+		} catch (final IllegalArgumentException e) {
 			throw new IllegalMiapeArgumentException(e.getMessage());
 		}
 	}
@@ -192,12 +194,12 @@ public class XYPointChart {
 			Double x = null;
 			try {
 				x = (Double) dataset.getX(seriesIndex, i);
-			} catch (ClassCastException e) {
+			} catch (final ClassCastException e) {
 				x = Double.valueOf(String.valueOf(dataset.getX(seriesIndex, i)));
 			}
-			double theoreticalYValue = linefunction2d.getValue(x);
-			double experimentalYValue = dataset.getYValue(seriesIndex, i);
-			double error = (experimentalYValue - theoreticalYValue) * (experimentalYValue - theoreticalYValue);
+			final double theoreticalYValue = linefunction2d.getValue(x);
+			final double experimentalYValue = dataset.getYValue(seriesIndex, i);
+			final double error = (experimentalYValue - theoreticalYValue) * (experimentalYValue - theoreticalYValue);
 			totalError += error;
 		}
 		return Math.sqrt(totalError / itemCount);
@@ -206,18 +208,18 @@ public class XYPointChart {
 
 	private double calculateCorrelation(XYDataset dataset, int seriesIndex, LineFunction2D linefunction2d) {
 		final int itemCount = dataset.getItemCount(seriesIndex);
-		Double[] data1 = new Double[itemCount];
-		Double[] data2 = new Double[itemCount];
+		final Double[] data1 = new Double[itemCount];
+		final Double[] data2 = new Double[itemCount];
 		for (int i = 0; i < itemCount; i++) {
 			Double x = null;
 
 			try {
 				x = (Double) dataset.getX(seriesIndex, i);
-			} catch (ClassCastException e) {
+			} catch (final ClassCastException e) {
 				x = Double.valueOf(String.valueOf(dataset.getX(seriesIndex, i)));
 			}
-			double theoreticalYValue = linefunction2d.getValue(x);
-			double experimentalYValue = dataset.getYValue(seriesIndex, i);
+			final double theoreticalYValue = linefunction2d.getValue(x);
+			final double experimentalYValue = dataset.getYValue(seriesIndex, i);
 			data1[i] = theoreticalYValue;
 			data2[i] = experimentalYValue;
 
@@ -233,19 +235,20 @@ public class XYPointChart {
 		final ValueAxis rangeAxis = plot.getRangeAxis();
 		final ValueAxis domainAxis = plot.getDomainAxis();
 		// Diagonal line:
-		LineFunction2D linefunction2d = new LineFunction2D(0, 1);
+		final LineFunction2D linefunction2d = new LineFunction2D(0, 1);
 		if (plot.getDataRange(domainAxis) != null) {
-			double start = plot.getDataRange(domainAxis).getLowerBound();
-			double end = plot.getDataRange(domainAxis).getUpperBound();
+			final double start = plot.getDataRange(domainAxis).getLowerBound();
+			final double end = plot.getDataRange(domainAxis).getUpperBound();
 
-			int numSamples = plot.getDataset(0).getItemCount(0);
-			int numDataSet = plot.getDatasetCount() + 1;
+			final int numSamples = plot.getDataset(0).getItemCount(0);
+			final int numDataSet = plot.getDatasetCount() + 1;
 			if (numSamples > 1) {
-				XYDataset xydataset = DatasetUtils.sampleFunction2D(linefunction2d, start, end, numSamples, "Diagonal");
+				final XYDataset xydataset = DatasetUtils.sampleFunction2D(linefunction2d, start, end, numSamples,
+						"Diagonal");
 
 				plot.setDataset(numDataSet, xydataset);
 			}
-			XYLineAndShapeRenderer xylineandshaperenderer1 = new XYLineAndShapeRenderer(true, false);
+			final XYLineAndShapeRenderer xylineandshaperenderer1 = new XYLineAndShapeRenderer(true, false);
 			xylineandshaperenderer1.setSeriesPaint(0, Color.BLACK);
 			plot.setRenderer(numDataSet, xylineandshaperenderer1);
 
@@ -257,17 +260,18 @@ public class XYPointChart {
 		final ValueAxis rangeAxis = plot.getRangeAxis();
 		final ValueAxis domainAxis = plot.getDomainAxis();
 		// Diagonal line:
-		LineFunction2D linefunction2d = new LineFunction2D(0, 0);
+		final LineFunction2D linefunction2d = new LineFunction2D(0, 0);
 		final Range dataRange = plot.getDataRange(domainAxis);
 		if (dataRange == null)
 			return;
-		double start = dataRange.getLowerBound();
-		double end = dataRange.getUpperBound();
-		int numSamples = plot.getDataset(0).getItemCount(0);
-		XYDataset xydataset = DatasetUtils.sampleFunction2D(linefunction2d, start, end, numSamples, "Zero horizontal");
-		int numDataSet = plot.getDatasetCount() + 1;
+		final double start = dataRange.getLowerBound();
+		final double end = dataRange.getUpperBound();
+		final int numSamples = plot.getDataset(0).getItemCount(0);
+		final XYDataset xydataset = DatasetUtils.sampleFunction2D(linefunction2d, start, end, numSamples,
+				"Zero horizontal");
+		final int numDataSet = plot.getDatasetCount() + 1;
 		plot.setDataset(numDataSet, xydataset);
-		XYLineAndShapeRenderer xylineandshaperenderer1 = new XYLineAndShapeRenderer(true, false);
+		final XYLineAndShapeRenderer xylineandshaperenderer1 = new XYLineAndShapeRenderer(true, false);
 		xylineandshaperenderer1.setSeriesPaint(0, Color.BLACK);
 		plot.setRenderer(numDataSet, xylineandshaperenderer1);
 	}
@@ -279,8 +283,8 @@ public class XYPointChart {
 		final Range dataRangeX = plot.getDataRange(domainAxis);
 		if (dataRangeX == null)
 			return;
-		double min = dataRangeX.getLowerBound();
-		double max = dataRangeX.getUpperBound();
+		final double min = dataRangeX.getLowerBound();
+		final double max = dataRangeX.getUpperBound();
 		double tmp = Math.abs(min);
 		if (tmp < Math.abs(max))
 			tmp = Math.abs(max);

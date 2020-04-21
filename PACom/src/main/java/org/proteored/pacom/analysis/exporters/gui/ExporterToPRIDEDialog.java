@@ -22,7 +22,8 @@ import org.proteored.miapeapi.experiment.model.ExperimentList;
 import org.proteored.pacom.analysis.exporters.tasks.PRIDEExporterTask;
 import org.proteored.pacom.gui.ImageManager;
 import org.proteored.pacom.gui.MainFrame;
-import org.proteored.pacom.utils.ComponentEnableStateKeeper;
+
+import edu.scripps.yates.utilities.swing.ComponentEnableStateKeeper;
 
 /**
  *
