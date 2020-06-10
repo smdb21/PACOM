@@ -753,7 +753,7 @@ public class ExporterUtil {
 							.getAnnotatedProtein(null, uniprotACC);
 					if (annotatedProtein.containsKey(uniprotACC)) {
 						final Entry entry = annotatedProtein.get(uniprotACC);
-						final Set<String> ensg_ids = UniprotEntryUtil.getENSGIDs(entry);
+						final Set<String> ensg_ids = UniprotEntryUtil.getENSGIDs(entry).get(uniprotACC);
 						if (ensg_ids != null) {
 							for (final String ensg_id : ensg_ids) {
 								if (!dicc.contains(ensg_id)) {
