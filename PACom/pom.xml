@@ -85,7 +85,7 @@
       <dependency>
       	<groupId>org.proteored.miape.api</groupId>
       	<artifactId>miape-api</artifactId>
-      	<version>1.9.8-SNAPSHOT</version>
+      	<version>1.9.9-SNAPSHOT</version>
       	<exclusions>
       		<exclusion>
       			<groupId>ch.qos.logback</groupId>
