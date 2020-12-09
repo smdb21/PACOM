@@ -4131,6 +4131,16 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 
 		panel.add(checkbox3, c);
 
+		// /////////////// ROW4
+		final JCheckBox jCheckBox7 = optionsFactory.getShowDifferentIdentificationsCheckBox("PSMs or peptides");
+		jCheckBox7.setEnabled(true);
+		jCheckBox7.setToolTipText(
+				"<html>If this option is activated, the histogram will show the <b>number of PSMs</b>.<br>"
+						+ "If this option is desactivated, the histogram will show the <b>number of peptides</b>.</html>");
+		c.gridx = 0;
+		c.gridy = 3;
+		panel.add(jCheckBox7, c);
+
 		jPanelAddOptions.setLayout(new BorderLayout());
 		jPanelAddOptions.add(panel, BorderLayout.NORTH);
 	}

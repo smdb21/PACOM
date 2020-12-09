@@ -1896,12 +1896,13 @@ public class DatasetFactory {
 		return ret;
 	}
 
-	public static DefaultCategoryDataset createPeptideChargeHistogramDataSet(List<IdentificationSet> idSets) {
+	public static DefaultCategoryDataset createPeptideChargeHistogramDataSet(List<IdentificationSet> idSets,
+			boolean showPSMsorPeptides, boolean distinguishModPep) {
 		final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
 		final List<TIntObjectHashMap<Integer>> totalList = new ArrayList<TIntObjectHashMap<Integer>>();
 		for (final IdentificationSet idSet : idSets) {
-			final int[] charges = getPeptideCharges(idSet);
+			final int[] charges = getPeptideCharges(idSet, showPSMsorPeptides, distinguishModPep);
 			final TIntObjectHashMap<Integer> chargeHash = new TIntObjectHashMap<Integer>();
 			for (final int charge : charges) {
 				if (charge > 0)
@@ -1930,22 +1931,42 @@ public class DatasetFactory {
 	 * @param idSet
 	 * @return
 	 */
-	private static int[] getPeptideCharges(IdentificationSet idSet) {
+	private static int[] getPeptideCharges(IdentificationSet idSet, boolean showPSMsorPeptides,
+			boolean distinguishModPep) {
 		int[] ret = null;
 
-		final List<ExtendedIdentifiedPeptide> peptides = idSet.getIdentifiedPeptides();
-		if (peptides != null) {
-			ret = new int[peptides.size()];
-			int i = 0;
-			for (final ExtendedIdentifiedPeptide peptide : peptides) {
-				try {
-					final int charge = Integer.valueOf(peptide.getCharge());
-					if (charge > 0)
-						ret[i] = charge;
-				} catch (final NumberFormatException ex) {
+		if (showPSMsorPeptides) {
+			final List<ExtendedIdentifiedPeptide> peptides = idSet.getIdentifiedPeptides();
+			if (peptides != null) {
+				ret = new int[peptides.size()];
+				int i = 0;
+				for (final ExtendedIdentifiedPeptide peptide : peptides) {
+					try {
+						final int charge = Integer.valueOf(peptide.getCharge());
+						if (charge > 0)
+							ret[i] = charge;
+					} catch (final NumberFormatException ex) {
 
+					}
+					i++;
 				}
-				i++;
+			}
+		} else {
+			final Map<String, PeptideOccurrence> peptides = idSet.getPeptideOccurrenceList(distinguishModPep);
+			if (peptides != null) {
+				ret = new int[peptides.size()];
+				int i = 0;
+				for (final PeptideOccurrence peptideOcurrence : peptides.values()) {
+					final ExtendedIdentifiedPeptide peptide = peptideOcurrence.getFirstOccurrence();
+					try {
+						final int charge = Integer.valueOf(peptide.getCharge());
+						if (charge > 0)
+							ret[i] = charge;
+					} catch (final NumberFormatException ex) {
+
+					}
+					i++;
+				}
 			}
 		}
 		return ret;

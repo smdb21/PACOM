@@ -2084,16 +2084,22 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		parent.setInformation1(parent.getCurrentChartType());
 
 		String xAxisLabel;
-		final String yAxisLabel = "# PSMs";
 
 		final PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
 		final boolean stackedChart = optionsFactory.showAsStackedChart();
 		final boolean asPercentage = optionsFactory.getAsPercentage();
+		final boolean distinguishModPep = parent.distinguishModifiedPeptides();
+		final boolean showPSMsorPeptides = optionsFactory.isDifferentIdentificationsShown();
+		String yAxisLabel = "# PSMs";
+		if (!showPSMsorPeptides) {
+			yAxisLabel = "# Peptides";
+		}
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, false);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 			xAxisLabel = "level 2";
 
-			final CategoryDataset dataset = DatasetFactory.createPeptideChargeHistogramDataSet(idSets);
+			final CategoryDataset dataset = DatasetFactory.createPeptideChargeHistogramDataSet(idSets,
+					showPSMsorPeptides, distinguishModPep);
 			if (stackedChart) {
 				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
@@ -2108,7 +2114,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
 			xAxisLabel = "experiment list";
 
-			final CategoryDataset dataset = DatasetFactory.createPeptideChargeHistogramDataSet(idSets);
+			final CategoryDataset dataset = DatasetFactory.createPeptideChargeHistogramDataSet(idSets,
+					showPSMsorPeptides, distinguishModPep);
 			if (stackedChart) {
 				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
@@ -2123,7 +2130,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
 			xAxisLabel = "experiment";
 
-			final CategoryDataset dataset = DatasetFactory.createPeptideChargeHistogramDataSet(idSets);
+			final CategoryDataset dataset = DatasetFactory.createPeptideChargeHistogramDataSet(idSets,
+					showPSMsorPeptides, distinguishModPep);
 			if (stackedChart) {
 				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
@@ -2141,7 +2149,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				idSets = getIdentificationSets(experiment.getName(), null, true);
 				xAxisLabel = experiment.getName();
 
-				final CategoryDataset dataset = DatasetFactory.createPeptideChargeHistogramDataSet(idSets);
+				final CategoryDataset dataset = DatasetFactory.createPeptideChargeHistogramDataSet(idSets,
+						showPSMsorPeptides, distinguishModPep);
 				if (stackedChart) {
 					final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
