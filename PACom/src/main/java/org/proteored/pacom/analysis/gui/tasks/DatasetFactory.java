@@ -67,9 +67,8 @@ public class DatasetFactory {
 	private static final Logger log = Logger.getLogger("log4j.logger.org.proteored");
 
 	/**
-	 * Each category belongs to one of the {@link IdentificationSet} of the
-	 * list, and has the number of items identified in that
-	 * {@link IdentificationSet}<br>
+	 * Each category belongs to one of the {@link IdentificationSet} of the list,
+	 * and has the number of items identified in that {@link IdentificationSet}<br>
 	 *
 	 *
 	 * @param idSets
@@ -1075,8 +1074,7 @@ public class DatasetFactory {
 	 * @param distiguishModificatedPeptides
 	 * @param minOccurrenceThreshold
 	 * @param countNonConclusiveProteins
-	 * @param peptidesPerProtein
-	 *            only applicable in case of proteins
+	 * @param peptidesPerProtein            only applicable in case of proteins
 	 * @return
 	 */
 	public static double[][] createPSMsPerPeptidesHeapMapDataSet(IdentificationSet parentIdSet,
@@ -1168,8 +1166,7 @@ public class DatasetFactory {
 	 * @param distiguishModificatedPeptides
 	 * @param minOccurrenceThreshold
 	 * @param countNonConclusiveProteins
-	 * @param peptidesPerProtein
-	 *            only applicable in case of proteins
+	 * @param peptidesPerProtein            only applicable in case of proteins
 	 * @return
 	 */
 	public static double[][] createPeptideOccurrenceHeapMapDataSet(IdentificationSet parentIdSet,
@@ -1268,8 +1265,7 @@ public class DatasetFactory {
 	 * @param distiguishModificatedPeptides
 	 * @param minOccurrenceThreshold
 	 * @param countNonConclusiveProteins
-	 * @param peptidesPerProtein
-	 *            only applicable in case of proteins
+	 * @param peptidesPerProtein            only applicable in case of proteins
 	 * @return
 	 */
 	public static double[][] createProteinOccurrenceHeapMapDataSet(IdentificationSet parentIdSet,
@@ -1385,8 +1381,7 @@ public class DatasetFactory {
 	 * @param distiguishModificatedPeptides
 	 * @param minThreshold
 	 * @param countNonConclusiveProteins
-	 * @param peptidesPerProtein
-	 *            only applicable in case of proteins
+	 * @param peptidesPerProtein            only applicable in case of proteins
 	 * @return
 	 */
 	public static double[][] createPeptidesPerProteinHeapMapDataSet(IdentificationSet parentIdSet,
@@ -1531,11 +1526,10 @@ public class DatasetFactory {
 	 * element is the occurrence of that protein over each replicate
 	 *
 	 * @param idSets
-	 * @param binary
-	 *            : if true, the heatmap will have only two values (1 or 0)
-	 *            depending on if the peptide is present or not. If false, the
-	 *            number of each cell will be the number of occurrences of each
-	 *            peptide
+	 * @param binary : if true, the heatmap will have only two values (1 or 0)
+	 *               depending on if the peptide is present or not. If false, the
+	 *               number of each cell will be the number of occurrences of each
+	 *               peptide
 	 * @return
 	 */
 	public static double[][] createPeptidePresencyHeapMapDataSet(List<IdentificationSet> idSets, List<String> sequences,
@@ -1762,12 +1756,12 @@ public class DatasetFactory {
 	}
 
 	public static DefaultCategoryDataset createPeptideLengthHistogramDataSet(List<IdentificationSet> idSets,
-			int minimum, int maximum) {
+			int minimum, int maximum, boolean showPSMsorPeptides, boolean distinguishModPep) {
 		final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
 		final Map<IdentificationSet, TIntObjectHashMap<Integer>> map = new THashMap<IdentificationSet, TIntObjectHashMap<Integer>>();
 		for (final IdentificationSet idSet : idSets) {
-			final TIntObjectHashMap<Integer> values = getPeptideLengths(idSet);
+			final TIntObjectHashMap<Integer> values = getPeptideLengths(idSet, showPSMsorPeptides, distinguishModPep);
 			map.put(idSet, values);
 		}
 
@@ -1776,10 +1770,14 @@ public class DatasetFactory {
 			int minLength = 0;
 			final TIntObjectHashMap<Integer> values = map.get(idSet);
 			if (values != null) {
-				for (int length = 1; length < 100; length++) {
+				for (int length = 1; length < 100000; length++) {
 					if (values.containsKey(length)) {
 						final Integer numPeptidesWithThisLength = values.get(length);
 						if (length >= maximum) {
+							if (minLength > 0) {
+								dataset.addValue(minLength, "<=" + String.valueOf(minimum), idSet.getFullName());
+								minLength = 0;
+							}
 							maxLength += numPeptidesWithThisLength;
 						} else if (length <= minimum) {
 							minLength += numPeptidesWithThisLength;
@@ -1857,22 +1855,41 @@ public class DatasetFactory {
 		return ret;
 	}
 
-	private static TIntObjectHashMap<Integer> getPeptideLengths(IdentificationSet idSet) {
+	private static TIntObjectHashMap<Integer> getPeptideLengths(IdentificationSet idSet, boolean showPSMsorPeptides,
+			boolean distinguishModPep) {
 		final TIntObjectHashMap<Integer> ret = new TIntObjectHashMap<Integer>();
 
-		final List<ExtendedIdentifiedPeptide> peptides = idSet.getIdentifiedPeptides();
-		if (peptides != null) {
-			for (final ExtendedIdentifiedPeptide peptide : peptides) {
-				final String peptideSequence = peptide.getSequence();
-				if (peptideSequence != null) {
+		if (showPSMsorPeptides) {
+			final List<ExtendedIdentifiedPeptide> peptides = idSet.getIdentifiedPeptides();
+			if (peptides != null) {
+				for (final ExtendedIdentifiedPeptide peptide : peptides) {
+					final String peptideSequence = peptide.getSequence();
+					if (peptideSequence != null) {
 
-					final int length = peptideSequence.length();
-					if (ret.containsKey(length)) {
-						ret.put(length, ret.get(length) + 1);
-					} else {
-						ret.put(length, 1);
+						final int length = peptideSequence.length();
+						if (ret.containsKey(length)) {
+							ret.put(length, ret.get(length) + 1);
+						} else {
+							ret.put(length, 1);
+						}
+
 					}
-
+				}
+			}
+		} else {
+			final Map<String, PeptideOccurrence> peptideOccurrenceList = idSet
+					.getPeptideOccurrenceList(distinguishModPep);
+			if (peptideOccurrenceList != null) {
+				for (final PeptideOccurrence peptide : peptideOccurrenceList.values()) {
+					final String peptideSequence = peptide.getFirstOccurrence().getSequence();
+					if (peptideSequence != null) {
+						final int length = peptideSequence.length();
+						if (ret.containsKey(length)) {
+							ret.put(length, ret.get(length) + 1);
+						} else {
+							ret.put(length, 1);
+						}
+					}
 				}
 			}
 		}
@@ -1964,8 +1981,8 @@ public class DatasetFactory {
 	}
 
 	/**
-	 * Retrieves from Uniprot the proteins in the {@link IdentificationSet}.
-	 * They will be available for later queries in the cache and index.
+	 * Retrieves from Uniprot the proteins in the {@link IdentificationSet}. They
+	 * will be available for later queries in the cache and index.
 	 * 
 	 * @param idSet
 	 */
@@ -2006,16 +2023,12 @@ public class DatasetFactory {
 	/**
 	 * Creates a {@link XYDataset} od the scores
 	 *
-	 * @param idsets
-	 *            list of identification datasets
-	 * @param scoreName
-	 *            the score name
-	 * @param plotItem
-	 *            peptide or protein
+	 * @param idsets    list of identification datasets
+	 * @param scoreName the score name
+	 * @param plotItem  peptide or protein
 	 * @param applyLog
-	 * @param parent
-	 *            needed to know which is the best score from each
-	 *            identification occurrence
+	 * @param parent    needed to know which is the best score from each
+	 *                  identification occurrence
 	 * @return
 	 */
 	public static Pair<XYDataset, MyXYItemLabelGenerator> createScoreXYDataSet(List<IdentificationSet> idsets,
@@ -2094,10 +2107,9 @@ public class DatasetFactory {
 	 * @param idSets
 	 * @param plotItem
 	 * @param filter
-	 * @param option
-	 *            in case of plotItem==PROTEIN, this parameter indicate if a the
-	 *            FDR will take into account the best hit of each protein (YES)
-	 *            or just all the cases (NO) or both (BOTH)
+	 * @param option   in case of plotItem==PROTEIN, this parameter indicate if a
+	 *                 the FDR will take into account the best hit of each protein
+	 *                 (YES) or just all the cases (NO) or both (BOTH)
 	 * @return
 	 */
 	public static XYDataset createFDRDataSet(List<IdentificationSet> idSets, boolean showProteinLevel,
@@ -3609,8 +3621,8 @@ public class DatasetFactory {
 	}
 
 	/**
-	 * returns a map in which the key is the full name of the idSet and the
-	 * value a set of peptide sequences
+	 * returns a map in which the key is the full name of the idSet and the value a
+	 * set of peptide sequences
 	 * 
 	 * @param idSets
 	 * @param distModPeptides

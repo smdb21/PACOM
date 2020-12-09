@@ -1542,20 +1542,27 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	private Object showPeptideLengthDistributionChart() {
 		parent.setInformation1(parent.getCurrentChartType());
 		final String xAxisLabel = "Peptide length";
-		final String yAxisLabel = "# PSMs";
+
 		final PlotOrientation plotOrientation = optionsFactory.getPlotOrientation();
 		final boolean stacked = optionsFactory.showAsStackedChart();
 		final boolean normalize = optionsFactory.getAsPercentage();
 		final boolean showParent = optionsFactory.isTotalSerieShown();
 		final int maximum = optionsFactory.getMaximumOccurrence();
 		final int minimum = optionsFactory.getMinimumOccurrence();
-		if (minimum > maximum)
-			throw new IllegalMiapeArgumentException("The minimum length cannot be higher than the maximum");
-
+		final boolean distinguishModPep = parent.distinguishModifiedPeptides();
+		final boolean showPSMsorPeptides = optionsFactory.isDifferentIdentificationsShown();
+		String yAxisLabel = "# PSMs";
+		if (!showPSMsorPeptides) {
+			yAxisLabel = "# Peptides";
+		}
+		if (minimum > maximum) {
+			throw new IllegalMiapeArgumentException(
+					"The minimum length " + minimum + " cannot be higher than the maximum " + maximum);
+		}
 		List<IdentificationSet> idSets = getIdentificationSets(null, null, showParent);
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
-			final CategoryDataset dataset = DatasetFactory.createPeptideLengthHistogramDataSet(idSets, minimum,
-					maximum);
+			final CategoryDataset dataset = DatasetFactory.createPeptideLengthHistogramDataSet(idSets, minimum, maximum,
+					showPSMsorPeptides, distinguishModPep);
 			if (stacked) {
 				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
@@ -1567,8 +1574,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
-			final CategoryDataset dataset = DatasetFactory.createPeptideLengthHistogramDataSet(idSets, minimum,
-					maximum);
+			final CategoryDataset dataset = DatasetFactory.createPeptideLengthHistogramDataSet(idSets, minimum, maximum,
+					showPSMsorPeptides, distinguishModPep);
 			if (stacked) {
 				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
@@ -1580,8 +1587,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 				return chart.getChartPanel();
 			}
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
-			final CategoryDataset dataset = DatasetFactory.createPeptideLengthHistogramDataSet(idSets, minimum,
-					maximum);
+			final CategoryDataset dataset = DatasetFactory.createPeptideLengthHistogramDataSet(idSets, minimum, maximum,
+					showPSMsorPeptides, distinguishModPep);
 			if (stacked) {
 				final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 						parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset, plotOrientation,
@@ -1597,7 +1604,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 			for (final Experiment experiment : experimentList.getExperiments()) {
 				idSets = getIdentificationSets(experiment.getName(), null, true);
 				final CategoryDataset dataset = DatasetFactory.createPeptideLengthHistogramDataSet(idSets, minimum,
-						maximum);
+						maximum, showPSMsorPeptides, distinguishModPep);
 				if (stacked) {
 					final StackedBarChart chart = new StackedBarChart(parent.getChartTitle(chartType),
 							parent.getChartSubtitle(chartType, option), xAxisLabel, yAxisLabel, dataset,
@@ -2157,8 +2164,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	/**
 	 *
 	 * @param plotItem
-	 * @param peptidesPerProtein
-	 *            only applicable when plotItem is a protein
+	 * @param peptidesPerProtein only applicable when plotItem is a protein
 	 * @return
 	 */
 	private Object showPeptideOccurrenceHeatMapChart(boolean isPSMs) {
@@ -2255,8 +2261,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	/**
 	 *
 	 * @param plotItem
-	 * @param peptidesPerProtein
-	 *            only applicable when plotItem is a protein
+	 * @param peptidesPerProtein only applicable when plotItem is a protein
 	 * @return
 	 */
 	private Object showProteinOccurrenceHeatMapChart() {
@@ -2348,8 +2353,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	/**
 	 *
 	 * @param plotItem
-	 * @param peptidesPerProtein
-	 *            only applicable when plotItem is a protein
+	 * @param peptidesPerProtein only applicable when plotItem is a protein
 	 * @return
 	 */
 	private Object showPeptidesPerProteinHeatMapChart(boolean isPSMs) {

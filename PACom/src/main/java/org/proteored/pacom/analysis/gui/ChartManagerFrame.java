@@ -311,9 +311,9 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 	}
 
 	/**
-	 * Checks if something has changed on the {@link GeneralOptionsDialog}. If
-	 * yes, the data it will return true. It also checks if the cgfFile is
-	 * different and it will return true. Otherwise, it will return false.
+	 * Checks if something has changed on the {@link GeneralOptionsDialog}. If yes,
+	 * the data it will return true. It also checks if the cgfFile is different and
+	 * it will return true. Otherwise, it will return false.
 	 *
 	 *
 	 * @return
@@ -1155,42 +1155,37 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		jButtonCancel.setEnabled(false);
 
 		final javax.swing.GroupLayout jPanelInformationLayout = new javax.swing.GroupLayout(jPanelInformation);
-		jPanelInformationLayout
-				.setHorizontalGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(jPanelInformationLayout.createSequentialGroup().addContainerGap()
-								.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
-										.addComponent(jLabelInformation3, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE,
-												292, Short.MAX_VALUE)
-										.addComponent(jLabelInformation2, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE,
-												292, Short.MAX_VALUE)
-										.addComponent(jLabelInformation1, GroupLayout.DEFAULT_SIZE, 292,
-												Short.MAX_VALUE)
-										.addGroup(jPanelInformationLayout.createSequentialGroup()
-												.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
-														.addGroup(jPanelInformationLayout.createSequentialGroup()
-																.addComponent(jButtonSeeAppliedFilters,
-																		GroupLayout.PREFERRED_SIZE, 47,
-																		GroupLayout.PREFERRED_SIZE)
-																.addPreferredGap(ComponentPlacement.RELATED)
-																.addComponent(jButtonSaveAsFiltered,
-																		GroupLayout.PREFERRED_SIZE, 47,
-																		GroupLayout.PREFERRED_SIZE))
-														.addComponent(jButtonExport2PRIDE, GroupLayout.DEFAULT_SIZE,
-																101, Short.MAX_VALUE))
-												.addPreferredGap(ComponentPlacement.RELATED)
-												.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
-														.addGroup(jPanelInformationLayout.createSequentialGroup()
-																.addComponent(jButtonShowTable,
-																		GroupLayout.PREFERRED_SIZE, 47,
-																		GroupLayout.PREFERRED_SIZE)
-																.addPreferredGap(ComponentPlacement.RELATED)
-																.addComponent(jButtonExport2Excel,
-																		GroupLayout.PREFERRED_SIZE, 46,
-																		GroupLayout.PREFERRED_SIZE))
-														.addComponent(jButtonCancel, GroupLayout.PREFERRED_SIZE, 101,
-																GroupLayout.PREFERRED_SIZE))
-												.addGap(54)))
-								.addContainerGap()));
+		jPanelInformationLayout.setHorizontalGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(jPanelInformationLayout.createSequentialGroup().addContainerGap()
+						.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(jLabelInformation3, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 292,
+										Short.MAX_VALUE)
+								.addComponent(jLabelInformation2, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 292,
+										Short.MAX_VALUE)
+								.addComponent(jLabelInformation1, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
+								.addGroup(jPanelInformationLayout.createSequentialGroup()
+										.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
+												.addGroup(jPanelInformationLayout.createSequentialGroup()
+														.addComponent(jButtonSeeAppliedFilters,
+																GroupLayout.PREFERRED_SIZE, 47,
+																GroupLayout.PREFERRED_SIZE)
+														.addPreferredGap(ComponentPlacement.RELATED)
+														.addComponent(jButtonSaveAsFiltered, GroupLayout.PREFERRED_SIZE,
+																47, GroupLayout.PREFERRED_SIZE))
+												.addComponent(jButtonExport2PRIDE, GroupLayout.DEFAULT_SIZE, 101,
+														Short.MAX_VALUE))
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
+												.addGroup(jPanelInformationLayout.createSequentialGroup()
+														.addComponent(jButtonShowTable, GroupLayout.PREFERRED_SIZE, 47,
+																GroupLayout.PREFERRED_SIZE)
+														.addPreferredGap(ComponentPlacement.RELATED)
+														.addComponent(jButtonExport2Excel, GroupLayout.PREFERRED_SIZE,
+																46, GroupLayout.PREFERRED_SIZE))
+												.addComponent(jButtonCancel, GroupLayout.PREFERRED_SIZE, 101,
+														GroupLayout.PREFERRED_SIZE))
+										.addGap(54)))
+						.addContainerGap()));
 		jPanelInformationLayout.setVerticalGroup(jPanelInformationLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(jPanelInformationLayout.createSequentialGroup()
 						.addComponent(jLabelInformation1, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
@@ -1223,17 +1218,21 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 						.addComponent(jPanelInformation, GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE).addComponent(
 								jPanelChartType, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE))
 						.addContainerGap()));
-		jPanelLeftLayout.setVerticalGroup(jPanelLeftLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanelLeftLayout.createSequentialGroup().addContainerGap()
-						.addComponent(jPanelInformation, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(jPanelChartType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(jPanelPeptideCounting, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(jPanelAdditionalCustomizations, GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)));
+		jPanelLeftLayout
+				.setVerticalGroup(
+						jPanelLeftLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(jPanelLeftLayout.createSequentialGroup().addContainerGap()
+										.addComponent(jPanelInformation, GroupLayout.PREFERRED_SIZE,
+												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addComponent(jPanelChartType, GroupLayout.PREFERRED_SIZE,
+												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addComponent(jPanelPeptideCounting, GroupLayout.PREFERRED_SIZE, 50,
+												GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addComponent(jPanelAdditionalCustomizations, GroupLayout.DEFAULT_SIZE, 423,
+												Short.MAX_VALUE)));
 		jPanelLeft.setLayout(jPanelLeftLayout);
 		getContentPane().add(jPanelLeft, BorderLayout.WEST);
 
@@ -2649,6 +2648,14 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		c.gridx = 0;
 		c.gridy++;
 		panel.add(checkbox5, c);
+		// /////////////// ROW6
+		final JCheckBox jCheckBox7 = optionsFactory.getShowDifferentIdentificationsCheckBox("PSMs or peptides");
+		jCheckBox7.setToolTipText(
+				"<html>If this option is activated, the histogram will show the <b>number of PSMs</b>.<br>"
+						+ "If this option is desactivated, the histogram will show the <b>number of peptides</b>.</html>");
+		c.gridx = 0;
+		c.gridy++;
+		panel.add(jCheckBox7, c);
 
 		if (!ONE_SERIES_PER_EXPERIMENT_LIST.equals(options)) {
 			final JCheckBox checkbox6 = optionsFactory.getShowTotalSerieCheckBox(true);
