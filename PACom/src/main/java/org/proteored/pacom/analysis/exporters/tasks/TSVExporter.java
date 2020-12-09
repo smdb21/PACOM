@@ -39,7 +39,7 @@ import gnu.trove.set.hash.THashSet;
 public class TSVExporter extends SwingWorker<Void, String> implements Exporter<File> {
 	private static Logger log = Logger.getLogger("log4j.logger.org.proteored");
 
-	private Set<IdentificationSet> idSets = new THashSet<IdentificationSet>();
+	private final Set<IdentificationSet> idSets = new THashSet<IdentificationSet>();
 	private final char separator;
 	private final File file;
 	private final boolean includeDecoyHits;
@@ -56,7 +56,7 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 
 	private boolean distinguisModificatedPeptides;
 
-	private ProteinGroupComparisonType comparisonType;
+	private final ProteinGroupComparisonType comparisonType;
 
 	public TSVExporter(ExporterManager expManager, Collection<IdentificationSet> idSets, File file, Filters filter) {
 
@@ -83,11 +83,12 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 
 			if (this.retrieveProteinSequences) {
 
-				Set<String> uniprotAccs = new THashSet<String>();
-				for (IdentificationSet identificationSet : idSets) {
-					List<ExtendedIdentifiedProtein> identifiedProteins = identificationSet.getIdentifiedProteins();
-					for (ExtendedIdentifiedProtein protein : identifiedProteins) {
-						String uniProtACC = FastaParser.getUniProtACC(protein.getAccession());
+				final Set<String> uniprotAccs = new THashSet<String>();
+				for (final IdentificationSet identificationSet : idSets) {
+					final List<ExtendedIdentifiedProtein> identifiedProteins = identificationSet
+							.getIdentifiedProteins();
+					for (final ExtendedIdentifiedProtein protein : identifiedProteins) {
+						final String uniProtACC = FastaParser.getUniProtACC(protein.getAccession());
 						if (uniProtACC != null) {
 							uniprotAccs.add(uniProtACC);
 						}
@@ -99,9 +100,9 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 						firePropertyChange(PROTEIN_SEQUENCE_RETRIEVAL, null,
 								"Retrieving protein annotations from " + uniprotAccs.size() + " proteins in UniprotKB");
 
-						UniprotProteinLocalRetriever upr = FileManager.getUniprotProteinLocalRetriever();
+						final UniprotProteinLocalRetriever upr = FileManager.getUniprotProteinLocalRetriever();
 						upr.setCacheEnabled(true);
-						Map<String, Entry> annotatedProteins = upr.getAnnotatedProteins(null, uniprotAccs);
+						final Map<String, Entry> annotatedProteins = upr.getAnnotatedProteins(null, uniprotAccs);
 					} finally {
 						firePropertyChange(PROTEIN_SEQUENCE_RETRIEVAL_DONE, null, null);
 					}
@@ -112,9 +113,9 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 			out = new BufferedOutputStream(new FileOutputStream(file));
 
 			List<String> columnsStringList = ExportedColumns.getColumnsString(this.showPeptides, this.includeGeneInfo,
-					this.isFDRApplied, idSets);
-			ExporterUtil exporterUtil = ExporterUtil.getInstance(idSets, showPeptides, retrieveProteinSequences);
-			String columnsString = exporterUtil.getStringFromList(columnsStringList, separator) + NEWLINE;
+					this.isFDRApplied, idSets, true);
+			final ExporterUtil exporterUtil = ExporterUtil.getInstance(idSets, showPeptides, retrieveProteinSequences);
+			final String columnsString = exporterUtil.getStringFromList(columnsStringList, separator) + NEWLINE;
 
 			log.info(columnsString);
 			out.write(columnsString.getBytes());
@@ -124,13 +125,18 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 			// proteinOccurrenceList = this.idSet
 			// .getProteinOccurrenceList();
 			int i = 1;
-			for (IdentificationSet idSet : idSets) {
+			// now get the columns for the exporter, without translating them to be
+			// cmpatible with importing.
+			columnsStringList = ExportedColumns.getColumnsString(this.showPeptides, this.includeGeneInfo,
+					this.isFDRApplied, idSets, false);
+			for (final IdentificationSet idSet : idSets) {
 				// if (progress == 0)
 				// return;
 				if (this.showPeptides) {
 					if (this.showBestPeptides) {
 
-						Collection<PeptideOccurrence> peptideOccurrenceList = getPeptideOccurrenceListToExport(idSet);
+						final Collection<PeptideOccurrence> peptideOccurrenceList = getPeptideOccurrenceListToExport(
+								idSet);
 
 						// firePropertyChange(DATA_EXPORTING_SORTING, null,
 						// peptideOccurrenceList.size());
@@ -138,19 +144,21 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 						// SorterUtil.sortPeptideOcurrencesByBestPeptideScore(peptideOccurrenceList);
 						// firePropertyChange(DATA_EXPORTING_SORTING_DONE, null,
 						// null);
-						Iterator<PeptideOccurrence> iterator = peptideOccurrenceList.iterator();
+						final Iterator<PeptideOccurrence> iterator = peptideOccurrenceList.iterator();
 
-						int total = peptideOccurrenceList.size();
-						ProgressCounter counter = new ProgressCounter(total, ProgressPrintingType.PERCENTAGE_STEPS, 0);
+						final int total = peptideOccurrenceList.size();
+						final ProgressCounter counter = new ProgressCounter(total,
+								ProgressPrintingType.PERCENTAGE_STEPS, 0);
 
 						while (iterator.hasNext()) {
-							PeptideOccurrence peptideOccurrence = iterator.next();
+							final PeptideOccurrence peptideOccurrence = iterator.next();
 
 							Thread.sleep(1);
 
 							final List<String> peptideColumns = exporterUtil.getPeptideInfoList(peptideOccurrence,
 									columnsStringList, i++, idSet);
-							String lineString = exporterUtil.getStringFromList(peptideColumns, separator) + NEWLINE;
+							final String lineString = exporterUtil.getStringFromList(peptideColumns, separator)
+									+ NEWLINE;
 							// log.info(lineString);
 							out.write(lineString.getBytes());
 
@@ -173,19 +181,21 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 						// firePropertyChange(DATA_EXPORTING_SORTING_DONE, null,
 						// null);
 
-						int total = peptidelistToExport.size();
-						ProgressCounter counter = new ProgressCounter(total, ProgressPrintingType.PERCENTAGE_STEPS, 0);
+						final int total = peptidelistToExport.size();
+						final ProgressCounter counter = new ProgressCounter(total,
+								ProgressPrintingType.PERCENTAGE_STEPS, 0);
 
-						for (ExtendedIdentifiedPeptide peptide : peptidelistToExport) {
+						for (final ExtendedIdentifiedPeptide peptide : peptidelistToExport) {
 
 							Thread.sleep(1);
 
-							PeptideOccurrence peptideOccurrence = new PeptideOccurrence(
+							final PeptideOccurrence peptideOccurrence = new PeptideOccurrence(
 									peptide.getModificationString());
 							peptideOccurrence.addOccurrence(peptide);
 							final List<String> lineStringList = exporterUtil.getPeptideInfoList(peptideOccurrence,
 									columnsStringList, i++, idSet);
-							String lineString = exporterUtil.getStringFromList(lineStringList, separator) + NEWLINE;
+							final String lineString = exporterUtil.getStringFromList(lineStringList, separator)
+									+ NEWLINE;
 							// log.info(lineString);
 							out.write(lineString.getBytes());
 
@@ -202,7 +212,7 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 				} else {
 					// JUST PROTEINS
 					if (this.showBestProteins) {
-						Collection<ProteinGroupOccurrence> proteinGroupOccurrenceList = getProteinGroupOccurrenceToExport(
+						final Collection<ProteinGroupOccurrence> proteinGroupOccurrenceList = getProteinGroupOccurrenceToExport(
 								idSet);
 
 						// sort if there is a FDR Filter activated that tells us
@@ -212,23 +222,24 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 						// proteinGroupOccurrenceList.size());
 						try {
 							// SorterUtil.sortProteinGroupOcurrencesByBestPeptideScore(proteinGroupOccurrenceList);
-						} catch (Exception e) {
+						} catch (final Exception e) {
 
 						}
 						// firePropertyChange(DATA_EXPORTING_SORTING_DONE, null,
 						// null);
-						Iterator<ProteinGroupOccurrence> iterator = proteinGroupOccurrenceList.iterator();
+						final Iterator<ProteinGroupOccurrence> iterator = proteinGroupOccurrenceList.iterator();
 
-						int total = proteinGroupOccurrenceList.size();
-						ProgressCounter counter = new ProgressCounter(total, ProgressPrintingType.PERCENTAGE_STEPS, 0);
+						final int total = proteinGroupOccurrenceList.size();
+						final ProgressCounter counter = new ProgressCounter(total,
+								ProgressPrintingType.PERCENTAGE_STEPS, 0);
 
 						while (iterator.hasNext()) {
-							ProteinGroupOccurrence proteinGroupOccurrence = iterator.next();
+							final ProteinGroupOccurrence proteinGroupOccurrence = iterator.next();
 							Thread.sleep(1);
 
 							final List<String> proteinStringList = exporterUtil
 									.getProteinInfoList(proteinGroupOccurrence, columnsStringList, i++, idSet);
-							String proteinString = exporterUtil.getStringFromList(proteinStringList, separator)
+							final String proteinString = exporterUtil.getStringFromList(proteinStringList, separator)
 									+ NEWLINE;
 							// System.out.println(peptideString);
 							out.write(proteinString.getBytes());
@@ -252,19 +263,20 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 						// firePropertyChange(DATA_EXPORTING_SORTING_DONE, null,
 						// null);
 
-						int total = proteinGroupsToExport.size();
-						ProgressCounter counter = new ProgressCounter(total, ProgressPrintingType.PERCENTAGE_STEPS, 0);
+						final int total = proteinGroupsToExport.size();
+						final ProgressCounter counter = new ProgressCounter(total,
+								ProgressPrintingType.PERCENTAGE_STEPS, 0);
 
-						for (ProteinGroup proteinGroup : proteinGroupsToExport) {
+						for (final ProteinGroup proteinGroup : proteinGroupsToExport) {
 
 							Thread.sleep(1);
 
-							ProteinGroupOccurrence proteinOccurrence = new ProteinGroupOccurrence();
+							final ProteinGroupOccurrence proteinOccurrence = new ProteinGroupOccurrence();
 							proteinOccurrence.addOccurrence(proteinGroup);
 
 							final List<String> proteinStringList = exporterUtil.getProteinInfoList(proteinOccurrence,
 									columnsStringList, i++, idSet);
-							String proteinString = exporterUtil.getStringFromList(proteinStringList, separator)
+							final String proteinString = exporterUtil.getStringFromList(proteinStringList, separator)
 									+ NEWLINE;
 							// System.out.println(peptideString);
 							out.write(proteinString.getBytes());
@@ -280,7 +292,7 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 					}
 				}
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			if (!(e instanceof InterruptedException)) {
 				e.printStackTrace();
 				error = e.getMessage();
@@ -292,7 +304,7 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 					out.flush();
 					out.close();
 				}
-			} catch (IOException ex) {
+			} catch (final IOException ex) {
 				ex.printStackTrace();
 			}
 			if (error != null) {
@@ -303,18 +315,18 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 	}
 
 	private Collection<PeptideOccurrence> getPeptideOccurrenceListToExport(IdentificationSet idSet) {
-		Collection<PeptideOccurrence> peptideOccurrences = idSet.getPeptideOccurrenceList(distinguisModificatedPeptides)
-				.values();
+		final Collection<PeptideOccurrence> peptideOccurrences = idSet
+				.getPeptideOccurrenceList(distinguisModificatedPeptides).values();
 		if (this.filter == null && includeDecoyHits) {
 			return peptideOccurrences;
 		}
-		List<PeptideOccurrence> ret = new ArrayList<PeptideOccurrence>();
-		for (PeptideOccurrence peptideOccurrence : peptideOccurrences) {
+		final List<PeptideOccurrence> ret = new ArrayList<PeptideOccurrence>();
+		for (final PeptideOccurrence peptideOccurrence : peptideOccurrences) {
 			if (!includeDecoyHits && peptideOccurrence.isDecoy()) {
 				continue;
 			}
 			if (filter != null) {
-				String key = peptideOccurrence.getKey();
+				final String key = peptideOccurrence.getKey();
 				if (filter.canCheck(key)) {
 					if (!filter.isValid(key)) {
 						continue;
@@ -333,15 +345,15 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 		if (this.filter == null && includeDecoyHits) {
 			return idSet.getIdentifiedPeptides();
 		}
-		List<ExtendedIdentifiedPeptide> peptidelistToExport = new ArrayList<ExtendedIdentifiedPeptide>();
+		final List<ExtendedIdentifiedPeptide> peptidelistToExport = new ArrayList<ExtendedIdentifiedPeptide>();
 
-		List<ExtendedIdentifiedPeptide> identifiedPeptides = idSet.getIdentifiedPeptides();
-		for (ExtendedIdentifiedPeptide extendedIdentifiedPeptide : identifiedPeptides) {
+		final List<ExtendedIdentifiedPeptide> identifiedPeptides = idSet.getIdentifiedPeptides();
+		for (final ExtendedIdentifiedPeptide extendedIdentifiedPeptide : identifiedPeptides) {
 			if (!includeDecoyHits && extendedIdentifiedPeptide.isDecoy()) {
 				continue;
 			}
 			if (filter != null) {
-				String key = extendedIdentifiedPeptide.getKey(distinguisModificatedPeptides);
+				final String key = extendedIdentifiedPeptide.getKey(distinguisModificatedPeptides);
 				if (filter.canCheck(key)) {
 					if (!filter.isValid(key)) {
 						continue;
@@ -356,19 +368,19 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 	}
 
 	private List<ProteinGroup> getProteinGroupsToExport(IdentificationSet idSet) {
-		List<ProteinGroup> identifiedProteinGroups = idSet.getIdentifiedProteinGroups();
+		final List<ProteinGroup> identifiedProteinGroups = idSet.getIdentifiedProteinGroups();
 		if (filter == null && includeDecoyHits) {
 			return identifiedProteinGroups;
 		}
 
-		List<ProteinGroup> ret = new ArrayList<ProteinGroup>();
-		for (ProteinGroup proteinGroup : identifiedProteinGroups) {
+		final List<ProteinGroup> ret = new ArrayList<ProteinGroup>();
+		for (final ProteinGroup proteinGroup : identifiedProteinGroups) {
 			if (!includeDecoyHits && proteinGroup.isDecoy()) {
 				continue;
 			}
-			ProteinGroupOccurrence proteinOccurrence = new ProteinGroupOccurrence();
+			final ProteinGroupOccurrence proteinOccurrence = new ProteinGroupOccurrence();
 			proteinOccurrence.addOccurrence(proteinGroup);
-			Object key = proteinOccurrence.getKey(comparisonType);
+			final Object key = proteinOccurrence.getKey(comparisonType);
 			if (filter != null) {
 				if (filter.canCheck(key)) {
 					if (!filter.isValid(key)) {
@@ -385,18 +397,19 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 	}
 
 	private Collection<ProteinGroupOccurrence> getProteinGroupOccurrenceToExport(IdentificationSet idSet) {
-		Collection<ProteinGroupOccurrence> proteinGroupOccurrences = idSet.getProteinGroupOccurrenceList().values();
+		final Collection<ProteinGroupOccurrence> proteinGroupOccurrences = idSet.getProteinGroupOccurrenceList()
+				.values();
 		if (filter == null && includeDecoyHits) {
 			return proteinGroupOccurrences;
 		}
 
-		List<ProteinGroupOccurrence> ret = new ArrayList<ProteinGroupOccurrence>();
-		for (ProteinGroupOccurrence proteinOccurrence : proteinGroupOccurrences) {
+		final List<ProteinGroupOccurrence> ret = new ArrayList<ProteinGroupOccurrence>();
+		for (final ProteinGroupOccurrence proteinOccurrence : proteinGroupOccurrences) {
 			if (!includeDecoyHits && proteinOccurrence.isDecoy()) {
 				continue;
 			}
 			if (filter != null) {
-				Object key = proteinOccurrence.getKey(comparisonType);
+				final Object key = proteinOccurrence.getKey(comparisonType);
 				if (filter.canCheck(key)) {
 					if (!filter.isValid(key)) {
 						continue;
@@ -444,7 +457,7 @@ public class TSVExporter extends SwingWorker<Void, String> implements Exporter<F
 	public File export() {
 		try {
 			save();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			firePropertyChange(DATA_EXPORTING_ERROR, null, e.getMessage());
 			e.printStackTrace();
 			this.cancel(true);

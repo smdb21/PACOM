@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.proteored.miapeapi.experiment.model.IdentificationSet;
+import org.proteored.miapeapi.text.tsv.msi.TableTextFileColumn;
 
 public enum ExportedColumns {
 	NUMBER("#", 3, ""), //
@@ -76,7 +77,7 @@ public enum ExportedColumns {
 
 	private static List<ExportedColumns> getColumns(boolean showPeptides, boolean includeGeneInfo,
 			boolean isFDRApplied) {
-		List<ExportedColumns> ret = new ArrayList<ExportedColumns>();
+		final List<ExportedColumns> ret = new ArrayList<ExportedColumns>();
 		ret.add(NUMBER);
 
 		ret.add(EXPERIMENT);
@@ -131,7 +132,7 @@ public enum ExportedColumns {
 
 	private static List<ExportedColumns> getColumnsForTable(boolean showPeptides, boolean includeGeneInfo,
 			boolean isFDRApplied) {
-		List<ExportedColumns> ret = new ArrayList<ExportedColumns>();
+		final List<ExportedColumns> ret = new ArrayList<ExportedColumns>();
 		ret.add(NUMBER);
 
 		ret.add(EXPERIMENT);
@@ -186,19 +187,37 @@ public enum ExportedColumns {
 	}
 
 	public static List<String> getColumnsString(boolean showPeptides, boolean includeGeneInfo, boolean isFDRApplied,
-			Set<IdentificationSet> idSets) {
-		List<String> ret = new ArrayList<String>();
+			Set<IdentificationSet> idSets, boolean translateForImportCompatibility) {
+		final List<String> ret = new ArrayList<String>();
 		final List<ExportedColumns> columns = getColumns(showPeptides, includeGeneInfo, isFDRApplied);
 
-		for (ExportedColumns exportedColumns : columns) {
-			ret.add(exportedColumns.toString());
+		for (final ExportedColumns exportedColumns : columns) {
+
+			String columnName = exportedColumns.toString();
+			// for compatibility of importing this file directly
+			if (translateForImportCompatibility) {
+				if (exportedColumns == ExportedColumns.CHARGE) {
+					columnName = TableTextFileColumn.CHARGE.getHeaderName();
+				} else if (exportedColumns == ExportedColumns.PROTEIN_ACC) {
+					columnName = TableTextFileColumn.ACC.getHeaderName();
+				} else if (exportedColumns == ExportedColumns.SEQUENCE) {
+					columnName = TableTextFileColumn.SEQ.getHeaderName();
+				} else if (exportedColumns == ExportedColumns.RETENTION_TIME_SG) {
+					columnName = TableTextFileColumn.RT.getHeaderName();
+				} else if (exportedColumns == ExportedColumns.EXP_MZ) {
+					columnName = TableTextFileColumn.MZ.getHeaderName();
+				} else if (exportedColumns == ExportedColumns.NUMBER) {
+					columnName = TableTextFileColumn.PSMID.getHeaderName();
+				}
+			}
+			ret.add(columnName);
 		}
 		// Substitute the column header of the scores by their names
 		final List<String> proteinScoreNames = ExporterUtil.getProteinScoreNames(idSets);
 		int proteinScoreIndex = -1;
 		int j = 0;
-		for (String proteinScoreName : proteinScoreNames) {
-			int indexOf = ret.indexOf(ExportedColumns.PROTEIN_SCORE.toString());
+		for (final String proteinScoreName : proteinScoreNames) {
+			final int indexOf = ret.indexOf(ExportedColumns.PROTEIN_SCORE.toString());
 			if (indexOf >= 0) {
 				proteinScoreIndex = indexOf;
 				j++;
@@ -210,7 +229,7 @@ public enum ExportedColumns {
 		int peptideScoreIndex = -1;
 		j = 0;
 		final List<String> peptideScoreNames = ExporterUtil.getPeptideScoreNames(idSets);
-		for (String peptideScoreName : peptideScoreNames) {
+		for (final String peptideScoreName : peptideScoreNames) {
 			final int indexOf = ret.indexOf(ExportedColumns.PEPTIDE_SCORE.toString());
 			if (indexOf >= 0) {
 				peptideScoreIndex = indexOf;
@@ -226,19 +245,19 @@ public enum ExportedColumns {
 
 	public static List<String> getColumnsStringForTable(boolean showPeptides, boolean includeGeneInfo,
 			boolean isFDRApplied, Collection<IdentificationSet> idSets) {
-		List<String> ret = new ArrayList<String>();
+		final List<String> ret = new ArrayList<String>();
 
 		final List<ExportedColumns> columns = getColumnsForTable(showPeptides, includeGeneInfo, isFDRApplied);
 
-		for (ExportedColumns exportedColumns : columns) {
+		for (final ExportedColumns exportedColumns : columns) {
 			ret.add(exportedColumns.toString());
 		}
 		// Substitute the column header of the scores by their names
 		final List<String> proteinScoreNames = ExporterUtil.getProteinScoreNames(idSets);
 		int proteinScoreIndex = -1;
 		int j = 0;
-		for (String proteinScoreName : proteinScoreNames) {
-			int indexOf = ret.indexOf(ExportedColumns.PROTEIN_SCORE.toString());
+		for (final String proteinScoreName : proteinScoreNames) {
+			final int indexOf = ret.indexOf(ExportedColumns.PROTEIN_SCORE.toString());
 			if (indexOf >= 0) {
 				proteinScoreIndex = indexOf;
 				j++;
@@ -250,7 +269,7 @@ public enum ExportedColumns {
 		int peptideScoreIndex = -1;
 		j = 0;
 		final List<String> peptideScoreNames = ExporterUtil.getPeptideScoreNames(idSets);
-		for (String peptideScoreName : peptideScoreNames) {
+		for (final String peptideScoreName : peptideScoreNames) {
 			final int indexOf = ret.indexOf(ExportedColumns.PEPTIDE_SCORE.toString());
 			if (indexOf >= 0) {
 				peptideScoreIndex = indexOf;
