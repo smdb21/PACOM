@@ -3568,6 +3568,7 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 	}
 
 	private Object showScoreDistributionHistogramLineChart(IdentificationItemEnum plotItem) {
+
 		parent.setInformation1(parent.getCurrentChartType().getName() + " / " + plotItem);
 		String scoreName = null;
 		if (plotItem.equals(IdentificationItemEnum.PEPTIDE)) {
@@ -3586,6 +3587,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		final HistogramType histogramType = optionsFactory.getHistogramType();
 		final boolean applyLog = optionsFactory.isApplyLog();
 		final boolean separateDecoyHits = optionsFactory.isSeparatedDecoyHits();
+		final boolean distinguishModPep = parent.distinguishModifiedPeptides();
+		final boolean showPSMsorPeptides = optionsFactory.isDifferentIdentificationsShown();
 		String xAxisLabel = scoreName;
 		if (applyLog) {
 			xAxisLabel = "log10(" + xAxisLabel + ")";
@@ -3593,14 +3596,16 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		String frequencyType = "";
 		switch (plotItem) {
 		case PEPTIDE:
-			frequencyType = "peptides";
+			if (showPSMsorPeptides) {
+				frequencyType = "psms";
+			} else {
+				frequencyType = "peptides";
+			}
 			break;
 		case PROTEIN:
 			frequencyType = "protein";
 			break;
-		case PSM:
-			frequencyType = "PSMs";
-			break;
+
 		default:
 			break;
 		}
@@ -3609,7 +3614,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		if (option.equals(ChartManagerFrame.ONE_SERIES_PER_REPLICATE)) {
 
 			final HistogramDataset dataset = DatasetFactory.createScoreHistogramDataSet(idSets, scoreName, plotItem,
-					bins, addZeroZeroValue, histogramType, applyLog, separateDecoyHits, countNonConclusiveProteins);
+					bins, addZeroZeroValue, histogramType, applyLog, separateDecoyHits, countNonConclusiveProteins,
+					showPSMsorPeptides, distinguishModPep);
 			final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
@@ -3617,7 +3623,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT_LIST.equals(option)) {
 
 			final HistogramDataset dataset = DatasetFactory.createScoreHistogramDataSet(idSets, scoreName, plotItem,
-					bins, addZeroZeroValue, histogramType, applyLog, separateDecoyHits, countNonConclusiveProteins);
+					bins, addZeroZeroValue, histogramType, applyLog, separateDecoyHits, countNonConclusiveProteins,
+					showPSMsorPeptides, distinguishModPep);
 			final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
@@ -3625,7 +3632,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 		} else if (ChartManagerFrame.ONE_SERIES_PER_EXPERIMENT.equals(option)) {
 
 			final HistogramDataset dataset = DatasetFactory.createScoreHistogramDataSet(idSets, scoreName, plotItem,
-					bins, addZeroZeroValue, histogramType, applyLog, separateDecoyHits, countNonConclusiveProteins);
+					bins, addZeroZeroValue, histogramType, applyLog, separateDecoyHits, countNonConclusiveProteins,
+					showPSMsorPeptides, distinguishModPep);
 			final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType),
 					parent.getChartSubtitle(chartType, option), dataset, xAxisLabel, frequencyType);
 			// this.jPanelChart.setGraphicPanel(chart.getChartPanel());
@@ -3636,7 +3644,8 @@ public class ChartCreatorTask extends SwingWorker<Object, Void> {
 
 				idSets = getIdentificationSets(experiment.getName(), null, addTotal);
 				final HistogramDataset dataset = DatasetFactory.createScoreHistogramDataSet(idSets, scoreName, plotItem,
-						bins, addZeroZeroValue, histogramType, applyLog, separateDecoyHits, countNonConclusiveProteins);
+						bins, addZeroZeroValue, histogramType, applyLog, separateDecoyHits, countNonConclusiveProteins,
+						showPSMsorPeptides, distinguishModPep);
 				final HistogramChart chart = new HistogramChart(parent.getChartTitle(chartType), experiment.getName(),
 						dataset, xAxisLabel, frequencyType);
 				chartList.add(chart.getChartPanel());

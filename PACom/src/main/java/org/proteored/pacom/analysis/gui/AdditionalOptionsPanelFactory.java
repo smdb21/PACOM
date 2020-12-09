@@ -302,6 +302,7 @@ public class AdditionalOptionsPanelFactory {
 		jPanelAdditional3.setLayout(new BorderLayout());
 		jPanelAdditional3.add(jlabel3, BorderLayout.BEFORE_FIRST_LINE);
 		jPanelAdditional3.add(jComboBoxMaximumOccurrence, BorderLayout.CENTER);
+		jComboBoxMaximumOccurrence.setEnabled(true);
 		return jPanelAdditional3;
 	}
 
@@ -337,6 +338,7 @@ public class AdditionalOptionsPanelFactory {
 		jPanelAdditional3.setLayout(new BorderLayout());
 		jPanelAdditional3.add(jlabel3, BorderLayout.BEFORE_FIRST_LINE);
 		jPanelAdditional3.add(jComboBoxMinimumOccurrence, BorderLayout.CENTER);
+		jComboBoxMinimumOccurrence.setEnabled(true);
 		return jPanelAdditional3;
 	}
 
@@ -813,7 +815,8 @@ public class AdditionalOptionsPanelFactory {
 						final String sequence = extendedIdentifiedPeptide.getSequence();
 						final String sequence_charge = extendedIdentifiedPeptide.getSequence()
 								+ extendedIdentifiedPeptide.getCharge() != null
-										? "_" + extendedIdentifiedPeptide.getSequence() : "";
+										? "_" + extendedIdentifiedPeptide.getSequence()
+										: "";
 						if (sequence.equalsIgnoreCase(userSequence) && sequence_charge.equalsIgnoreCase(userSequence)) {
 							if (distinguishModPep) {
 								final List<String> modifiedSequences = ExtendedIdentifiedPeptide

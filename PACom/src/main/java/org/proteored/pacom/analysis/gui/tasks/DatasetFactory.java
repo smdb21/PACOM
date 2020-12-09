@@ -1570,7 +1570,8 @@ public class DatasetFactory {
 
 	public static HistogramDataset createScoreHistogramDataSet(List<IdentificationSet> idSets, String scoreName,
 			IdentificationItemEnum plotItem, int bins, boolean addZeroZeroValue, HistogramType histogramType,
-			boolean applyLog, boolean separateDecoyHits, Boolean countNonConclusiveProteins) {
+			boolean applyLog, boolean separateDecoyHits, Boolean countNonConclusiveProteins, boolean psmsOrPeptides,
+			boolean distinguishModPep) {
 		final HistogramDataset dataset = new HistogramDataset();
 
 		for (final IdentificationSet idSet : idSets) {
@@ -1579,7 +1580,8 @@ public class DatasetFactory {
 				values = getProteinScores(idSet, scoreName, addZeroZeroValue, applyLog, separateDecoyHits,
 						countNonConclusiveProteins);
 			} else if (plotItem.equals(IdentificationItemEnum.PEPTIDE)) {
-				values = getPeptideScores(idSet, scoreName, addZeroZeroValue, applyLog, separateDecoyHits);
+				values = getPeptideScores(idSet, scoreName, addZeroZeroValue, applyLog, separateDecoyHits,
+						psmsOrPeptides, distinguishModPep);
 			}
 			if (values != null) {
 				for (int i = 0; i < values.size(); i++) {
@@ -2504,7 +2506,7 @@ public class DatasetFactory {
 	}
 
 	private static List<double[]> getPeptideScores(IdentificationSet idSet, String scoreName, boolean addZeroZeroValue,
-			boolean applyLog, boolean separateDecoyHits) {
+			boolean applyLog, boolean separateDecoyHits, boolean psmsOrPeptides, boolean distinguishModPep) {
 
 		final TDoubleArrayList scores = new TDoubleArrayList();
 		final TDoubleArrayList scoresDecoy = new TDoubleArrayList();
@@ -2512,26 +2514,52 @@ public class DatasetFactory {
 			scores.add(0.0);
 			scoresDecoy.add(0.0);
 		}
-		for (final Object object : idSet.getIdentifiedPeptides()) {
-			final ExtendedIdentifiedPeptide peptide = (ExtendedIdentifiedPeptide) object;
-			try {
-				final Float score = peptide.getScore(scoreName);
-				if (score != null) {
-					double doubleValue = score.doubleValue();
-					if (applyLog) {
-						doubleValue = Math.log10(doubleValue);
-						if (Double.isInfinite(doubleValue)) {
-							continue;
+		if (psmsOrPeptides) {
+			for (final Object object : idSet.getIdentifiedPeptides()) {
+				final ExtendedIdentifiedPeptide peptide = (ExtendedIdentifiedPeptide) object;
+				try {
+					final Float score = peptide.getScore(scoreName);
+					if (score != null) {
+						double doubleValue = score.doubleValue();
+						if (applyLog) {
+							doubleValue = Math.log10(doubleValue);
+							if (Double.isInfinite(doubleValue)) {
+								continue;
+							}
+						}
+						if (separateDecoyHits && peptide.isDecoy()) {
+							scoresDecoy.add(doubleValue);
+						} else {
+							scores.add(doubleValue);
 						}
 					}
-					if (separateDecoyHits && peptide.isDecoy()) {
-						scoresDecoy.add(doubleValue);
-					} else {
-						scores.add(doubleValue);
-					}
+				} catch (final Exception e) {
+					// do nothign
 				}
-			} catch (final Exception e) {
-				// do nothign
+			}
+		} else {
+			final Map<String, PeptideOccurrence> peptideOcurrences = idSet.getPeptideOccurrenceList(distinguishModPep);
+			for (final PeptideOccurrence peptideOcurrence : peptideOcurrences.values()) {
+				final ExtendedIdentifiedPeptide peptide = peptideOcurrence.getBestPeptide(scoreName);
+				try {
+					final Float score = peptide.getScore(scoreName);
+					if (score != null) {
+						double doubleValue = score.doubleValue();
+						if (applyLog) {
+							doubleValue = Math.log10(doubleValue);
+							if (Double.isInfinite(doubleValue)) {
+								continue;
+							}
+						}
+						if (separateDecoyHits && peptide.isDecoy()) {
+							scoresDecoy.add(doubleValue);
+						} else {
+							scores.add(doubleValue);
+						}
+					}
+				} catch (final Exception e) {
+					// do nothign
+				}
 			}
 		}
 		final List<double[]> ret = new ArrayList<double[]>();

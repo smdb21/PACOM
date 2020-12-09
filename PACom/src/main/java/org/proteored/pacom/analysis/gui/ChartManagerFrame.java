@@ -2916,6 +2916,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 				c.gridy++;
 				panel.add(jPanelAdditional4, c);
 			}
+
 		}
 		// //////////////// ROW
 		final JCheckBox jCheckApplyLog = optionsFactory.getApplyLogCheckBox();
@@ -4006,6 +4007,15 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 					panel.add(jPanelAdditional4, c);
 
 				}
+				// /////////////// ROW
+				final JCheckBox jCheckBox7 = optionsFactory.getShowDifferentIdentificationsCheckBox("PSMs or peptides");
+				jCheckBox7.setEnabled(true);
+				jCheckBox7.setToolTipText(
+						"<html>If this option is activated, the histogram will show the <b>number of PSMs</b>.<br>"
+								+ "If this option is desactivated, the histogram will show the <b>number of peptides</b>.</html>");
+				c.gridx = 0;
+				c.gridy++;
+				panel.add(jCheckBox7, c);
 			}
 			// //////////////// ROW
 			final JCheckBox jCheckApplyLog = optionsFactory.getApplyLogCheckBox();
