@@ -2650,6 +2650,7 @@ public class ChartManagerFrame extends AbstractJFrameWithAttachedHelpAndAttached
 		panel.add(checkbox5, c);
 		// /////////////// ROW6
 		final JCheckBox jCheckBox7 = optionsFactory.getShowDifferentIdentificationsCheckBox("PSMs or peptides");
+		jCheckBox7.setEnabled(true);
 		jCheckBox7.setToolTipText(
 				"<html>If this option is activated, the histogram will show the <b>number of PSMs</b>.<br>"
 						+ "If this option is desactivated, the histogram will show the <b>number of peptides</b>.</html>");
