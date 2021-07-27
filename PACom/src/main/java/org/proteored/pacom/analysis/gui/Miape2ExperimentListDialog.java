@@ -45,6 +45,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeNode;
 import javax.xml.bind.JAXBException;
 
 import org.apache.commons.io.FilenameUtils;
@@ -1024,10 +1025,10 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 
 						jTextExperimentName.setText(localProjectName);
 
-						final Enumeration<DefaultMutableTreeNode> children = jTreeLocalMIAPEMSIs.getSelectedNode()
-								.children();
+						final Enumeration<TreeNode> children = jTreeLocalMIAPEMSIs.getSelectedNode().children();
 						while (children.hasMoreElements()) {
-							final DefaultMutableTreeNode miapeMSIChild = children.nextElement();
+							final DefaultMutableTreeNode miapeMSIChild = (DefaultMutableTreeNode) children
+									.nextElement();
 							final String msi_id = AbstractExtendedJTree.getString(LOCAL_MIAPE_ID_REGEXP,
 									(String) miapeMSIChild.getUserObject());
 							final String miapeName = AbstractExtendedJTree.getString(LOCAL_MIAPE_UNIQUE_NAME_REGEXP,
@@ -1705,8 +1706,7 @@ public class Miape2ExperimentListDialog extends AbstractJFrameWithAttachedHelpDi
 	}
 
 	/**
-	 * @param args
-	 *            the command line arguments
+	 * @param args the command line arguments
 	 */
 	public static void main(String args[]) {
 		java.awt.EventQueue.invokeLater(new Runnable() {
