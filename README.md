@@ -3,7 +3,7 @@
 
 ## How to get PACOM:
 We are continuosly trying to improve the software, adding new features and fixing bugs. New versions are automatically uploaded to out server.  
-Download the latest versions from **[here](http://sealion.scripps.edu/PACom/)**.
+Download the latest versions from **[here](http://sealion.scripps.edu/PACom/)** or in the release page **(https://github.com/smdb21/PACOM/releases)**
 
 ## Files supported:
 The updated list of input files supported by PACOM can be found at the corresponding [**wiki page**](https://github.com/smdb21/PACOM/wiki/How-to-import-datasets#2-select-the-input-data-files-to-import).  
